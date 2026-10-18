@@ -25,7 +25,7 @@ class OfficialExpert:
     selected function bodies. Projection wrappers only record inputs/outputs.
     """
 
-    def __init__(self, arrays, manifest, directory: Path, ordinal=0):
+    def __init__(self, arrays, manifest, directory: Path, ordinal=0, *, weight_dtype=None):
         import torch
         from torch.nn import functional as F
 
@@ -48,7 +48,8 @@ class OfficialExpert:
         self.weights = {}
         with torch.cuda.device(ordinal):
             for name in ("w1", "w3", "w2"):
-                weight = torch.from_numpy(arrays[f"{name}_weight"].copy()).to(f"cuda:{ordinal}").view(torch.float4_e2m1fn_x2)
+                weight = torch.from_numpy(arrays[f"{name}_weight"].copy()).to(f"cuda:{ordinal}").view(
+                    torch.float4_e2m1fn_x2 if weight_dtype is None else weight_dtype)
                 weight.scale = torch.from_numpy(arrays[f"{name}_scale"].copy()).to(f"cuda:{ordinal}").view(torch.float8_e8m0fnu)
                 self.weights[name] = weight
         self.expert = SimpleNamespace(swiglu_limit=self.limit,

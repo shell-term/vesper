@@ -19,6 +19,10 @@ those bytes retain the source model's license and are not included in this repo.
 The complete-expert probe follows the clamp and weighted SwiGLU order in
 `model.py`. Its optional oracle extracts and executes unchanged `linear` and
 `Expert.forward` function bodies from the hash-checked original source.
+The shared-expert probe follows the original FP8 block-32 scaling and reuses
+those same unchanged bodies with original FP8 weights. The aggregation probe
+follows `MoE.forward`'s expert-ID iteration and FP32/BF16 boundaries; its optional
+oracle executes the unchanged method with supplied gate outputs.
 The routing postprocessing probe follows `Gate.forward`'s score/bias/gather and
 normalization formulas. Its optional oracle executes the unchanged method body
 with an explicit identity projection to isolate supplied-logit postprocessing.

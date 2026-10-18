@@ -7,6 +7,12 @@
 「実装済み」と「公式との一致を検証済み」を区別し、合格条件と測定データを各Issueに残します。
 [開発の節目と運用方針](docs/roadmap.md)も公開しています。
 
+共有expertのFP8計算と、expert出力を合算する順序・丸めを検証しました。
+共有expertの54条件、合算の38条件、元の6個のexpertと共有expertを組み合わせた16条件で、
+中間値と最終出力がすべて一致しています。PyTorchなしの環境でも全108条件を再照合できました。
+この検証ではルーティング先と重みを指定しています。元のゲートとキャッシュの接続、文章生成は次の段階です。
+詳細は[検証レポート](docs/moe-arithmetic-validation.md)と[Issue #5](https://github.com/shell-term/vesper/issues/5)にあります。
+
 [ゲートの行列計算とルーター](docs/gate-validation.md)をつなぎ、307種類の検証用入力を
 text/image両条件で比べた614比較で、出力・expertのID・順序・重みがすべてビット単位で一致しました。
 元のBF16重みを保持し、公式と同じFP32計算を使います。推論側にPyTorchは不要です。

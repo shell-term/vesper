@@ -202,7 +202,8 @@ class Pinned:
 
 
 def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: bool = False,
-                  integrity: bool = False, routing: bool = False) -> bytes:
+                  integrity: bool = False, routing: bool = False, shared: bool = False,
+                  aggregation: bool = False) -> bytes:
     """Compile an actual architecture cubin; no host compiler or GPU required."""
     if os.name == "nt":
         roots = [Path(value) for key in ("CUDA_PATH", "CUDA_HOME") if (value := os.environ.get(key))]
@@ -233,6 +234,10 @@ def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: b
         source += b"\n" + (Path(__file__).parent / "kernels/integrity_probe.cu").read_bytes()
     if routing:
         source += b"\n" + (Path(__file__).parent / "kernels/routing_probe.cu").read_bytes()
+    if shared:
+        source += b"\n" + (Path(__file__).parent / "kernels/shared_probe.cu").read_bytes()
+    if aggregation:
+        source += b"\n" + (Path(__file__).parent / "kernels/aggregation_probe.cu").read_bytes()
     program = pointer()
     if create(C.byref(program), source, b"format_probe.cu", 0, None, None):
         raise CudaError("NVRTC could not create a program")

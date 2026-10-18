@@ -12,14 +12,15 @@ def main(argv=None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     for name in ("inventory", "validate", "bench-transfer", "fetch-fixture", "bench-disk", "compare-reference",
                  "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
-                 "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router", "fetch-gate-fixture", "compare-gate"):
+                 "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router", "fetch-gate-fixture", "compare-gate",
+                 "fetch-shared-fixture", "compare-shared", "compare-aggregation", "compare-original-accumulation"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
         if name in ("validate", "bench-transfer", "validate-integrity"):
             command.add_argument("--devices", type=int, nargs="+")
         if name in ("validate", "compare-reference"):
             command.add_argument("--fixture", type=Path)
-        if name in ("trace-reduction", "compare-expert", "compare-router", "compare-gate"):
+        if name in ("trace-reduction", "compare-expert", "compare-router", "compare-gate", "compare-shared"):
             command.add_argument("--fixture", type=Path, required=True)
         if name == "fetch-fixture":
             command.add_argument("--directory", type=Path, default=Path("artifacts/fixture"))
@@ -33,6 +34,12 @@ def main(argv=None) -> int:
         if name == "fetch-gate-fixture":
             command.add_argument("--directory", type=Path, default=Path("artifacts/gate-fixture"))
             command.add_argument("--layer", type=int, default=0)
+        if name == "fetch-shared-fixture":
+            command.add_argument("--directory", type=Path, default=Path("artifacts/shared-fixture"))
+            command.add_argument("--layer", type=int, default=0)
+        if name == "compare-original-accumulation":
+            command.add_argument("--fixtures", type=Path, nargs=6, required=True)
+            command.add_argument("--shared-fixture", type=Path, required=True)
         if name == "compare-gate":
             command.add_argument("--router-fixture", type=Path, required=True)
             command.add_argument("--cublas-library", type=Path)
@@ -52,9 +59,11 @@ def main(argv=None) -> int:
         if name == "bench-disk":
             command.add_argument("--directory", type=Path, default=Path("artifacts/disk-probe"))
             command.add_argument("--file", type=Path, help="Read an existing model file without creating scratch")
-        if name in ("compare-reference", "compare-expert", "validate-cache", "compare-router", "compare-gate"):
+        if name in ("compare-reference", "compare-expert", "validate-cache", "compare-router", "compare-gate",
+                    "compare-shared", "compare-aggregation", "compare-original-accumulation"):
             command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
-        if name in ("compare-reference", "compare-expert", "trace-reduction", "validate-cache", "bench-cache", "compare-router", "compare-gate"):
+        if name in ("compare-reference", "compare-expert", "trace-reduction", "validate-cache", "bench-cache", "compare-router", "compare-gate",
+                    "compare-shared", "compare-aggregation", "compare-original-accumulation"):
             command.add_argument("--device", type=int, default=0)
             if name != "bench-cache":
                 command.add_argument("--reference-device", type=int)
@@ -97,6 +106,22 @@ def main(argv=None) -> int:
             reference = args.device if args.reference_device is None else args.reference_device
             result = compare_gate(args.fixture, args.router_fixture, args.reference_directory,
                                   args.device, reference, args.cublas_library)
+        elif args.command == "fetch-shared-fixture":
+            from .shared import fetch_shared_fixture
+            result = fetch_shared_fixture(args.directory, args.layer)
+        elif args.command == "compare-shared":
+            from .shared_reference import compare_shared
+            reference = args.device if args.reference_device is None else args.reference_device
+            result = compare_shared(args.fixture, args.reference_directory, args.device, reference)
+        elif args.command == "compare-aggregation":
+            from .moe_reference import compare_aggregation
+            reference = args.device if args.reference_device is None else args.reference_device
+            result = compare_aggregation(args.reference_directory, args.device, reference)
+        elif args.command == "compare-original-accumulation":
+            from .moe_reference import compare_original_accumulation
+            reference = args.device if args.reference_device is None else args.reference_device
+            result = compare_original_accumulation(args.fixtures, args.shared_fixture, args.reference_directory,
+                                                  args.device, reference)
         elif args.command == "build-store":
             from .storage import build_store
             result = build_store(args.fixtures, args.directory)
@@ -133,7 +158,7 @@ def main(argv=None) -> int:
     rendered = json.dumps(result, indent=2, ensure_ascii=False, allow_nan=False) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(rendered, encoding="utf-8")
+        args.output.write_bytes(rendered.encode("utf-8"))
     print(rendered, end="")
     return 0 if result.get("status") == "pass" else 2
 

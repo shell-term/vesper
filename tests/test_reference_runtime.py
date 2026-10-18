@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 import unittest
 
-from vesper.reference_runtime import isolate_nvrtc_handles
+from vesper.reference_runtime import configure_reference_runtime, isolate_nvrtc_handles
 
 
 class RuntimeTests(unittest.TestCase):
@@ -34,3 +34,18 @@ class RuntimeTests(unittest.TestCase):
         kernel = SimpleNamespace(adapter=NVRTCKernelAdapter())
         handles = kernel.adapter.kernels
         self.assertIs(isolate_nvrtc_handles(lambda: kernel)().adapter.kernels, handles)
+
+    def test_fp8_and_fp4_shape_factories_are_all_isolated(self):
+        class NVRTCKernelAdapter:
+            kernels = {}
+        def factory(shape):
+            adapter = NVRTCKernelAdapter()
+            adapter.kernels["kernel"] = shape
+            return SimpleNamespace(adapter=adapter)
+        module = SimpleNamespace(**{n: factory for n in ("act_quant_kernel", "fp4_gemm_kernel", "fp8_gemm_kernel")})
+        self.assertTrue(configure_reference_runtime(module, "0.1.12"))
+        for name in ("act_quant_kernel", "fp4_gemm_kernel", "fp8_gemm_kernel"):
+            guarded = getattr(module, name)
+            first = guarded((2304, 5120))
+            guarded((5120, 2304))
+            self.assertEqual(first.adapter.kernels["kernel"], (2304, 5120))

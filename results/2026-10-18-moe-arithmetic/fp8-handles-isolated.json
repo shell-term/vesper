@@ -1,0 +1,32 @@
+{
+  "probe": "tilelang_fp8_launch_handle_isolation",
+  "mode": "isolated",
+  "reference": {
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "files": {
+      "kernel.py": "1236c3507019ed176f5dba5e04bcea58867cf654818c6cf138ed4845398c2455",
+      "LICENSE": "f2c6c602815669d292889e5be8c802f2ed950653b77999b1584e8e6aed25d040",
+      "model.py": "e5decd76fe70fd56ef2f10124d245c6f64fb6a0003cc9068a1d3182a168b8d2d"
+    }
+  },
+  "tilelang_version": "0.1.12",
+  "torch_version": "2.14.1+cu130",
+  "adapter": "NVRTCKernelAdapter",
+  "compiled_shapes": [
+    [
+      2304,
+      5120
+    ],
+    [
+      5120,
+      2304
+    ]
+  ],
+  "tables_shared_between_shapes": false,
+  "first_launch_handle_replaced": false,
+  "first_adapter_owns_instance_table": true,
+  "kernel_launches": 0,
+  "scope": "Compiler/adapter metadata inspection only; no mismatched kernel is launched",
+  "status": "pass"
+}

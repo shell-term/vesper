@@ -23,6 +23,6 @@ def isolate_nvrtc_handles(factory):
 def configure_reference_runtime(module, tilelang_version: str) -> list[str]:
     if tilelang_version != "0.1.12":
         return []
-    for name in ("act_quant_kernel", "fp4_gemm_kernel"):
+    for name in ("act_quant_kernel", "fp4_gemm_kernel", "fp8_gemm_kernel"):
         setattr(module, name, isolate_nvrtc_handles(getattr(module, name)))
     return ["TileLang 0.1.12 NVRTC: isolate launch handles per compiled specialization; arithmetic unchanged"]

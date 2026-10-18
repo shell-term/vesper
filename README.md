@@ -47,6 +47,15 @@ gate match logits, ordered expert IDs and weights bit-for-bit. See
 [gate report](docs/gate-validation.md). Connected MoE execution and model quality
 remain unverified.
 
+Original shared-expert arithmetic and ordered accumulation now pass their scoped
+reference gates: 54 FP8 shared-expert cases, 38 aggregation cases, and 16 supplied-
+route conditions combining six original FP4 experts with the shared expert.
+All checked intermediate bits match. A native-only process reproduces all 108
+case goldens without PyTorch installed. See
+[issue #5](https://github.com/shell-term/vesper/issues/5) and the
+[shared/aggregation report](docs/moe-arithmetic-validation.md). Original gate and
+bounded-offload integration remain separate work.
+
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is
 different from applying another lossy quantization. Vesper prohibits extra
