@@ -17,9 +17,10 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Connected MoE sublayer | Gate projection, routing, accumulation order, shared expert and bounded offload | Generated and real-prefix inputs each pass 30 calls / 108 boundaries and four refusal/retry checks; native-only rechecks match |
 | Attention Query storage candidate | Exact intermediates with executable original profiles, then full-shape original parity | 24 smaller-profile cases match all checked bits; full 64 × 512 candidate executes at 74 KiB shared memory; full original gate blocked at 138 KiB |
 | Storage-adapted official Attention arithmetic | Original PTX arithmetic/control retention, exact bit transport and intermediate comparisons | All six original binaries reproduce; 36 conditions / 456 comparisons match; explicit capture supplies four real layer-0 vectors; untouched full-kernel launch remains blocked |
-| Native sparse Attention operation | Framework-free dispatch, exact boundaries and bounded failure recovery | 36 conditions, 216 oracle-boundary comparisons, zero differences; independent NumPy-only replay passes; projections/full-layer integration pending |
-| Native post-RoPE window KV | Original rounding, ring order, publication failure, saved-state rollback and selected Attention | 398 updates / 128 connected conditions, 3,156 comparisons, zero differences; native-only replay passes; projections/compressed KV pending |
-| Native RMS normalization and RoPE | Original learned norm weights, reduction/rounding order, frequency profiles, rotation and projected-input KV/Attention chain | 476 component cases and 56 chain conditions, 3,420 boundary comparisons, zero differences; both frequency profiles cover positions 0 through 131,071; native-only replay passes; projections/Hyper-Connections/full blocks pending |
+| Native sparse Attention operation | Framework-free dispatch, exact boundaries and bounded failure recovery | 36 conditions, 216 oracle-boundary comparisons, zero differences; independent NumPy-only replay passes; subsequent layer-0 integration below |
+| Native post-RoPE window KV | Original rounding, ring order, publication failure, saved-state rollback and selected Attention | 398 updates / 128 connected conditions, 3,156 comparisons, zero differences; native-only replay passes; compressed KV pending |
+| Native RMS normalization and RoPE | Original learned norm weights, reduction/rounding order, frequency profiles, rotation and projected-input KV/Attention chain | 476 component cases and 56 chain conditions, 3,420 boundary comparisons, zero differences; both frequency profiles cover positions 0 through 131,071; native-only replay passes |
+| Original-weight native window Attention layer | Original query/KV/output projections, grouped BF16 conversion, complete forward output/cache, real inputs and atomic failure recovery | 90 component cases and 309 successful layer calls (304 corpus calls + five retries), 17,355 comparisons, zero differences; four real prefix inputs and two window wraps; independent native-only replay passes; layer-0, one rank, batch 1/2, prefill at most three queries |
 | Full Transformer block | Connected attention, MoE, Engram, Hyper-Connections and residual boundaries | Not implemented |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
@@ -149,3 +150,13 @@ normalization, rotation, window KV and selected Attention boundaries without
 claiming original query/KV/output projections or compressed KV execution.
 Four deliberately changed arithmetic controls are detected. Full-layer/prefix
 outputs, Hyper-Connections and model quality remain separate requirements.
+
+The [Attention projection/layer probe](attention-projection-validation.md) now
+connects all original layer-0 Attention weights and normalizations through both
+output projections. Every successful call compares 55 boundaries and checks
+diagnostics against unchanged `Attention.forward` output/cache. This includes
+four inputs captured from the unchanged original block prefix; Hyper-Connections
+in that capture remain oracle operations. A BF16-to-FP32 grouped-math replacement
+changes three final values in the negative control. Layer failure tests preserve
+committed KV or block further calls until explicit recovery. Complete Transformer
+blocks, compressed/indexed/shared KV and full-model quality remain pending.

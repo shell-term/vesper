@@ -4,8 +4,10 @@ Issue [#7](https://github.com/shell-term/vesper/issues/7), milestone M2.
 Native RMS normalization and rotary position math now connect projected inputs
 to the previously qualified [window KV](window-kv-validation.md) and
 [sparse Attention](native-attention-validation.md) operations. Original
-query/KV/output projections are still missing. This is bounded component and
-chain evidence; Issue #7 and M2 remain open, and text generation is unfinished.
+query/KV/output projections were excluded from this probe; the subsequent
+[original-weight window Attention report](attention-projection-validation.md)
+connects them. This remains bounded component and chain evidence. Issue #7 and
+M2 remain open, and text generation is unfinished.
 
 ## Results
 
@@ -113,9 +115,10 @@ the 4090 shared-memory limit; this does not claim that it executed. Longer
 prefills check normalization/RoPE/KV boundaries but omit the connected Attention
 step in this bounded probe.
 
-Original query/KV/output projections and their FP8/BF16 boundaries must be
-connected next, then compared at original-weight Attention-layer and prefix
-outputs. Compressed KV, sparse indexing/source-layer sharing, Hyper-Connections,
+The subsequent [projection/layer probe](attention-projection-validation.md)
+connects original query/KV/output projections and compares layer-0 Attention
+outputs, including original-prefix inputs. Compressed KV, sparse
+indexing/source-layer sharing, Hyper-Connections,
 residuals, full blocks, logits and sampling remain separate requirements.
 Original weights and these component passes alone do not establish full-model
 quality or end-to-end speed.

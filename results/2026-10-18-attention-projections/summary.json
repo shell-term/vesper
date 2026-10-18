@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "probe": "original_weight_native_window_Attention",
+  "status": "pass",
+  "artifacts_sha256": {
+    "projections.json": "a32aaeac1323cb5bba740340c1d872026ff5cc56336576ff46b0468ea8a413c2",
+    "native-only-recheck.json": "26e5041356db6ce44768d462090b93b381c35043bcc723cc81c883ae2da4706c"
+  },
+  "component_cases": 90,
+  "successful_layer_calls": 309,
+  "layer_corpus_calls": 304,
+  "failure_retries": 5,
+  "original_prefix_input_calls": 4,
+  "continuous_wrap_sequence_tokens": 260,
+  "batch_sizes": [
+    1,
+    2
+  ],
+  "prefill_lengths": [
+    1,
+    2,
+    3
+  ],
+  "boundaries_per_layer_call": 55,
+  "boundary_comparisons": 17355,
+  "compared_storage_elements": 194331461,
+  "mismatches": 0,
+  "expected_failed_layer_calls": 5,
+  "failed_rollback_blocks_further_calls": true,
+  "negative_controls": [
+    {
+      "check": "omit_output_activation_rounding",
+      "status": "fail",
+      "elements": 16384,
+      "mismatches": 15318,
+      "dtype": "uint16",
+      "expected_sha256": "c77547452a0fc46485770c8f8d2d3ba0c2d2cf5fc299322ce29a2316396db983",
+      "actual_sha256": "2d54f98a88340f3129ebf293479f525d67993bb1a10306c5edc308d260ab907d"
+    },
+    {
+      "check": "replace_grouped_BF16_with_FP32",
+      "status": "fail",
+      "elements": 16384,
+      "mismatches": 3,
+      "dtype": "uint16",
+      "expected_sha256": "c77547452a0fc46485770c8f8d2d3ba0c2d2cf5fc299322ce29a2316396db983",
+      "actual_sha256": "4e90764ab0b09d54baedfdedb40b96eb66fd22d522b4415fcb7cf1f0a04b8127"
+    }
+  ],
+  "unchanged_forward_controls": 309,
+  "FP32_projection_instrumentation_controls": 1308,
+  "native_frameworks_installed": false,
+  "native_frameworks_imported": false,
+  "weights_fetched_bytes": 0,
+  "native_profile": {
+    "compiler": {
+      "nvrtc_version": [
+        12,
+        4
+      ],
+      "architecture": "89",
+      "concatenated_source_sha256": "56ca03fb20f1208b226ddf810f2d508f4b35037e4ecb45b4e91a9c7384397262",
+      "options": [
+        "--gpu-architecture=sm_89",
+        "--std=c++17",
+        "--fmad=false",
+        "--ftz=false",
+        "--include-path=<CUDA>/include"
+      ],
+      "include_path_redacted": true
+    },
+    "cubin_sha256": "1ca16c1fa7fab955f88a246f4851aa8ff96b1178afda1af483647f9feb431332",
+    "device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    },
+    "cublas_version": 120402,
+    "cublas_math_mode": 0,
+    "converted_wo_a_bf16_sha256": "6969c8d5adbf4ed357443f417f6adfb75ee0ebe559d3776bd7d44762b452c8f3"
+  },
+  "memory": {
+    "native_cleanup": {
+      "host_allowance_bytes": 536870912,
+      "host_reserved_bytes": 0,
+      "device_peak_owned_bytes": 202367744,
+      "device_owned_bytes": 0,
+      "owned_context_active": false,
+      "reservation_is_RSS_limit": false,
+      "driver_module_memory_excluded": true
+    },
+    "normalization_cleanup": {
+      "host_allowance_bytes": 100663296,
+      "host_reserved_bytes": 0,
+      "device_peak_owned_bytes": 886028,
+      "device_owned_bytes": 0,
+      "owned_context_active": false,
+      "reservation_is_RSS_limit": false,
+      "driver_module_memory_excluded": true
+    },
+    "attention_cleanup": {
+      "host_allowance_bytes": 33554432,
+      "host_reserved_bytes": 0,
+      "device_peak_owned_bytes": 2570056,
+      "device_owned_bytes": 0,
+      "owned_context_active": false,
+      "owned_modules_active": 0,
+      "reservation_is_RSS_limit": false,
+      "driver_module_memory_excluded": true
+    },
+    "KV_phases": [
+      {
+        "batch": 1,
+        "KV_cleanup": {
+          "host_allowance_bytes": 16777216,
+          "host_reserved_bytes": 0,
+          "device_peak_owned_bytes": 400944,
+          "device_owned_bytes": 0,
+          "persistent_cache_and_snapshot_bytes": 393216,
+          "owned_context_active": false,
+          "reservation_is_RSS_limit": false,
+          "driver_module_memory_excluded": true
+        }
+      },
+      {
+        "batch": 2,
+        "KV_cleanup": {
+          "host_allowance_bytes": 16777216,
+          "host_reserved_bytes": 0,
+          "device_peak_owned_bytes": 801888,
+          "device_owned_bytes": 0,
+          "persistent_cache_and_snapshot_bytes": 786432,
+          "owned_context_active": false,
+          "reservation_is_RSS_limit": false,
+          "driver_module_memory_excluded": true
+        }
+      }
+    ],
+    "combined_native_host_allowance_bytes": 687865856,
+    "minimum_sampled_host_available_bytes": 127184453632,
+    "reservation_is_RSS_limit": false
+  },
+  "combined_native_and_reference_host_allowance_bytes": 1291845632,
+  "minimum_sampled_host_available_paired_bytes": 124261744640,
+  "native_HyperConnections_compressed_KV_indexing": "not_implemented",
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured",
+  "issue_7_complete": false
+}

@@ -5,8 +5,10 @@ Native rounding and 128-row window state now connect to the previously qualified
 [sparse Attention operation](native-attention-validation.md). Inputs start at an
 explicit **post-projection, post-normalization, post-RoPE BF16 boundary**. The
 later [normalization and RoPE report](normalization-rope-validation.md) qualifies
-native learned normalization and rotation from projected inputs. Projections,
-compressed KV, sparse indexing/sharing and full blocks remain separate gates.
+native learned normalization and rotation from projected inputs. The
+[projection/layer follow-up](attention-projection-validation.md) connects the
+original layer-0 projections. Compressed KV, sparse indexing/sharing and full
+blocks remain separate gates.
 Issue #7 and M2 remain open; text generation is unfinished.
 
 ## Results
@@ -144,7 +146,8 @@ evidence and cleanup. The small hardware corpus is not universal equivalence.
 - [Summary, raw-file hashes and resource records](../results/2026-10-18-window-kv/summary.json)
 
 The [normalization and RoPE follow-up](normalization-rope-validation.md) now
-connects those operations from projected inputs. Next: original query/KV/output
-projections, followed by original-weight Attention-layer/prefix comparisons.
+connects those operations from projected inputs. The subsequent
+[projection/layer probe](attention-projection-validation.md) adds original
+query/KV/output projections and complete window Attention comparisons.
 Compression/index selection/sharing, Hyper-Connections and full-block/model
 integration remain required by Issue #7.

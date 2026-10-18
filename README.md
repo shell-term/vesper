@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Real-input MoE](docs/real-moe-validation.md) · [RMSNorm / RoPE](docs/normalization-rope-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Window Attention layer](docs/attention-projection-validation.md) · [Real-input MoE](docs/real-moe-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 [Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
 
@@ -26,7 +26,7 @@ Direct comparisons with the pinned official implementation give:
 
 The expert checks include both input projections, asymmetric clamps, weighted
 SwiGLU, the BF16 boundary, down-input quantization and the output projection.
-Independent format checks also pass on both GPUs. Layers, full-model quality and
+Independent format checks also pass on both GPUs. Full Transformer blocks, model quality and
 generation speed remain unverified. The 3080 Ti currently stores original bytes;
 all model arithmetic in the cache probe runs on the 4090. See the
 [cache report and complete results](docs/cache-validation.md), [resident expert report](docs/expert-validation.md)
@@ -79,8 +79,8 @@ Driver executor without Torch or TileLang installed. Across 36 conditions, all
 six output/intermediate boundaries match the qualified oracle exactly, including
 1,261,568 final BF16 elements. Both pressure/retry checks pass. Optional tools
 build pinned local kernels once; execution checks their identities and needs
-only NumPy and the driver. This is a bounded operation, with native projections
-and full-layer integration still pending. See the
+only NumPy and the driver. This is a bounded operation; the subsequent window
+Attention-layer integration is described below. See the
 [native Attention report](docs/native-attention-validation.md).
 
 Native post-RoPE KV rounding and the 128-row sliding window now connect to that
@@ -96,9 +96,19 @@ at every position from 0 through 131,071. Another 56 conditions connect projecte
 inputs through KV normalization, RoPE and the window cache; 46 also cover query
 RoPE, sparse Attention and inverse RoPE. All 3,420 checked boundaries match,
 including FP32 intermediates. Independent replay passes without Torch/TileLang
-installed. Original query/KV/output projections, compressed/indexed KV,
-Hyper-Connections and complete blocks remain pending. See the
+installed. See the
 [normalization and RoPE report](docs/normalization-rope-validation.md).
+
+Original query/KV/output projections now connect the **complete layer-0 window
+Attention path**. Four FP8 projections retain per-32 activation/weight scales;
+the grouped output projection retains original BF16 conversion and input
+rounding. Across 90 component cases and 309 successful layer calls (including
+five failure retries), all 17,355 checked boundaries match, including four real
+original-prefix inputs. Every layer call also matches unchanged
+`Attention.forward` output/cache controls. A process without Torch/TileLang
+reproduces the matrix, including two window wraps and failed-rollback recovery.
+Hyper-Connections, residuals, compressed/indexed KV and complete Transformer
+blocks remain unfinished. See the [Attention projection/layer report](docs/attention-projection-validation.md).
 
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is

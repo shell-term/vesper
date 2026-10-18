@@ -81,6 +81,23 @@ distributions. Other pinned sources used to qualify CUDA elementary operations
 are listed with hashes in each comparison report. Vesper does not redistribute
 the downloaded PyTorch source tree or CUDA compiler/runtime code.
 
+## Attention projections and grouped output
+
+Native FP8 projection MMA/scaling follows the pinned DeepSeek
+`fp8_gemm_kernel`, retaining K=32 and its original FP32 multiplication/addition
+order. The BF16 grouped-weight conversion follows the unchanged `wo_a.weight`
+statements in DeepSeek `inference/convert.py`. Output-activation rounding follows
+`act_quant` before the original `Attention.forward` grouped einsum. The DeepSeek
+license above covers these adapted operations.
+
+The cuBLAS BF16 strided-batch binding preserves the layout and call convention
+in the pinned PyTorch revision's `aten/src/ATen/native/cuda/Blas.cpp` and
+`aten/src/ATen/cuda/CUDABlas.cpp`. The existing complete
+[PyTorch license](third_party/PyTorch-LICENSE) is retained for source and binary
+distributions. The optional oracle executes unchanged original projection,
+Attention and block-prefix methods. Downloaded sources, original weights and
+generated binaries remain local artifacts.
+
 ## Runtime dependencies
 
 The native window KV quantizer, ring-slot formulas and index construction follow
