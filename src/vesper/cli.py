@@ -14,7 +14,7 @@ def main(argv=None) -> int:
                  "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
                  "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router", "fetch-gate-fixture", "compare-gate",
                  "fetch-shared-fixture", "compare-shared", "compare-aggregation", "compare-original-accumulation",
-                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv"):
+                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
         if name in ("validate", "bench-transfer", "validate-integrity"):
@@ -61,11 +61,13 @@ def main(argv=None) -> int:
             command.add_argument("--attention-reference", choices=("original", "ptx-memory"), default="original")
         if name == "compare-native-attention":
             command.add_argument("--bundle", type=Path, required=True, help="New local kernel bundle directory")
-        if name == "compare-window-kv":
+        if name in ("compare-window-kv", "compare-normalization"):
             command.add_argument("--attention-bundle", type=Path, required=True)
-        if name in ("plan-connected", "compare-connected", "prefix-preflight", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv"):
+        if name == "compare-normalization":
+            command.add_argument("--prefix-fixture", type=Path, required=True)
+        if name in ("plan-connected", "compare-connected", "prefix-preflight", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization"):
             command.add_argument("--device", type=int, default=0)
-        if name in ("compare-connected", "prefix-preflight", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv"):
+        if name in ("compare-connected", "prefix-preflight", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization"):
             command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
         if name == "compare-gate":
             command.add_argument("--router-fixture", type=Path, required=True)
@@ -176,6 +178,9 @@ def main(argv=None) -> int:
         elif args.command == "compare-window-kv":
             from .kv_reference import compare_window_kv
             result = compare_window_kv(args.reference_directory, args.attention_bundle, args.device)
+        elif args.command == "compare-normalization":
+            from .normalization_reference import compare_normalization
+            result = compare_normalization(args.reference_directory, args.prefix_fixture, args.attention_bundle, args.device)
         elif args.command == "fetch-prefix-fixture":
             from .prefix import fetch_prefix_fixture
             result = fetch_prefix_fixture(args.directory)

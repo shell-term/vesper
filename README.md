@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Real-input MoE](docs/real-moe-validation.md) · [Cache performance](docs/cache-performance.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Real-input MoE](docs/real-moe-validation.md) · [RMSNorm / RoPE](docs/normalization-rope-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 [Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
 
@@ -87,9 +87,18 @@ Native post-RoPE KV rounding and the 128-row sliding window now connect to that
 sparse Attention operation: 398 KV updates and 128 selected Attention conditions
 match all checked bits. Window wraps, exact snapshot restoration and failed
 publication/retry also pass in a process without Torch/TileLang. This uses the
-original per-32 rounding across all 512 values, including the RoPE tail. Native
-normalization, RoPE, projections and compressed/indexed KV remain pending. See
-the [window KV report](docs/window-kv-validation.md).
+original per-32 rounding across all 512 values, including the RoPE tail. See
+the [window KV report](docs/window-kv-validation.md) for that post-RoPE probe.
+
+Native RMS normalization and rotary position math now pass 476 component cases,
+using four original learned norm vectors and both original frequency profiles
+at every position from 0 through 131,071. Another 56 conditions connect projected
+inputs through KV normalization, RoPE and the window cache; 46 also cover query
+RoPE, sparse Attention and inverse RoPE. All 3,420 checked boundaries match,
+including FP32 intermediates. Independent replay passes without Torch/TileLang
+installed. Original query/KV/output projections, compressed/indexed KV,
+Hyper-Connections and complete blocks remain pending. See the
+[normalization and RoPE report](docs/normalization-rope-validation.md).
 
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is

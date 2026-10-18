@@ -203,7 +203,8 @@ class Pinned:
 
 def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: bool = False,
                   integrity: bool = False, routing: bool = False, shared: bool = False,
-                  aggregation: bool = False, kv: bool = False, compiler_info: dict | None = None) -> bytes:
+                  aggregation: bool = False, kv: bool = False, normalization: bool = False,
+                  compiler_info: dict | None = None) -> bytes:
     """Compile an actual architecture cubin; no host compiler or GPU required."""
     if os.name == "nt":
         roots = [Path(value) for key in ("CUDA_PATH", "CUDA_HOME") if (value := os.environ.get(key))]
@@ -240,6 +241,9 @@ def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: b
         source += b"\n" + (Path(__file__).parent / "kernels/aggregation_probe.cu").read_bytes()
     if kv:
         source += b"\n" + (Path(__file__).parent / "kernels/kv_probe.cu").read_bytes()
+    if normalization:
+        source += b"\n" + (Path(__file__).parent / "kernels/normalization_probe.cu").read_bytes()
+    if kv or normalization:
         source = source.replace(b"\r\n", b"\n")
     if compiler_info is not None:
         import hashlib

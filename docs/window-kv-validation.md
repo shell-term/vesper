@@ -3,9 +3,11 @@
 Issue [#7](https://github.com/shell-term/vesper/issues/7), milestone M2.
 Native rounding and 128-row window state now connect to the previously qualified
 [sparse Attention operation](native-attention-validation.md). Inputs start at an
-explicit **post-projection, post-normalization, post-RoPE BF16 boundary**. Those
-three operations, compressed KV, sparse indexing/sharing and full blocks remain
-separate gates. Issue #7 and M2 remain open; text generation is unfinished.
+explicit **post-projection, post-normalization, post-RoPE BF16 boundary**. The
+later [normalization and RoPE report](normalization-rope-validation.md) qualifies
+native learned normalization and rotation from projected inputs. Projections,
+compressed KV, sparse indexing/sharing and full blocks remain separate gates.
+Issue #7 and M2 remain open; text generation is unfinished.
 
 ## Results
 
@@ -141,6 +143,8 @@ evidence and cleanup. The small hardware corpus is not universal equivalence.
 - [Independent native-only replay](../results/2026-10-18-window-kv/native-only-recheck.json)
 - [Summary, raw-file hashes and resource records](../results/2026-10-18-window-kv/summary.json)
 
-Next: native normalization, RoPE and projections, followed by original-weight
-Attention-layer/prefix comparisons. Compression/index selection/sharing,
-Hyper-Connections and full-block/model integration remain required by Issue #7.
+The [normalization and RoPE follow-up](normalization-rope-validation.md) now
+connects those operations from projected inputs. Next: original query/KV/output
+projections, followed by original-weight Attention-layer/prefix comparisons.
+Compression/index selection/sharing, Hyper-Connections and full-block/model
+integration remain required by Issue #7.

@@ -63,6 +63,24 @@ calling convention and default workspace budget in `aten/src/ATen/cuda/CUDABlas.
 Its oracle executes the unchanged DeepSeek `linear` and `Gate.forward` bodies
 with real weights and projection, without a projection substitution.
 
+## RMS normalization and rotary position math
+
+The native RMS normalization, rotary frequency/YaRN formulas and adjacent complex
+pairs follow `RMSNorm.forward`, `precompute_freqs_cis` and `apply_rotary_emb` in
+the pinned DeepSeek `inference/model.py` under the DeepSeek license above. The
+optional oracle extracts those method bodies unchanged. Learned norm weights
+and downloaded reference files remain local artifacts.
+
+The bounded mean reduction adapts the vector-of-four accumulation and reduction
+tree in the same pinned PyTorch revision's `Reduce.cuh` and `SharedReduceOps.h`.
+Scalar division and complex multiplication preserve the observed rounding order
+from `BinaryDivTrueKernel.cu` and `torch/headeronly/util/complex.h`. The complete
+PyTorch copyright, redistribution conditions and disclaimer are retained in
+[third_party/PyTorch-LICENSE](third_party/PyTorch-LICENSE), including binary
+distributions. Other pinned sources used to qualify CUDA elementary operations
+are listed with hashes in each comparison report. Vesper does not redistribute
+the downloaded PyTorch source tree or CUDA compiler/runtime code.
+
 ## Runtime dependencies
 
 The native window KV quantizer, ring-slot formulas and index construction follow

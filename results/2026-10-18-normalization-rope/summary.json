@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "probe": "native_RMS_RoPE_and_projected_input_chain",
+  "status": "pass",
+  "artifacts_sha256": {
+    "normalization.json": "1fa30eca707766a5e37f8b08e09b4ba93c5099129b7b5e2b411844b72b003df8",
+    "native-only-recheck.json": "d0e5eb77db0643ce4d77ac0cf5ca902ff33bf7e77eac701e40ec69cbaf5b1e3e"
+  },
+  "component_cases": {
+    "norm": 136,
+    "frequencies": 64,
+    "rope": 276
+  },
+  "chain_cases": 56,
+  "connected_Attention_conditions": 46,
+  "boundary_comparisons": 3420,
+  "compared_storage_elements": 151253882,
+  "mismatches": 0,
+  "expected_failed_calls": 3,
+  "frequency_positions_per_profile": [
+    0,
+    131071
+  ],
+  "frequency_profiles": {
+    "window": {
+      "theta": 10000,
+      "original_seq_len": 0
+    },
+    "compressed-yarn": {
+      "theta": 160000,
+      "original_seq_len": 65536
+    }
+  },
+  "frequency_factor": 16,
+  "rotary_dimension": 64,
+  "beta_fast": 32,
+  "beta_slow": 1,
+  "negative_controls_detected": 4,
+  "instrumentation_controls": {
+    "RMS_method_diagnostic_identity": 195,
+    "rotary_method_diagnostic_identity": 425
+  },
+  "native_frameworks_installed": false,
+  "native_frameworks_imported": false,
+  "original_weight_bytes_reused": 24064,
+  "weights_fetched_bytes": 0,
+  "native_profile": {
+    "compiler": {
+      "nvrtc_version": [
+        12,
+        4
+      ],
+      "architecture": "89",
+      "concatenated_source_sha256": "357dc794add97f0d98a00dc72e10dfb054bdfc911dc4fda6c724c1098c764ff1",
+      "options": [
+        "--gpu-architecture=sm_89",
+        "--std=c++17",
+        "--fmad=false",
+        "--ftz=false",
+        "--include-path=<CUDA>/include"
+      ],
+      "include_path_redacted": true
+    },
+    "cubin_sha256": "41b9fbd12ea07f2c1bcb8766f1725b730f570e4969de86ebd41ceaf090156607",
+    "kernel_source_sha256": "a5f7818628409301d5d8f7b711ccffe0f4718e4daee72613373fe9929ea7371c",
+    "device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    }
+  },
+  "memory": {
+    "native_cleanup": {
+      "host_allowance_bytes": 100663296,
+      "host_reserved_bytes": 0,
+      "device_peak_owned_bytes": 42123288,
+      "device_owned_bytes": 0,
+      "owned_context_active": false,
+      "reservation_is_RSS_limit": false,
+      "driver_module_memory_excluded": true
+    },
+    "attention_cleanup": {
+      "host_allowance_bytes": 33554432,
+      "host_reserved_bytes": 0,
+      "device_peak_owned_bytes": 1713440,
+      "device_owned_bytes": 0,
+      "owned_context_active": false,
+      "owned_modules_active": 0,
+      "reservation_is_RSS_limit": false,
+      "driver_module_memory_excluded": true
+    },
+    "KV_phases": [
+      {
+        "batch": 1,
+        "KV_cleanup": {
+          "host_allowance_bytes": 16777216,
+          "host_reserved_bytes": 0,
+          "device_peak_owned_bytes": 1055248,
+          "device_owned_bytes": 0,
+          "persistent_cache_and_snapshot_bytes": 393216,
+          "owned_context_active": false,
+          "reservation_is_RSS_limit": false,
+          "driver_module_memory_excluded": true
+        }
+      },
+      {
+        "batch": 2,
+        "KV_cleanup": {
+          "host_allowance_bytes": 16777216,
+          "host_reserved_bytes": 0,
+          "device_peak_owned_bytes": 2110496,
+          "device_owned_bytes": 0,
+          "persistent_cache_and_snapshot_bytes": 786432,
+          "owned_context_active": false,
+          "reservation_is_RSS_limit": false,
+          "driver_module_memory_excluded": true
+        }
+      }
+    ],
+    "combined_native_host_allowance_bytes": 150994944,
+    "minimum_sampled_host_available_bytes": 126316961792
+  },
+  "combined_native_and_reference_host_allowance_bytes": 352321536,
+  "minimum_sampled_host_available_paired_bytes": 125184446464,
+  "native_projections_and_compressed_KV": "not_implemented",
+  "HyperConnections_and_full_block": "not_run",
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured",
+  "issue_7_complete": false
+}

@@ -3,8 +3,10 @@
 Issue: [#7](https://github.com/shell-term/vesper/issues/7), milestone M2.
 This completes a bounded native sparse Attention operation. The subsequent
 [window KV report](window-kv-validation.md) qualifies bounded native post-RoPE
-rounding, ring state and rollback. Projections, RoPE, indexing, compression/sharing
-and Hyper-Connections still need native integration. Issue #7 and M2 remain open;
+rounding, ring state and rollback. The later [normalization and RoPE
+report](normalization-rope-validation.md) adds original learned normalization and
+rotation from projected inputs. Projections, indexing, compression/sharing and
+Hyper-Connections still need native integration. Issue #7 and M2 remain open;
 generation is unfinished.
 
 ## Result

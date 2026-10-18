@@ -18,7 +18,8 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Attention Query storage candidate | Exact intermediates with executable original profiles, then full-shape original parity | 24 smaller-profile cases match all checked bits; full 64 × 512 candidate executes at 74 KiB shared memory; full original gate blocked at 138 KiB |
 | Storage-adapted official Attention arithmetic | Original PTX arithmetic/control retention, exact bit transport and intermediate comparisons | All six original binaries reproduce; 36 conditions / 456 comparisons match; explicit capture supplies four real layer-0 vectors; untouched full-kernel launch remains blocked |
 | Native sparse Attention operation | Framework-free dispatch, exact boundaries and bounded failure recovery | 36 conditions, 216 oracle-boundary comparisons, zero differences; independent NumPy-only replay passes; projections/full-layer integration pending |
-| Native post-RoPE window KV | Original rounding, ring order, publication failure, saved-state rollback and selected Attention | 398 updates / 128 connected conditions, 3,156 comparisons, zero differences; native-only replay passes; projections/RoPE/compressed KV pending |
+| Native post-RoPE window KV | Original rounding, ring order, publication failure, saved-state rollback and selected Attention | 398 updates / 128 connected conditions, 3,156 comparisons, zero differences; native-only replay passes; projections/compressed KV pending |
+| Native RMS normalization and RoPE | Original learned norm weights, reduction/rounding order, frequency profiles, rotation and projected-input KV/Attention chain | 476 component cases and 56 chain conditions, 3,420 boundary comparisons, zero differences; both frequency profiles cover positions 0 through 131,071; native-only replay passes; projections/Hyper-Connections/full blocks pending |
 | Full Transformer block | Connected attention, MoE, Engram, Hyper-Connections and residual boundaries | Not implemented |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
@@ -138,3 +139,13 @@ bit transport before capture. Its four actual prefix vectors now pass the
 [connected real-input matrix](real-moe-validation.md), including all failure and
 native-only checks. This satisfies the scoped M1 MoE gate; native Attention,
 complete-block operations and full-model quality remain separate M2 work.
+
+The [normalization and RoPE follow-up](normalization-rope-validation.md) uses four
+original learned norm vectors, the pinned ATen mean reduction order and the
+original complex rotation rounding. Both window and compressed/YaRN frequency
+profiles match at every tested position from 0 through 131,071. The connected
+chain starts with generated projected KV/query inputs, so it qualifies native
+normalization, rotation, window KV and selected Attention boundaries without
+claiming original query/KV/output projections or compressed KV execution.
+Four deliberately changed arithmetic controls are detected. Full-layer/prefix
+outputs, Hyper-Connections and model quality remain separate requirements.
