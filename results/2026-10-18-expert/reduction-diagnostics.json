@@ -1,0 +1,1751 @@
+[
+  {
+    "probe": "reduction_diagnostic",
+    "status": "fail",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "seed": 20261018,
+    "device": {
+      "ordinal": 1,
+      "name": "NVIDIA GeForce RTX 3080 Ti",
+      "compute_capability": "8.6",
+      "total_bytes": 12884377600
+    },
+    "reference_device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    },
+    "integrity_checks": [
+      {
+        "check": "native_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "candidate_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "bf16_trace_across_devices",
+        "status": "pass",
+        "elements": 61440,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "stage_comparisons": [
+      {
+        "check": "block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 1584,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          22,
+          25,
+          37,
+          50,
+          66,
+          71,
+          83,
+          95
+        ]
+      },
+      {
+        "check": "scaled_block",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 1584,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          22,
+          25,
+          37,
+          50,
+          66,
+          71,
+          83,
+          95
+        ]
+      },
+      {
+        "check": "running_sum",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 18549,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          22,
+          23,
+          24,
+          37,
+          38,
+          39,
+          40,
+          41
+        ]
+      }
+    ],
+    "independent_dot_checks": [
+      {
+        "check": "float64_oracle_vs_native_block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 1584,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          22,
+          25,
+          37,
+          50,
+          66,
+          71,
+          83,
+          95
+        ]
+      },
+      {
+        "check": "float64_oracle_vs_bf16_block_dot",
+        "status": "pass",
+        "elements": 20480,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "projection_comparison": {
+      "check": "BF16_projection_output",
+      "status": "fail",
+      "elements": 128,
+      "mismatches": 2,
+      "comparison": "exact_storage_bits",
+      "first_mismatch_indices": [
+        20,
+        67
+      ]
+    },
+    "first_dot_differences": [
+      {
+        "row": 26,
+        "block": 1,
+        "native_FP8_dot": -525.0,
+        "candidate_BF16_dot": -525.0625,
+        "native_hex": "0xc4034000",
+        "candidate_hex": "0xc4034400"
+      },
+      {
+        "row": 44,
+        "block": 1,
+        "native_FP8_dot": -2106.5,
+        "candidate_BF16_dot": -2106.625,
+        "native_hex": "0xc503a800",
+        "candidate_hex": "0xc503aa00"
+      },
+      {
+        "row": 47,
+        "block": 1,
+        "native_FP8_dot": -1714.875,
+        "candidate_BF16_dot": -1714.9375,
+        "native_hex": "0xc4d65c00",
+        "candidate_hex": "0xc4d65e00"
+      },
+      {
+        "row": 63,
+        "block": 1,
+        "native_FP8_dot": 1067.0,
+        "candidate_BF16_dot": 1067.0625,
+        "native_hex": "0x44856000",
+        "candidate_hex": "0x44856200"
+      },
+      {
+        "row": 68,
+        "block": 1,
+        "native_FP8_dot": -1147.875,
+        "candidate_BF16_dot": -1147.9375,
+        "native_hex": "0xc48f7c00",
+        "candidate_hex": "0xc48f7e00"
+      },
+      {
+        "row": 69,
+        "block": 1,
+        "native_FP8_dot": -842.25,
+        "candidate_BF16_dot": -842.1875,
+        "native_hex": "0xc4529000",
+        "candidate_hex": "0xc4528c00"
+      },
+      {
+        "row": 88,
+        "block": 1,
+        "native_FP8_dot": 1862.5,
+        "candidate_BF16_dot": 1862.5625,
+        "native_hex": "0x44e8d000",
+        "candidate_hex": "0x44e8d200"
+      },
+      {
+        "row": 91,
+        "block": 1,
+        "native_FP8_dot": -2040.125,
+        "candidate_BF16_dot": -2040.1875,
+        "native_hex": "0xc4ff0400",
+        "candidate_hex": "0xc4ff0600"
+      }
+    ],
+    "peak_explicit_device_allocation_bytes": {
+      "reference": 599200,
+      "candidate": 599200
+    },
+    "numpy_version": "2.5.4",
+    "compiled_cubin_sha256": {
+      "reference": "50e8cadff759bdff4fdcf054b6f011ac33566f58522f0444ad53cee3c59349aa",
+      "candidate": "06f34d0a7b800f93826c26c2188eb7967badd8f5d4c0751930e9791ffa1172b7"
+    },
+    "limitations": [
+      "The native MMA trace is a diagnostic path, not the original TileLang kernel.",
+      "Float64 dot agreement does not establish official-kernel parity.",
+      "FP8 and BF16 MMA reduction order/rounding are not assumed interchangeable."
+    ],
+    "official_kernel_parity": "separate_gate",
+    "full_model_quality": "not_run",
+    "timestamp_utc": "2026-10-18T01:59:08Z"
+  },
+  {
+    "probe": "reduction_diagnostic",
+    "status": "fail",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "seed": 0,
+    "device": {
+      "ordinal": 1,
+      "name": "NVIDIA GeForce RTX 3080 Ti",
+      "compute_capability": "8.6",
+      "total_bytes": 12884377600
+    },
+    "reference_device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    },
+    "integrity_checks": [
+      {
+        "check": "native_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "candidate_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "bf16_trace_across_devices",
+        "status": "pass",
+        "elements": 61440,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "stage_comparisons": [
+      {
+        "check": "block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2349,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          4,
+          6,
+          15,
+          19,
+          28,
+          40,
+          41,
+          54
+        ]
+      },
+      {
+        "check": "scaled_block",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2349,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          4,
+          6,
+          15,
+          19,
+          28,
+          40,
+          41,
+          54
+        ]
+      },
+      {
+        "check": "running_sum",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 19520,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      }
+    ],
+    "independent_dot_checks": [
+      {
+        "check": "float64_oracle_vs_native_block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2349,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          4,
+          6,
+          15,
+          19,
+          28,
+          40,
+          41,
+          54
+        ]
+      },
+      {
+        "check": "float64_oracle_vs_bf16_block_dot",
+        "status": "pass",
+        "elements": 20480,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "projection_comparison": {
+      "check": "BF16_projection_output",
+      "status": "fail",
+      "elements": 128,
+      "mismatches": 1,
+      "comparison": "exact_storage_bits",
+      "first_mismatch_indices": [
+        27
+      ]
+    },
+    "first_dot_differences": [
+      {
+        "row": 3,
+        "block": 1,
+        "native_FP8_dot": -2532.5,
+        "candidate_BF16_dot": -2532.5625,
+        "native_hex": "0xc51e4800",
+        "candidate_hex": "0xc51e4900"
+      },
+      {
+        "row": 4,
+        "block": 1,
+        "native_FP8_dot": -2443.5,
+        "candidate_BF16_dot": -2443.4375,
+        "native_hex": "0xc518b800",
+        "candidate_hex": "0xc518b700"
+      },
+      {
+        "row": 7,
+        "block": 1,
+        "native_FP8_dot": 1345.75,
+        "candidate_BF16_dot": 1345.71875,
+        "native_hex": "0x44a83800",
+        "candidate_hex": "0x44a83700"
+      },
+      {
+        "row": 10,
+        "block": 1,
+        "native_FP8_dot": -2797.0,
+        "candidate_BF16_dot": -2797.125,
+        "native_hex": "0xc52ed000",
+        "candidate_hex": "0xc52ed200"
+      },
+      {
+        "row": 11,
+        "block": 1,
+        "native_FP8_dot": 1751.125,
+        "candidate_BF16_dot": 1751.15625,
+        "native_hex": "0x44dae400",
+        "candidate_hex": "0x44dae500"
+      },
+      {
+        "row": 12,
+        "block": 1,
+        "native_FP8_dot": -2078.5,
+        "candidate_BF16_dot": -2078.625,
+        "native_hex": "0xc501e800",
+        "candidate_hex": "0xc501ea00"
+      },
+      {
+        "row": 14,
+        "block": 1,
+        "native_FP8_dot": 873.1875,
+        "candidate_BF16_dot": 873.15625,
+        "native_hex": "0x445a4c00",
+        "candidate_hex": "0x445a4a00"
+      },
+      {
+        "row": 15,
+        "block": 1,
+        "native_FP8_dot": 270.25,
+        "candidate_BF16_dot": 270.28125,
+        "native_hex": "0x43872000",
+        "candidate_hex": "0x43872400"
+      }
+    ],
+    "peak_explicit_device_allocation_bytes": {
+      "reference": 599200,
+      "candidate": 599200
+    },
+    "numpy_version": "2.5.4",
+    "compiled_cubin_sha256": {
+      "reference": "50e8cadff759bdff4fdcf054b6f011ac33566f58522f0444ad53cee3c59349aa",
+      "candidate": "06f34d0a7b800f93826c26c2188eb7967badd8f5d4c0751930e9791ffa1172b7"
+    },
+    "limitations": [
+      "The native MMA trace is a diagnostic path, not the original TileLang kernel.",
+      "Float64 dot agreement does not establish official-kernel parity.",
+      "FP8 and BF16 MMA reduction order/rounding are not assumed interchangeable."
+    ],
+    "official_kernel_parity": "separate_gate",
+    "full_model_quality": "not_run",
+    "timestamp_utc": "2026-10-18T01:59:09Z"
+  },
+  {
+    "probe": "reduction_diagnostic",
+    "status": "fail",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "seed": 1,
+    "device": {
+      "ordinal": 1,
+      "name": "NVIDIA GeForce RTX 3080 Ti",
+      "compute_capability": "8.6",
+      "total_bytes": 12884377600
+    },
+    "reference_device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    },
+    "integrity_checks": [
+      {
+        "check": "native_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "candidate_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "bf16_trace_across_devices",
+        "status": "pass",
+        "elements": 61440,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "stage_comparisons": [
+      {
+        "check": "block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2764,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          2,
+          4,
+          11,
+          28,
+          33,
+          39,
+          40,
+          47
+        ]
+      },
+      {
+        "check": "scaled_block",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2764,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          2,
+          4,
+          11,
+          28,
+          33,
+          39,
+          40,
+          47
+        ]
+      },
+      {
+        "check": "running_sum",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 20071,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      }
+    ],
+    "independent_dot_checks": [
+      {
+        "check": "float64_oracle_vs_native_block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2764,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          2,
+          4,
+          11,
+          28,
+          33,
+          39,
+          40,
+          47
+        ]
+      },
+      {
+        "check": "float64_oracle_vs_bf16_block_dot",
+        "status": "pass",
+        "elements": 20480,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "projection_comparison": {
+      "check": "BF16_projection_output",
+      "status": "fail",
+      "elements": 128,
+      "mismatches": 1,
+      "comparison": "exact_storage_bits",
+      "first_mismatch_indices": [
+        23
+      ]
+    },
+    "first_dot_differences": [
+      {
+        "row": 10,
+        "block": 0,
+        "native_FP8_dot": -2786.5,
+        "candidate_BF16_dot": -2786.625,
+        "native_hex": "0xc52e2800",
+        "candidate_hex": "0xc52e2a00"
+      },
+      {
+        "row": 44,
+        "block": 0,
+        "native_FP8_dot": 2495.75,
+        "candidate_BF16_dot": 2495.875,
+        "native_hex": "0x451bfc00",
+        "candidate_hex": "0x451bfe00"
+      },
+      {
+        "row": 57,
+        "block": 0,
+        "native_FP8_dot": -3989.75,
+        "candidate_BF16_dot": -3989.875,
+        "native_hex": "0xc5795c00",
+        "candidate_hex": "0xc5795e00"
+      },
+      {
+        "row": 97,
+        "block": 0,
+        "native_FP8_dot": 2197.25,
+        "candidate_BF16_dot": 2197.375,
+        "native_hex": "0x45095400",
+        "candidate_hex": "0x45095600"
+      },
+      {
+        "row": 102,
+        "block": 0,
+        "native_FP8_dot": 2726.75,
+        "candidate_BF16_dot": 2726.875,
+        "native_hex": "0x452a6c00",
+        "candidate_hex": "0x452a6e00"
+      },
+      {
+        "row": 123,
+        "block": 0,
+        "native_FP8_dot": 2756.75,
+        "candidate_BF16_dot": 2756.875,
+        "native_hex": "0x452c4c00",
+        "candidate_hex": "0x452c4e00"
+      },
+      {
+        "row": 0,
+        "block": 2,
+        "native_FP8_dot": 247.875,
+        "candidate_BF16_dot": 247.7890625,
+        "native_hex": "0x4377e000",
+        "candidate_hex": "0x4377ca00"
+      },
+      {
+        "row": 2,
+        "block": 2,
+        "native_FP8_dot": -2986.0,
+        "candidate_BF16_dot": -2985.9296875,
+        "native_hex": "0xc53aa000",
+        "candidate_hex": "0xc53a9ee0"
+      }
+    ],
+    "peak_explicit_device_allocation_bytes": {
+      "reference": 599200,
+      "candidate": 599200
+    },
+    "numpy_version": "2.5.4",
+    "compiled_cubin_sha256": {
+      "reference": "50e8cadff759bdff4fdcf054b6f011ac33566f58522f0444ad53cee3c59349aa",
+      "candidate": "06f34d0a7b800f93826c26c2188eb7967badd8f5d4c0751930e9791ffa1172b7"
+    },
+    "limitations": [
+      "The native MMA trace is a diagnostic path, not the original TileLang kernel.",
+      "Float64 dot agreement does not establish official-kernel parity.",
+      "FP8 and BF16 MMA reduction order/rounding are not assumed interchangeable."
+    ],
+    "official_kernel_parity": "separate_gate",
+    "full_model_quality": "not_run",
+    "timestamp_utc": "2026-10-18T01:59:10Z"
+  },
+  {
+    "probe": "reduction_diagnostic",
+    "status": "fail",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "seed": 42,
+    "device": {
+      "ordinal": 1,
+      "name": "NVIDIA GeForce RTX 3080 Ti",
+      "compute_capability": "8.6",
+      "total_bytes": 12884377600
+    },
+    "reference_device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    },
+    "integrity_checks": [
+      {
+        "check": "native_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "candidate_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "bf16_trace_across_devices",
+        "status": "pass",
+        "elements": 61440,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "stage_comparisons": [
+      {
+        "check": "block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2158,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          6,
+          27,
+          32,
+          34,
+          35,
+          56,
+          57,
+          63
+        ]
+      },
+      {
+        "check": "scaled_block",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2158,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          6,
+          27,
+          32,
+          34,
+          35,
+          56,
+          57,
+          63
+        ]
+      },
+      {
+        "check": "running_sum",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 19257,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      }
+    ],
+    "independent_dot_checks": [
+      {
+        "check": "float64_oracle_vs_native_block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2158,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          6,
+          27,
+          32,
+          34,
+          35,
+          56,
+          57,
+          63
+        ]
+      },
+      {
+        "check": "float64_oracle_vs_bf16_block_dot",
+        "status": "pass",
+        "elements": 20480,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "projection_comparison": {
+      "check": "BF16_projection_output",
+      "status": "fail",
+      "elements": 128,
+      "mismatches": 3,
+      "comparison": "exact_storage_bits",
+      "first_mismatch_indices": [
+        3,
+        55,
+        100
+      ]
+    },
+    "first_dot_differences": [
+      {
+        "row": 19,
+        "block": 0,
+        "native_FP8_dot": -3162.75,
+        "candidate_BF16_dot": -3162.875,
+        "native_hex": "0xc545ac00",
+        "candidate_hex": "0xc545ae00"
+      },
+      {
+        "row": 74,
+        "block": 0,
+        "native_FP8_dot": 2718.25,
+        "candidate_BF16_dot": 2718.375,
+        "native_hex": "0x4529e400",
+        "candidate_hex": "0x4529e600"
+      },
+      {
+        "row": 22,
+        "block": 2,
+        "native_FP8_dot": 3314.25,
+        "candidate_BF16_dot": 3314.375,
+        "native_hex": "0x454f2400",
+        "candidate_hex": "0x454f2600"
+      },
+      {
+        "row": 29,
+        "block": 2,
+        "native_FP8_dot": 1483.25,
+        "candidate_BF16_dot": 1483.125,
+        "native_hex": "0x44b96800",
+        "candidate_hex": "0x44b96400"
+      },
+      {
+        "row": 31,
+        "block": 2,
+        "native_FP8_dot": 3984.25,
+        "candidate_BF16_dot": 3984.375,
+        "native_hex": "0x45790400",
+        "candidate_hex": "0x45790600"
+      },
+      {
+        "row": 51,
+        "block": 2,
+        "native_FP8_dot": -3178.75,
+        "candidate_BF16_dot": -3178.875,
+        "native_hex": "0xc546ac00",
+        "candidate_hex": "0xc546ae00"
+      },
+      {
+        "row": 59,
+        "block": 2,
+        "native_FP8_dot": 2459.5,
+        "candidate_BF16_dot": 2459.625,
+        "native_hex": "0x4519b800",
+        "candidate_hex": "0x4519ba00"
+      },
+      {
+        "row": 65,
+        "block": 2,
+        "native_FP8_dot": 2885.25,
+        "candidate_BF16_dot": 2885.375,
+        "native_hex": "0x45345400",
+        "candidate_hex": "0x45345600"
+      }
+    ],
+    "peak_explicit_device_allocation_bytes": {
+      "reference": 599200,
+      "candidate": 599200
+    },
+    "numpy_version": "2.5.4",
+    "compiled_cubin_sha256": {
+      "reference": "50e8cadff759bdff4fdcf054b6f011ac33566f58522f0444ad53cee3c59349aa",
+      "candidate": "06f34d0a7b800f93826c26c2188eb7967badd8f5d4c0751930e9791ffa1172b7"
+    },
+    "limitations": [
+      "The native MMA trace is a diagnostic path, not the original TileLang kernel.",
+      "Float64 dot agreement does not establish official-kernel parity.",
+      "FP8 and BF16 MMA reduction order/rounding are not assumed interchangeable."
+    ],
+    "official_kernel_parity": "separate_gate",
+    "full_model_quality": "not_run",
+    "timestamp_utc": "2026-10-18T01:59:11Z"
+  },
+  {
+    "probe": "reduction_diagnostic",
+    "status": "fail",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "seed": 127,
+    "device": {
+      "ordinal": 1,
+      "name": "NVIDIA GeForce RTX 3080 Ti",
+      "compute_capability": "8.6",
+      "total_bytes": 12884377600
+    },
+    "reference_device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    },
+    "integrity_checks": [
+      {
+        "check": "native_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "candidate_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "bf16_trace_across_devices",
+        "status": "pass",
+        "elements": 61440,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "stage_comparisons": [
+      {
+        "check": "block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2814,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          8,
+          9,
+          22,
+          24,
+          28,
+          30,
+          40,
+          67
+        ]
+      },
+      {
+        "check": "scaled_block",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2814,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          8,
+          9,
+          22,
+          24,
+          28,
+          30,
+          40,
+          67
+        ]
+      },
+      {
+        "check": "running_sum",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 19674,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      }
+    ],
+    "independent_dot_checks": [
+      {
+        "check": "float64_oracle_vs_native_block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2814,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          8,
+          9,
+          22,
+          24,
+          28,
+          30,
+          40,
+          67
+        ]
+      },
+      {
+        "check": "float64_oracle_vs_bf16_block_dot",
+        "status": "pass",
+        "elements": 20480,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "projection_comparison": {
+      "check": "BF16_projection_output",
+      "status": "fail",
+      "elements": 128,
+      "mismatches": 2,
+      "comparison": "exact_storage_bits",
+      "first_mismatch_indices": [
+        79,
+        120
+      ]
+    },
+    "first_dot_differences": [
+      {
+        "row": 17,
+        "block": 0,
+        "native_FP8_dot": 1202.875,
+        "candidate_BF16_dot": 1202.9375,
+        "native_hex": "0x44965c00",
+        "candidate_hex": "0x44965e00"
+      },
+      {
+        "row": 19,
+        "block": 0,
+        "native_FP8_dot": -127.0,
+        "candidate_BF16_dot": -126.9375,
+        "native_hex": "0xc2fe0000",
+        "candidate_hex": "0xc2fde000"
+      },
+      {
+        "row": 26,
+        "block": 0,
+        "native_FP8_dot": 1841.875,
+        "candidate_BF16_dot": 1841.9375,
+        "native_hex": "0x44e63c00",
+        "candidate_hex": "0x44e63e00"
+      },
+      {
+        "row": 30,
+        "block": 0,
+        "native_FP8_dot": 1550.75,
+        "candidate_BF16_dot": 1550.625,
+        "native_hex": "0x44c1d800",
+        "candidate_hex": "0x44c1d400"
+      },
+      {
+        "row": 42,
+        "block": 0,
+        "native_FP8_dot": -1102.0,
+        "candidate_BF16_dot": -1102.0625,
+        "native_hex": "0xc489c000",
+        "candidate_hex": "0xc489c200"
+      },
+      {
+        "row": 45,
+        "block": 0,
+        "native_FP8_dot": 1048.625,
+        "candidate_BF16_dot": 1048.6875,
+        "native_hex": "0x44831400",
+        "candidate_hex": "0x44831600"
+      },
+      {
+        "row": 47,
+        "block": 0,
+        "native_FP8_dot": 460.0,
+        "candidate_BF16_dot": 459.9375,
+        "native_hex": "0x43e60000",
+        "candidate_hex": "0x43e5f800"
+      },
+      {
+        "row": 48,
+        "block": 0,
+        "native_FP8_dot": -2996.75,
+        "candidate_BF16_dot": -2996.625,
+        "native_hex": "0xc53b4c00",
+        "candidate_hex": "0xc53b4a00"
+      }
+    ],
+    "peak_explicit_device_allocation_bytes": {
+      "reference": 599200,
+      "candidate": 599200
+    },
+    "numpy_version": "2.5.4",
+    "compiled_cubin_sha256": {
+      "reference": "50e8cadff759bdff4fdcf054b6f011ac33566f58522f0444ad53cee3c59349aa",
+      "candidate": "06f34d0a7b800f93826c26c2188eb7967badd8f5d4c0751930e9791ffa1172b7"
+    },
+    "limitations": [
+      "The native MMA trace is a diagnostic path, not the original TileLang kernel.",
+      "Float64 dot agreement does not establish official-kernel parity.",
+      "FP8 and BF16 MMA reduction order/rounding are not assumed interchangeable."
+    ],
+    "official_kernel_parity": "separate_gate",
+    "full_model_quality": "not_run",
+    "timestamp_utc": "2026-10-18T01:59:11Z"
+  },
+  {
+    "probe": "reduction_diagnostic",
+    "status": "fail",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "seed": 512,
+    "device": {
+      "ordinal": 1,
+      "name": "NVIDIA GeForce RTX 3080 Ti",
+      "compute_capability": "8.6",
+      "total_bytes": 12884377600
+    },
+    "reference_device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    },
+    "integrity_checks": [
+      {
+        "check": "native_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "candidate_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "bf16_trace_across_devices",
+        "status": "pass",
+        "elements": 61440,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "stage_comparisons": [
+      {
+        "check": "block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2167,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          0,
+          2,
+          8,
+          22,
+          42,
+          53,
+          54,
+          64
+        ]
+      },
+      {
+        "check": "scaled_block",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2167,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          0,
+          2,
+          8,
+          22,
+          42,
+          53,
+          54,
+          64
+        ]
+      },
+      {
+        "check": "running_sum",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 20234,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    ],
+    "independent_dot_checks": [
+      {
+        "check": "float64_oracle_vs_native_block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2167,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          0,
+          2,
+          8,
+          22,
+          42,
+          53,
+          54,
+          64
+        ]
+      },
+      {
+        "check": "float64_oracle_vs_bf16_block_dot",
+        "status": "pass",
+        "elements": 20480,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "projection_comparison": {
+      "check": "BF16_projection_output",
+      "status": "fail",
+      "elements": 128,
+      "mismatches": 2,
+      "comparison": "exact_storage_bits",
+      "first_mismatch_indices": [
+        75,
+        114
+      ]
+    },
+    "first_dot_differences": [
+      {
+        "row": 0,
+        "block": 0,
+        "native_FP8_dot": 1037.25,
+        "candidate_BF16_dot": 1037.265625,
+        "native_hex": "0x4481a800",
+        "candidate_hex": "0x4481a880"
+      },
+      {
+        "row": 1,
+        "block": 0,
+        "native_FP8_dot": 2971.0,
+        "candidate_BF16_dot": 2971.1171875,
+        "native_hex": "0x4539b000",
+        "candidate_hex": "0x4539b1e0"
+      },
+      {
+        "row": 3,
+        "block": 0,
+        "native_FP8_dot": -1770.625,
+        "candidate_BF16_dot": -1770.734375,
+        "native_hex": "0xc4dd5400",
+        "candidate_hex": "0xc4dd5780"
+      },
+      {
+        "row": 4,
+        "block": 0,
+        "native_FP8_dot": -328.8125,
+        "candidate_BF16_dot": -328.765625,
+        "native_hex": "0xc3a46800",
+        "candidate_hex": "0xc3a46200"
+      },
+      {
+        "row": 5,
+        "block": 0,
+        "native_FP8_dot": 2534.0,
+        "candidate_BF16_dot": 2534.1015625,
+        "native_hex": "0x451e6000",
+        "candidate_hex": "0x451e61a0"
+      },
+      {
+        "row": 6,
+        "block": 0,
+        "native_FP8_dot": 86.625,
+        "candidate_BF16_dot": 86.57421875,
+        "native_hex": "0x42ad4000",
+        "candidate_hex": "0x42ad2600"
+      },
+      {
+        "row": 7,
+        "block": 0,
+        "native_FP8_dot": -193.4375,
+        "candidate_BF16_dot": -193.3984375,
+        "native_hex": "0xc3417000",
+        "candidate_hex": "0xc3416600"
+      },
+      {
+        "row": 8,
+        "block": 0,
+        "native_FP8_dot": -28.3125,
+        "candidate_BF16_dot": -28.265625,
+        "native_hex": "0xc1e28000",
+        "candidate_hex": "0xc1e22000"
+      }
+    ],
+    "peak_explicit_device_allocation_bytes": {
+      "reference": 599200,
+      "candidate": 599200
+    },
+    "numpy_version": "2.5.4",
+    "compiled_cubin_sha256": {
+      "reference": "50e8cadff759bdff4fdcf054b6f011ac33566f58522f0444ad53cee3c59349aa",
+      "candidate": "06f34d0a7b800f93826c26c2188eb7967badd8f5d4c0751930e9791ffa1172b7"
+    },
+    "limitations": [
+      "The native MMA trace is a diagnostic path, not the original TileLang kernel.",
+      "Float64 dot agreement does not establish official-kernel parity.",
+      "FP8 and BF16 MMA reduction order/rounding are not assumed interchangeable."
+    ],
+    "official_kernel_parity": "separate_gate",
+    "full_model_quality": "not_run",
+    "timestamp_utc": "2026-10-18T01:59:12Z"
+  },
+  {
+    "probe": "reduction_diagnostic",
+    "status": "fail",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "seed": 4096,
+    "device": {
+      "ordinal": 1,
+      "name": "NVIDIA GeForce RTX 3080 Ti",
+      "compute_capability": "8.6",
+      "total_bytes": 12884377600
+    },
+    "reference_device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    },
+    "integrity_checks": [
+      {
+        "check": "native_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "candidate_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "bf16_trace_across_devices",
+        "status": "pass",
+        "elements": 61440,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "stage_comparisons": [
+      {
+        "check": "block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2319,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          17,
+          20,
+          24,
+          28,
+          30,
+          58,
+          67,
+          83
+        ]
+      },
+      {
+        "check": "scaled_block",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2319,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          17,
+          20,
+          24,
+          28,
+          30,
+          58,
+          67,
+          83
+        ]
+      },
+      {
+        "check": "running_sum",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 18992,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
+        ]
+      }
+    ],
+    "independent_dot_checks": [
+      {
+        "check": "float64_oracle_vs_native_block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2319,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          17,
+          20,
+          24,
+          28,
+          30,
+          58,
+          67,
+          83
+        ]
+      },
+      {
+        "check": "float64_oracle_vs_bf16_block_dot",
+        "status": "pass",
+        "elements": 20480,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "projection_comparison": {
+      "check": "BF16_projection_output",
+      "status": "fail",
+      "elements": 128,
+      "mismatches": 3,
+      "comparison": "exact_storage_bits",
+      "first_mismatch_indices": [
+        22,
+        84,
+        93
+      ]
+    },
+    "first_dot_differences": [
+      {
+        "row": 32,
+        "block": 0,
+        "native_FP8_dot": -3521.25,
+        "candidate_BF16_dot": -3521.375,
+        "native_hex": "0xc55c1400",
+        "candidate_hex": "0xc55c1600"
+      },
+      {
+        "row": 71,
+        "block": 0,
+        "native_FP8_dot": 2812.25,
+        "candidate_BF16_dot": 2812.375,
+        "native_hex": "0x452fc400",
+        "candidate_hex": "0x452fc600"
+      },
+      {
+        "row": 105,
+        "block": 0,
+        "native_FP8_dot": -2087.25,
+        "candidate_BF16_dot": -2087.375,
+        "native_hex": "0xc5027400",
+        "candidate_hex": "0xc5027600"
+      },
+      {
+        "row": 114,
+        "block": 0,
+        "native_FP8_dot": 3189.0,
+        "candidate_BF16_dot": 3189.125,
+        "native_hex": "0x45475000",
+        "candidate_hex": "0x45475200"
+      },
+      {
+        "row": 1,
+        "block": 2,
+        "native_FP8_dot": -1347.75,
+        "candidate_BF16_dot": -1347.8125,
+        "native_hex": "0xc4a87800",
+        "candidate_hex": "0xc4a87a00"
+      },
+      {
+        "row": 2,
+        "block": 2,
+        "native_FP8_dot": -4306.5,
+        "candidate_BF16_dot": -4306.625,
+        "native_hex": "0xc5869400",
+        "candidate_hex": "0xc5869500"
+      },
+      {
+        "row": 5,
+        "block": 2,
+        "native_FP8_dot": 2028.5,
+        "candidate_BF16_dot": 2028.5625,
+        "native_hex": "0x44fd9000",
+        "candidate_hex": "0x44fd9200"
+      },
+      {
+        "row": 6,
+        "block": 2,
+        "native_FP8_dot": -1677.875,
+        "candidate_BF16_dot": -1677.9375,
+        "native_hex": "0xc4d1bc00",
+        "candidate_hex": "0xc4d1be00"
+      }
+    ],
+    "peak_explicit_device_allocation_bytes": {
+      "reference": 599200,
+      "candidate": 599200
+    },
+    "numpy_version": "2.5.4",
+    "compiled_cubin_sha256": {
+      "reference": "50e8cadff759bdff4fdcf054b6f011ac33566f58522f0444ad53cee3c59349aa",
+      "candidate": "06f34d0a7b800f93826c26c2188eb7967badd8f5d4c0751930e9791ffa1172b7"
+    },
+    "limitations": [
+      "The native MMA trace is a diagnostic path, not the original TileLang kernel.",
+      "Float64 dot agreement does not establish official-kernel parity.",
+      "FP8 and BF16 MMA reduction order/rounding are not assumed interchangeable."
+    ],
+    "official_kernel_parity": "separate_gate",
+    "full_model_quality": "not_run",
+    "timestamp_utc": "2026-10-18T01:59:13Z"
+  },
+  {
+    "probe": "reduction_diagnostic",
+    "status": "fail",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "seed": 65535,
+    "device": {
+      "ordinal": 1,
+      "name": "NVIDIA GeForce RTX 3080 Ti",
+      "compute_capability": "8.6",
+      "total_bytes": 12884377600
+    },
+    "reference_device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    },
+    "integrity_checks": [
+      {
+        "check": "native_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "candidate_trace_final",
+        "status": "pass",
+        "elements": 128,
+        "mismatches": 0,
+        "comparison": "exact_storage_bits",
+        "first_mismatch_indices": []
+      },
+      {
+        "check": "bf16_trace_across_devices",
+        "status": "pass",
+        "elements": 61440,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "stage_comparisons": [
+      {
+        "check": "block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2864,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          5,
+          25,
+          26,
+          36,
+          42,
+          53,
+          60,
+          73
+        ]
+      },
+      {
+        "check": "scaled_block",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2864,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          5,
+          25,
+          26,
+          36,
+          42,
+          53,
+          60,
+          73
+        ]
+      },
+      {
+        "check": "running_sum",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 19607,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      }
+    ],
+    "independent_dot_checks": [
+      {
+        "check": "float64_oracle_vs_native_block_dot",
+        "status": "fail",
+        "elements": 20480,
+        "mismatches": 2864,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": [
+          5,
+          25,
+          26,
+          36,
+          42,
+          53,
+          60,
+          73
+        ]
+      },
+      {
+        "check": "float64_oracle_vs_bf16_block_dot",
+        "status": "pass",
+        "elements": 20480,
+        "mismatches": 0,
+        "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+        "first_mismatch_indices": []
+      }
+    ],
+    "projection_comparison": {
+      "check": "BF16_projection_output",
+      "status": "pass",
+      "elements": 128,
+      "mismatches": 0,
+      "comparison": "exact_storage_bits",
+      "first_mismatch_indices": []
+    },
+    "first_dot_differences": [
+      {
+        "row": 38,
+        "block": 0,
+        "native_FP8_dot": 4266.0,
+        "candidate_BF16_dot": 4266.25,
+        "native_hex": "0x45855000",
+        "candidate_hex": "0x45855200"
+      },
+      {
+        "row": 60,
+        "block": 0,
+        "native_FP8_dot": 2501.75,
+        "candidate_BF16_dot": 2501.875,
+        "native_hex": "0x451c5c00",
+        "candidate_hex": "0x451c5e00"
+      },
+      {
+        "row": 84,
+        "block": 0,
+        "native_FP8_dot": 727.25,
+        "candidate_BF16_dot": 727.375,
+        "native_hex": "0x4435d000",
+        "candidate_hex": "0x4435d800"
+      },
+      {
+        "row": 85,
+        "block": 0,
+        "native_FP8_dot": 5496.5,
+        "candidate_BF16_dot": 5496.75,
+        "native_hex": "0x45abc400",
+        "candidate_hex": "0x45abc600"
+      },
+      {
+        "row": 114,
+        "block": 0,
+        "native_FP8_dot": 1025.0,
+        "candidate_BF16_dot": 1025.125,
+        "native_hex": "0x44802000",
+        "candidate_hex": "0x44802400"
+      },
+      {
+        "row": 123,
+        "block": 0,
+        "native_FP8_dot": 2353.0,
+        "candidate_BF16_dot": 2353.125,
+        "native_hex": "0x45131000",
+        "candidate_hex": "0x45131200"
+      },
+      {
+        "row": 2,
+        "block": 1,
+        "native_FP8_dot": -3156.5,
+        "candidate_BF16_dot": -3156.5625,
+        "native_hex": "0xc5454800",
+        "candidate_hex": "0xc5454900"
+      },
+      {
+        "row": 5,
+        "block": 1,
+        "native_FP8_dot": 1028.625,
+        "candidate_BF16_dot": 1028.71875,
+        "native_hex": "0x44809400",
+        "candidate_hex": "0x44809700"
+      }
+    ],
+    "peak_explicit_device_allocation_bytes": {
+      "reference": 599200,
+      "candidate": 599200
+    },
+    "numpy_version": "2.5.4",
+    "compiled_cubin_sha256": {
+      "reference": "50e8cadff759bdff4fdcf054b6f011ac33566f58522f0444ad53cee3c59349aa",
+      "candidate": "06f34d0a7b800f93826c26c2188eb7967badd8f5d4c0751930e9791ffa1172b7"
+    },
+    "limitations": [
+      "The native MMA trace is a diagnostic path, not the original TileLang kernel.",
+      "Float64 dot agreement does not establish official-kernel parity.",
+      "FP8 and BF16 MMA reduction order/rounding are not assumed interchangeable."
+    ],
+    "official_kernel_parity": "separate_gate",
+    "full_model_quality": "not_run",
+    "timestamp_utc": "2026-10-18T01:59:14Z"
+  }
+]

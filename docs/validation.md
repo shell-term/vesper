@@ -4,11 +4,12 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 
 | Gate | Evidence required | Initial state |
 | --- | --- | --- |
-| Released artifacts | Pinned checkpoint, exact weight/scale bytes, matching tokenizer and Engram | Small W1 fixture only |
+| Released artifacts | Pinned checkpoint, exact weight/scale bytes, matching tokenizer and Engram | W1 slice and one complete expert; tokenizer/Engram pending |
 | Format specification | All FP4 codes, scale encodings, FP8/BF16 rounding boundaries, signed zero | Pass on Ada and Ampere |
 | Projection specification | Native weight slice against an independent block arithmetic oracle | Pass on Ada and Ampere |
 | Official kernels | Per-operation exact comparisons with the pinned TileLang code | W1 slice: 4090 passes 8 inputs; 3080 Ti candidate fails, 14/1,024 output mismatches |
-| Full expert/layer | Activation quantization, clamps, weighted SwiGLU, routing and accumulation | Not implemented |
+| Full expert | Activation quantization, clamps, weighted SwiGLU and three projections | One native expert on 4090 passes 128 single-token conditions, including intermediate bits |
+| Full layer | Router, expert selection/weights, aggregation order and shared expert | Not implemented |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
 | Resource policy | All owned memory plus pressure behavior, concurrency with other work | Reservation checks only |
@@ -33,6 +34,12 @@ inputs. The experimental Ampere BF16 MMA candidate still differed. This supports
 retaining reference arithmetic as a gate; it does not establish universal Ada
 parity or identify every cause of the Ampere differences. See the
 [first measurements](first-probe.md) for scope, negative results and raw data.
+
+The [complete-expert follow-up](expert-validation.md) passes the 4090 pipeline
+within its stated scope. Its repeated-shape checks also exposed shared launch
+handles in the optional TileLang 0.1.12 NVRTC adapter. The harness isolates those
+handles while preserving the official model and CUDA kernel source/arithmetic.
+The workaround is explicit in the result, not a tolerance or an oracle rewrite.
 
 Preserving bytes is necessary but insufficient. In particular, do not replace
 the original FP8 activation behavior with a supposedly more precise path and

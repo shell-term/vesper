@@ -7,22 +7,24 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [First measurements](docs/first-probe.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Expert validation](docs/expert-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 ## Status
 
-This is the first **verification scaffold**, not a working text-generation engine.
-CUDA format and projection probes run on RTX 4090 and RTX 3080 Ti.
-Independent specification checks pass on both GPUs, including an original weight
-slice. Direct comparison with the pinned official kernel gives:
+This is a **verification runtime**, not a working text-generation engine. One
+complete native expert now runs on the RTX 4090 with resident original weights.
+Direct comparisons with the pinned official implementation give:
 
-| Candidate | W1 output mismatches across 8 inputs | State |
+| Candidate | Scope | Result |
 | --- | --- | --- |
-| RTX 4090, FP8 Tensor Core path | 0 / 1,024 | Pass for this slice and these inputs |
-| RTX 3080 Ti, experimental BF16 Tensor Core path | 14 / 1,024 | Failed; unqualified for inference |
+| RTX 4090, native FP8 path | One complete expert, 128 conditions | 0 / 655,360 final-output mismatches; all checked intermediate bits match |
+| RTX 3080 Ti, experimental BF16 path | 128-row W1 slice, 8 inputs | 14 / 1,024 output mismatches; unqualified for inference |
 
-This is one 128-row W1 slice, not a complete expert or model. Full-model quality
-and generation speed are unverified. See the [report and complete result files](docs/first-probe.md).
+The expert checks include both input projections, asymmetric clamps, weighted
+SwiGLU, the BF16 boundary, down-input quantization and the output projection.
+Independent format checks also pass on both GPUs. Layers, full-model quality and
+generation speed remain unverified. See the [new report and complete results](docs/expert-validation.md)
+and the [initial transfer/storage measurements](docs/first-probe.md).
 
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is
@@ -101,6 +103,22 @@ reference is not assumed to run on Ampere. A specification pass cannot substitut
 for this gate. Windows reference-compiler setup and its current limitations are
 recorded in the [first measurement report](docs/first-probe.md#reproduction).
 
+Fetch **one complete expert (18,800,640 original bytes)** and check its pipeline:
+
+```sh
+vesper fetch-expert-fixture --directory artifacts/expert-fixture
+vesper compare-expert --fixture artifacts/expert-fixture/native-expert.npz --device 0 --output artifacts/expert.json
+vesper trace-reduction --fixture artifacts/fixture/native-weight-slice.npz --device 1 --reference-device 0 --output artifacts/reduction.json
+```
+
+`compare-expert` reuses GPU-resident weights and work buffers. It is single-token
+only. The complete 128-condition command is in [the report](docs/expert-validation.md#reproduction).
+`trace-reduction` compares native FP8 and BF16 intermediate reductions; a mismatch
+keeps exit code 2 even when the final BF16 value happens to agree. The Ampere path
+remains unqualified. The optional TileLang 0.1.12 NVRTC oracle also needs per-kernel
+launch-handle isolation, applied by Vesper without altering the official arithmetic
+or source files and recorded in its reports.
+
 ## Memory policy
 
 The provisional full-engine design has a **96 GiB host-memory cap** and a **32 GiB
@@ -112,6 +130,10 @@ Current GPU probes cap explicit allocations at 256 MiB per GPU and check a 1 GiB
 free-memory reserve. GPU contexts and modules consume additional memory. Transfer
 and disk probes use an 18.8 MB data buffer. They do not reset GPUs or stop other
 workloads. Measurements can therefore include contention.
+
+The single-expert runtime has a stricter 64 MiB explicit GPU allocation cap; the
+128-condition run peaked at 18,903,528 bytes. This excludes CUDA/PyTorch contexts
+and reference compiler allocations. Its weights remain in ignored artifacts.
 
 ## Development
 

@@ -201,7 +201,7 @@ class Pinned:
             self.budget.release(self.size)
 
 
-def compile_probe(architecture: str) -> bytes:
+def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: bool = False) -> bytes:
     """Compile an actual architecture cubin; no host compiler or GPU required."""
     if os.name == "nt":
         roots = [Path(value) for key in ("CUDA_PATH", "CUDA_HOME") if (value := os.environ.get(key))]
@@ -224,6 +224,10 @@ def compile_probe(architecture: str) -> bytes:
     get_size = _bind(lib, "nvrtcGetCUBINSize", [pointer, C.POINTER(size)])
     get_cubin = _bind(lib, "nvrtcGetCUBIN", [pointer, pointer])
     source = (Path(__file__).parent / "kernels/format_probe.cu").read_bytes()
+    if reduction_trace:
+        source += b"\n" + (Path(__file__).parent / "kernels/reduction_probe.cu").read_bytes()
+    if expert:
+        source += b"\n" + (Path(__file__).parent / "kernels/expert_probe.cu").read_bytes()
     program = pointer()
     if create(C.byref(program), source, b"format_probe.cu", 0, None, None):
         raise CudaError("NVRTC could not create a program")

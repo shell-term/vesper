@@ -9,13 +9,16 @@ adapted from `fast_log2_ceil` / `fast_round_scale` in:
 
 - Model: `deepseek-ai/DeepSeek-V4.1-Flash-1017`
 - Revision: `1bae0e1088993b9b82de08f59de5be5a34e42170`
-- Source: `inference/kernel.py`
+- Sources: `inference/kernel.py`, `inference/model.py`
 - Copyright (c) 2023 DeepSeek
 - License: [third_party/DeepSeek-LICENSE](third_party/DeepSeek-LICENSE)
 
 The optional reference check downloads the original kernel with its license into
 ignored artifacts. The small fixture downloader reads original model bytes;
 those bytes retain the source model's license and are not included in this repo.
+The complete-expert probe follows the clamp and weighted SwiGLU order in
+`model.py`. Its optional oracle extracts and executes unchanged `linear` and
+`Expert.forward` function bodies from the hash-checked original source.
 
 ## Runtime dependencies
 

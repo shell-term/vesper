@@ -11,6 +11,7 @@ from .checkpoint import fetch_reference, load_fixture
 from .conformance import _run, compare
 from .cuda import Device, Driver, compile_probe
 from .formats import bf16_bits, bf16_values
+from .reference_runtime import configure_reference_runtime
 
 
 def compare_official(fixture: Path | None, reference_directory: Path, ordinal: int,
@@ -33,6 +34,7 @@ def compare_official(fixture: Path | None, reference_directory: Path, ordinal: i
     spec = importlib.util.spec_from_file_location("vesper_pinned_official_kernel", reference_directory / "kernel.py")
     official = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(official)
+    workarounds = configure_reference_runtime(official, tilelang.__version__)
     rng = np.random.default_rng(seed)
     fixture_data = load_fixture(fixture)
     weight, scales = fixture_data["weight"], fixture_data["scales"]
@@ -71,4 +73,5 @@ def compare_official(fixture: Path | None, reference_directory: Path, ordinal: i
             "device": info, "checks": checks, "reference": manifest, "torch_version": torch.__version__,
             "reference_device_ordinal": reference_ordinal, "candidate_kernel": candidate_kernel,
             "seed": seed,
+            "reference_runtime_workarounds": workarounds,
             "tilelang_version": tilelang.__version__, "full_model_quality": "not_run"}
