@@ -10,8 +10,9 @@ import zipfile
 import numpy as np
 
 from vesper.checkpoint import MODEL, REVISION
-from vesper.router import (ROUTER_CONFIG, ROUTER_INFERENCE_CONFIG_HASH, RouterProbe, UnsupportedRoutingTie,
-                           load_router_fixture, select_scores)
+from vesper.router import (ROUTER_CONFIG, ROUTER_INFERENCE_CONFIG_HASH, RouterProbe,
+                           load_router_fixture, select_scores, top6_indices)
+from vesper.router_reference import TOPK_SOURCE_HASHES, fetch_topk_reference
 
 
 class RouterTests(unittest.TestCase):
@@ -34,14 +35,15 @@ class RouterTests(unittest.TestCase):
         self.assertAlmostEqual(float(weights.sum()), 1.5, places=6)
         self.assertLess(float(weights[0]), 0.2)
 
-    def test_selected_ties_and_boundary_ties_are_refused(self):
+    def test_selected_and_boundary_ties_keep_the_selected_expert_set(self):
         scores = np.arange(384, dtype=np.float32)
         bias = np.zeros(384, np.float32)
         for positions in ((382, 383), (377, 378)):
             changed = scores.copy()
             changed[positions[0]] = changed[positions[1]]
-            with self.assertRaises(UnsupportedRoutingTie):
-                select_scores(changed, bias)
+            weights, indices = select_scores(changed, bias)
+            self.assertEqual(set(indices.tolist()), set(range(378, 384)) if positions[0] == 382 else {377, 379, 380, 381, 382, 383})
+            self.assertAlmostEqual(float(weights.sum()), 1.5, places=6)
         scores[0] = scores[1]  # An unselected tie does not affect top-six routing.
         _, indices = select_scores(scores, bias)
         self.assertEqual(indices.tolist(), [383, 382, 381, 380, 379, 378])
@@ -62,11 +64,40 @@ class RouterTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 select_scores(scores, arrays["bias"])
 
-    def test_diagnostic_tie_cannot_be_admitted_as_a_decision(self):
+    def test_pinned_cuda_tie_order_goldens_and_padding(self):
+        # CUDA zero/signed-zero goldens; equal finite levels must exclude padding.
+        for level in (0, -1, 1):
+            indices = top6_indices(np.full(384, level, np.float32))
+            self.assertEqual(indices.tolist(), [1, 0, 4, 5, 2, 3])
+        signed = np.resize(np.array([-0.0, 0.0], np.float32), 384)
+        self.assertEqual(top6_indices(signed).tolist(), [3, 1, 9, 11, 5, 7])
+        for invalid in (np.zeros(383, np.float32), np.full(384, np.nan, np.float32), np.full(384, np.inf, np.float32)):
+            with self.assertRaises(ValueError):
+                top6_indices(invalid)
+
+    def test_synthetic_selection_rejects_invalid_inputs_before_cuda(self):
         probe = object.__new__(RouterProbe)
-        probe.inspect = lambda *args, **kwargs: {"tied": np.array([1], np.int32)}
-        with self.assertRaises(UnsupportedRoutingTie):
-            probe.decision(np.zeros(384, np.float32))
+        probe.device = object()
+        valid = np.ones(384, np.float32)
+        for invalid in (np.zeros(383, np.float32), np.full(384, -1, np.float32),
+                        np.full(384, np.inf, np.float32), np.full(384, np.finfo(np.float32).max, np.float32)):
+            with self.assertRaises(ValueError):
+                probe.inspect_selection(invalid, valid)
+        with self.assertRaises(ValueError):
+            probe.inspect_selection(valid, np.full(384, np.nan, np.float32))
+
+    def test_pinned_topk_source_refuses_tampering_and_oversized_cache(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'TensorTopK.cpp').write_bytes(b'changed source')
+            with patch('vesper.router_reference.urllib.request.urlopen') as request:
+                with self.assertRaisesRegex(ValueError, 'pinned hash'):
+                    fetch_topk_reference(root)
+                request.assert_not_called()
+            (root / 'TensorTopK.cpp').write_bytes(bytes(262145))
+            with self.assertRaisesRegex(ValueError, 'exceeds its bound'):
+                fetch_topk_reference(root)
+        self.assertEqual(len(TOPK_SOURCE_HASHES), 7)
 
     def test_fixture_bytes_identity_and_configuration_are_checked(self):
         arrays, manifest = self.fixture()

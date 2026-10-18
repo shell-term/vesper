@@ -1,8 +1,4 @@
-"""Diagnostic routing postprocessing for supplied FP32 logits, not a full gate.
-
-The matrix projection is deliberately outside this probe. Exact top-k tie
-behavior remains a separate qualification requirement; no tie order is assumed.
-"""
+"""Single-row routing postprocessing for supplied FP32 logits, not a full gate."""
 
 import ctypes as C
 import hashlib
@@ -20,10 +16,49 @@ from .resources import MemoryBudget, MiB
 ROUTER_CONFIG = {"experts": 384, "topk": 6, "score_func": "sqrtsoftplus", "gate_temp": 1.0,
                  "norm_topk_prob": True, "route_scale": 1.5, "normalization_epsilon": 1e-20}
 ROUTER_INFERENCE_CONFIG_HASH = "2e84f45cf1dac8c7fcbb200e96667d4b913275690668ed496f24c7747207a809"
+ROUTER_TORCH_REVISION = "5c4886908584029761b579af026dcfb627c84070"
+ROUTER_TOPK_POLICY = "pytorch_cuda_single_block_gather_then_bitonic32_k6"
 
 
-class UnsupportedRoutingTie(RuntimeError):
-    pass
+def top6_indices(selection):
+    """Finite FP32, one-row CUDA top-k specification for the pinned PyTorch build.
+
+    Gather values above the kth threshold in ID order, then fill from equal
+    values in ID order. Apply ATen's unstable 32-cell bitonic network to the six
+    gathered entries. This is not a general torch.topk stability guarantee.
+    See third_party/PyTorch-LICENSE and THIRD_PARTY_NOTICES.md.
+    """
+    selection = np.asarray(selection, dtype=np.float32)
+    if selection.shape != (384,) or not np.isfinite(selection).all():
+        raise ValueError("Top-six selection requires 384 finite FP32 values")
+    bits = selection.view(np.uint32)
+    ordered = bits ^ np.where(bits & np.uint32(0x80000000), np.uint32(0xffffffff), np.uint32(0x80000000))
+    threshold = np.partition(ordered, 378)[378]
+    gathered = np.concatenate((np.flatnonzero(ordered > threshold), np.flatnonzero(ordered == threshold)))[:6]
+    keys = np.zeros(32, np.float32)
+    indices = np.zeros(32, np.int32)
+    valid = np.arange(32) < 6
+    keys[:6], indices[:6] = selection[gathered], gathered
+
+    def stage(stride, size):
+        for thread in range(16):
+            pos = 2 * thread - (thread & (stride - 1))
+            other = pos + stride
+            direction = bool(thread & (size // 2)) if size else False
+            swap = bool((keys[pos] > keys[other] and valid[pos]) or not valid[other])
+            if swap == direction:
+                keys[pos], keys[other] = keys[other], keys[pos]
+                indices[pos], indices[other] = indices[other], indices[pos]
+                valid[pos], valid[other] = valid[other], valid[pos]
+
+    for size in (2, 4, 8, 16):
+        stride = size // 2
+        while stride:
+            stage(stride, size)
+            stride //= 2
+    for stride in (16, 8, 4, 2, 1):
+        stage(stride, 0)
+    return indices[:6].copy()
 
 
 def fetch_router_fixture(directory: Path, layer=0):
@@ -144,11 +179,7 @@ def select_scores(scores, bias):
         selection = scores + bias
     if not np.isfinite(selection).all():
         raise ValueError("Selection score overflow")
-    order = np.argsort(-selection, kind="stable")
-    ranked = selection[order[:7]]
-    if np.any(ranked[1:] == ranked[:-1]):
-        raise UnsupportedRoutingTie("Exact selected top-k tie behavior is not qualified")
-    indices = order[:6].astype(np.int32)
+    indices = top6_indices(selection)
     raw = scores[indices]
     with np.errstate(over="ignore"):
         total = np.float32(np.float32(np.float32(raw[0] + raw[4]) + raw[2])
@@ -206,6 +237,25 @@ class RouterProbe:
         args = [C.c_uint64(v) for v in (p["logits"], self.biases["bias"], self.biases["bias_vl"], p["scores"], p["selection"])]
         args += [C.c_int(image_span), C.c_int(synthetic_zero_bias)]
         d.launch(self.module, "router_scores", args, 384)
+        return self._finish()
+
+    def inspect_selection(self, scores, selection):
+        """Synthetic selection-only diagnostics; never substitutes a model bias."""
+        if self.device is None:
+            raise RuntimeError("Use the router probe as a context manager")
+        scores, selection = (np.ascontiguousarray(value, dtype=np.float32) for value in (scores, selection))
+        if (scores.shape != (384,) or selection.shape != (384,) or not np.isfinite(scores).all()
+                or not np.isfinite(selection).all() or np.any(scores < 0)
+                or np.max(scores) > np.finfo(np.float32).max / 8):
+            raise ValueError("Synthetic selection requires finite bounded raw scores and finite selection scores")
+        d = self.device
+        d.current()
+        for name, array in (("scores", scores), ("selection", selection)):
+            d.driver.check(d.driver.cuMemcpyHtoD_v2(self.work[name], array.ctypes.data, array.nbytes))
+        return self._finish()
+
+    def _finish(self):
+        d, p = self.device, self.work
         args = [C.c_uint64(p[name]) for name in ("scores", "selection", "raw", "denominator", "weights", "indices", "tied")]
         d.launch(self.module, "router_top6", args, 1)
         result = {name: d.download(p[name], shape, dtype) for name, (shape, dtype) in self.layout.items() if name != "logits"}
@@ -213,10 +263,8 @@ class RouterProbe:
         return result
 
     def decision(self, logits, image_span=False):
-        """Experimental original-bias decision; refuse an unqualified top-k tie."""
+        """Single-row original-bias decision using the pinned CUDA top-k path."""
         result = self.inspect(logits, image_span=image_span)
-        if result["tied"][0]:
-            raise UnsupportedRoutingTie("Exact selected top-k tie behavior is not qualified")
         return result["weights"], result["indices"]
 
     def __exit__(self, *_):

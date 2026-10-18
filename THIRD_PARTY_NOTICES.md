@@ -23,6 +23,20 @@ The routing postprocessing probe follows `Gate.forward`'s score/bias/gather and
 normalization formulas. Its optional oracle executes the unchanged method body
 with an explicit identity projection to isolate supplied-logit postprocessing.
 
+## PyTorch CUDA top-k ordering
+
+The single-row top-six CPU specification and native routing kernel adapt the
+finite FP32 key conversion, gather order and small bitonic sorting network in
+PyTorch ATen CUDA. Source revision:
+`5c4886908584029761b579af026dcfb627c84070` (the qualified reference build).
+Sources are `TensorTopK.cpp`, `TensorTopK.cu`, `Sort.cu`, `SortUtils.cuh`,
+`SortingCommon.cuh` and `SortingRadixSelect.cuh` under
+[`aten/src/ATen/native/cuda`](https://github.com/pytorch/pytorch/tree/5c4886908584029761b579af026dcfb627c84070/aten/src/ATen/native/cuda).
+The complete upstream copyright, redistribution conditions and disclaimer are
+retained in [third_party/PyTorch-LICENSE](third_party/PyTorch-LICENSE), including
+binary distributions. This scoped adaptation does not claim stable top-k ties
+for other PyTorch versions, backends or shapes.
+
 ## Runtime dependencies
 
 CUDA libraries and headers are supplied by the user's CUDA installation and are

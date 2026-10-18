@@ -32,10 +32,12 @@ all model arithmetic in the cache probe runs on the 4090. See the
 [cache report and complete results](docs/cache-validation.md), [resident expert report](docs/expert-validation.md)
 and the [initial transfer/storage measurements](docs/first-probe.md).
 
-Routing postprocessing is now under [issue #3](https://github.com/shell-term/vesper/issues/3).
-All 116 tested score/ID-weight maps match, but the candidate refuses 29 tied
-conditions and remains unqualified. Gate projection and connected MoE execution
-are still pending. See the [routing report](docs/router-validation.md).
+Single-row routing postprocessing now matches all ordered output bits in 244
+official gate conditions and 232 additional selection/normalization conditions,
+including the previously unsupported ties. This is scoped to the pinned CUDA
+PyTorch top-k path; gate projection, connected MoE execution and other batch
+shapes remain pending. See [issue #3](https://github.com/shell-term/vesper/issues/3)
+and the [routing report](docs/router-validation.md).
 
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is
