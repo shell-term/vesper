@@ -14,8 +14,9 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Routing postprocessing | Scores, trained bias, ordered expert IDs/weights and tie handling from supplied FP32 logits | 244 official gate conditions and 232 selection conditions pass all checked bits; pinned single-row CUDA top-k profile only |
 | Original gate projection and routing | Original BF16 weights promoted to FP32, actual linear projection and connected expert selection | 307 generated inputs across both masks give 614 exact-bit passes against unchanged linear/Gate.forward; one row, named cuBLAS/PyTorch builds |
 | Shared expert and ordered accumulation | Original shared dtype, routing-weight placement, FP32 additions in expert-ID order and final BF16 rounding | 54 FP8 shared cases, 38 aggregation cases and 16 original-six-expert supplied-route conditions match all checked bits |
-| Connected MoE sublayer | Gate projection, routing, accumulation order, shared expert and bounded offload | 30 generated-input calls match all 108 boundaries; four refusal/retry cases pass; real-activation gate pending because unchanged Attention exceeds 4090 shared memory |
+| Connected MoE sublayer | Gate projection, routing, accumulation order, shared expert and bounded offload | Generated and real-prefix inputs each pass 30 calls / 108 boundaries and four refusal/retry checks; native-only rechecks match |
 | Attention Query storage candidate | Exact intermediates with executable original profiles, then full-shape original parity | 24 smaller-profile cases match all checked bits; full 64 × 512 candidate executes at 74 KiB shared memory; full original gate blocked at 138 KiB |
+| Storage-adapted official Attention arithmetic | Original PTX arithmetic/control retention, exact bit transport and intermediate comparisons | All six original binaries reproduce; 36 conditions / 456 comparisons match; explicit capture supplies four real layer-0 vectors; untouched full-kernel launch remains blocked |
 | Full Transformer block | Connected attention, MoE, Engram, Hyper-Connections and residual boundaries | Not implemented |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
@@ -115,10 +116,10 @@ batched GEMM parity, model quality and generation speed are not established.
 The [connected probe](connected-moe-validation.md) executes actual original gate
 decisions through the audited byte cache and all expert/accumulation stages.
 Generated inputs pass, including partial-call refusal and complete retry, with
-an independent native-only recheck. The unchanged original prefix cannot yet
-supply real MoE inputs on the 4090: its 138 KiB dynamic shared-memory request
-exceeds the 99 KiB opt-in limit. Issue #6 and M1 remain open. A generated-input
-pass is not substituted for that missing real-activation acceptance condition.
+an independent native-only recheck. At initial publication the unchanged prefix
+could not supply real MoE inputs on the 4090: its 138 KiB dynamic shared-memory
+request exceeds the 99 KiB opt-in limit. Issue #6 and M1 therefore stayed open. A generated-input
+pass was not substituted for that missing real-activation acceptance condition.
 
 The [Attention storage experiment](attention-storage-validation.md) changes only
 Query allocation scope in the arithmetic AST. Intermediate/output comparisons
@@ -126,4 +127,12 @@ pass for two smaller original profiles; the actual 64-head, 512-dimensional
 candidate executes within the 4090 limit. Repeat and QK component checks do not
 replace its unavailable full-original comparison. The candidate remains explicit
 and is not used by prefix capture. Head partitioning is rejected because it
-changes observed FP32 reduction results. This does not close Issues #6/#7 or M1.
+changes observed FP32 reduction results. That initial experiment did not clear
+the real-input gate.
+
+The subsequent [qualified PTX memory adapter](attention-memory-validation.md)
+retains literal official arithmetic/control instructions and proves the changed
+bit transport before capture. Its four actual prefix vectors now pass the
+[connected real-input matrix](real-moe-validation.md), including all failure and
+native-only checks. This satisfies the scoped M1 MoE gate; native Attention,
+complete-block operations and full-model quality remain separate M2 work.

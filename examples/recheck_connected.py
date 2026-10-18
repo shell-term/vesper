@@ -12,7 +12,7 @@ import sys
 import numpy as np
 
 from vesper.connected import ConnectedConfig, ConnectedMoE
-from vesper.connected_fixture import connected_inputs, load_connected_plan
+from vesper.connected_fixture import connected_inputs, load_connected_plan, validate_plan_inputs
 from vesper.connected_reference import exercise_connected, native_connected_stages
 from vesper.formats import bf16_bits
 from vesper.resources import MiB
@@ -38,6 +38,7 @@ def main():
     raw = args.reference_report.read_bytes()
     report = json.loads(raw)
     plan = load_connected_plan(args.plan)
+    validate_plan_inputs(plan, args.captured_inputs)
     if report.get("probe") != "connected_moe_parity" or report.get("status") != "pass" or report["plan"] != plan:
         raise ValueError("Expected a passing scoped reference report with this exact plan")
     rows = []

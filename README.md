@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Cache performance](docs/cache-performance.md) · [Cache validation](docs/cache-validation.md) · [Expert validation](docs/expert-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Real-input MoE](docs/real-moe-validation.md) · [Cache performance](docs/cache-performance.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 [Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
 
@@ -44,8 +44,8 @@ through native cuBLAS without a PyTorch runtime dependency. Across 307 generated
 inputs and both text/image masks, all 614 comparisons with the unchanged full
 gate match logits, ordered expert IDs and weights bit-for-bit. See
 [issue #4](https://github.com/shell-term/vesper/issues/4) and the
-[gate report](docs/gate-validation.md). Real-activation MoE and model quality
-remain unverified.
+[gate report](docs/gate-validation.md). Full-model quality remains unverified;
+the separate connected real-activation gate is described below.
 
 Original shared-expert arithmetic and ordered accumulation now pass their scoped
 reference gates: 54 FP8 shared-expert cases, 38 aggregation cases, and 16 supplied-
@@ -56,19 +56,23 @@ case goldens without PyTorch installed. See
 [shared/aggregation report](docs/moe-arithmetic-validation.md). Original gate and
 bounded-offload integration is now implemented: 30 connected calls on generated
 inputs match all 108 boundaries each, and four pressure/transfer/I/O failure
-checks refuse partial outputs and recover exactly. The real-activation gate
-remains open because the unchanged official Attention kernel exceeds the 4090's
-per-block shared-memory limit. [Issue #6](https://github.com/shell-term/vesper/issues/6)
-and M1 stay open; see the [connected report](docs/connected-moe-validation.md).
+checks refuse partial outputs and recover exactly. The **real-activation gate
+now also passes**: four captured original prefix inputs, both gate-bias settings
+and another 30 calls match all 108 boundaries. A process without Torch reproduces
+the full matrix. See [Issue #6](https://github.com/shell-term/vesper/issues/6), the
+[real-input report](docs/real-moe-validation.md) and the earlier
+[generated-input report](docs/connected-moe-validation.md). M1's scope is the MoE
+sublayer; full Transformer blocks and text generation remain unfinished.
 
 An explicit Attention storage candidate now executes the actual 64-head,
 512-dimensional shape on the 4090 with 74 KiB of shared memory instead of
-138 KiB. Two smaller executable original profiles match all checked intermediate
-bits. The full-shape original still exceeds the device limit, so its direct
-reference gate remains open and prefix capture keeps its original guard.
+138 KiB. It now matches a separately qualified official-arithmetic reference
+that retains the original PTX arithmetic/control instructions and adapts only
+memory access. Untouched full-shape kernel launch still exceeds the device
+limit. Qualified capture is explicit and includes its complete evidence/hash.
 Head partitioning was rejected after intermediate differences. See
 [Issue #7](https://github.com/shell-term/vesper/issues/7) and the
-[Attention storage report](docs/attention-storage-validation.md).
+[Attention memory-adapter report](docs/attention-memory-validation.md).
 
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is

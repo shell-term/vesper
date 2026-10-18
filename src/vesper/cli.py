@@ -14,7 +14,7 @@ def main(argv=None) -> int:
                  "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
                  "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router", "fetch-gate-fixture", "compare-gate",
                  "fetch-shared-fixture", "compare-shared", "compare-aggregation", "compare-original-accumulation",
-                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage"):
+                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
         if name in ("validate", "bench-transfer", "validate-integrity"):
@@ -58,9 +58,10 @@ def main(argv=None) -> int:
             command.add_argument("--directory", type=Path, default=Path("artifacts/prefix-fixture"))
         if name == "capture-prefix":
             command.add_argument("--fixture", type=Path, required=True)
-        if name in ("plan-connected", "compare-connected", "prefix-preflight", "capture-prefix", "compare-attention-storage"):
+            command.add_argument("--attention-reference", choices=("original", "ptx-memory"), default="original")
+        if name in ("plan-connected", "compare-connected", "prefix-preflight", "capture-prefix", "compare-attention-storage", "compare-attention-memory"):
             command.add_argument("--device", type=int, default=0)
-        if name in ("compare-connected", "prefix-preflight", "capture-prefix", "compare-attention-storage"):
+        if name in ("compare-connected", "prefix-preflight", "capture-prefix", "compare-attention-storage", "compare-attention-memory"):
             command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
         if name == "compare-gate":
             command.add_argument("--router-fixture", type=Path, required=True)
@@ -162,12 +163,15 @@ def main(argv=None) -> int:
         elif args.command == "compare-attention-storage":
             from .attention_storage_reference import compare_attention_storage
             result = compare_attention_storage(args.reference_directory, args.device)
+        elif args.command == "compare-attention-memory":
+            from .attention_memory_reference import compare_attention_memory
+            result = compare_attention_memory(args.reference_directory, args.device)
         elif args.command == "fetch-prefix-fixture":
             from .prefix import fetch_prefix_fixture
             result = fetch_prefix_fixture(args.directory)
         elif args.command == "capture-prefix":
             from .prefix_reference import capture_prefix
-            result = capture_prefix(args.fixture, args.reference_directory, args.device)
+            result = capture_prefix(args.fixture, args.reference_directory, args.device, args.attention_reference)
         elif args.command == "build-store":
             from .storage import build_store
             result = build_store(args.fixtures, args.directory, max_experts=args.max_experts)

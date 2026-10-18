@@ -12,7 +12,7 @@ import numpy as np
 from vesper.bandwidth import EXPERT_BYTES
 from vesper.checkpoint import MODEL, REVISION
 from vesper.connected import ConnectedConfig, ConnectedMoE, bf16_activation
-from vesper.connected_fixture import load_connected_plan
+from vesper.connected_fixture import load_connected_plan, validate_plan_inputs
 from vesper.formats import bf16_bits
 from vesper.resources import MemoryBudget, MiB
 from vesper.storage import NativeStore, build_store, tensor_layout
@@ -20,6 +20,18 @@ from vesper.tiered import CacheConfig
 
 
 class ConnectedTests(unittest.TestCase):
+    def test_input_provenance_must_match_the_immutable_gate_plan(self):
+        validate_plan_inputs({"input_source": "generated"}, None)
+        with self.assertRaisesRegex(ValueError, "Input source"):
+            validate_plan_inputs({"input_source": "captured_original_prefix"}, None)
+        provenance = {"prefix_record_sha256": "a" * 64, "attention_reference_profile": "ptx-memory"}
+        plan = {"input_source": "captured_original_prefix", "captured_input_provenance": provenance}
+        with patch("vesper.connected_fixture.moe_input_provenance", return_value=dict(provenance)):
+            validate_plan_inputs(plan, Path("unused.json"))
+        with patch("vesper.connected_fixture.moe_input_provenance", return_value={**provenance, "prefix_record_sha256": "b" * 64}):
+            with self.assertRaisesRegex(ValueError, "provenance"):
+                validate_plan_inputs(plan, Path("unused.json"))
+
     def runtime(self):
         runtime = ConnectedMoE(*[Path("unused")] * 4)
         runtime.stack = object()

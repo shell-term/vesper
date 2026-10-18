@@ -12,7 +12,7 @@ from .bandwidth import EXPERT_BYTES
 from .checkpoint import MODEL, REVISION, fetch_expert_fixture, load_expert_fixture
 from .formats import bf16_bits, bf16_values
 from .gate import GateProjection, load_gate_fixture
-from .prefix import load_moe_inputs
+from .prefix import load_moe_inputs, moe_input_provenance
 from .resources import MemoryBudget, MiB
 from .router import RouterProbe, load_router_fixture
 from .storage import build_store, validate_store_limit
@@ -57,6 +57,7 @@ def plan_connected(gate_fixture, router_fixture, captured_inputs=None, ordinal=0
             "selected_weight_bytes": len(selected) * EXPERT_BYTES,
             "maximum_weight_bytes": max_experts * EXPERT_BYTES, "native_profile": profile,
             "input_source": "generated" if captured_inputs is None else "captured_original_prefix",
+            "captured_input_provenance": None if captured_inputs is None else moe_input_provenance(captured_inputs),
             "scope": "Actual original gate decisions; no forced IDs, cache bias or expert downloads"}
 
 
@@ -84,6 +85,14 @@ def load_connected_plan(path):
     if sorted(union) != ids or plan.get("selected_weight_bytes") != len(ids) * EXPERT_BYTES:
         raise ValueError("Connected import scope differs from the gate decision union")
     return plan
+
+
+def validate_plan_inputs(plan, captured_inputs):
+    expected = "generated" if captured_inputs is None else "captured_original_prefix"
+    if plan.get("input_source") != expected:
+        raise ValueError("Input source differs from the immutable connected plan")
+    if captured_inputs is not None and plan.get("captured_input_provenance") != moe_input_provenance(captured_inputs):
+        raise ValueError("Qualified prefix provenance differs from the connected plan")
 
 
 def prepare_connected_store(plan_file, expert_directory, store_directory):

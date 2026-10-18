@@ -15,7 +15,7 @@ from .bandwidth import EXPERT_BYTES
 from .checkpoint import MODEL, REVISION, load_expert_fixture
 from .conformance import compare
 from .connected import ConnectedConfig, ConnectedMoE
-from .connected_fixture import connected_inputs, load_connected_plan
+from .connected_fixture import connected_inputs, load_connected_plan, validate_plan_inputs
 from .expert_reference import OfficialExpert
 from .formats import bf16_bits, bf16_values
 from .gate import load_gate_fixture
@@ -217,6 +217,7 @@ def compare_connected(plan_file, store, gate_fixture, router_fixture, shared_fix
     import torch
     import tilelang
     plan = load_connected_plan(plan_file)
+    validate_plan_inputs(plan, captured_inputs)
     budget = MemoryBudget(cap=512 * MiB)
     budget.acquire(512 * MiB)
     try:
@@ -250,7 +251,7 @@ def compare_connected(plan_file, store, gate_fixture, router_fixture, shared_fix
                 raise ValueError("Connected boundary sets differ")
             return [compare(expected[index][name], actual[name], name) for name in expected[index]]
         records, phases, faults = exercise_connected(factory, rows, checker)
-        passed = records and all(r["status"] == "pass" for r in records) and all(not any(p["cleanup"].values()) for p in phases)
+        passed = bool(records) and all(r["status"] == "pass" for r in records) and all(not any(p["cleanup"].values()) for p in phases)
         return {"probe": "connected_moe_parity", "status": "pass" if passed else "fail", "model": MODEL, "revision": REVISION,
                 "plan": plan, "cases": records, "phases": phases, "faults": faults,
                 "reference_goldens": [{"case_index": i, "stage_sha256": {n: digest(a) for n, a in data.items()}} for i, data in enumerate(expected)],
@@ -261,8 +262,8 @@ def compare_connected(plan_file, store, gate_fixture, router_fixture, shared_fix
                 "torch_version": torch.__version__, "torch_git_version": torch.version.git_version, "torch_cuda_version": torch.version.cuda,
                 "tilelang_version": tilelang.__version__, "numpy_version": np.__version__, "reference_blas": oracle.gate.library,
                 "minimum_observed_host_available_bytes": minimum, "oracle_host_reservation_bytes": budget.peak,
-                "scope": "Layer-0 single-token connected MoE; actual gate decisions; generated activations; audited two-GPU offload",
-                "input_source": plan["input_source"], "actual_model_activation_gate": "not_run" if captured_inputs is None else "pass",
-                "issue6_acceptance_complete": captured_inputs is not None, "full_model_quality": "not_run", "generation_speed": "not_measured"}
+                "scope": "Layer-0 single-token connected MoE; actual gate decisions; " + plan["input_source"] + "; audited two-GPU offload",
+                "input_source": plan["input_source"], "actual_model_activation_gate": "not_run" if captured_inputs is None else "pass" if passed else "fail",
+                "issue6_acceptance_complete": captured_inputs is not None and passed, "full_model_quality": "not_run", "generation_speed": "not_measured"}
     finally:
         budget.release(512 * MiB)

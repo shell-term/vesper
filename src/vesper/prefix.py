@@ -150,6 +150,16 @@ def load_moe_inputs(path):
     if (report.get("probe"), report.get("status"), report.get("model"), report.get("revision")) != (
             "original_prefix_moe_inputs", "pass", MODEL, REVISION):
         raise ValueError("Expected passing original-prefix input provenance")
+    profile = report.get("attention_reference", {})
+    if profile.get("profile") == "ptx-memory":
+        from .attention_memory import validate_qualification
+        qualification = validate_qualification(report.get("attention_memory_qualification"))
+        digest = hashlib.sha256(json.dumps(qualification, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+        if digest != profile.get("qualification_sha256"):
+            raise ValueError("Attention qualification differs from its capture hash")
+    elif (profile.get("profile") != "original" or report.get("preflight", {}).get("status") != "pass"
+          or report.get("preflight", {}).get("source_or_arithmetic_modified") is not False):
+        raise ValueError("Expected original or qualified memory-adapter Attention provenance")
     if not 2 <= len(report.get("cases", [])) <= 16:
         raise ValueError("Expected two to sixteen captured single-token inputs")
     result = []
@@ -165,3 +175,11 @@ def load_moe_inputs(path):
             raise ValueError("Captured activation leaves the finite BF16 scope")
         result.append((case, values))
     return result, report
+
+
+def moe_input_provenance(path):
+    _, report = load_moe_inputs(path)
+    return {"prefix_record_sha256": hashlib.sha256(Path(path).read_bytes()).hexdigest(),
+            "attention_reference_profile": report["attention_reference"]["profile"],
+            "attention_qualification_sha256": report["attention_reference"].get("qualification_sha256"),
+            "input_vectors": len(report["cases"])}

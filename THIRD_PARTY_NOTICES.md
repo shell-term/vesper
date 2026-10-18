@@ -33,6 +33,12 @@ The optional Attention storage experiment generates a derivative of the pinned
 fragment, with an inverse-AST check; diagnostic variants also add intermediate
 stores. It retains the MIT notice in generated code and does not replace the
 original prefix reference or qualify full-model behavior.
+The subsequent optional memory adapter pins the generated official CUDA and
+changes only shared/global memory handling in its compiled PTX. Floating-point
+arithmetic and control instructions are retained byte for byte. Its unsigned
+matrix-load mapping is independently implemented from NVIDIA's public PTX ISA
+specification; NVIDIA compiler/runtime code is not redistributed. Qualified
+prefix capture explicitly records this storage-adapted reference profile.
 The routing postprocessing probe follows `Gate.forward`'s score/bias/gather and
 normalization formulas. Its optional oracle executes the unchanged method body
 with an explicit identity projection to isolate supplied-logit postprocessing.

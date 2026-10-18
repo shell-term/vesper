@@ -16,6 +16,28 @@ from vesper.prefix_reference import required_shared_bytes
 
 
 class PrefixTests(unittest.TestCase):
+    def test_memory_capture_requires_complete_qualification_and_its_exact_hash(self):
+        qualification = json.loads((Path(__file__).resolve().parents[1] / "results/2026-10-18-attention-memory/attention-memory.json").read_bytes())
+        raw = np.zeros(5120, np.uint16).tobytes()
+        case = {"activation_bf16_base64": base64.b64encode(raw).decode(), "activation_bf16_sha256": hashlib.sha256(raw).hexdigest()}
+        digest = hashlib.sha256(json.dumps(qualification, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+        report = {"probe": "original_prefix_moe_inputs", "status": "pass", "model": MODEL, "revision": REVISION,
+                  "attention_reference": {"profile": "ptx-memory", "qualification_sha256": digest},
+                  "preflight": {"status": "blocked"}, "attention_memory_qualification": qualification,
+                  "cases": [case, dict(case)]}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "capture.json"
+            path.write_text(json.dumps(report))
+            self.assertEqual(len(load_moe_inputs(path)[0]), 2)
+            report["attention_reference"]["qualification_sha256"] = "0" * 64
+            path.write_text(json.dumps(report))
+            with self.assertRaisesRegex(ValueError, "capture hash"):
+                load_moe_inputs(path)
+            report["attention_memory_qualification"] = {"status": "pass"}
+            path.write_text(json.dumps(report))
+            with self.assertRaisesRegex(ValueError, "provenance"):
+                load_moe_inputs(path)
+
     def test_generated_launch_resource_requirement_is_read_without_execution(self):
         for name in ("cuKernelSetAttribute", "cuda.cuKernelSetAttribute"):
             source = f"{name}(CUfunction_attribute.CU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES, 141312, kernel, device)"
@@ -28,6 +50,7 @@ class PrefixTests(unittest.TestCase):
         case = {"activation_bf16_base64": base64.b64encode(raw).decode(),
                 "activation_bf16_sha256": hashlib.sha256(raw).hexdigest()}
         report = {"probe": "original_prefix_moe_inputs", "status": "pass", "model": MODEL, "revision": REVISION,
+                  "attention_reference": {"profile": "original"}, "preflight": {"status": "pass", "source_or_arithmetic_modified": False},
                   "cases": [dict(case), dict(case)]}
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "inputs.json"

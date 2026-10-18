@@ -1,6 +1,8 @@
 # Connected MoE validation — 2026-10-18
 
-**Issue #6 remains open, with a real-activation validation gate pending.** The
+**Historical generated-input experiment.** Its real-activation gate has since
+passed; see the [real-input follow-up](real-moe-validation.md). At this initial
+publication, Issue #6 remained open. The
 original gate, audited byte cache, selected routed experts, shared expert and
 ordered accumulation are connected. On generated BF16 inputs, **30 successful
 calls match all 108 checked boundaries each**, including 153,600 final BF16
@@ -10,8 +12,8 @@ original reference. A separate process without PyTorch reproduces the matrix.
 The unchanged official layer-0 Attention specialization cannot run on the tested
 RTX 4090: it requires **141,312 bytes (138 KiB)** of dynamic shared memory per
 block, while CUDA reports an opt-in maximum of **101,376 bytes (99 KiB)**. Real
-MoE input capture is therefore blocked. Generated inputs do not satisfy that
-acceptance check, and M1 stays open. See [issue #6](https://github.com/shell-term/vesper/issues/6)
+Direct MoE input capture was therefore blocked. Generated inputs did not satisfy
+that acceptance check, and M1 stayed open. See [issue #6](https://github.com/shell-term/vesper/issues/6)
 and the related [Attention work](https://github.com/shell-term/vesper/issues/7).
 
 The subsequent [Query storage experiment](attention-storage-validation.md)
@@ -144,9 +146,10 @@ capture on a compatible profile remains unvalidated by this experiment.
 
 The complete blocked result and pinned hashes for `model.py`, `kernel.py`,
 `convert.py`, `generate.py` and configuration are published. A faithful Attention
-path or separately qualified capture route must resolve this constraint before
-the real-input condition in #6 can pass. The implementation does not silently
-fall back to a different attention computation.
+path or separately qualified capture route was required to resolve this
+constraint. The [subsequent PTX memory adapter](attention-memory-validation.md)
+now supplies that qualified route; this original generated-input report remains
+unchanged evidence of the earlier scope.
 
 ## Reproduction and complete evidence
 
@@ -165,6 +168,6 @@ vesper prefix-preflight --output artifacts/prefix-preflight.json
 For published goldens, use the committed `connected-moe.json` and `plan.json`
 from [the complete results](../results/2026-10-18-connected-moe/) in the recheck.
 Do not overwrite an existing store. A blocked preflight returns exit code 2;
-the generated-input component comparison can pass while #6 remains open.
+the generated-input component comparison alone did not clear #6's real-input gate.
 CPU tests cover input rounding, import limits, provenance, missing-expert refusal,
 failure cleanup and complete retry. CPU CI does not rerun the CUDA matrix.

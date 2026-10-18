@@ -7,17 +7,18 @@
 「実装済み」と「公式との一致を検証済み」を区別し、合格条件と測定データを各Issueに残します。
 [開発の節目と運用方針](docs/roadmap.md)も公開しています。
 
-元のゲートからキャッシュ・expert・出力合算までを接続しました。
-生成した入力で30実行すべてが公式と中間値まで一致し、メモリ不足・転送破損・読み込み失敗からの
-再実行も一致しています。PyTorchなしの環境でも同じ検証を再現できました。
-実際のMoE入力の取得は、公式Attentionが4090の作業領域上限を超えるため未完了です。
-[Issue #6](https://github.com/shell-term/vesper/issues/6)とM1は開いたまま継続します。
-詳しくは[接続検証レポート](docs/connected-moe-validation.md)を参照してください。
+元のゲートからキャッシュ・expert・出力合算までを接続し、**実際のモデルから取得した入力でも検証が通りました**。
+4入力・text/image両方のゲート設定で30実行すべてが公式と108段階の中間値まで一致し、
+メモリ不足・転送破損・読み込み失敗からの再実行も一致しています。
+PyTorchなしの環境でも全検証を再現しました。これはM1のMoE部分の検証で、文章生成は未完了です。
+[実入力の検証レポート](docs/real-moe-validation.md)と[Issue #6](https://github.com/shell-term/vesper/issues/6)に記録します。
 
 AttentionのQueryの置き場所だけを変える候補を実装し、64ヘッド・512次元を4090で実行できました。
 GPU内の作業領域は138 KiBから74 KiBに減り、比較可能な小さい構成では中間値も公式と一致しました。
-実寸構成の公式との直接比較は未検証のため、通常の入力取得経路には組み込んでいません。
-[Issue #7](https://github.com/shell-term/vesper/issues/7)と[検証レポート](docs/attention-storage-validation.md)に記録します。
+公式が生成した演算命令を保持し、メモリの読み書きだけを変更した比較経路を別に検証しました。
+実寸構成でも途中値が一致し、この経路から実際のMoE入力を取得できました。
+未変更の公式カーネルそのものの起動は、4090の上限を超えるため引き続きできません。
+[Issue #7](https://github.com/shell-term/vesper/issues/7)と[比較経路の検証](docs/attention-memory-validation.md)に詳細があります。
 
 共有expertのFP8計算と、expert出力を合算する順序・丸めを検証しました。
 共有expertの54条件、合算の38条件、元の6個のexpertと共有expertを組み合わせた16条件で、

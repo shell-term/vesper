@@ -11,6 +11,7 @@ import ctypes as C
 from functools import lru_cache
 import hashlib
 import importlib.util
+import json
 import math
 from pathlib import Path
 from types import MethodType, SimpleNamespace
@@ -88,12 +89,24 @@ def required_shared_bytes(host_source):
     return max(sizes)
 
 
-def capture_prefix(fixture: Path, directory: Path, ordinal=0):
+def capture_prefix(fixture: Path, directory: Path, ordinal=0, attention_reference="original"):
+    if attention_reference not in ("original", "ptx-memory"):
+        raise ValueError("Unknown original-prefix Attention reference profile")
     preflight = prefix_preflight(directory, ordinal)
-    if preflight["status"] != "pass":
+    if preflight.get("missing_dependencies") or (attention_reference == "original" and preflight["status"] != "pass"):
         return {"probe": "original_prefix_moe_inputs", "status": "blocked", "model": MODEL, "revision": REVISION,
                 "preflight": preflight, "cases": [], "reason": "Missing optional reference dependencies" if preflight.get("missing_dependencies")
                 else "Unchanged official attention exceeds device shared-memory capacity"}
+    if attention_reference == "ptx-memory":
+        from .attention_memory import validate_qualification
+        from .attention_memory_reference import AttentionMemoryReference
+        with AttentionMemoryReference(directory, ordinal) as memory:
+            qualification = validate_qualification(memory.qualify())
+            return _capture_prefix(fixture, directory, ordinal, preflight, memory, qualification)
+    return _capture_prefix(fixture, directory, ordinal, preflight)
+
+
+def _capture_prefix(fixture, directory, ordinal, preflight, memory=None, qualification=None):
     import torch
     import torch.nn.functional as F
     import tilelang
@@ -113,7 +126,7 @@ def capture_prefix(fixture: Path, directory: Path, ordinal=0):
         scope = {"torch": torch, "F": F, "math": math, "lru_cache": lru_cache,
                  "world_size": 1, "fp8_block_size": 32, "scale_fmt": "ue8m0", "scale_dtype": torch.float8_e8m0fnu,
                  "act_quant": kernel.act_quant, "fp8_gemm": kernel.fp8_gemm, "fp4_gemm": kernel.fp4_gemm,
-                 "sparse_attn": kernel.sparse_attn, "hc_split_sinkhorn": kernel.hc_split_sinkhorn}
+                 "sparse_attn": kernel.sparse_attn if memory is None else memory, "hc_split_sinkhorn": kernel.hc_split_sinkhorn}
         tree = ast.parse((directory / "model.py").read_text(encoding="utf-8"))
         names = ("linear", "precompute_freqs_cis", "apply_rotary_emb", "get_window_topk_idxs", "make_identity_pre_mix")
         for name in names:
@@ -208,13 +221,19 @@ def capture_prefix(fixture: Path, directory: Path, ordinal=0):
                                             "phase": "single_token_prefill" if position == 0 else "single_token_decode",
                                             "activation_bf16_sha256": hashlib.sha256(raw).hexdigest(),
                                             "activation_bf16_base64": base64.b64encode(raw).decode("ascii")})
+        attention_profile = {"profile": "original" if memory is None else "ptx-memory"}
+        if qualification is not None:
+            attention_profile["qualification_sha256"] = hashlib.sha256(json.dumps(qualification, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
         return {"probe": "original_prefix_moe_inputs", "status": "pass" if records and all(c["status"] == "pass" for c in repeated) else "fail",
                 "model": MODEL, "revision": REVISION, "layer": 0, "fixture": manifest, "reference": source,
+                "preflight": preflight, "attention_reference": attention_profile, "attention_memory_qualification": qualification,
                 "cases": records, "repeat_checks": repeated, "wo_a_original_conversion_bf16_sha256": conversion_hash,
                 "reference_runtime_workarounds": workarounds, "torch_version": torch.__version__, "torch_cuda_version": torch.version.cuda,
                 "torch_git_version": torch.version.git_version, "tilelang_version": tilelang.__version__, "numpy_version": np.__version__,
                 "minimum_observed_host_available_bytes": minimum, "host_reservation_bytes": budget.peak,
-                "scope": "Unchanged layer-0 prefix methods; original embedding rows and weights; stop before MoE; no native attention qualification",
+                "attention_reference_host_reservation_bytes": 0 if qualification is None else qualification["memory"]["host_reservation_bytes"],
+                "combined_reference_host_allowance_bytes": budget.peak + (0 if qualification is None else qualification["memory"]["host_reservation_bytes"]),
+                "scope": "Unchanged layer-0 prefix methods; explicit qualified PTX memory adapter when selected; original embedding rows/weights; stop before MoE; no native attention qualification",
                 "tokenizer_quality": "not_run", "full_model_quality": "not_run"}
     finally:
         torch.set_default_dtype(previous)

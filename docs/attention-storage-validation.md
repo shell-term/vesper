@@ -1,5 +1,10 @@
 # Attention Query storage experiment
 
+This initial result is retained as historical evidence. The subsequent
+[PTX memory adapter](attention-memory-validation.md) qualifies an explicit
+official-arithmetic reference and supplies [real MoE inputs](real-moe-validation.md).
+The untouched full-kernel launch limit below still applies.
+
 The full **64-head, 512-dimensional** sparse Attention candidate now executes on
 the RTX 4090 with **75,776 bytes (74 KiB)** of dynamic shared memory. The original
 specialization requests **141,312 bytes (138 KiB)**, above this device's
@@ -7,9 +12,9 @@ specialization requests **141,312 bytes (138 KiB)**, above this device's
 the original full-profile reference gate remains **blocked**.
 
 [Issue #7](https://github.com/shell-term/vesper/issues/7) remains open. No candidate
-is substituted into prefix capture or the native runtime. Real MoE inputs have
-not been captured; [Issue #6](https://github.com/shell-term/vesper/issues/6) and M1
-remain open. This is an optional TileLang experiment, not native Attention or
+was substituted into prefix capture or the native runtime by this experiment.
+At this point real MoE inputs had not been captured and M1 remained open.
+This is an optional TileLang experiment, not native Attention or
 whole-model qualification.
 
 ## Storage change
@@ -100,8 +105,8 @@ are rejected. The CPU suite passes **95 tests**.
 Complete results: [raw report](../results/2026-10-18-attention-storage/attention-storage.json)
 and [summary with raw-file SHA-256](../results/2026-10-18-attention-storage/summary.json).
 
-The next fidelity gate is an exact full-profile original comparison with an
-explicitly qualified code-generation/execution profile. Only after that gate
-can this path supply qualified real prefix activations. Native Attention,
-RoPE/indexing, Hyper-Connections, KV quantization/state and full-model quality
-remain separate work under Issue #7 and subsequent milestones.
+The follow-up [PTX memory adapter](attention-memory-validation.md) now provides
+an explicitly qualified official-arithmetic profile and real prefix activations.
+Untouched full-kernel launch remains blocked. Native Attention, RoPE/indexing,
+Hyper-Connections, KV quantization/state and full-model quality remain separate
+work under Issue #7 and subsequent milestones.
