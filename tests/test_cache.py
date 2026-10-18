@@ -35,6 +35,7 @@ class Backend:
         self.slots = {"primary": [np.zeros(4, np.uint8) for _ in range(primary)],
                       "helper": [np.zeros(4, np.uint8) for _ in range(helper)]}
         self.corrupt_write, self.failed_write = False, False
+        self.verify_calls = []
 
     def read(self, tier, slot, target):
         np.copyto(target, self.slots[tier][slot])
@@ -46,15 +47,21 @@ class Backend:
         if self.failed_write:
             raise OSError("Injected transfer failure")
 
+    def verify(self, tier, slot, key):
+        self.verify_calls.append((tier, key))
+        self.source.validate(key, self.slots[tier][slot])
+        return 32
+
 
 class CacheTests(unittest.TestCase):
-    def make(self, ram=4, cap=12, helper=1):
+    def make(self, ram=4, cap=12, helper=1, gpu_verify=False):
         source, backend = Source(), Backend(helper=helper)
+        backend.source = source
         budget = MemoryBudget(cap=cap, available_floor=100)
         budget.acquire(8, available=1000)  # Model the two fixed staging buffers.
         self.base_available = 1000
         cache = TieredCache(source, backend, budget, ram,
-                            available=lambda: self.base_available - budget.reserved)
+                            available=lambda: self.base_available - budget.reserved, gpu_verify=gpu_verify)
         self.addCleanup(cache.close)
         return cache, source, backend, budget
 
@@ -200,6 +207,35 @@ class CacheTests(unittest.TestCase):
         self.assertFalse(worker.is_alive())
         self.assertFalse(errors)
         self.assertTrue(acquired.is_set())
+
+    def test_device_audit_rejects_corrupted_ram_before_publishing_compute_slot(self):
+        cache, _, backend, _ = self.make(gpu_verify=True)
+        for key in "ABC":
+            self.request(cache, key)
+        cache.ram["A"][0] ^= 1
+        with self.assertRaisesRegex(ValueError, "Corrupt"):
+            self.request(cache, "A")
+        self.assertNotIn("A", cache.primary.entries)
+        self.assertEqual(cache.stats["integrity_failures"], 1)
+        self.request(cache, "A")
+        self.assertGreater(cache.stats["cpu_checks_deferred"], 0)
+        self.assertIn(("primary", "A"), backend.verify_calls)
+        self.assertEqual(cache.stats["primary_audit_readback_bytes"], 0)
+
+    def test_device_audit_rejects_corrupt_and_failed_uploads(self):
+        for fault in ("corrupt_write", "failed_write"):
+            cache, _, backend, _ = self.make(gpu_verify=True)
+            setattr(backend, fault, True)
+            with self.assertRaises((ValueError, OSError)):
+                self.request(cache, "A")
+            self.assertFalse(cache.primary.entries)
+            setattr(backend, fault, False)
+            self.request(cache, "A")
+
+    def test_device_verification_cannot_disable_its_upload_audit(self):
+        cache, source, backend, budget = self.make()
+        with self.assertRaises(ValueError):
+            TieredCache(source, backend, budget, 4, audit=False, gpu_verify=True)
 
 
 if __name__ == "__main__":

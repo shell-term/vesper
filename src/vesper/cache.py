@@ -13,6 +13,7 @@ import threading
 import numpy as np
 
 from .resources import MemoryBudget, physical_memory
+from .timing import Timings
 
 
 class SlotIndex:
@@ -49,13 +50,21 @@ class TieredCache:
     Source provides size, entries, read_into and validate. Backend provides two
     pinned staging arrays and read/write for primary/helper slots. The RAM tier
     owns its arrays and accounts them in the shared host budget.
+
+    GPU-SHA mode defers host-copy checks until admission to a GPU. The backend
+    must hash every uploaded byte against the verified original digest table
+    before a slot is published. A failed audit never permits model execution.
     """
 
     def __init__(self, source, backend, budget: MemoryBudget, ram_capacity_bytes: int,
-                 available=None, audit=True):
+                 available=None, audit=True, timings=None, gpu_verify=False):
         if ram_capacity_bytes < 0:
             raise ValueError("Negative RAM cache capacity")
         self.source, self.backend, self.budget = source, backend, budget
+        self.timings = timings or Timings()
+        if gpu_verify and (not audit or not callable(getattr(backend, "verify", None))):
+            raise ValueError("GPU verification requires a complete upload audit backend")
+        self.gpu_verify = gpu_verify
         self.size, self.ram_capacity = source.size, ram_capacity_bytes
         self.available = available or (lambda: physical_memory()["available"])
         self.primary, self.helper = SlotIndex(backend.primary_slots), SlotIndex(backend.helper_slots)
@@ -72,7 +81,9 @@ class TieredCache:
                  "store_read_attempts", "store_reads_completed", "store_bytes_requested", "primary_evictions", "helper_evictions",
                  "ram_capacity_evictions", "ram_pressure_evictions", "ram_admission_refused", "pressure_refusals", "integrity_failures",
                  "primary_h2d_bytes", "helper_h2d_bytes", "primary_d2h_bytes", "helper_d2h_bytes",
-                 "primary_audit_readback_bytes", "helper_audit_readback_bytes")
+                 "primary_audit_readback_bytes", "helper_audit_readback_bytes", "cpu_checks_deferred",
+                 "primary_gpu_audit_payload_bytes", "helper_gpu_audit_payload_bytes",
+                 "primary_gpu_audit_digest_d2h_bytes", "helper_gpu_audit_digest_d2h_bytes")
         self.stats = dict.fromkeys(names, 0)
 
     def _drop_ram(self, key, reason=None):
@@ -89,6 +100,12 @@ class TieredCache:
             raise MemoryError("System memory remains below the reserve after releasing the RAM cache")
 
     def _verify(self, key, data):
+        if self.gpu_verify:
+            # Host/intermediate copies may be unverified. Every GPU upload is
+            # checked against the immutable original digest table before the
+            # slot becomes visible, including before any model computation.
+            self.stats["cpu_checks_deferred"] += 1
+            return
         try:
             self.source.validate(key, data)
         except Exception:
@@ -104,9 +121,18 @@ class TieredCache:
         self.backend.write(tier, slot, data)
         self.stats[f"{tier}_h2d_bytes"] += self.size
         if self.audit:
-            self.backend.read(tier, slot, self.staging[1])
-            self.stats[f"{tier}_audit_readback_bytes"] += self.size
-            self._verify(key, self.staging[1])
+            if self.gpu_verify:
+                try:
+                    digest_bytes = self.backend.verify(tier, slot, key)
+                except ValueError:
+                    self.stats["integrity_failures"] += 1
+                    raise
+                self.stats[f"{tier}_gpu_audit_payload_bytes"] += self.size
+                self.stats[f"{tier}_gpu_audit_digest_d2h_bytes"] += digest_bytes
+            else:
+                self.backend.read(tier, slot, self.staging[1])
+                self.stats[f"{tier}_audit_readback_bytes"] += self.size
+                self._verify(key, self.staging[1])
 
     def _store_ram(self, key, data):
         if self.ram_capacity < self.size:
@@ -125,8 +151,10 @@ class TieredCache:
         self.budget.acquire(self.size, available=self.available())
         array, reserved = None, True
         try:
-            array = np.empty(self.size, np.uint8)
-            np.copyto(array, data)
+            with self.timings.section("host.ram_allocate"):
+                array = np.empty(self.size, np.uint8)
+            with self.timings.section("host.ram_copy"):
+                np.copyto(array, data)
             self._verify(key, array)
             if self.available() < self.budget.available_floor:
                 del array
@@ -180,7 +208,8 @@ class TieredCache:
             self.stats["helper_hits"] += 1
             origin = "helper_gpu"
         elif key in self.ram:
-            np.copyto(self.staging[0], self.ram[key])
+            with self.timings.section("host.ram_copy"):
+                np.copyto(self.staging[0], self.ram[key])
             self._verify(key, self.staging[0])
             self._drop_ram(key)
             self.stats["ram_hits"] += 1
@@ -234,6 +263,7 @@ class TieredCache:
         return {"primary_keys": list(self.primary.entries), "helper_keys": list(self.helper.entries),
                 "ram_keys": list(self.ram), "ram_cache_bytes": len(self.ram) * self.size,
                 "host_reserved_bytes": self.budget.reserved, "host_peak_reserved_bytes": self.budget.peak,
+                "integrity_mode": "gpu-sha256" if self.gpu_verify else "readback",
                 "counters": dict(self.stats)}
 
     def close(self):

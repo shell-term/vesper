@@ -11,6 +11,7 @@ from .checkpoint import EXPERT_SHAPES, validate_expert_arrays
 from .cuda import Device, Driver, compile_probe
 from .formats import bf16_bits, bf16_values
 from .resources import MiB
+from .timing import Timings
 
 
 class ExpertExecutor:
@@ -21,6 +22,7 @@ class ExpertExecutor:
             raise ValueError("Invalid SwiGLU limit")
         self.ordinal, self.limit, self.device_cap = ordinal, float(swiglu_limit), device_cap
         self.device = None
+        self.timings = Timings()
 
     def __enter__(self):
         self.driver = Driver()
@@ -43,7 +45,8 @@ class ExpertExecutor:
 
     def _launch(self, name, pointers, trailing, items):
         args = [C.c_uint64(p) for p in pointers] + trailing
-        self.device.launch(self.module, name, args, items)
+        with self.timings.section("compute.kernels"):
+            self.device.launch(self.module, name, args, items)
 
     def execute(self, x: np.ndarray, weights: dict[str, int], routing_weight: float | None = None) -> dict[str, np.ndarray]:
         if self.device is None:
@@ -56,8 +59,9 @@ class ExpertExecutor:
         x = np.ascontiguousarray(bf16_values(bf16_bits(x)))
         if not np.isfinite(x).all():
             raise ValueError("Input overflows this probe's finite BF16 scope")
-        self.device.current()
-        self.driver.check(self.driver.cuMemcpyHtoD_v2(self.work["x"], x.ctypes.data, x.nbytes))
+        with self.timings.section("transfer.input_h2d"):
+            self.device.current()
+            self.driver.check(self.driver.cuMemcpyHtoD_v2(self.work["x"], x.ctypes.data, x.nbytes))
         p = self.work
         self._launch("activation32", [p["x"], p["q"], p["s"]], [C.c_int(160)], 160)
         for projection in ("w1", "w3"):
@@ -71,7 +75,8 @@ class ExpertExecutor:
                   "w1": ((2304,), np.uint16), "w3": ((2304,), np.uint16),
                   "down_input": ((2304,), np.float32), "trace": ((2304, 5), np.float32),
                   "down_q": ((2304,), np.uint8), "down_s": ((72,), np.uint8), "w2": ((5120,), np.uint16)}
-        return {name: self.device.download(p[name], shape, dtype) for name, (shape, dtype) in layout.items()}
+        with self.timings.section("transfer.diagnostics_d2h"):
+            return {name: self.device.download(p[name], shape, dtype) for name, (shape, dtype) in layout.items()}
 
     def _projection(self, name, q, scales, output, weights):
         rows, width = EXPERT_SHAPES[name]

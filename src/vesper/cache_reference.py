@@ -33,7 +33,7 @@ def pipeline_checks(expected, actual):
 
 def compare_cache(store: Path, fixtures: list[Path], reference_directory: Path, ordinal=0, helper_ordinal=1,
                   reference_ordinal=0, seeds=(20261018, 0, 1, 42), input_scales=(1.0, 16.0),
-                  routing_weights=(None, 0.25, 1.5, 0.0)) -> dict:
+                  routing_weights=(None, 0.25, 1.5, 0.0), integrity_mode="readback", profile=False) -> dict:
     missing = [name for name in ("torch", "tilelang") if importlib.util.find_spec(name) is None]
     if missing:
         return {"probe": "tiered_expert_parity", "status": "blocked", "missing_dependencies": missing}
@@ -72,7 +72,8 @@ def compare_cache(store: Path, fixtures: list[Path], reference_directory: Path, 
 
     def runtime_for(ram):
         return TieredExpertRuntime(store, CacheConfig(host_cap_bytes=96 * MiB, ram_cache_bytes=ram,
-                                   available_floor=32 * GiB, primary_device=ordinal, helper_device=helper_ordinal))
+                                   available_floor=32 * GiB, primary_device=ordinal, helper_device=helper_ordinal,
+                                   integrity_mode=integrity_mode, profile=profile))
 
     runtime = runtime_for(EXPERT_BYTES)
     with runtime:
@@ -131,6 +132,7 @@ def compare_cache(store: Path, fixtures: list[Path], reference_directory: Path, 
     return {"probe": "tiered_expert_parity", "status": "pass" if stages_ok and cleanup_ok else "fail",
             "model": MODEL, "revision": REVISION, "primary_device": primary_info, "helper_device": helper_info,
             "helper_role": "Original byte storage only; no model arithmetic", "reference_device_ordinal": reference_ordinal,
+            "integrity_mode": integrity_mode,
             "reference": first_reference.manifest, "reference_runtime_workarounds": first_reference.runtime_workarounds,
             "fixtures": list(provenance.values()), "request_pattern": pattern, "cases": records, "phases": phases,
             "final_bf16_values_checked": len(records) * 5120, "checks_per_case": 13,

@@ -7,11 +7,15 @@ from dataclasses import dataclass
 from pathlib import Path
 import time
 
+import numpy as np
+
 from .cache import TieredCache
 from .cuda import Device, Pinned
 from .expert import ExpertExecutor
 from .resources import GiB, MiB, MemoryBudget
 from .storage import NativeStore
+from .timing import Timings
+from .integrity import DeviceIntegrity, digest_shape
 
 
 @dataclass(frozen=True)
@@ -25,8 +29,12 @@ class CacheConfig:
     helper_slots: int = 1
     device_cap_bytes: int = 64 * MiB
     metadata_allowance_bytes: int = MiB
+    profile: bool = False
+    integrity_mode: str = "readback"
 
     def __post_init__(self):
+        if self.integrity_mode not in ("readback", "gpu-sha256"):
+            raise ValueError("Unknown cache integrity mode")
         if self.primary_slots < 1 or self.helper_slots < 0 or self.ram_cache_bytes < 0:
             raise ValueError("Invalid expert cache capacity")
         if self.helper_device == self.primary_device:
@@ -38,12 +46,14 @@ class CacheConfig:
 
 
 class CudaCacheBackend:
-    """Two portable pinned buffers and fixed slots; helper performs no arithmetic."""
+    """Portable pinned buffers and fixed slots; helper does no model arithmetic."""
 
-    def __init__(self, executor, size, config, budget):
+    def __init__(self, executor, size, config, budget, source=None):
         self.executor, self.size, self.config, self.budget = executor, size, config, budget
         self.primary_slots, self.helper_slots = config.primary_slots, config.helper_slots
+        self.timings = executor.timings if executor is not None else Timings()
         self.stack, self.helper_device = None, None
+        self.source = source
 
     def __enter__(self):
         if self.stack is not None:
@@ -62,25 +72,52 @@ class CudaCacheBackend:
                 self.pointers["primary"].append(pointer)
             if self.helper_device:
                 self.pointers["helper"] = [self.helper_device.allocate(self.size) for _ in range(self.helper_slots)]
+            self.verifiers = {}
+            if self.config.integrity_mode == "gpu-sha256":
+                if self.source is None:
+                    raise ValueError("GPU integrity requires original source digest tables")
+                shape = digest_shape(self.size)
+                self.digest_readback = self.stack.enter_context(Pinned(self.executor.driver, shape[0] * shape[1], self.budget)).array().reshape(shape)
+                scratch_bytes = shape[0] * shape[1]
+                self.budget.acquire(scratch_bytes)
+                self.stack.callback(self.budget.release, scratch_bytes)
+                self.digest_comparison = np.empty(shape, np.bool_)
+                self.stack.callback(delattr, self, "digest_comparison")
+                devices = self.executor.driver.inventory()["devices"]
+                for tier, device in (("primary", self.executor.device), ("helper", self.helper_device)):
+                    if device is not None:
+                        capability = next(d["compute_capability"] for d in devices if d["ordinal"] == device.ordinal)
+                        checker = DeviceIntegrity(device, capability, self.size, self.timings)
+                        self.stack.callback(checker.close)
+                        self.verifiers[tier] = checker
             return self
         except BaseException:
             self.stack.close()
+            self.stack = None
             raise
 
     def _device(self, tier):
         return self.executor.device if tier == "primary" else self.helper_device
 
     def read(self, tier, slot, target):
-        device = self._device(tier)
-        device.current()
-        device.driver.check(device.driver.cuMemcpyDtoH_v2(target.ctypes.data, self.pointers[tier][slot], self.size))
-        device.driver.check(device.driver.cuCtxSynchronize())
+        with self.timings.section(f"transfer.{tier}_d2h"):
+            device = self._device(tier)
+            device.current()
+            device.driver.check(device.driver.cuMemcpyDtoH_v2(target.ctypes.data, self.pointers[tier][slot], self.size))
+            device.driver.check(device.driver.cuCtxSynchronize())
 
     def write(self, tier, slot, data):
-        device = self._device(tier)
-        device.current()
-        device.driver.check(device.driver.cuMemcpyHtoD_v2(self.pointers[tier][slot], data.ctypes.data, self.size))
-        device.driver.check(device.driver.cuCtxSynchronize())
+        with self.timings.section(f"transfer.{tier}_h2d"):
+            device = self._device(tier)
+            device.current()
+            device.driver.check(device.driver.cuMemcpyHtoD_v2(self.pointers[tier][slot], data.ctypes.data, self.size))
+            device.driver.check(device.driver.cuCtxSynchronize())
+
+    def verify(self, tier, slot, key):
+        if key not in self.source.expected_chunks:
+            raise ValueError("Original digest table must come from a fully verified store read")
+        return self.verifiers[tier].verify(self.pointers[tier][slot], self.source.expected_chunks[key],
+                                           self.digest_readback, self.digest_comparison)
 
     def __exit__(self, *_):
         if self.stack is not None:
@@ -104,20 +141,27 @@ class TieredExpertRuntime:
         if self.stack is not None:
             raise RuntimeError("Tiered runtime is already open")
         c = self.config
-        self.stack = ExitStack()
         self.budget = MemoryBudget(c.host_cap_bytes, c.available_floor)
+        self.stack = ExitStack()
+        self.timings = Timings(c.profile)
         try:
             self.budget.acquire(c.metadata_allowance_bytes)
             self.stack.callback(self.budget.release, c.metadata_allowance_bytes)
-            self.store = self.stack.enter_context(NativeStore(self.store_path, self.budget))
+            self.store = NativeStore(self.store_path, self.budget)
+            self.store.timings = self.timings
+            self.store.gpu_integrity = c.integrity_mode == "gpu-sha256"
+            self.stack.enter_context(self.store)
             fixed = c.metadata_allowance_bytes + self.store.size * 3
             if fixed > c.host_cap_bytes:
                 raise MemoryError("Host cap cannot fit direct-I/O scratch and two pinned staging buffers")
-            self.executor = self.stack.enter_context(ExpertExecutor(c.primary_device, device_cap=c.device_cap_bytes))
-            self.backend = self.stack.enter_context(CudaCacheBackend(self.executor, self.store.size, c, self.budget))
+            self.executor = ExpertExecutor(c.primary_device, device_cap=c.device_cap_bytes)
+            self.executor.timings = self.timings
+            self.stack.enter_context(self.executor)
+            self.backend = self.stack.enter_context(CudaCacheBackend(self.executor, self.store.size, c, self.budget, self.store))
             self.primary_device_object = self.executor.device
             self.helper_device_object = self.backend.helper_device
-            self.cache = TieredCache(self.store, self.backend, self.budget, c.ram_cache_bytes)
+            self.cache = TieredCache(self.store, self.backend, self.budget, c.ram_cache_bytes, timings=self.timings,
+                                     gpu_verify=c.integrity_mode == "gpu-sha256")
             self.stack.callback(self.cache.close)
             self.last_event = None
             return self
@@ -130,6 +174,7 @@ class TieredExpertRuntime:
         if self.stack is None:
             raise RuntimeError("Use the tiered runtime as a context manager")
         started = time.perf_counter()
+        before = self.timings.snapshot()
         with self.cache.acquire(key) as (slot, origin):
             for device in (self.executor.device, self.backend.helper_device):
                 if device is not None and device.memory()["free"] < device.free_floor:
@@ -138,15 +183,21 @@ class TieredExpertRuntime:
             weights = {name: base + region["offset"] for name, region in self.store.manifest["layout"].items()}
             result = self.executor.execute(x, weights, routing_weight)
         self.last_event = {"key": key, "source_tier": origin, "wall_ms": (time.perf_counter() - started) * 1000}
+        if self.timings.enabled:
+            self.last_event["stage_timings"] = self.timings.since(before)
         return result
 
     def snapshot(self):
         result = self.cache.snapshot()
+        if self.timings.enabled:
+            result["stage_timings"] = self.timings.snapshot()
         result.update({"primary_peak_explicit_bytes": self.primary_device_object.peak,
                        "helper_peak_explicit_bytes": 0 if self.helper_device_object is None else self.helper_device_object.peak,
                        "store_direct_read_calls": self.store.read_calls, "store_direct_read_bytes": self.store.bytes_read,
                        "host_cap_bytes": self.config.host_cap_bytes, "host_available_floor_bytes": self.config.available_floor,
                        "ram_capacity_bytes": self.config.ram_cache_bytes,
+                       "expected_digest_table_bytes": sum(a.nbytes for a in self.store.expected_chunks.values()),
+                       "integrity_cubin_sha256": {tier: checker.cubin_sha256 for tier, checker in self.backend.verifiers.items()},
                        "timing_scope": "Synchronous calls including hashes, audit readbacks and diagnostic copies; no token-rate claim"})
         return result
 

@@ -11,10 +11,11 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="vesper", description="Vesper native-precision MoE research probes")
     sub = parser.add_subparsers(dest="command", required=True)
     for name in ("inventory", "validate", "bench-transfer", "fetch-fixture", "bench-disk", "compare-reference",
-                 "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache"):
+                 "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
+                 "bench-cache", "validate-integrity"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
-        if name in ("validate", "bench-transfer"):
+        if name in ("validate", "bench-transfer", "validate-integrity"):
             command.add_argument("--devices", type=int, nargs="+")
         if name in ("validate", "compare-reference"):
             command.add_argument("--fixture", type=Path)
@@ -30,17 +31,24 @@ def main(argv=None) -> int:
             command.add_argument("--fixtures", type=Path, nargs="+", required=True)
         if name == "build-store":
             command.add_argument("--directory", type=Path, required=True)
-        if name == "validate-cache":
+        if name in ("validate-cache", "bench-cache"):
             command.add_argument("--store", type=Path, required=True)
             command.add_argument("--helper-device", type=int, default=1)
+        if name == "validate-cache":
+            command.add_argument("--integrity", choices=("readback", "gpu-sha256"), default="readback")
+            command.add_argument("--profile", action="store_true")
+        if name == "bench-cache":
+            command.add_argument("--trials", type=int, default=6)
+            command.add_argument("--repeats", type=int, default=8)
         if name == "bench-disk":
             command.add_argument("--directory", type=Path, default=Path("artifacts/disk-probe"))
             command.add_argument("--file", type=Path, help="Read an existing model file without creating scratch")
         if name in ("compare-reference", "compare-expert", "validate-cache"):
             command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
-        if name in ("compare-reference", "compare-expert", "trace-reduction", "validate-cache"):
+        if name in ("compare-reference", "compare-expert", "trace-reduction", "validate-cache", "bench-cache"):
             command.add_argument("--device", type=int, default=0)
-            command.add_argument("--reference-device", type=int)
+            if name != "bench-cache":
+                command.add_argument("--reference-device", type=int)
         if name in ("compare-reference", "trace-reduction"):
             command.add_argument("--seed", type=int, default=20261018)
         if name == "compare-expert":
@@ -72,7 +80,14 @@ def main(argv=None) -> int:
             from .cache_reference import compare_cache
             reference = args.device if args.reference_device is None else args.reference_device
             result = compare_cache(args.store, args.fixtures, args.reference_directory,
-                                   args.device, args.helper_device, reference)
+                                   args.device, args.helper_device, reference,
+                                   integrity_mode=args.integrity, profile=args.profile)
+        elif args.command == "bench-cache":
+            from .cache_benchmark import benchmark_cache
+            result = benchmark_cache(args.store, args.device, args.helper_device, args.trials, args.repeats)
+        elif args.command == "validate-integrity":
+            from .integrity_validation import validate_integrity
+            result = validate_integrity(args.devices)
         elif args.command == "bench-disk":
             from .disk import benchmark
             result = benchmark(args.directory, args.file)

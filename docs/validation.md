@@ -10,11 +10,13 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Official kernels | Per-operation exact comparisons with the pinned TileLang code | W1 slice: 4090 passes 8 inputs; 3080 Ti candidate fails, 14/1,024 output mismatches |
 | Full expert | Activation quantization, clamps, weighted SwiGLU and three projections | One native expert on 4090 passes 128 single-token conditions, including intermediate bits |
 | Tiered expert storage | Identity, original bytes, eviction/reload and unchanged expert computation | Three native experts pass 232 calls across SSD/RAM/two GPUs, including intermediate bits |
+| Device integrity audits | Original-byte digest anchors, padding/chunk boundaries, corruption refusal and unchanged computation | Both GPUs pass 96 payload cases and 10 fault injections; optional path passes another 232 official comparisons |
 | Full layer | Router, expert selection/weights, aggregation order and shared expert | Not implemented |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
 | Resource policy | All owned memory plus pressure behavior, concurrency with other work | Bounded cache buffers and injected pressure/refusal/recovery pass; full-engine/OS policy pending |
 | End-to-end speed | Prefill, TTFT, decode, actual storage traffic and memory on named hardware | Not run |
+| Warm cache timing | Equal capacities/traces, alternating measurement order, complete audits | Six pairs: median call-time ratio 5.02; no model-token-rate claim |
 
 ## Reference
 
@@ -70,3 +72,12 @@ expert while switching source tiers. Available-memory pressure is injected into
 the observation function; no real machine memory exhaustion is attempted. The
 actual observed minimum available memory is reported separately. Buffer cleanup
 counters reach zero; that is not proof that CUDA contexts or Python RSS vanish.
+
+The [GPU-audit follow-up](cache-performance.md) measures CPU SHA-256 as the main
+baseline cost and moves repeated verification to GPU admission. Its digests are
+derived only after the original full-block and six tensor hashes pass. All
+uploaded chunks must match before a cache slot becomes visible. Intermediate
+RAM copies can be unverified until this point. Unit tests explicitly corrupt
+RAM and transfers and require refusal before compute-slot publication. Device
+tests compare standard SHA-256 digests and inject single-bit faults on both GPUs.
+These tests are scoped engineering checks, not a cryptographic certification.

@@ -14,6 +14,8 @@ from .bandwidth import EXPERT_BYTES
 from .checkpoint import EXPERT_LAYOUT, MODEL, REVISION, load_expert_fixture, validate_expert_identity, validate_expert_provenance
 from .disk import DirectReader
 from .resources import MemoryBudget, MiB
+from .timing import Timings
+from .integrity import digest_shape, hash_chunks
 
 
 def expert_key(layer: int, expert: int) -> str:
@@ -88,6 +90,8 @@ class NativeStore:
     def __init__(self, directory: Path, budget: MemoryBudget):
         self.directory = Path(directory).resolve(strict=True)
         self.budget, self.reader = budget, None
+        self.timings = Timings()
+        self.gpu_integrity, self.expected_chunks = False, {}
         self.read_calls, self.bytes_read = 0, 0
         with (self.directory / "manifest.json").open("rb") as stream:
             raw = stream.read(MiB + 1)
@@ -121,6 +125,10 @@ class NativeStore:
         return self
 
     def validate(self, key: str, data: np.ndarray, *, tensors: bool = False):
+        with self.timings.section("integrity.cpu_sha256"):
+            self._validate(key, data, tensors=tensors)
+
+    def _validate(self, key: str, data: np.ndarray, *, tensors: bool = False):
         entry = self.entries[key]
         if data.dtype != np.uint8 or data.shape != (self.size,) or not data.flags.c_contiguous:
             raise ValueError("Native-store payload layout differs from one expert")
@@ -138,13 +146,32 @@ class NativeStore:
         if self.reader is None:
             raise RuntimeError("Native store is closed")
         entry = self.entries[key]
-        self.reader.read(entry["offset"], self.size)
+        with self.timings.section("storage.direct_read"):
+            self.reader.read(entry["offset"], self.size)
         self.read_calls += 1
         self.bytes_read += self.size
-        np.copyto(target, self.reader.array())
+        with self.timings.section("host.store_staging_copy"):
+            np.copyto(target, self.reader.array())
         self.validate(key, target, tensors=True)
+        if self.gpu_integrity and key not in self.expected_chunks:
+            shape = digest_shape(self.size)
+            size = int(np.prod(shape))
+            self.budget.acquire(size)
+            try:
+                digests = np.empty(shape, np.uint8)
+                with self.timings.section("integrity.prepare_cpu_chunks"):
+                    hash_chunks(target, digests)
+                digests.setflags(write=False)
+                self.expected_chunks[key] = digests
+            except BaseException:
+                self.budget.release(size)
+                raise
 
     def __exit__(self, *_):
+        for key in list(self.expected_chunks):
+            size = self.expected_chunks[key].nbytes
+            del self.expected_chunks[key]
+            self.budget.release(size)
         if self.reader is not None:
             self.reader.close()
             self.reader = None

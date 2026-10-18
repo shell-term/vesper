@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import numpy as np
@@ -115,6 +116,38 @@ class StorageTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "already open"):
                 resource.__enter__()
             self.assertIs(resource.stack, marker)
+
+    def test_original_digest_tables_obey_cap_failure_and_cleanup(self):
+        payload = np.zeros(EXPERT_BYTES, np.uint8)
+        manifest = self.manifest(payload)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            with (root / "experts.bin").open("wb") as stream:
+                stream.truncate(EXPERT_BYTES)
+            budget = MemoryBudget(cap=146880, available_floor=0)
+            store = NativeStore(root, budget)
+            # The fixture's payload/reader are external to this table-budget test.
+            store.reader = SimpleNamespace(read=lambda *_: None, array=lambda: payload, close=lambda: None)
+            store.gpu_integrity = True
+            target = np.empty_like(payload)
+            with patch("vesper.storage.np.empty", side_effect=MemoryError("Injected table allocation failure")):
+                with self.assertRaises(MemoryError):
+                    store.read_into("0:0", target)
+            self.assertEqual(budget.reserved, 0)
+            self.assertFalse(store.expected_chunks)
+            budget.cap -= 1
+            with self.assertRaises(MemoryError):
+                store.read_into("0:0", target)
+            self.assertFalse(store.expected_chunks)
+            budget.cap += 1
+            store.read_into("0:0", target)
+            self.assertEqual(budget.reserved, 146880)
+            with self.assertRaises(ValueError):
+                store.expected_chunks["0:0"][0, 0] = 1
+            store.__exit__()
+            self.assertEqual(budget.reserved, 0)
+            self.assertFalse(store.expected_chunks)
 
 
 if __name__ == "__main__":

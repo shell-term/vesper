@@ -43,6 +43,15 @@ there is no whole-process OS memory guarantee. GPU pressure currently refuses
 work rather than resizing fixed slots. This prototype has no asynchronous
 prefetch, routing predictor, layer aggregator or Engram cache.
 
+The [profiled GPU-audit option](cache-performance.md) retains the same cache
+capacities and movement policy. Whole-file-block/tensor SHA-256 checks first
+authenticate source bytes on the CPU. The store then derives immutable 4 KiB
+SHA-256 tables under the buffer budget. Every subsequent GPU upload hashes all
+chunks on that GPU and compares the returned digests before publication. RAM and
+other intermediate host copies defer checks to this admission boundary. They
+cannot enter model computation without a matching GPU audit. This is a change
+in verification placement, not in model arithmetic or routing.
+
 ## Move work to resident weights
 
 A native expert includes 18,800,640 bytes of FP4 data and E8M0 scales. One

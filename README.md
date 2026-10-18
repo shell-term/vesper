@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Cache validation](docs/cache-validation.md) · [Expert validation](docs/expert-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Cache performance](docs/cache-performance.md) · [Cache validation](docs/cache-validation.md) · [Expert validation](docs/expert-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 ## Status
 
@@ -19,6 +19,7 @@ Direct comparisons with the pinned official implementation give:
 | --- | --- | --- |
 | RTX 4090, native FP8 path | One complete expert, 128 conditions | 0 / 655,360 final-output mismatches; all checked intermediate bits match |
 | SSD / RAM / 3080 Ti storage / 4090 compute | Three distinct experts, 232 successful calls | 0 / 1,187,840 final-output mismatches; all checked intermediate bits match |
+| GPU SHA-256 upload audits | Same three experts, another 232 calls | All thirteen checked stages match; unchanged model kernel |
 | RTX 3080 Ti, experimental BF16 path | 128-row W1 slice, 8 inputs | 14 / 1,024 output mismatches; unqualified for inference |
 
 The expert checks include both input projections, asymmetric clamps, weighted
@@ -141,6 +142,24 @@ evictions, forced SSD reloads, pressure refusal and recovery; it does not run th
 model router or estimate real cache-hit rates. Stores currently accept at most
 four experts. See [the cache report](docs/cache-validation.md) for limitations.
 
+An optional audit path hashes consecutive 4 KiB chunks on each GPU and returns
+147 KB of digests per expert instead of 18.8 MB of audit readback. Original
+CPU-side file/tensor hashes remain the trust anchor. Host-copy checks are
+deferred until GPU admission; every GPU upload must pass before publication or
+model computation. The readback path remains the default comparison baseline.
+
+```sh
+vesper validate-integrity --devices 0 1 --output artifacts/integrity.json
+vesper validate-cache --store artifacts/native-store --fixtures artifacts/expert-fixture/native-expert.npz artifacts/expert-fixture-1/native-expert.npz artifacts/expert-fixture-2/native-expert.npz --integrity gpu-sha256 --profile --output artifacts/cache-gpu-audit.json
+vesper bench-cache --store artifacts/native-store --trials 6 --repeats 8 --output artifacts/cache-benchmark.json
+```
+
+Six alternating pairs of identical **warm synthetic traces** completed 5.02 times
+faster with GPU audits (pair range 4.93–5.13). The comparison
+includes all upload audits and diagnostics; it has no timed SSD misses and does
+not estimate generation speed. Startup and first-source digest preparation are
+separate costs. See [the profiling report and complete records](docs/cache-performance.md).
+
 ## Memory policy
 
 The provisional full-engine design has a **96 GiB host-memory cap** and a **32 GiB
@@ -161,6 +180,9 @@ The single-expert runtime has a stricter 64 MiB explicit GPU allocation cap; the
 and reference compiler allocations. Its weights remain in ignored artifacts.
 The cache probe peaked at 76,251,136 host-buffer bytes (72.7 MiB), 18,903,528
 explicit bytes on the 4090 and 18,800,640 on the storage-only 3080 Ti.
+The optional GPU audit mode adds original digest tables, one pinned digest
+readback and comparison scratch: its peak is 76,985,536 host-buffer bytes
+(73.4 MiB), 19,050,408 explicit bytes on the 4090 and 18,947,520 on the 3080 Ti.
 
 ## Development
 
