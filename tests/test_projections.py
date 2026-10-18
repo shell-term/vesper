@@ -167,6 +167,25 @@ class ProjectionTests(unittest.TestCase):
         with layer:
             self.assertEqual(layer.position, 0)
 
+    def test_whole_block_finalizer_failure_preserves_committed_window(self):
+        with fake_layer() as layer:
+            value = np.zeros((1, 1, 5120), np.uint16)
+            def fail(stages):
+                self.assertEqual((layer.position, layer.kv.position), (0, 1))
+                raise OSError("MoE or residual failed after Attention")
+            with self.assertRaises(OSError):
+                layer.step(value, finalize=fail)
+            self.assertEqual((layer.position, layer.kv.position, layer.pending), (0, 0, None))
+            output = layer.step(value, finalize=lambda stages: {"block": stages["wo_b_output_bf16"]})
+            self.assertEqual(output["block"].shape, value.shape)
+            self.assertEqual(layer.position, 1)
+
+    def test_invalid_finalizer_is_refused_before_KV_publication(self):
+        with fake_layer() as layer:
+            with self.assertRaises(ValueError):
+                layer.step(np.zeros((1, 1, 5120), np.uint16), finalize=True)
+            self.assertEqual((layer.position, layer.kv.position, layer.pending), (0, 0, None))
+
     def test_published_source_complete_goldens_and_tamper_controls(self):
         root = Path(__file__).resolve().parents[1]
         report = json.loads((root / "results/2026-10-18-attention-projections/projections.json").read_bytes())

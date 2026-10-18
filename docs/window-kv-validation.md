@@ -7,8 +7,9 @@ explicit **post-projection, post-normalization, post-RoPE BF16 boundary**. The
 later [normalization and RoPE report](normalization-rope-validation.md) qualifies
 native learned normalization and rotation from projected inputs. The
 [projection/layer follow-up](attention-projection-validation.md) connects the
-original layer-0 projections. Compressed KV, sparse indexing/sharing and full
-blocks remain separate gates.
+original layer-0 projections. The [complete layer-0 block follow-up](layer0-block-validation.md)
+adds native Hyper-Connections, residuals and MoE. Compressed KV, sparse
+indexing/sharing and other block profiles remain separate gates.
 Issue #7 and M2 remain open; text generation is unfinished.
 
 ## Results
@@ -149,5 +150,6 @@ The [normalization and RoPE follow-up](normalization-rope-validation.md) now
 connects those operations from projected inputs. The subsequent
 [projection/layer probe](attention-projection-validation.md) adds original
 query/KV/output projections and complete window Attention comparisons.
-Compression/index selection/sharing, Hyper-Connections and full-block/model
-integration remain required by Issue #7.
+The [complete layer-0 block probe](layer0-block-validation.md) adds native
+Hyper-Connections, residuals and MoE. Compression/index selection/sharing and
+other block profiles remain required; full-model integration is unfinished.

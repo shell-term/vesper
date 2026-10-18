@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Window Attention layer](docs/attention-projection-validation.md) · [Real-input MoE](docs/real-moe-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Complete layer-0 block](docs/layer0-block-validation.md) · [Real-input MoE](docs/real-moe-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 [Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
 
@@ -26,8 +26,8 @@ Direct comparisons with the pinned official implementation give:
 
 The expert checks include both input projections, asymmetric clamps, weighted
 SwiGLU, the BF16 boundary, down-input quantization and the output projection.
-Independent format checks also pass on both GPUs. Full Transformer blocks, model quality and
-generation speed remain unverified. The 3080 Ti currently stores original bytes;
+Independent format checks also pass on both GPUs. Other Transformer-block
+profiles, full-model quality and generation speed remain unverified. The 3080 Ti currently stores original bytes;
 all model arithmetic in the cache probe runs on the 4090. See the
 [cache report and complete results](docs/cache-validation.md), [resident expert report](docs/expert-validation.md)
 and the [initial transfer/storage measurements](docs/first-probe.md).
@@ -62,7 +62,8 @@ and another 30 calls match all 108 boundaries. A process without Torch reproduce
 the full matrix. See [Issue #6](https://github.com/shell-term/vesper/issues/6), the
 [real-input report](docs/real-moe-validation.md) and the earlier
 [generated-input report](docs/connected-moe-validation.md). M1's scope is the MoE
-sublayer; full Transformer blocks and text generation remain unfinished.
+sublayer; the later layer-0 block comparison is described below. Text generation
+remains unfinished.
 
 An explicit Attention storage candidate now executes the actual 64-head,
 512-dimensional shape on the 4090 with 74 KiB of shared memory instead of
@@ -107,8 +108,18 @@ five failure retries), all 17,355 checked boundaries match, including four real
 original-prefix inputs. Every layer call also matches unchanged
 `Attention.forward` output/cache controls. A process without Torch/TileLang
 reproduces the matrix, including two window wraps and failed-rollback recovery.
-Hyper-Connections, residuals, compressed/indexed KV and complete Transformer
-blocks remain unfinished. See the [Attention projection/layer report](docs/attention-projection-validation.md).
+This probe covers the Attention sublayer; the complete-block follow-up is below.
+See the [Attention projection/layer report](docs/attention-projection-validation.md).
+
+Native Hyper-Connections and residuals now connect Attention and the tiered MoE
+into a **complete original-weight layer-0 Transformer block**. Across 84 HC cases
+and 26 successful single-token block calls, all 6,648 checked boundaries match
+exactly. Every block call compares 225 boundaries and also matches unchanged
+`Block.forward` hidden-state, next-layer coefficient and KV controls. Five
+failure/retry checks and independent replay without Torch/TileLang pass. This
+covers the uncompressed layer-0 profile, reusing 27 original experts; compressed
+KV, sparse index selection/source-layer sharing, Engram and full-model execution
+remain unfinished. See the [complete-block report](docs/layer0-block-validation.md).
 
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is
@@ -251,7 +262,7 @@ the reserve remains unavailable. This ledger covers explicit buffers and a
 metadata allowance; Python, CUDA contexts, compilation, returned diagnostics and
 the optional official oracle remain outside it. It is not an OS memory limit.
 
-Current GPU probes cap explicit allocations at 256 MiB per GPU and check a 1 GiB
+The initial transfer probes cap explicit allocations at 256 MiB per GPU and check a 1 GiB
 free-memory reserve. GPU contexts and modules consume additional memory. Transfer
 and disk probes use an 18.8 MB data buffer. They do not reset GPUs or stop other
 workloads. Measurements can therefore include contention.
@@ -264,6 +275,12 @@ explicit bytes on the 4090 and 18,800,640 on the storage-only 3080 Ti.
 The optional GPU audit mode adds original digest tables, one pinned digest
 readback and comparison scratch: its peak is 76,985,536 host-buffer bytes
 (73.4 MiB), 19,050,408 explicit bytes on the 4090 and 18,947,520 on the 3080 Ti.
+
+The complete layer-0 block probe has separate combined native host allowances of
+1,136 MiB and a 512-MiB cap on owned primary-GPU buffers during block calls.
+Its measured peak is 272,182,716 bytes. Contexts/modules, optional oracle memory,
+process RSS and component initialization are outside that combined GPU figure;
+see the [block resource scope](docs/layer0-block-validation.md#state-publication-and-memory).
 
 ## Development
 

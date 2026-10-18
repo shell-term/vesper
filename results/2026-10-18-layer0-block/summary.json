@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "probe": "complete_native_layer0_block_and_HC",
+  "status": "pass",
+  "artifacts_sha256": {
+    "block.json": "c0dcb2bf8dd09f8bec5247ec2084caad39a147a368c1cea0e5c0fe17f1fa2aa0",
+    "native-only-recheck.json": "c8bfc6d8d2040fe862837895b2ea88b7f872e5b97eae0a78d85d8decf02c7d55"
+  },
+  "HC_cases": 84,
+  "successful_block_calls": 26,
+  "core_block_calls": 16,
+  "failure_prefill_calls": 5,
+  "failure_retries": 5,
+  "expected_failed_calls": 5,
+  "block_boundaries_per_call": 225,
+  "boundary_comparisons": 6648,
+  "compared_storage_elements": 56874975,
+  "mismatches": 0,
+  "original_sequences": [
+    [
+      1,
+      42
+    ],
+    [
+      1000,
+      4096
+    ]
+  ],
+  "gate_image_span_settings": [
+    false,
+    true
+  ],
+  "selected_original_experts": 27,
+  "unchanged_Block_forward_controls": 26,
+  "unchanged_Attention_forward_controls": 26,
+  "unchanged_HC_control_groups": 243,
+  "unchanged_HC_control_comparisons": 433,
+  "negative_controls": [
+    {
+      "check": "flatten_HC_mean_reduction_tree",
+      "status": "fail",
+      "elements": 8,
+      "mismatches": 2,
+      "dtype": "float32",
+      "expected_sha256": "5c327d482229a3307243bf177300031419f9e7070d3b134499d4f22f53a8b8b0",
+      "actual_sha256": "9685d5665d2c754fe549d33b7c52d932cd1427df30e0e1df86c74ecc4ac370ef"
+    },
+    {
+      "check": "replace_20_Sinkhorn_iterations_with_one",
+      "status": "fail",
+      "elements": 128,
+      "mismatches": 128,
+      "dtype": "float32",
+      "expected_sha256": "9f4e9fec9011decf92096a271f589bbd586b89664e0f6f139848bb252d1833dc",
+      "actual_sha256": "a569061ba7c53733cf7c070300027eb91188f3a428fa9d17a3d3627e41a09a62"
+    },
+    {
+      "check": "transpose_residual_comb_source_target",
+      "status": "fail",
+      "elements": 163840,
+      "mismatches": 163550,
+      "dtype": "uint16",
+      "expected_sha256": "8934a996a1056e890d33f4c98db294cb5d3aed856c13c5ed3203fec03237c63d",
+      "actual_sha256": "92b200d6d24b3089de3b4024e56077d0181755cc469c3c4a277bd66f24dfe989"
+    },
+    {
+      "check": "round_residual_products_to_BF16_early",
+      "status": "fail",
+      "elements": 163840,
+      "mismatches": 62533,
+      "dtype": "uint16",
+      "expected_sha256": "8934a996a1056e890d33f4c98db294cb5d3aed856c13c5ed3203fec03237c63d",
+      "actual_sha256": "9aa398736711ee9b0b4eeb9f87a7735654f5f8e72ae592df2100854efb58494e"
+    }
+  ],
+  "native_frameworks_installed": false,
+  "native_frameworks_imported": false,
+  "weights_fetched_bytes": 0,
+  "hc_profile": {
+    "compiler": {
+      "nvrtc_version": [
+        12,
+        4
+      ],
+      "architecture": "89",
+      "concatenated_source_sha256": "8ce8aa29cc89488ab1238894154554d04a5448d34e8674e0954078d271f4ec13",
+      "options": [
+        "--gpu-architecture=sm_89",
+        "--std=c++17",
+        "--fmad=false",
+        "--ftz=false",
+        "--include-path=<CUDA>/include"
+      ],
+      "include_path_redacted": true
+    },
+    "cubin_sha256": "ab71eb8a6ceffec265bb6afb2e3774eaf8fb345c86e0be6ab2a501167143ce5f",
+    "device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    },
+    "cublas_version": 120402,
+    "cublas_math_mode": 0
+  },
+  "hc_instrumentation": {
+    "original_factory_ast_sha256": "3b0f8bf173937b068cfabb0729ba31b8fe9e29681b9502ef2ead04e8a9a7a81e",
+    "instrumented_factory_ast_sha256": "632d7b4edf39bb96326bbb14fa46240e7e8c4ca019fd7fea22ad140f1d5636dd",
+    "arithmetic_AST_restoration": true,
+    "original_cuda_sha256": "d1863b136c88c7f17d3767610a0f2424dda54df8481a4956e08b92870c357f19",
+    "instrumented_cuda_sha256": "ad93138ce5515955e321f62414508000a535791d46ccba9bfa282c8ba4d668fa"
+  },
+  "memory": {
+    "HC_cleanup": {
+      "host_allowance_bytes": 134217728,
+      "host_reserved_bytes": 0,
+      "device_owned_bytes": 0,
+      "device_peak_owned_bytes": 17777496,
+      "owned_context_active": false,
+      "reservation_is_RSS_limit": false,
+      "driver_module_memory_excluded": true
+    },
+    "normalization_cleanup": {
+      "host_allowance_bytes": 100663296,
+      "host_reserved_bytes": 0,
+      "device_peak_owned_bytes": 147972,
+      "device_owned_bytes": 0,
+      "owned_context_active": false,
+      "reservation_is_RSS_limit": false,
+      "driver_module_memory_excluded": true
+    },
+    "projection_cleanup": {
+      "host_allowance_bytes": 536870912,
+      "host_reserved_bytes": 0,
+      "device_peak_owned_bytes": 202367744,
+      "device_owned_bytes": 0,
+      "owned_context_active": false,
+      "reservation_is_RSS_limit": false,
+      "driver_module_memory_excluded": true
+    },
+    "attention_cleanup": {
+      "host_allowance_bytes": 33554432,
+      "host_reserved_bytes": 0,
+      "device_peak_owned_bytes": 724224,
+      "device_owned_bytes": 0,
+      "owned_context_active": false,
+      "owned_modules_active": 0,
+      "reservation_is_RSS_limit": false,
+      "driver_module_memory_excluded": true
+    },
+    "KV_cleanup": {
+      "host_allowance_bytes": 16777216,
+      "host_reserved_bytes": 0,
+      "device_peak_owned_bytes": 395792,
+      "device_owned_bytes": 0,
+      "persistent_cache_and_snapshot_bytes": 393216,
+      "owned_context_active": false,
+      "reservation_is_RSS_limit": false,
+      "driver_module_memory_excluded": true
+    },
+    "block_cleanup": {
+      "host_allowance_bytes": 33554432,
+      "host_reserved_bytes": 0,
+      "peak_owned_primary_device_bytes": 272182716,
+      "primary_device_cap_bytes": 536870912,
+      "reservation_is_RSS_limit": false
+    },
+    "MoE_cleanup": {
+      "parent_reservation_bytes": 0,
+      "accumulator_reservation_bytes": 0,
+      "cache_reservation_bytes": 0,
+      "primary_explicit_live_bytes": 0,
+      "helper_explicit_live_bytes": 0
+    },
+    "combined_native_host_allowance_bytes": 1191182336,
+    "minimum_sampled_host_available_bytes": 129180069888,
+    "reservation_is_RSS_limit": false
+  },
+  "combined_native_and_reference_host_allowance_bytes": 2063597568,
+  "minimum_sampled_host_available_paired_bytes": 126929694720,
+  "compressed_KV_indexing_sharing_Engram": "not_implemented",
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured",
+  "issue_7_complete": false
+}

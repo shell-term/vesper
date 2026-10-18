@@ -68,9 +68,11 @@ class NativeWindowAttention:
             self.kv.reset()
             self.pending, self.position = None, 0
 
-    def step(self, values, *, start_pos=None):
+    def step(self, values, *, start_pos=None, finalize=None):
         with self.lock:
             self._ready()
+            if finalize is not None and not callable(finalize):
+                raise ValueError("Attention finalizer must be callable")
             position = self.position if start_pos is None else start_pos
             if type(position) is not int or position != self.position:
                 raise ValueError("Window Attention requires the next exact committed position")
@@ -95,9 +97,10 @@ class NativeWindowAttention:
                 o = add("inverse_rope_", self.norm.rope(o, position, inverse=True))
                 o = add("wo_a_", self.projections.grouped(o.reshape(self.batch, sequence, 8, 4096)))
                 add("wo_b_", self.projections.fp8("wo_b", o.reshape(self.batch, sequence, 8192)))
+                result = stages if finalize is None else finalize(stages)
                 self.kv.discard(self.pending)
                 self.pending, self.position = None, self.kv.position
-                return stages
+                return result
             except BaseException:
                 try:
                     self._recover()

@@ -6,8 +6,9 @@ to the previously qualified [window KV](window-kv-validation.md) and
 [sparse Attention](native-attention-validation.md) operations. Original
 query/KV/output projections were excluded from this probe; the subsequent
 [original-weight window Attention report](attention-projection-validation.md)
-connects them. This remains bounded component and chain evidence. Issue #7 and
-M2 remain open, and text generation is unfinished.
+connects them, and the [complete layer-0 block follow-up](layer0-block-validation.md)
+adds native Hyper-Connections, residuals and MoE. This remains bounded component
+and chain evidence. Issue #7 and M2 remain open, and text generation is unfinished.
 
 ## Results
 

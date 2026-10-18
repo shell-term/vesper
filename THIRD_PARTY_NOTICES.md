@@ -98,6 +98,24 @@ distributions. The optional oracle executes unchanged original projection,
 Attention and block-prefix methods. Downloaded sources, original weights and
 generated binaries remain local artifacts.
 
+## Hyper-Connections and residual boundaries
+
+Native HC projection/scaling, pre-collapse, residual expansion and Sinkhorn
+normalization follow `Block.hc_mixes`, `hc_pre`, `hc_post` and
+`hc_split_sinkhorn_kernel` in the pinned DeepSeek `inference/model.py` and
+`inference/kernel.py`. The DeepSeek license above covers these adapted formulas
+and their CUDA implementation. The optional oracle executes unchanged original
+methods; a store-only Sinkhorn diagnostic variant restores the original
+arithmetic AST after its added output arguments/stores are removed. Original
+and generated sources/binaries remain local artifacts with their notices.
+
+The width-20480 mean reduction adapts the same pinned PyTorch `Reduce.cuh`
+vector-of-four accumulation and two-dimensional block-x-then-block-y reduction
+tree. HC FP32 projection uses the cuBLAS convention described above. The complete
+[PyTorch license](third_party/PyTorch-LICENSE) is retained for source and binary
+distributions. Whole-block transaction/failure handling and bounded allocation
+guards are Vesper runtime code; no TileLang runtime/compiler source is vendored.
+
 ## Runtime dependencies
 
 The native window KV quantizer, ring-slot formulas and index construction follow

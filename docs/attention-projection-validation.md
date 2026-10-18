@@ -6,8 +6,10 @@ uncompressed window Attention** path. This extends the
 [normalization/RoPE](normalization-rope-validation.md),
 [window KV](window-kv-validation.md) and
 [sparse Attention](native-attention-validation.md) component evidence.
-Hyper-Connections, residuals, compressed/indexed/shared KV and full Transformer
-blocks remain unfinished. Issue #7 and M2 stay open; text generation is unfinished.
+The subsequent [complete layer-0 block probe](layer0-block-validation.md) adds
+native Hyper-Connections, residuals and MoE. Compressed/indexed/shared KV and
+other block profiles remain unfinished. Issue #7 and M2 stay open; text generation
+is unfinished.
 
 ## Results
 
@@ -181,7 +183,7 @@ or tampered evidence.
 - [Independent native-only replay](../results/2026-10-18-attention-projections/native-only-recheck.json)
 - [Summary, raw-file hashes and resource observations](../results/2026-10-18-attention-projections/summary.json)
 
-Next: native Hyper-Connections and residual boundaries, followed by complete
-layer-0 Transformer-block comparison with the already qualified MoE sublayer.
-Compressed KV, sparse index selection/source-layer sharing, Engram, full-model
-logits/sampling and workload performance remain later gates.
+The [complete layer-0 block follow-up](layer0-block-validation.md) now qualifies
+native Hyper-Connections and residuals with the tiered MoE sublayer. Compressed
+KV, sparse index selection/source-layer sharing, Engram, full-model logits/sampling
+and workload performance remain later gates.

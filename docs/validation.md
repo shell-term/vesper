@@ -21,7 +21,8 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Native post-RoPE window KV | Original rounding, ring order, publication failure, saved-state rollback and selected Attention | 398 updates / 128 connected conditions, 3,156 comparisons, zero differences; native-only replay passes; compressed KV pending |
 | Native RMS normalization and RoPE | Original learned norm weights, reduction/rounding order, frequency profiles, rotation and projected-input KV/Attention chain | 476 component cases and 56 chain conditions, 3,420 boundary comparisons, zero differences; both frequency profiles cover positions 0 through 131,071; native-only replay passes |
 | Original-weight native window Attention layer | Original query/KV/output projections, grouped BF16 conversion, complete forward output/cache, real inputs and atomic failure recovery | 90 component cases and 309 successful layer calls (304 corpus calls + five retries), 17,355 comparisons, zero differences; four real prefix inputs and two window wraps; independent native-only replay passes; layer-0, one rank, batch 1/2, prefill at most three queries |
-| Full Transformer block | Connected attention, MoE, Engram, Hyper-Connections and residual boundaries | Not implemented |
+| Native Hyper-Connections and residuals | Original FP32 projection/reduction, Sinkhorn iterations, coefficient handoff and BF16 boundaries | 84 component cases pass; all four changed-arithmetic controls detected; independent native-only replay passes |
+| Full Transformer block | Connected Attention, MoE, Hyper-Connections, residuals and layer-specific Engram/compressed profiles | Uncompressed layer 0 passes 26 single-token calls / 225 boundaries each plus unchanged Block.forward hidden/next-coefficient/KV controls; other profiles and Engram pending |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
 | Resource policy | All owned memory plus pressure behavior, concurrency with other work | Bounded cache buffers and injected pressure/refusal/recovery pass; full-engine/OS policy pending |
@@ -149,7 +150,8 @@ chain starts with generated projected KV/query inputs, so it qualifies native
 normalization, rotation, window KV and selected Attention boundaries without
 claiming original query/KV/output projections or compressed KV execution.
 Four deliberately changed arithmetic controls are detected. Full-layer/prefix
-outputs, Hyper-Connections and model quality remain separate requirements.
+outputs and Hyper-Connections were separate requirements, addressed by the
+subsequent scoped probes below. Full-model quality remains unverified.
 
 The [Attention projection/layer probe](attention-projection-validation.md) now
 connects all original layer-0 Attention weights and normalizations through both
@@ -158,5 +160,18 @@ diagnostics against unchanged `Attention.forward` output/cache. This includes
 four inputs captured from the unchanged original block prefix; Hyper-Connections
 in that capture remain oracle operations. A BF16-to-FP32 grouped-math replacement
 changes three final values in the negative control. Layer failure tests preserve
-committed KV or block further calls until explicit recovery. Complete Transformer
-blocks, compressed/indexed/shared KV and full-model quality remain pending.
+committed KV or block further calls until explicit recovery. The subsequent
+complete-block evidence is below; compressed/indexed/shared KV and full-model
+quality remain pending.
+
+The [complete layer-0 block probe](layer0-block-validation.md) connects native
+HC mixes, all 20 Sinkhorn iterations, pre-collapse and residual expansion to
+the original-weight Attention and tiered MoE. All 84 HC cases and 26 complete
+single-token calls match: 6,648 boundary comparisons / 56,874,975 storage elements,
+zero differences. A separately executed unchanged `Block.forward` controls
+final hidden state, next-layer pre-mix and KV state. Store-only Sinkhorn
+instrumentation restores the original arithmetic AST exactly, and four altered
+arithmetic controls are detected. Five whole-call faults refuse partial
+publication and recover exactly; independent native-only replay passes. This
+qualifies the uncompressed layer-0 single-token profile, not every block,
+compressed/indexed/shared KV, Engram, full-model quality or generation speed.
