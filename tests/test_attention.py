@@ -42,7 +42,9 @@ def fake_bundle(directory):
                 "qualification_sha256": hashlib.sha256(receipt_raw).hexdigest(), "profiles": profiles}
     (directory / "qualification.json").write_bytes(receipt_raw)
     (directory / "manifest.json").write_bytes(rendered(manifest))
-    (directory / "DeepSeek-LICENSE").write_bytes((ROOT / "third_party/DeepSeek-LICENSE").read_bytes())
+    # The upstream artifact is CRLF; Git's text checkout may normalize it.
+    license_raw = (ROOT / "third_party/DeepSeek-LICENSE").read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+    (directory / "DeepSeek-LICENSE").write_bytes(license_raw)
     return manifest, receipt
 
 
@@ -51,8 +53,13 @@ class NativeAttentionTests(unittest.TestCase):
         # Replace executable hashes with the explicitly nonexecutable CPU fixture.
         hashes = {key: hashlib.sha256(f"CPU schema fixture {key[0]} {key[1]} {key[2]}".encode()).hexdigest()
                   for key in CANDIDATES}
-        self.addCleanup(patch.stopall)
-        patch("vesper.attention.CANDIDATE_BINARIES", hashes).start()
+        binaries = patch("vesper.attention.CANDIDATE_BINARIES", hashes)
+        binaries.start()
+        self.addCleanup(binaries.stop)
+        # CI machines need not meet the real GPU probe's 32-GiB RAM floor.
+        memory = patch("vesper.resources.physical_memory", return_value={"available": 128 * 1024**3, "total": 160 * 1024**3})
+        memory.start()
+        self.addCleanup(memory.stop)
 
     def test_numpy_inputs_reproduce_all_previous_oracle_hashes(self):
         receipt = json.loads((ROOT / "results/2026-10-18-attention-memory/attention-memory.json").read_bytes())
@@ -144,6 +151,10 @@ class NativeAttentionTests(unittest.TestCase):
             runtime(None, None, None, None)
         with patch("vesper.attention.load_bundle", side_effect=ValueError("invalid bundle")):
             with self.assertRaisesRegex(ValueError, "invalid bundle"):
+                runtime.__enter__()
+        self.assertEqual(runtime.stats()["host_reserved_bytes"], 0)
+        with patch("vesper.resources.physical_memory", return_value={"available": 16 * 1024**3}):
+            with self.assertRaisesRegex(MemoryError, "system memory reserve"):
                 runtime.__enter__()
         self.assertEqual(runtime.stats()["host_reserved_bytes"], 0)
 
