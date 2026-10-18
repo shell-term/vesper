@@ -1,0 +1,63 @@
+{
+  "experiment_date": "2026-10-18",
+  "tracked_issue": "https://github.com/shell-term/vesper/issues/7",
+  "status": "partial",
+  "candidate_scoped_checks": "pass",
+  "full_profile_original_reference_gate": "blocked",
+  "issue7_acceptance_complete": false,
+  "actual_model_activation_gate": "not_run",
+  "issue6_acceptance_complete": false,
+  "milestone_M1_complete": false,
+  "original_profile_comparisons": {
+    "cases": 24,
+    "comparisons": 192,
+    "elements": 3712192,
+    "mismatches": 0
+  },
+  "full_profile_candidate_checks_including_QK_component_and_repeats": {
+    "cases": 12,
+    "comparisons": 96,
+    "elements": 4159232,
+    "mismatches": 0
+  },
+  "candidate_checks_total": {
+    "cases": 36,
+    "comparisons": 288,
+    "elements": 7871424,
+    "mismatches": 0
+  },
+  "actual_64_head_512_dimension_original_shared_bytes": 141312,
+  "actual_64_head_512_dimension_candidate_shared_bytes": 75776,
+  "device_optin_shared_limit_bytes": 101376,
+  "head_partition_control_against_original_64_head_256_dimension": {
+    "cases": 12,
+    "bf16_output_mismatches": 0,
+    "fp32_output_mismatches": 39775,
+    "qk_fp32_mismatches": 0
+  },
+  "head_partition_control_against_candidate_64_head_512_dimension": {
+    "cases": 12,
+    "bf16_output_mismatches": 1,
+    "fp32_output_mismatches": 79632,
+    "qk_fp32_mismatches": 0
+  },
+  "head_partition_adopted": false,
+  "automatic_prefix_substitution": false,
+  "native_attention_qualification": "not_run",
+  "full_model_quality": "not_run",
+  "generation_speed": "not_measured",
+  "model_weights_fetched_bytes": 0,
+  "local_cpu_tests_passed": 95,
+  "memory": {
+    "host_reservation_bytes": 33554432,
+    "host_reservation_is_RSS_limit": false,
+    "minimum_observed_host_available_bytes": 126704599040,
+    "initial_torch_allocated_bytes": 0,
+    "peak_torch_allocated_bytes": 10027008,
+    "peak_torch_reserved_bytes": 10485760,
+    "torch_peak_excludes_driver_and_compiler": true
+  },
+  "files_sha256": {
+    "attention-storage.json": "19ac933eb34d258f0a99e3218edf7d6a03c504da27542a1619d263cd16812b09"
+  }
+}

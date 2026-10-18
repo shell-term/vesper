@@ -15,6 +15,7 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Original gate projection and routing | Original BF16 weights promoted to FP32, actual linear projection and connected expert selection | 307 generated inputs across both masks give 614 exact-bit passes against unchanged linear/Gate.forward; one row, named cuBLAS/PyTorch builds |
 | Shared expert and ordered accumulation | Original shared dtype, routing-weight placement, FP32 additions in expert-ID order and final BF16 rounding | 54 FP8 shared cases, 38 aggregation cases and 16 original-six-expert supplied-route conditions match all checked bits |
 | Connected MoE sublayer | Gate projection, routing, accumulation order, shared expert and bounded offload | 30 generated-input calls match all 108 boundaries; four refusal/retry cases pass; real-activation gate pending because unchanged Attention exceeds 4090 shared memory |
+| Attention Query storage candidate | Exact intermediates with executable original profiles, then full-shape original parity | 24 smaller-profile cases match all checked bits; full 64 × 512 candidate executes at 74 KiB shared memory; full original gate blocked at 138 KiB |
 | Full Transformer block | Connected attention, MoE, Engram, Hyper-Connections and residual boundaries | Not implemented |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
@@ -118,3 +119,11 @@ an independent native-only recheck. The unchanged original prefix cannot yet
 supply real MoE inputs on the 4090: its 138 KiB dynamic shared-memory request
 exceeds the 99 KiB opt-in limit. Issue #6 and M1 remain open. A generated-input
 pass is not substituted for that missing real-activation acceptance condition.
+
+The [Attention storage experiment](attention-storage-validation.md) changes only
+Query allocation scope in the arithmetic AST. Intermediate/output comparisons
+pass for two smaller original profiles; the actual 64-head, 512-dimensional
+candidate executes within the 4090 limit. Repeat and QK component checks do not
+replace its unavailable full-original comparison. The candidate remains explicit
+and is not used by prefix capture. Head partitioning is rejected because it
+changes observed FP32 reduction results. This does not close Issues #6/#7 or M1.

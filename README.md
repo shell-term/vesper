@@ -61,6 +61,15 @@ remains open because the unchanged official Attention kernel exceeds the 4090's
 per-block shared-memory limit. [Issue #6](https://github.com/shell-term/vesper/issues/6)
 and M1 stay open; see the [connected report](docs/connected-moe-validation.md).
 
+An explicit Attention storage candidate now executes the actual 64-head,
+512-dimensional shape on the 4090 with 74 KiB of shared memory instead of
+138 KiB. Two smaller executable original profiles match all checked intermediate
+bits. The full-shape original still exceeds the device limit, so its direct
+reference gate remains open and prefix capture keeps its original guard.
+Head partitioning was rejected after intermediate differences. See
+[Issue #7](https://github.com/shell-term/vesper/issues/7) and the
+[Attention storage report](docs/attention-storage-validation.md).
+
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is
 different from applying another lossy quantization. Vesper prohibits extra

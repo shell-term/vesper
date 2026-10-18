@@ -14,6 +14,11 @@ MoE input capture is therefore blocked. Generated inputs do not satisfy that
 acceptance check, and M1 stays open. See [issue #6](https://github.com/shell-term/vesper/issues/6)
 and the related [Attention work](https://github.com/shell-term/vesper/issues/7).
 
+The subsequent [Query storage experiment](attention-storage-validation.md)
+executes a full-shape candidate with 74 KiB of shared memory and passes smaller-
+profile intermediate comparisons. Its full-original gate is still unavailable;
+the candidate is not substituted into this report's real-activation gate.
+
 ## Connected path and original artifacts
 
 Each call converts its FP32 input to the same finite BF16 row used by both the

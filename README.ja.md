@@ -14,6 +14,11 @@
 [Issue #6](https://github.com/shell-term/vesper/issues/6)とM1は開いたまま継続します。
 詳しくは[接続検証レポート](docs/connected-moe-validation.md)を参照してください。
 
+AttentionのQueryの置き場所だけを変える候補を実装し、64ヘッド・512次元を4090で実行できました。
+GPU内の作業領域は138 KiBから74 KiBに減り、比較可能な小さい構成では中間値も公式と一致しました。
+実寸構成の公式との直接比較は未検証のため、通常の入力取得経路には組み込んでいません。
+[Issue #7](https://github.com/shell-term/vesper/issues/7)と[検証レポート](docs/attention-storage-validation.md)に記録します。
+
 共有expertのFP8計算と、expert出力を合算する順序・丸めを検証しました。
 共有expertの54条件、合算の38条件、元の6個のexpertと共有expertを組み合わせた16条件で、
 中間値と最終出力がすべて一致しています。PyTorchなしの環境でも全108条件を再照合できました。

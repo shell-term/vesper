@@ -28,6 +28,11 @@ unchanged MoE method. The experimental prefix capture extracts unchanged
 Attention/Block/normalization methods and the `wo_a` conversion statements;
 the original generation/configuration files anchor its runtime defaults. Its
 resource preflight is not a native Attention qualification.
+The optional Attention storage experiment generates a derivative of the pinned
+`sparse_attn_kernel`: the Query allocation changes from shared storage to a
+fragment, with an inverse-AST check; diagnostic variants also add intermediate
+stores. It retains the MIT notice in generated code and does not replace the
+original prefix reference or qualify full-model behavior.
 The routing postprocessing probe follows `Gate.forward`'s score/bias/gather and
 normalization formulas. Its optional oracle executes the unchanged method body
 with an explicit identity projection to isolate supplied-logit postprocessing.
