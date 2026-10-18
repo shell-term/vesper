@@ -65,6 +65,13 @@ with real weights and projection, without a projection substitution.
 
 ## Runtime dependencies
 
+The native window KV quantizer, ring-slot formulas and index construction follow
+the pinned DeepSeek `act_quant`, `Attention._window_kv` and
+`get_window_topk_idxs`. Its oracle extracts those unchanged method bodies with
+explicit stand-ins before the post-RoPE boundary. Snapshot/transactional
+publication and CUDA Driver state management are Vesper runtime code. The
+DeepSeek license above applies to the adapted formulas and CUDA implementation.
+
 The optional native Attention bundle builder compiles the explicitly adapted
 DeepSeek Query-storage candidate described above through TileLang. Generated
 source and binaries remain local artifacts; the exporter retains the pinned

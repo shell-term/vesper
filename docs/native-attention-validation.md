@@ -1,9 +1,11 @@
 # Native sparse Attention validation
 
 Issue: [#7](https://github.com/shell-term/vesper/issues/7), milestone M2.
-This completes a bounded native sparse Attention operation. Projections, RoPE,
-KV quantization/state, indexing, compression/sharing and Hyper-Connections still
-need native integration. Issue #7 and M2 remain open; generation is unfinished.
+This completes a bounded native sparse Attention operation. The subsequent
+[window KV report](window-kv-validation.md) qualifies bounded native post-RoPE
+rounding, ring state and rollback. Projections, RoPE, indexing, compression/sharing
+and Hyper-Connections still need native integration. Issue #7 and M2 remain open;
+generation is unfinished.
 
 ## Result
 
@@ -123,6 +125,6 @@ Complete immutable evidence:
 - [Summary and raw-file SHA-256 values](../results/2026-10-18-native-attention/summary.json)
 
 These finite generated-input component checks do not prove universal numerical
-identity or full-model quality. Original model activations, projections, native
-KV rounding/reuse/rollback, compressed/indexed attention and full blocks remain
-separate gates.
+identity or full-model quality. Original model activations, projections,
+compressed/indexed attention and full blocks remain separate gates. Bounded
+native window KV rounding/reuse/rollback now has the follow-up evidence above.

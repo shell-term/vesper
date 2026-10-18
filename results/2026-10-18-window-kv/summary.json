@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "probe": "native_post_RoPE_window_KV",
+  "status": "pass",
+  "artifacts_sha256": {
+    "window-kv.json": "57b3421a0a6c9a792aea5805b16eb2a33f22612223d8395abec29061f8c0c3cc",
+    "native-only-recheck.json": "5d6a516b92104c146a6a436b3e41c1ff2246ea9fd40d14db0c97e65a10ad6dec"
+  },
+  "KV_transitions": 398,
+  "connected_Attention_conditions": 128,
+  "boundary_comparisons": 3156,
+  "compared_storage_elements": 93644910,
+  "mismatches": 0,
+  "KV_rounded_BF16_elements": 2676736,
+  "Attention_final_BF16_elements": 6193152,
+  "expected_failed_appends": 6,
+  "state_events": 8,
+  "expected_failed_rollbacks": 2,
+  "negative_controls_detected": 3,
+  "native_frameworks_installed": false,
+  "native_frameworks_imported": false,
+  "native_profile": {
+    "compiler": {
+      "nvrtc_version": [
+        12,
+        4
+      ],
+      "architecture": "89",
+      "concatenated_source_sha256": "bcb1222310ae6752928a240d143e7867813b910d9aebcb701be406b3cf7c1313",
+      "options": [
+        "--gpu-architecture=sm_89",
+        "--std=c++17",
+        "--fmad=false",
+        "--ftz=false",
+        "--include-path=<CUDA>/include"
+      ],
+      "include_path_redacted": true
+    },
+    "cubin_sha256": "65a5efd3670668e6b1c5d748e958282706e826ccaf8bfdaf2d9172ee5cab9342",
+    "kernel_source_sha256": "3b2c10f529b3b9ddeeed53bb0749ea0a594498ef3c5e3830b29d4218912e0a00",
+    "device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    }
+  },
+  "memory": {
+    "phases": [
+      {
+        "batch": 1,
+        "minimum_sampled_host_available_bytes": 126030397440,
+        "cleanup": {
+          "host_allowance_bytes": 16777216,
+          "host_reserved_bytes": 0,
+          "device_peak_owned_bytes": 1055248,
+          "device_owned_bytes": 0,
+          "persistent_cache_and_snapshot_bytes": 393216,
+          "owned_context_active": false,
+          "reservation_is_RSS_limit": false,
+          "driver_module_memory_excluded": true
+        }
+      },
+      {
+        "batch": 2,
+        "minimum_sampled_host_available_bytes": 126026682368,
+        "cleanup": {
+          "host_allowance_bytes": 16777216,
+          "host_reserved_bytes": 0,
+          "device_peak_owned_bytes": 2110496,
+          "device_owned_bytes": 0,
+          "persistent_cache_and_snapshot_bytes": 786432,
+          "owned_context_active": false,
+          "reservation_is_RSS_limit": false,
+          "driver_module_memory_excluded": true
+        }
+      }
+    ],
+    "attention_cleanup": {
+      "host_allowance_bytes": 33554432,
+      "host_reserved_bytes": 0,
+      "device_peak_owned_bytes": 1713440,
+      "device_owned_bytes": 0,
+      "owned_context_active": false,
+      "owned_modules_active": 0,
+      "reservation_is_RSS_limit": false,
+      "driver_module_memory_excluded": true
+    },
+    "combined_native_host_allowance_bytes": 50331648
+  },
+  "minimum_sampled_available_RAM_paired_bytes": 124640350208,
+  "combined_native_and_reference_host_allowance_bytes": 150994944,
+  "weights_fetched_bytes": 0,
+  "source_and_target_positions_preserved": true,
+  "projection_normalization_RoPE": "not_native_yet",
+  "compressed_KV_indexing_sharing": "not_implemented",
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured",
+  "issue_7_complete": false
+}

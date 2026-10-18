@@ -79,9 +79,17 @@ Driver executor without Torch or TileLang installed. Across 36 conditions, all
 six output/intermediate boundaries match the qualified oracle exactly, including
 1,261,568 final BF16 elements. Both pressure/retry checks pass. Optional tools
 build pinned local kernels once; execution checks their identities and needs
-only NumPy and the driver. This is a bounded operation, with native projections,
-KV state and full-layer integration still pending. See the
+only NumPy and the driver. This is a bounded operation, with native projections
+and full-layer integration still pending. See the
 [native Attention report](docs/native-attention-validation.md).
+
+Native post-RoPE KV rounding and the 128-row sliding window now connect to that
+sparse Attention operation: 398 KV updates and 128 selected Attention conditions
+match all checked bits. Window wraps, exact snapshot restoration and failed
+publication/retry also pass in a process without Torch/TileLang. This uses the
+original per-32 rounding across all 512 values, including the RoPE tail. Native
+normalization, RoPE, projections and compressed/indexed KV remain pending. See
+the [window KV report](docs/window-kv-validation.md).
 
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is

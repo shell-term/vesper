@@ -203,7 +203,7 @@ class Pinned:
 
 def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: bool = False,
                   integrity: bool = False, routing: bool = False, shared: bool = False,
-                  aggregation: bool = False) -> bytes:
+                  aggregation: bool = False, kv: bool = False, compiler_info: dict | None = None) -> bytes:
     """Compile an actual architecture cubin; no host compiler or GPU required."""
     if os.name == "nt":
         roots = [Path(value) for key in ("CUDA_PATH", "CUDA_HOME") if (value := os.environ.get(key))]
@@ -238,6 +238,19 @@ def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: b
         source += b"\n" + (Path(__file__).parent / "kernels/shared_probe.cu").read_bytes()
     if aggregation:
         source += b"\n" + (Path(__file__).parent / "kernels/aggregation_probe.cu").read_bytes()
+    if kv:
+        source += b"\n" + (Path(__file__).parent / "kernels/kv_probe.cu").read_bytes()
+        source = source.replace(b"\r\n", b"\n")
+    if compiler_info is not None:
+        import hashlib
+        major, minor = C.c_int(), C.c_int()
+        version = _bind(lib, "nvrtcVersion", [C.POINTER(C.c_int), C.POINTER(C.c_int)])
+        if version(C.byref(major), C.byref(minor)):
+            raise CudaError("Cannot query the native NVRTC compiler version")
+        compiler_info.update(nvrtc_version=[major.value, minor.value], architecture=architecture,
+                             concatenated_source_sha256=hashlib.sha256(source).hexdigest(),
+                             options=[f"--gpu-architecture=sm_{architecture}", "--std=c++17", "--fmad=false",
+                                      "--ftz=false", "--include-path=<CUDA>/include"], include_path_redacted=True)
     program = pointer()
     if create(C.byref(program), source, b"format_probe.cu", 0, None, None):
         raise CudaError("NVRTC could not create a program")
