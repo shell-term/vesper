@@ -1,0 +1,48 @@
+{
+  "probe": "fetch_router_fixture",
+  "status": "pass",
+  "kind": "router_bias_fixture",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "layer": 0,
+  "config": {
+    "experts": 384,
+    "topk": 6,
+    "score_func": "sqrtsoftplus",
+    "gate_temp": 1.0,
+    "norm_topk_prob": true,
+    "route_scale": 1.5,
+    "normalization_epsilon": 1e-20
+  },
+  "config_sha256": "8be45ce0476004a3f529fd896115a4a2e800a129ad2d3ec05b16050f52e21879",
+  "tensors": [
+    {
+      "name": "bias",
+      "tensor": "layers.0.ffn.gate.bias",
+      "dtype": "F32",
+      "shape": [
+        384
+      ],
+      "bytes": 1536,
+      "shard": "model-00003-of-00048.safetensors",
+      "shard_byte_offset": 258400,
+      "sha256": "7cc2d71eb39af331c32cf35fea8fcc84be5706a7188791eaa54df7cad5f43b0b"
+    },
+    {
+      "name": "bias_vl",
+      "tensor": "layers.0.ffn.gate.bias_vl",
+      "dtype": "F32",
+      "shape": [
+        384
+      ],
+      "bytes": 1536,
+      "shard": "model-00003-of-00048.safetensors",
+      "shard_byte_offset": 259936,
+      "sha256": "e02ebee0d9bdbce5f0d558478920684e3e9892e6be7c1e012528f6c6e0109e99"
+    }
+  ],
+  "weights_fetched_bytes": 3072,
+  "temperature_source": "Released inference/config.json omits gate_temp; pinned ModelArgs default is 1.0",
+  "scope": "Two original selection biases only; gate projection and model execution excluded",
+  "inference_config_sha256": "2e84f45cf1dac8c7fcbb200e96667d4b913275690668ed496f24c7747207a809"
+}

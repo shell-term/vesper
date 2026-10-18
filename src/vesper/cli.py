@@ -12,14 +12,14 @@ def main(argv=None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     for name in ("inventory", "validate", "bench-transfer", "fetch-fixture", "bench-disk", "compare-reference",
                  "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
-                 "bench-cache", "validate-integrity"):
+                 "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
         if name in ("validate", "bench-transfer", "validate-integrity"):
             command.add_argument("--devices", type=int, nargs="+")
         if name in ("validate", "compare-reference"):
             command.add_argument("--fixture", type=Path)
-        if name in ("trace-reduction", "compare-expert"):
+        if name in ("trace-reduction", "compare-expert", "compare-router"):
             command.add_argument("--fixture", type=Path, required=True)
         if name == "fetch-fixture":
             command.add_argument("--directory", type=Path, default=Path("artifacts/fixture"))
@@ -27,6 +27,9 @@ def main(argv=None) -> int:
             command.add_argument("--directory", type=Path, default=Path("artifacts/expert-fixture"))
             command.add_argument("--layer", type=int, default=0)
             command.add_argument("--expert", type=int, default=0)
+        if name == "fetch-router-fixture":
+            command.add_argument("--directory", type=Path, default=Path("artifacts/router-fixture"))
+            command.add_argument("--layer", type=int, default=0)
         if name in ("build-store", "validate-cache"):
             command.add_argument("--fixtures", type=Path, nargs="+", required=True)
         if name == "build-store":
@@ -43,9 +46,9 @@ def main(argv=None) -> int:
         if name == "bench-disk":
             command.add_argument("--directory", type=Path, default=Path("artifacts/disk-probe"))
             command.add_argument("--file", type=Path, help="Read an existing model file without creating scratch")
-        if name in ("compare-reference", "compare-expert", "validate-cache"):
+        if name in ("compare-reference", "compare-expert", "validate-cache", "compare-router"):
             command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
-        if name in ("compare-reference", "compare-expert", "trace-reduction", "validate-cache", "bench-cache"):
+        if name in ("compare-reference", "compare-expert", "trace-reduction", "validate-cache", "bench-cache", "compare-router"):
             command.add_argument("--device", type=int, default=0)
             if name != "bench-cache":
                 command.add_argument("--reference-device", type=int)
@@ -73,6 +76,13 @@ def main(argv=None) -> int:
         elif args.command == "fetch-expert-fixture":
             from .checkpoint import fetch_expert_fixture
             result = fetch_expert_fixture(args.directory, args.layer, args.expert)
+        elif args.command == "fetch-router-fixture":
+            from .router import fetch_router_fixture
+            result = fetch_router_fixture(args.directory, args.layer)
+        elif args.command == "compare-router":
+            from .router_reference import compare_router
+            reference = args.device if args.reference_device is None else args.reference_device
+            result = compare_router(args.fixture, args.reference_directory, args.device, reference)
         elif args.command == "build-store":
             from .storage import build_store
             result = build_store(args.fixtures, args.directory)

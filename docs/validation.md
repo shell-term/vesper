@@ -11,6 +11,7 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Full expert | Activation quantization, clamps, weighted SwiGLU and three projections | One native expert on 4090 passes 128 single-token conditions, including intermediate bits |
 | Tiered expert storage | Identity, original bytes, eviction/reload and unchanged expert computation | Three native experts pass 232 calls across SSD/RAM/two GPUs, including intermediate bits |
 | Device integrity audits | Original-byte digest anchors, padding/chunk boundaries, corruption refusal and unchanged computation | Both GPUs pass 96 payload cases and 10 fault injections; optional path passes another 232 official comparisons |
+| Routing postprocessing | Scores, trained bias, expert IDs/weights and safe tie handling from supplied FP32 logits | 116 score/ID-weight maps match; 87 ordered non-tied cases pass; 29 tie cases unsupported; issue #3 open |
 | Full layer | Router, expert selection/weights, aggregation order and shared expert | Not implemented |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
@@ -81,3 +82,11 @@ RAM copies can be unverified until this point. Unit tests explicitly corrupt
 RAM and transfers and require refusal before compute-slot publication. Device
 tests compare standard SHA-256 digests and inject single-bit faults on both GPUs.
 These tests are scoped engineering checks, not a cryptographic certification.
+
+The [router probe](router-validation.md) isolates postprocessing by replacing
+only the reference projection with supplied FP32 logits. Tuple ordering and
+expert-ID/weight mapping are reported separately: the official MoE consumes
+experts in ID order, while normalization can still depend on top-k ordering.
+An ordered-tuple difference alone is not model-quality evidence. The candidate
+refuses tied decisions and is not integrated into inference; a partial report
+keeps exit code 2 and its issue open.
