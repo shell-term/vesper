@@ -21,6 +21,28 @@ cache and 16 GiB for other owned state. A 32 GiB available-memory floor applies
 independently. Runtime pressure must shrink caches or reject work. Fixed
 allocations, pinned staging, metadata, scratch and Engram row cache all count.
 
+## Implemented cache prototype
+
+The [three-expert probe](cache-validation.md) uses exclusive tiers: the compute
+GPU, a storage-only helper GPU and RAM. SSD remains the immutable backing store.
+Each request promotes the exact requested expert to the compute GPU. A displaced
+compute entry moves to the helper, whose displaced entry may enter RAM. LRU
+replacement never changes the expert ID, route weight or arithmetic.
+
+Two portable pinned buffers keep promotion bytes separate from demotion bytes.
+One fixed aligned direct-I/O buffer avoids mapping a model-wide file cache. GPU
+slot metadata is published only after a completed, audited upload. A serialized
+request holds its slot until computation finishes; nested requests are refused.
+Failed transfers can discard a cache copy, but the original SSD copy remains.
+
+RAM arrays are allocated lazily. Admission checks the buffer cap and available
+memory; request boundaries release RAM entries under pressure and refuse work if
+the available-memory floor cannot be restored. Fixed buffers are included in the
+ledger. Python/driver/compiler objects and diagnostic outputs are outside it;
+there is no whole-process OS memory guarantee. GPU pressure currently refuses
+work rather than resizing fixed slots. This prototype has no asynchronous
+prefetch, routing predictor, layer aggregator or Engram cache.
+
 ## Move work to resident weights
 
 A native expert includes 18,800,640 bytes of FP4 data and E8M0 scales. One
@@ -35,6 +57,8 @@ access, so an explicit portable pinned-host path is measured.
 Keep expert contributions separate and aggregate in the required order. Arbitrary
 GPU-local partial sums could change rounding and violate the reference check.
 Ampere also needs a verified arithmetic path for the reference's FP8 operations.
+The current Ampere candidate failed that check, so the implemented helper moves
+original bytes through pinned host memory and performs no model arithmetic.
 
 ## Schedule by useful work per byte
 

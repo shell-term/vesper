@@ -149,10 +149,36 @@ def validate_expert_arrays(arrays: dict[str, np.ndarray]) -> None:
             raise ValueError("Expert tensor layout differs from the pinned shape")
 
 
-def fetch_expert_fixture(directory: Path) -> dict:
-    """Fetch exactly layer 0 / expert 0: six bounded tensors, 18,800,640 bytes."""
+def validate_expert_identity(layer: int, expert: int) -> None:
+    if type(layer) is not int or type(expert) is not int or not 0 <= layer < 40 or not 0 <= expert < 384:
+        raise ValueError("Expert identity is outside the pinned model")
+
+
+def validate_expert_provenance(manifest: dict) -> None:
+    if (manifest.get("model"), manifest.get("revision"), manifest.get("kind"),
+            manifest.get("swiglu_limit")) != (MODEL, REVISION, "complete_expert", 10.0):
+        raise ValueError("Expert provenance differs from the pinned checkpoint and probe scope")
+    layer, expert = manifest.get("layer"), manifest.get("expert")
+    validate_expert_identity(layer, expert)
+    entries = manifest.get("tensors", [])
+    if len(entries) != len(EXPERT_LAYOUT) or {e["name"] for e in entries} != set(EXPERT_LAYOUT):
+        raise ValueError("Incomplete expert fixture provenance")
+    for entry in entries:
+        name = entry["name"]
+        projection, suffix = name.split("_")
+        if (entry.get("tensor") != f"layers.{layer}.ffn.experts.{expert}.{projection}.{suffix}"
+                or entry.get("dtype") != ("I8" if suffix == "weight" else "F8_E8M0")
+                or entry.get("shape") != list(EXPERT_LAYOUT[name])
+                or entry.get("bytes") != int(np.prod(EXPERT_LAYOUT[name]))
+                or not re.fullmatch(r"[0-9a-f]{64}", entry.get("sha256", ""))):
+            raise ValueError("Expert tensor provenance differs from its pinned identity and layout")
+
+
+def fetch_expert_fixture(directory: Path, layer: int = 0, expert: int = 0) -> dict:
+    """Fetch one identified expert: six bounded tensors, 18,800,640 bytes."""
     from .resources import MemoryBudget, MiB
 
+    validate_expert_identity(layer, expert)
     budget = MemoryBudget(cap=64 * MiB)
     budget.acquire(64 * MiB)
     directory = Path(directory)
@@ -164,7 +190,7 @@ def fetch_expert_fixture(directory: Path) -> dict:
         headers, arrays, entries = {}, {}, []
         for projection, (rows, width) in EXPERT_SHAPES.items():
             for suffix, divisor, dtype in (("weight", 2, "I8"), ("scale", 32, "F8_E8M0")):
-                key = f"layers.0.ffn.experts.0.{projection}.{suffix}"
+                key = f"layers.{layer}.ffn.experts.{expert}.{projection}.{suffix}"
                 shard = index["weight_map"][key]
                 if shard not in headers:
                     header_size = struct.unpack("<Q", read_range(shard, 0, 8))[0]
@@ -190,7 +216,7 @@ def fetch_expert_fixture(directory: Path) -> dict:
         directory.mkdir(parents=True, exist_ok=True)
         np.savez(directory / "native-expert.npz", **arrays)
         manifest = {"probe": "fetch_expert_fixture", "status": "pass", "kind": "complete_expert",
-                    "model": MODEL, "revision": REVISION, "layer": 0, "expert": 0,
+                    "model": MODEL, "revision": REVISION, "layer": layer, "expert": expert,
                     "swiglu_limit": config["swiglu_limit"], "weights_fetched_bytes": total, "tensors": entries,
                     "note": "One original native expert; not the full model or an inference download cache."}
         (directory / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
@@ -202,13 +228,9 @@ def fetch_expert_fixture(directory: Path) -> dict:
 def load_expert_fixture(path: Path) -> tuple[dict[str, np.ndarray], dict]:
     path = Path(path)
     manifest = json.loads((path.parent / "manifest.json").read_text(encoding="utf-8"))
-    if (manifest.get("model"), manifest.get("revision"), manifest.get("kind"), manifest.get("layer"),
-            manifest.get("expert"), manifest.get("swiglu_limit")) != (MODEL, REVISION, "complete_expert", 0, 0, 10.0):
-        raise ValueError("Expert provenance differs from the pinned checkpoint and probe scope")
+    validate_expert_provenance(manifest)
     expected = EXPERT_LAYOUT
-    entries = manifest.get("tensors", [])
-    if len(entries) != len(expected) or {e["name"] for e in entries} != set(expected):
-        raise ValueError("Incomplete expert fixture provenance")
+    entries = manifest["tensors"]
     # Inspect every NPY header before NumPy can allocate from a declared shape.
     # Central-directory sizes alone do not bound an invalid NPY shape.
     with zipfile.ZipFile(path) as archive:

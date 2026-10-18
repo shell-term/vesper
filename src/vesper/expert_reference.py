@@ -144,7 +144,7 @@ def compare_expert(fixture: Path, reference_directory: Path, ordinal=0, referenc
             "numpy_version": np.__version__, "torch_cuda_version": torch.version.cuda,
             "compiler_options": ["fmad=false", "ftz=false"],
             "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "scope": "One original layer-0 expert; single-token calls; FP32 diagnostic trace and BF16 outputs",
+            "scope": f"One original layer-{manifest['layer']} expert-{manifest['expert']}; single-token calls; FP32 diagnostic trace and BF16 outputs",
             "reference_method": "Unchanged AST function bodies: linear and Expert.forward from hash-checked model.py",
             "reference_runtime_workarounds": reference.runtime_workarounds,
             "full_layer_quality": "not_run", "full_model_quality": "not_run"}

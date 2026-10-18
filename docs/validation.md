@@ -4,15 +4,16 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 
 | Gate | Evidence required | Initial state |
 | --- | --- | --- |
-| Released artifacts | Pinned checkpoint, exact weight/scale bytes, matching tokenizer and Engram | W1 slice and one complete expert; tokenizer/Engram pending |
+| Released artifacts | Pinned checkpoint, exact weight/scale bytes, matching tokenizer and Engram | W1 slice and three complete experts; tokenizer/Engram pending |
 | Format specification | All FP4 codes, scale encodings, FP8/BF16 rounding boundaries, signed zero | Pass on Ada and Ampere |
 | Projection specification | Native weight slice against an independent block arithmetic oracle | Pass on Ada and Ampere |
 | Official kernels | Per-operation exact comparisons with the pinned TileLang code | W1 slice: 4090 passes 8 inputs; 3080 Ti candidate fails, 14/1,024 output mismatches |
 | Full expert | Activation quantization, clamps, weighted SwiGLU and three projections | One native expert on 4090 passes 128 single-token conditions, including intermediate bits |
+| Tiered expert storage | Identity, original bytes, eviction/reload and unchanged expert computation | Three native experts pass 232 calls across SSD/RAM/two GPUs, including intermediate bits |
 | Full layer | Router, expert selection/weights, aggregation order and shared expert | Not implemented |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
-| Resource policy | All owned memory plus pressure behavior, concurrency with other work | Reservation checks only |
+| Resource policy | All owned memory plus pressure behavior, concurrency with other work | Bounded cache buffers and injected pressure/refusal/recovery pass; full-engine/OS policy pending |
 | End-to-end speed | Prefill, TTFT, decode, actual storage traffic and memory on named hardware | Not run |
 
 ## Reference
@@ -61,3 +62,11 @@ experts after a small numerical change.
 Unit tests cover memory reservation refusal, checkpoint range refusal and fixture
 tamper detection. These are boundary checks, not proof of the future full-engine
 memory governor. All probes must retain their explicit, small allocation limits.
+
+The [cache follow-up](cache-validation.md) adds exclusive-tier identity checks,
+corrupted/failed transfer injection, cap refusal, RAM release and retry. Its
+real-weight run compares all thirteen expert stages with the unchanged official
+expert while switching source tiers. Available-memory pressure is injected into
+the observation function; no real machine memory exhaustion is attempted. The
+actual observed minimum available memory is reported separately. Buffer cleanup
+counters reach zero; that is not proof that CUDA contexts or Python RSS vanish.

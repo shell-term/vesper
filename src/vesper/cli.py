@@ -11,7 +11,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="vesper", description="Vesper native-precision MoE research probes")
     sub = parser.add_subparsers(dest="command", required=True)
     for name in ("inventory", "validate", "bench-transfer", "fetch-fixture", "bench-disk", "compare-reference",
-                 "trace-reduction", "fetch-expert-fixture", "compare-expert"):
+                 "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
         if name in ("validate", "bench-transfer"):
@@ -24,12 +24,21 @@ def main(argv=None) -> int:
             command.add_argument("--directory", type=Path, default=Path("artifacts/fixture"))
         if name == "fetch-expert-fixture":
             command.add_argument("--directory", type=Path, default=Path("artifacts/expert-fixture"))
+            command.add_argument("--layer", type=int, default=0)
+            command.add_argument("--expert", type=int, default=0)
+        if name in ("build-store", "validate-cache"):
+            command.add_argument("--fixtures", type=Path, nargs="+", required=True)
+        if name == "build-store":
+            command.add_argument("--directory", type=Path, required=True)
+        if name == "validate-cache":
+            command.add_argument("--store", type=Path, required=True)
+            command.add_argument("--helper-device", type=int, default=1)
         if name == "bench-disk":
             command.add_argument("--directory", type=Path, default=Path("artifacts/disk-probe"))
             command.add_argument("--file", type=Path, help="Read an existing model file without creating scratch")
-        if name in ("compare-reference", "compare-expert"):
+        if name in ("compare-reference", "compare-expert", "validate-cache"):
             command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
-        if name in ("compare-reference", "compare-expert", "trace-reduction"):
+        if name in ("compare-reference", "compare-expert", "trace-reduction", "validate-cache"):
             command.add_argument("--device", type=int, default=0)
             command.add_argument("--reference-device", type=int)
         if name in ("compare-reference", "trace-reduction"):
@@ -55,7 +64,15 @@ def main(argv=None) -> int:
             result = fetch_fixture(args.directory)
         elif args.command == "fetch-expert-fixture":
             from .checkpoint import fetch_expert_fixture
-            result = fetch_expert_fixture(args.directory)
+            result = fetch_expert_fixture(args.directory, args.layer, args.expert)
+        elif args.command == "build-store":
+            from .storage import build_store
+            result = build_store(args.fixtures, args.directory)
+        elif args.command == "validate-cache":
+            from .cache_reference import compare_cache
+            reference = args.device if args.reference_device is None else args.reference_device
+            result = compare_cache(args.store, args.fixtures, args.reference_directory,
+                                   args.device, args.helper_device, reference)
         elif args.command == "bench-disk":
             from .disk import benchmark
             result = benchmark(args.directory, args.file)

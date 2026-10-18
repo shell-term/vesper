@@ -8,11 +8,19 @@ from unittest.mock import patch
 
 import numpy as np
 
-from vesper.checkpoint import EXPERT_LAYOUT, MODEL, REVISION, load_expert_fixture, validate_expert_arrays
+from vesper.checkpoint import EXPERT_LAYOUT, MODEL, REVISION, load_expert_fixture, validate_expert_arrays, validate_expert_provenance
 from vesper.expert import ResidentExpert
 
 
 class ExpertBoundaryTests(unittest.TestCase):
+    def provenance(self):
+        return {"model": MODEL, "revision": REVISION, "kind": "complete_expert",
+                "layer": 0, "expert": 0, "swiglu_limit": 10.0,
+                "tensors": [{"name": name, "shape": list(shape), "sha256": "0" * 64,
+                             "tensor": "layers.0.ffn.experts.0." + name.replace("_", "."),
+                             "bytes": int(np.prod(shape)), "dtype": "I8" if name.endswith("weight") else "F8_E8M0"}
+                            for name, shape in EXPERT_LAYOUT.items()]}
+
     def tensors(self):
         # Layout validation only; broadcast views avoid allocating a real expert.
         return {name: np.broadcast_to(np.array(0, np.uint8), shape) for name, shape in EXPERT_LAYOUT.items()}
@@ -55,10 +63,7 @@ class ExpertBoundaryTests(unittest.TestCase):
     def test_excessive_declared_shape_is_rejected_before_numpy_allocation(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            manifest = {"model": MODEL, "revision": REVISION, "kind": "complete_expert",
-                        "layer": 0, "expert": 0, "swiglu_limit": 10.0,
-                        "tensors": [{"name": name, "shape": list(shape), "sha256": "unused"}
-                                    for name, shape in EXPERT_LAYOUT.items()]}
+            manifest = self.provenance()
             (root / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
             path = root / "native-expert.npz"
             with zipfile.ZipFile(path, "w") as archive:
@@ -70,3 +75,11 @@ class ExpertBoundaryTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "bounded native layout"):
                     load_expert_fixture(path)
                 loader.assert_not_called()
+
+    def test_expert_identity_cannot_be_relabelled(self):
+        manifest = self.provenance()
+        validate_expert_provenance(manifest)
+        for key, value in (("expert", 1), ("layer", True), ("expert", 384), ("layer", 40)):
+            changed = dict(manifest, **{key: value})
+            with self.assertRaises(ValueError):
+                validate_expert_provenance(changed)

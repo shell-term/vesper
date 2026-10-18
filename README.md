@@ -7,23 +7,26 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Expert validation](docs/expert-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Cache validation](docs/cache-validation.md) · [Expert validation](docs/expert-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 ## Status
 
-This is a **verification runtime**, not a working text-generation engine. One
-complete native expert now runs on the RTX 4090 with resident original weights.
+This is a **verification runtime**, not a working text-generation engine. Native
+experts now run on the RTX 4090 through SSD, bounded RAM and two GPU cache tiers.
 Direct comparisons with the pinned official implementation give:
 
 | Candidate | Scope | Result |
 | --- | --- | --- |
 | RTX 4090, native FP8 path | One complete expert, 128 conditions | 0 / 655,360 final-output mismatches; all checked intermediate bits match |
+| SSD / RAM / 3080 Ti storage / 4090 compute | Three distinct experts, 232 successful calls | 0 / 1,187,840 final-output mismatches; all checked intermediate bits match |
 | RTX 3080 Ti, experimental BF16 path | 128-row W1 slice, 8 inputs | 14 / 1,024 output mismatches; unqualified for inference |
 
 The expert checks include both input projections, asymmetric clamps, weighted
 SwiGLU, the BF16 boundary, down-input quantization and the output projection.
 Independent format checks also pass on both GPUs. Layers, full-model quality and
-generation speed remain unverified. See the [new report and complete results](docs/expert-validation.md)
+generation speed remain unverified. The 3080 Ti currently stores original bytes;
+all model arithmetic in the cache probe runs on the 4090. See the
+[cache report and complete results](docs/cache-validation.md), [resident expert report](docs/expert-validation.md)
 and the [initial transfer/storage measurements](docs/first-probe.md).
 
 The goal is to preserve the released model's precision and semantics. Native FP4
@@ -119,12 +122,34 @@ remains unqualified. The optional TileLang 0.1.12 NVRTC oracle also needs per-ke
 launch-handle isolation, applied by Vesper without altering the official arithmetic
 or source files and recorded in its reports.
 
+## Bounded cache probe
+
+Fetch three distinct experts, then construct a small aligned store. Each expert
+contains 18,800,640 original bytes. The builder refuses existing destinations.
+
+```sh
+vesper fetch-expert-fixture --expert 1 --directory artifacts/expert-fixture-1
+vesper fetch-expert-fixture --expert 2 --directory artifacts/expert-fixture-2
+vesper build-store --fixtures artifacts/expert-fixture/native-expert.npz artifacts/expert-fixture-1/native-expert.npz artifacts/expert-fixture-2/native-expert.npz --directory artifacts/native-store
+vesper validate-cache --store artifacts/native-store --fixtures artifacts/expert-fixture/native-expert.npz artifacts/expert-fixture-1/native-expert.npz artifacts/expert-fixture-2/native-expert.npz --device 0 --helper-device 1 --output artifacts/cache.json
+```
+
+The optional reference environment above is needed for `validate-cache`. It uses
+a 96 MiB host-buffer cap, one expert per RAM/GPU tier and a 32 GiB system-available
+floor. Transfers are synchronous and audited by readback. The test verifies
+evictions, forced SSD reloads, pressure refusal and recovery; it does not run the
+model router or estimate real cache-hit rates. Stores currently accept at most
+four experts. See [the cache report](docs/cache-validation.md) for limitations.
+
 ## Memory policy
 
 The provisional full-engine design has a **96 GiB host-memory cap** and a **32 GiB
 system-available floor**, including caches, pinned staging, metadata and scratch.
-The full memory governor is not implemented yet. The current reservation ledger
-only covers allocations explicitly owned by a probe; it is not an OS memory limit.
+The full memory governor is not implemented yet. The cache runtime now enforces
+its owned buffer cap, shrinks RAM under observed pressure and refuses requests if
+the reserve remains unavailable. This ledger covers explicit buffers and a
+metadata allowance; Python, CUDA contexts, compilation, returned diagnostics and
+the optional official oracle remain outside it. It is not an OS memory limit.
 
 Current GPU probes cap explicit allocations at 256 MiB per GPU and check a 1 GiB
 free-memory reserve. GPU contexts and modules consume additional memory. Transfer
@@ -134,6 +159,8 @@ workloads. Measurements can therefore include contention.
 The single-expert runtime has a stricter 64 MiB explicit GPU allocation cap; the
 128-condition run peaked at 18,903,528 bytes. This excludes CUDA/PyTorch contexts
 and reference compiler allocations. Its weights remain in ignored artifacts.
+The cache probe peaked at 76,251,136 host-buffer bytes (72.7 MiB), 18,903,528
+explicit bytes on the 4090 and 18,800,640 on the storage-only 3080 Ti.
 
 ## Development
 

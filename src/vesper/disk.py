@@ -89,6 +89,14 @@ class DirectReader:
             self.budget.release(self.capacity)
             self.budget = None
 
+    def array(self) -> np.ndarray:
+        """Borrow the aligned read buffer; callers must not retain it after close."""
+        if self.buffer is None:
+            raise RuntimeError("Direct reader is closed")
+        if os.name == "nt":
+            return np.ctypeslib.as_array((C.c_uint8 * self.capacity).from_address(self.buffer))
+        return np.frombuffer(self.buffer, dtype=np.uint8, count=self.capacity)
+
     def __enter__(self):
         return self
 
