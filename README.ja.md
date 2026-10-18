@@ -3,6 +3,10 @@
 元のモデルの精度を保ち、GPU・RAM・SSDを組み合わせて大きなMoEモデルを動かすためのプロジェクトです。
 最初の対象はDeepSeek-V4.1-Flash-1017、RTX 4090＋RTX 3080 Tiです。
 
+進捗は[Issues](https://github.com/shell-term/vesper/issues)と[Milestones](https://github.com/shell-term/vesper/milestones)で管理します。
+「実装済み」と「公式との一致を検証済み」を区別し、合格条件と測定データを各Issueに残します。
+[開発の節目と運用方針](docs/roadmap.md)も公開しています。
+
 現在は**キャッシュを切り替えながらexpertを動かせる検証用実装**です。まだ文章生成はできません。
 元の重みを保持し、公式実装と直接比較しています。
 

@@ -9,6 +9,8 @@ on heterogeneous consumer NVIDIA GPUs.
 
 [日本語](README.ja.md) · [Cache performance](docs/cache-performance.md) · [Cache validation](docs/cache-validation.md) · [Expert validation](docs/expert-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
+[Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
+
 ## Status
 
 This is a **verification runtime**, not a working text-generation engine. Native

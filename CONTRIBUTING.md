@@ -3,6 +3,12 @@
 Vesper is at the verification stage. Small, independently measurable changes are
 most useful. Start with a reproducer and the evidence needed to evaluate it.
 
+Use the [Issues](https://github.com/shell-term/vesper/issues) and
+[Milestones](https://github.com/shell-term/vesper/milestones) to coordinate work.
+Each issue needs acceptance criteria, scope and linked evidence. Reference the
+issue in commits; implementation alone does not close a fidelity gate. See the
+[roadmap and status workflow](docs/roadmap.md).
+
 Run `python -m unittest discover -s tests -v` before proposing changes. CUDA
 changes also need relevant real-GPU reports with hardware, compile options and
 exact mismatch counts. GPU probes are manual; ordinary CI runs CPU checks only.

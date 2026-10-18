@@ -8,3 +8,4 @@
 - Treat design proposals as hypotheses. Keep measured results and assumed performance ceilings distinct. Explain the evidence when revising a conclusion.
 - Do not commit model weights, downloaded reference sources, local paths, credentials, GPU UUIDs, or machine names. Preserve third-party licenses for adapted code.
 - Use English for public source documentation; maintain a short Japanese entry point. Keep status and unresolved validation gates honest.
+- Track development in the repository's Issues and Milestones; see docs/roadmap.md. Link the active issue in commits and update its progress with scoped evidence. Use status:needs-validation for implemented work with an open reference gate. Add verified and close only when the issue's stated acceptance checks pass; do not close a milestone for a component-only pass.
