@@ -14,9 +14,15 @@ def main(argv=None) -> int:
                  "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
                  "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router", "fetch-gate-fixture", "compare-gate",
                  "fetch-shared-fixture", "compare-shared", "compare-aggregation", "compare-original-accumulation",
-                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization", "compare-projections", "compare-block"):
+                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization", "compare-projections", "compare-block", "fetch-compression-fixture", "compare-compression"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
+        if name == "fetch-compression-fixture":
+            command.add_argument("--directory", type=Path, default=Path("artifacts/compression-fixture"))
+        if name == "compare-compression":
+            command.add_argument("--fixture", type=Path, required=True)
+            command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
+            command.add_argument("--device", type=int, default=0)
         if name in ("validate", "bench-transfer", "validate-integrity"):
             command.add_argument("--devices", type=int, nargs="+")
         if name in ("validate", "compare-reference"):
@@ -187,6 +193,12 @@ def main(argv=None) -> int:
         elif args.command == "compare-projections":
             from .projection_reference import compare_projections
             result = compare_projections(args.reference_directory, args.prefix_fixture, args.attention_bundle, args.device)
+        elif args.command == "fetch-compression-fixture":
+            from .compression_fixture import fetch_compression_fixture
+            result = fetch_compression_fixture(args.directory)
+        elif args.command == "compare-compression":
+            from .compression_reference import compare_compression
+            result = compare_compression(args.reference_directory, args.fixture, args.device)
         elif args.command == "compare-block":
             from .block_reference import compare_block
             result = compare_block(args.reference_directory, args.prefix_fixture, args.attention_bundle, args.store,

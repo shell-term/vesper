@@ -5,8 +5,9 @@ Native Hyper-Connections (HC) and residuals now connect the qualified
 [window Attention layer](attention-projection-validation.md) and
 [tiered MoE](real-moe-validation.md) into a complete original-weight layer-0
 Transformer block. The qualified block profile is **one rank, batch one, one
-token per call, uncompressed window KV**. Other layers, compressed/indexed/shared
-KV and Engram remain separate gates. Issue #7 and M2 stay open; text generation
+token per call, uncompressed window KV**. The subsequent
+[compression probe](compression-validation.md) qualifies original compressor/cache
+construction. Other layers, indexed/shared KV and Engram remain separate gates. Issue #7 and M2 stay open; text generation
 and full-model quality are unfinished.
 
 ## Results
@@ -177,7 +178,9 @@ admission and guard cleanup, finalizer rollback and tampered/incomplete evidence
 - [Independent native-only replay](../results/2026-10-18-layer0-block/native-only-recheck.json)
 - [Summary, raw-file hashes and resource observations](../results/2026-10-18-layer0-block/summary.json)
 
-Next: compressed KV construction/rounding, sparse index selection and source-layer
-sharing. Other block profiles, larger prefill/batching, Engram, full-model
+The [compression follow-up](compression-validation.md) now qualifies original
+compressed-KV construction/rounding with bounded diagnostic state. Sparse index
+selection, source-layer sharing and complete compressed Attention remain next.
+Other block profiles, larger prefill/batching, Engram, full-model
 logits/sampling, full-engine memory governance and workload performance remain
 open gates.

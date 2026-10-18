@@ -116,6 +116,25 @@ tree. HC FP32 projection uses the cuBLAS convention described above. The complet
 distributions. Whole-block transaction/failure handling and bounded allocation
 guards are Vesper runtime code; no TileLang runtime/compiler source is vendored.
 
+## Original compressor and compressed-KV rounding
+
+Native ratio-1/ratio-2 projections, pair softmax pooling, partial-group state,
+group-first-token rotary positions and FP4/E4M3 quantize/dequantize follow
+`Compressor.forward`, `Attention._compress_kv` and `fp4_quant_kernel` in the pinned
+DeepSeek model/kernel sources. The DeepSeek license above covers these adapted
+formulas and their CUDA implementation. Original fixture weights, downloaded
+sources and generated binaries remain local artifacts. The optional cache oracle
+executes unchanged original methods with an explicit empty-index callback; it
+does not vendor or qualify the original indexer.
+
+The pair softmax adapts the pinned PyTorch `SoftMax.cu` spatial path's FP32
+exponential/division and accumulation order. Pooling retains the reduction order
+from the same `Reduce.cuh`/`SharedReduceOps.h` sources described above. BF16 GEMM
+uses the pinned ATen cuBLAS calling convention. The complete
+[PyTorch license](third_party/PyTorch-LICENSE) is retained for source and binary
+distributions. Bounded host-cache publication, snapshot ownership and failure
+handling are Vesper runtime code.
+
 ## Runtime dependencies
 
 The native window KV quantizer, ring-slot formulas and index construction follow

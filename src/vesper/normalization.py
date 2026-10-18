@@ -153,11 +153,16 @@ class NativeNormRoPE:
                 return {name: self.device.download(pointer, shape, np.float32)
                         for name, pointer, shape in zip(FREQUENCY_STAGES, pointers, shapes)}
 
-    def rope(self, values, start_pos=0, profile="window", inverse=False):
+    def rope(self, values, start_pos=0, profile="window", inverse=False, *, positions=None):
         with self.lock:
             self._ready()
             batch, sequence, heads, width = validate_rope(values, start_pos, profile, inverse)
-            positions = np.arange(start_pos, start_pos + sequence, dtype=np.int32)
+            if positions is None:
+                positions = np.arange(start_pos, start_pos + sequence, dtype=np.int32)
+            else:
+                validate_positions(positions, profile)
+                if positions.size != sequence or positions[0] != start_pos:
+                    raise ValueError("Explicit rotary positions must match sequence length and first position")
             with ExitStack() as stack:
                 allocate = self._allocator(stack)
                 frequency = self._frequency_device(positions, profile, allocate)

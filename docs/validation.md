@@ -4,7 +4,7 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 
 | Gate | Evidence required | Current evidence |
 | --- | --- | --- |
-| Released artifacts | Pinned checkpoint, exact weight/scale bytes, matching tokenizer and Engram | W1 slice, six complete FP4 experts, one FP8 shared expert and original gate/bias fixtures; tokenizer/Engram pending |
+| Released artifacts | Pinned checkpoint, exact weight/scale bytes, matching tokenizer and Engram | Original expert/gate/shared/Attention/HC fixtures and five compressor tensors; tokenizer/Engram pending |
 | Format specification | All FP4 codes, scale encodings, FP8/BF16 rounding boundaries, signed zero | Pass on Ada and Ampere |
 | Projection specification | Native weight slice against an independent block arithmetic oracle | Pass on Ada and Ampere |
 | Official kernels | Per-operation exact comparisons with the pinned TileLang code | W1 slice: 4090 passes 8 inputs; 3080 Ti candidate fails, 14/1,024 output mismatches |
@@ -23,6 +23,7 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Original-weight native window Attention layer | Original query/KV/output projections, grouped BF16 conversion, complete forward output/cache, real inputs and atomic failure recovery | 90 component cases and 309 successful layer calls (304 corpus calls + five retries), 17,355 comparisons, zero differences; four real prefix inputs and two window wraps; independent native-only replay passes; layer-0, one rank, batch 1/2, prefill at most three queries |
 | Native Hyper-Connections and residuals | Original FP32 projection/reduction, Sinkhorn iterations, coefficient handoff and BF16 boundaries | 84 component cases pass; all four changed-arithmetic controls detected; independent native-only replay passes |
 | Full Transformer block | Connected Attention, MoE, Hyper-Connections, residuals and layer-specific Engram/compressed profiles | Uncompressed layer 0 passes 26 single-token calls / 225 boundaries each plus unchanged Block.forward hidden/next-coefficient/KV controls; other profiles and Engram pending |
+| Original compressor and compressed KV | Original learned FP32/BF16 projections, softmax pooling, partial groups, group-position RoPE, FP4/E4M3 rounding and state publication | 49 component cases and 432 state calls, 8,751 comparisons, zero differences; five refusal/retries and both snapshot profiles pass; independent native-only replay passes; generated inputs and host diagnostic cache only, index selection/sharing pending |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
 | Resource policy | All owned memory plus pressure behavior, concurrency with other work | Bounded cache buffers and injected pressure/refusal/recovery pass; full-engine/OS policy pending |
@@ -175,3 +176,14 @@ arithmetic controls are detected. Five whole-call faults refuse partial
 publication and recover exactly; independent native-only replay passes. This
 qualifies the uncompressed layer-0 single-token profile, not every block,
 compressed/indexed/shared KV, Engram, full-model quality or generation speed.
+
+The [compression probe](compression-validation.md) now qualifies original
+layer-2 ratio-2 and layer-20 ratio-1 compressor/cache construction independently.
+It preserves original FP32 versus BF16 projection, pair softmax/pooling, learned
+normalization, group-first-token rotary positions and 16-value FP4/E4M3 rounding.
+All 49 component cases and 432 state calls match, including incomplete groups,
+failure/retry and snapshots. Unchanged original compressor/cache bodies control
+latents and state writes, with an explicit empty-index callback. This does not
+qualify index-key/query arithmetic, candidate/top-k selection, source sharing or
+complete compressed Attention. The cache is a bounded host diagnostic copy;
+original-weight tests use generated inputs, not captured later-layer activations.

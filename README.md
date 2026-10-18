@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Complete layer-0 block](docs/layer0-block-validation.md) · [Real-input MoE](docs/real-moe-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Complete layer-0 block](docs/layer0-block-validation.md) · [Compressed KV](docs/compression-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 [Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
 
@@ -117,9 +117,19 @@ and 26 successful single-token block calls, all 6,648 checked boundaries match
 exactly. Every block call compares 225 boundaries and also matches unchanged
 `Block.forward` hidden-state, next-layer coefficient and KV controls. Five
 failure/retry checks and independent replay without Torch/TileLang pass. This
-covers the uncompressed layer-0 profile, reusing 27 original experts; compressed
-KV, sparse index selection/source-layer sharing, Engram and full-model execution
-remain unfinished. See the [complete-block report](docs/layer0-block-validation.md).
+covers the uncompressed layer-0 profile, reusing 27 original experts. The
+compressor/cache follow-up is below; sparse index selection/source-layer sharing,
+Engram and full-model execution remain unfinished. See the
+[complete-block report](docs/layer0-block-validation.md).
+
+The original ratio-2 and ratio-1 compressors now also execute natively, through
+learned projection/pooling, normalization, group-position RoPE and the model's
+original FP4/E4M3 compressed-KV rounding. Across 49 component cases and 432
+state calls, all 8,751 checked boundaries match. Five fault/retry conditions,
+snapshot restoration and independent replay without Torch/TileLang pass. This
+uses bounded host diagnostic cache copies and generated inputs with original
+layer-2/layer-20 weights; index selection and connected compressed Attention
+remain pending. See the [compression report](docs/compression-validation.md).
 
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is

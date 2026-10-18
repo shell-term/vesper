@@ -7,8 +7,9 @@ uncompressed window Attention** path. This extends the
 [window KV](window-kv-validation.md) and
 [sparse Attention](native-attention-validation.md) component evidence.
 The subsequent [complete layer-0 block probe](layer0-block-validation.md) adds
-native Hyper-Connections, residuals and MoE. Compressed/indexed/shared KV and
-other block profiles remain unfinished. Issue #7 and M2 stay open; text generation
+native Hyper-Connections, residuals and MoE. The [compression probe](compression-validation.md)
+qualifies original compressor/cache construction; indexing/sharing, connected
+compressed Attention and other block profiles remain unfinished. Issue #7 and M2 stay open; text generation
 is unfinished.
 
 ## Results
@@ -184,6 +185,7 @@ or tampered evidence.
 - [Summary, raw-file hashes and resource observations](../results/2026-10-18-attention-projections/summary.json)
 
 The [complete layer-0 block follow-up](layer0-block-validation.md) now qualifies
-native Hyper-Connections and residuals with the tiered MoE sublayer. Compressed
-KV, sparse index selection/source-layer sharing, Engram, full-model logits/sampling
+native Hyper-Connections and residuals with the tiered MoE sublayer. The
+[compression probe](compression-validation.md) adds original compressor/cache
+construction. Sparse index selection/source-layer sharing, Engram, full-model logits/sampling
 and workload performance remain later gates.

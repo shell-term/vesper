@@ -8,8 +8,9 @@ later [normalization and RoPE report](normalization-rope-validation.md) qualifie
 native learned normalization and rotation from projected inputs. The
 [projection/layer follow-up](attention-projection-validation.md) connects the
 original layer-0 projections. The [complete layer-0 block follow-up](layer0-block-validation.md)
-adds native Hyper-Connections, residuals and MoE. Compressed KV, sparse
-indexing/sharing and other block profiles remain separate gates.
+adds native Hyper-Connections, residuals and MoE. The [compression probe](compression-validation.md)
+qualifies separate original compressor/cache construction. Sparse indexing/sharing,
+connected compressed Attention and other block profiles remain separate gates.
 Issue #7 and M2 remain open; text generation is unfinished.
 
 ## Results
@@ -151,5 +152,6 @@ connects those operations from projected inputs. The subsequent
 [projection/layer probe](attention-projection-validation.md) adds original
 query/KV/output projections and complete window Attention comparisons.
 The [complete layer-0 block probe](layer0-block-validation.md) adds native
-Hyper-Connections, residuals and MoE. Compression/index selection/sharing and
-other block profiles remain required; full-model integration is unfinished.
+Hyper-Connections, residuals and MoE; the [compression probe](compression-validation.md)
+adds original compressor/cache construction. Index selection/sharing and other
+block profiles remain required; full-model integration is unfinished.
