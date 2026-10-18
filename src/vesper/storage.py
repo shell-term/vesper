@@ -17,6 +17,13 @@ from .resources import MemoryBudget, MiB
 from .timing import Timings
 from .integrity import digest_shape, hash_chunks
 
+MAX_STORE_EXPERTS = 48
+
+
+def validate_store_limit(limit):
+    if type(limit) is not int or not 1 <= limit <= MAX_STORE_EXPERTS:
+        raise ValueError("Explicit native-store limit must be one to 48 experts")
+
 
 def expert_key(layer: int, expert: int) -> str:
     validate_expert_identity(layer, expert)
@@ -34,10 +41,11 @@ def tensor_layout() -> dict:
     return result
 
 
-def build_store(fixtures: list[Path], directory: Path) -> dict:
-    """Create a new store from at most four individually verified expert fixtures."""
-    if not 1 <= len(fixtures) <= 4:
-        raise ValueError("The store-building probe accepts one to four real expert fixtures")
+def build_store(fixtures: list[Path], directory: Path, *, max_experts=4) -> dict:
+    """Stream identified fixtures one at a time; default four, explicit limit <=48."""
+    validate_store_limit(max_experts)
+    if not 1 <= len(fixtures) <= max_experts:
+        raise ValueError("Expert fixture count exceeds the explicit native-store limit")
     directory = Path(directory).resolve()
     if directory.exists():
         raise FileExistsError("Refusing to replace an existing native store")
@@ -87,7 +95,8 @@ def build_store(fixtures: list[Path], directory: Path) -> dict:
 class NativeStore:
     """Validated metadata plus one fixed direct-I/O buffer, opened read-only."""
 
-    def __init__(self, directory: Path, budget: MemoryBudget):
+    def __init__(self, directory: Path, budget: MemoryBudget, *, max_experts=4):
+        validate_store_limit(max_experts)
         self.directory = Path(directory).resolve(strict=True)
         self.budget, self.reader = budget, None
         self.timings = Timings()
@@ -102,7 +111,7 @@ class NativeStore:
         if (m.get("schema_version"), m.get("kind"), m.get("model"), m.get("revision"), m.get("expert_bytes"), m.get("file")) != (
                 1, "vesper_native_expert_store", MODEL, REVISION, EXPERT_BYTES, "experts.bin"):
             raise ValueError("Native store does not match the pinned format")
-        if m.get("layout") != tensor_layout() or not 1 <= len(m.get("entries", [])) <= 4:
+        if m.get("layout") != tensor_layout() or not 1 <= len(m.get("entries", [])) <= max_experts:
             raise ValueError("Unexpected native-store layout or probe size")
         self.entries = {}
         for ordinal, entry in enumerate(m["entries"]):

@@ -1,0 +1,42 @@
+{
+  "probe": "original_prefix_moe_inputs",
+  "status": "blocked",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "preflight": {
+    "probe": "official_prefix_resource_preflight",
+    "status": "blocked",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "reference": {
+      "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+      "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+      "files": {
+        "kernel.py": "1236c3507019ed176f5dba5e04bcea58867cf654818c6cf138ed4845398c2455",
+        "LICENSE": "f2c6c602815669d292889e5be8c802f2ed950653b77999b1584e8e6aed25d040",
+        "model.py": "e5decd76fe70fd56ef2f10124d245c6f64fb6a0003cc9068a1d3182a168b8d2d",
+        "convert.py": "035028340479145594a81d6084a8424e57363adf83c0d5983914783d95614d76",
+        "generate.py": "8668d67f7d108e32b90d50cb0d8606889ceb2219bfe95741d84e22f70768e9f0",
+        "config.json": "2e84f45cf1dac8c7fcbb200e96667d4b913275690668ed496f24c7747207a809"
+      }
+    },
+    "device": {
+      "ordinal": 0,
+      "name": "NVIDIA GeForce RTX 4090",
+      "compute_capability": "8.9",
+      "total_bytes": 25756696576
+    },
+    "attention_heads": 64,
+    "head_dim": 512,
+    "required_dynamic_shared_bytes": 141312,
+    "device_max_optin_shared_bytes": 101376,
+    "compiled_host_wrapper_sha256": "e68800a69f98910340b56c5ce1e8ddca016b24f58e68abb8d41fe642803f194e",
+    "tilelang_version": "0.1.12",
+    "torch_version": "2.14.1+cu130",
+    "kernel_launches": 0,
+    "source_or_arithmetic_modified": false,
+    "scope": "Original layer-0 sparse attention resource check; no input capture or native attention qualification"
+  },
+  "cases": [],
+  "reason": "Unchanged official attention exceeds device shared-memory capacity"
+}

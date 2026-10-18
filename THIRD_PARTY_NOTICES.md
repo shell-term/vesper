@@ -9,7 +9,7 @@ adapted from `fast_log2_ceil` / `fast_round_scale` in:
 
 - Model: `deepseek-ai/DeepSeek-V4.1-Flash-1017`
 - Revision: `1bae0e1088993b9b82de08f59de5be5a34e42170`
-- Sources: `inference/kernel.py`, `inference/model.py`
+- Sources: `inference/kernel.py`, `inference/model.py`, `inference/convert.py`, `inference/generate.py`
 - Copyright (c) 2023 DeepSeek
 - License: [third_party/DeepSeek-LICENSE](third_party/DeepSeek-LICENSE)
 
@@ -23,6 +23,11 @@ The shared-expert probe follows the original FP8 block-32 scaling and reuses
 those same unchanged bodies with original FP8 weights. The aggregation probe
 follows `MoE.forward`'s expert-ID iteration and FP32/BF16 boundaries; its optional
 oracle executes the unchanged method with supplied gate outputs.
+The connected probe additionally executes the actual original gate inside the
+unchanged MoE method. The experimental prefix capture extracts unchanged
+Attention/Block/normalization methods and the `wo_a` conversion statements;
+the original generation/configuration files anchor its runtime defaults. Its
+resource preflight is not a native Attention qualification.
 The routing postprocessing probe follows `Gate.forward`'s score/bias/gather and
 normalization formulas. Its optional oracle executes the unchanged method body
 with an explicit identity projection to isolate supplied-logit postprocessing.

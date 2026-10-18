@@ -13,7 +13,8 @@ def main(argv=None) -> int:
     for name in ("inventory", "validate", "bench-transfer", "fetch-fixture", "bench-disk", "compare-reference",
                  "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
                  "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router", "fetch-gate-fixture", "compare-gate",
-                 "fetch-shared-fixture", "compare-shared", "compare-aggregation", "compare-original-accumulation"):
+                 "fetch-shared-fixture", "compare-shared", "compare-aggregation", "compare-original-accumulation",
+                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
         if name in ("validate", "bench-transfer", "validate-integrity"):
@@ -40,6 +41,27 @@ def main(argv=None) -> int:
         if name == "compare-original-accumulation":
             command.add_argument("--fixtures", type=Path, nargs=6, required=True)
             command.add_argument("--shared-fixture", type=Path, required=True)
+        if name in ("plan-connected", "compare-connected"):
+            command.add_argument("--gate-fixture", type=Path, required=True)
+            command.add_argument("--router-fixture", type=Path, required=True)
+            command.add_argument("--captured-inputs", type=Path)
+        if name in ("prepare-connected-store", "compare-connected"):
+            command.add_argument("--plan", type=Path, required=True)
+            command.add_argument("--store", type=Path, required=True)
+            command.add_argument("--expert-directory", type=Path, required=True)
+        if name == "compare-connected":
+            command.add_argument("--shared-fixture", type=Path, required=True)
+            command.add_argument("--helper-device", type=int, default=1)
+        if name in ("plan-connected", "build-store"):
+            command.add_argument("--max-experts", type=int, default=48 if name == "plan-connected" else 4)
+        if name == "fetch-prefix-fixture":
+            command.add_argument("--directory", type=Path, default=Path("artifacts/prefix-fixture"))
+        if name == "capture-prefix":
+            command.add_argument("--fixture", type=Path, required=True)
+        if name in ("plan-connected", "compare-connected", "prefix-preflight", "capture-prefix"):
+            command.add_argument("--device", type=int, default=0)
+        if name in ("compare-connected", "prefix-preflight", "capture-prefix"):
+            command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
         if name == "compare-gate":
             command.add_argument("--router-fixture", type=Path, required=True)
             command.add_argument("--cublas-library", type=Path)
@@ -122,9 +144,30 @@ def main(argv=None) -> int:
             reference = args.device if args.reference_device is None else args.reference_device
             result = compare_original_accumulation(args.fixtures, args.shared_fixture, args.reference_directory,
                                                   args.device, reference)
+        elif args.command == "plan-connected":
+            from .connected_fixture import plan_connected
+            result = plan_connected(args.gate_fixture, args.router_fixture, args.captured_inputs,
+                                    args.device, max_experts=args.max_experts)
+        elif args.command == "prepare-connected-store":
+            from .connected_fixture import prepare_connected_store
+            result = prepare_connected_store(args.plan, args.expert_directory, args.store)
+        elif args.command == "compare-connected":
+            from .connected_reference import compare_connected
+            result = compare_connected(args.plan, args.store, args.gate_fixture, args.router_fixture,
+                                       args.shared_fixture, args.expert_directory, args.reference_directory,
+                                       args.device, args.helper_device, args.captured_inputs)
+        elif args.command == "prefix-preflight":
+            from .prefix_reference import prefix_preflight
+            result = prefix_preflight(args.reference_directory, args.device)
+        elif args.command == "fetch-prefix-fixture":
+            from .prefix import fetch_prefix_fixture
+            result = fetch_prefix_fixture(args.directory)
+        elif args.command == "capture-prefix":
+            from .prefix_reference import capture_prefix
+            result = capture_prefix(args.fixture, args.reference_directory, args.device)
         elif args.command == "build-store":
             from .storage import build_store
-            result = build_store(args.fixtures, args.directory)
+            result = build_store(args.fixtures, args.directory, max_experts=args.max_experts)
         elif args.command == "validate-cache":
             from .cache_reference import compare_cache
             reference = args.device if args.reference_device is None else args.reference_device

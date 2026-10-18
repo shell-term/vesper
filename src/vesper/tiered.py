@@ -13,7 +13,7 @@ from .cache import TieredCache
 from .cuda import Device, Pinned
 from .expert import ExpertExecutor
 from .resources import GiB, MiB, MemoryBudget
-from .storage import NativeStore
+from .storage import NativeStore, validate_store_limit
 from .timing import Timings
 from .integrity import DeviceIntegrity, digest_shape
 
@@ -31,8 +31,10 @@ class CacheConfig:
     metadata_allowance_bytes: int = MiB
     profile: bool = False
     integrity_mode: str = "readback"
+    max_store_experts: int = 4
 
     def __post_init__(self):
+        validate_store_limit(self.max_store_experts)
         if self.integrity_mode not in ("readback", "gpu-sha256"):
             raise ValueError("Unknown cache integrity mode")
         if self.primary_slots < 1 or self.helper_slots < 0 or self.ram_cache_bytes < 0:
@@ -147,7 +149,7 @@ class TieredExpertRuntime:
         try:
             self.budget.acquire(c.metadata_allowance_bytes)
             self.stack.callback(self.budget.release, c.metadata_allowance_bytes)
-            self.store = NativeStore(self.store_path, self.budget)
+            self.store = NativeStore(self.store_path, self.budget, max_experts=c.max_store_experts)
             self.store.timings = self.timings
             self.store.gpu_integrity = c.integrity_mode == "gpu-sha256"
             self.stack.enter_context(self.store)

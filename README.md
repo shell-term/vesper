@@ -44,7 +44,7 @@ through native cuBLAS without a PyTorch runtime dependency. Across 307 generated
 inputs and both text/image masks, all 614 comparisons with the unchanged full
 gate match logits, ordered expert IDs and weights bit-for-bit. See
 [issue #4](https://github.com/shell-term/vesper/issues/4) and the
-[gate report](docs/gate-validation.md). Connected MoE execution and model quality
+[gate report](docs/gate-validation.md). Real-activation MoE and model quality
 remain unverified.
 
 Original shared-expert arithmetic and ordered accumulation now pass their scoped
@@ -54,7 +54,12 @@ All checked intermediate bits match. A native-only process reproduces all 108
 case goldens without PyTorch installed. See
 [issue #5](https://github.com/shell-term/vesper/issues/5) and the
 [shared/aggregation report](docs/moe-arithmetic-validation.md). Original gate and
-bounded-offload integration remain separate work.
+bounded-offload integration is now implemented: 30 connected calls on generated
+inputs match all 108 boundaries each, and four pressure/transfer/I/O failure
+checks refuse partial outputs and recover exactly. The real-activation gate
+remains open because the unchanged official Attention kernel exceeds the 4090's
+per-block shared-memory limit. [Issue #6](https://github.com/shell-term/vesper/issues/6)
+and M1 stay open; see the [connected report](docs/connected-moe-validation.md).
 
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is
@@ -165,8 +170,9 @@ The optional reference environment above is needed for `validate-cache`. It uses
 a 96 MiB host-buffer cap, one expert per RAM/GPU tier and a 32 GiB system-available
 floor. Transfers are synchronous and audited by readback. The test verifies
 evictions, forced SSD reloads, pressure refusal and recovery; it does not run the
-model router or estimate real cache-hit rates. Stores currently accept at most
-four experts. See [the cache report](docs/cache-validation.md) for limitations.
+model router or estimate real cache-hit rates. Stores default to at most four
+experts; connected probes require explicit limits up to 48. See
+[the cache report](docs/cache-validation.md) for the original probe's limitations.
 
 An optional audit path hashes consecutive 4 KiB chunks on each GPU and returns
 147 KB of digests per expert instead of 18.8 MB of audit readback. Original

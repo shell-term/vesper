@@ -81,7 +81,7 @@ class OfficialAggregation:
         self.forward_function = scope["forward"]
 
     def forward(self, indices, contributions, shared, *, shape=None, routing_weights=None,
-                input_values=None, expert_functions=None, shared_function=None):
+                input_values=None, expert_functions=None, shared_function=None, gate_function=None, image_span=None):
         torch = self.torch
         from torch.utils._python_dispatch import TorchDispatchMode
         selected = participation(indices)
@@ -143,16 +143,24 @@ class OfficialAggregation:
                     assert torch.equal(original_output.view(torch.uint16), shared_tensor.view(torch.uint16))
                     return original_output
                 return shared_tensor
+            def gate_callback(tx, mask):
+                if gate_function is None:
+                    return tw, ids
+                original_weights, original_indices = gate_function(tx, mask)
+                assert torch.equal(original_weights.view(torch.int32), tw.view(torch.int32))
+                assert torch.equal(original_indices, ids)
+                return original_weights, original_indices
             model = SimpleNamespace(dim=HIDDEN, n_routed_experts=EXPERTS,
                                     experts_start_idx=0, experts_end_idx=EXPERTS,
-                                    gate=lambda tx, image: (tw, ids),
+                                    gate=gate_callback,
                                     experts={e: expert_callback(e) for e in selected}, shared_experts=shared_callback)
             shape = shape or (tokens, HIDDEN)
             default = torch.get_default_dtype()
             try:
                 torch.set_default_dtype(torch.bfloat16)
                 with tracer:
-                    output = self.forward_function(model, x.view(shape))
+                    mask = None if image_span is None else torch.tensor([image_span], dtype=torch.bool, device=device)
+                    output = self.forward_function(model, x.view(shape), mask)
             finally:
                 torch.set_default_dtype(default)
             assert tuple(output.shape) == tuple(shape)

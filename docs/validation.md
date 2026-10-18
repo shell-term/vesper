@@ -14,7 +14,7 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Routing postprocessing | Scores, trained bias, ordered expert IDs/weights and tie handling from supplied FP32 logits | 244 official gate conditions and 232 selection conditions pass all checked bits; pinned single-row CUDA top-k profile only |
 | Original gate projection and routing | Original BF16 weights promoted to FP32, actual linear projection and connected expert selection | 307 generated inputs across both masks give 614 exact-bit passes against unchanged linear/Gate.forward; one row, named cuBLAS/PyTorch builds |
 | Shared expert and ordered accumulation | Original shared dtype, routing-weight placement, FP32 additions in expert-ID order and final BF16 rounding | 54 FP8 shared cases, 38 aggregation cases and 16 original-six-expert supplied-route conditions match all checked bits |
-| Connected MoE sublayer | Gate projection, routing, accumulation order and shared expert | Not implemented |
+| Connected MoE sublayer | Gate projection, routing, accumulation order, shared expert and bounded offload | 30 generated-input calls match all 108 boundaries; four refusal/retry cases pass; real-activation gate pending because unchanged Attention exceeds 4090 shared memory |
 | Full Transformer block | Connected attention, MoE, Engram, Hyper-Connections and residual boundaries | Not implemented |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
@@ -110,3 +110,11 @@ detect reordered additions, early BF16 rounding and post-projection route weight
 Zero participation and repeated participation across distinct experts are covered;
 duplicate expert IDs within a token are rejected. Original gate/offload integration,
 batched GEMM parity, model quality and generation speed are not established.
+
+The [connected probe](connected-moe-validation.md) executes actual original gate
+decisions through the audited byte cache and all expert/accumulation stages.
+Generated inputs pass, including partial-call refusal and complete retry, with
+an independent native-only recheck. The unchanged original prefix cannot yet
+supply real MoE inputs on the 4090: its 138 KiB dynamic shared-memory request
+exceeds the 99 KiB opt-in limit. Issue #6 and M1 remain open. A generated-input
+pass is not substituted for that missing real-activation acceptance condition.

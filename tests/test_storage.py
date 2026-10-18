@@ -91,7 +91,7 @@ class StorageTests(unittest.TestCase):
     def test_failed_runtime_entry_releases_store_and_metadata_before_any_gpu(self):
         class Store:
             size = 4
-            def __init__(self, path, budget):
+            def __init__(self, path, budget, *, max_experts=4):
                 self.budget = budget
             def __enter__(self):
                 self.budget.acquire(4)

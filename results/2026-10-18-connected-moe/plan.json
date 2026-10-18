@@ -1,0 +1,321 @@
+{
+  "probe": "connected_moe_plan",
+  "status": "pass",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "layer": 0,
+  "gate_fixture": {
+    "probe": "fetch_gate_fixture",
+    "status": "pass",
+    "kind": "gate_projection_fixture",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "layer": 0,
+    "config_sha256": "8be45ce0476004a3f529fd896115a4a2e800a129ad2d3ec05b16050f52e21879",
+    "tensor": {
+      "name": "layers.0.ffn.gate.weight",
+      "dtype": "BF16",
+      "shape": [
+        384,
+        5120
+      ],
+      "bytes": 3932160,
+      "shard": "model-00003-of-00048.safetensors",
+      "shard_byte_offset": 4207672,
+      "sha256": "f9c67489d1b40f9921b6d040ddd67858a9e68ab63c9116049b7d5c265d8f8c44"
+    },
+    "weights_fetched_bytes": 3932160,
+    "scope": "One original gate matrix only; no full shard/model"
+  },
+  "router_fixture": {
+    "probe": "fetch_router_fixture",
+    "status": "pass",
+    "kind": "router_bias_fixture",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "layer": 0,
+    "config": {
+      "experts": 384,
+      "topk": 6,
+      "score_func": "sqrtsoftplus",
+      "gate_temp": 1.0,
+      "norm_topk_prob": true,
+      "route_scale": 1.5,
+      "normalization_epsilon": 1e-20
+    },
+    "config_sha256": "8be45ce0476004a3f529fd896115a4a2e800a129ad2d3ec05b16050f52e21879",
+    "tensors": [
+      {
+        "name": "bias",
+        "tensor": "layers.0.ffn.gate.bias",
+        "dtype": "F32",
+        "shape": [
+          384
+        ],
+        "bytes": 1536,
+        "shard": "model-00003-of-00048.safetensors",
+        "shard_byte_offset": 258400,
+        "sha256": "7cc2d71eb39af331c32cf35fea8fcc84be5706a7188791eaa54df7cad5f43b0b"
+      },
+      {
+        "name": "bias_vl",
+        "tensor": "layers.0.ffn.gate.bias_vl",
+        "dtype": "F32",
+        "shape": [
+          384
+        ],
+        "bytes": 1536,
+        "shard": "model-00003-of-00048.safetensors",
+        "shard_byte_offset": 259936,
+        "sha256": "e02ebee0d9bdbce5f0d558478920684e3e9892e6be7c1e012528f6c6e0109e99"
+      }
+    ],
+    "weights_fetched_bytes": 3072,
+    "temperature_source": "Released inference/config.json omits gate_temp; pinned ModelArgs default is 1.0",
+    "scope": "Two original selection biases only; gate projection and model execution excluded",
+    "inference_config_sha256": "2e84f45cf1dac8c7fcbb200e96667d4b913275690668ed496f24c7747207a809"
+  },
+  "cases": [
+    {
+      "input": "normal_seed20261018_scale1",
+      "origin": "generated_not_model_activation",
+      "seed": 20261018,
+      "scale": 1.0,
+      "image_span": false,
+      "input_bf16_sha256": "d744900ae082e1afe9817f296a4e18c65817422ab0a2f7f7a31bc533439e3aa0",
+      "logits_sha256": "d7a3b69cb901713aa2c66a3cd80da7d09a3109dc8c59f73b4bfd535a0fa04c63",
+      "indices": [
+        155,
+        38,
+        98,
+        174,
+        142,
+        250
+      ],
+      "weight_bits": [
+        1048848462,
+        1048613005,
+        1048611341,
+        1048476554,
+        1048384461,
+        1048177365
+      ]
+    },
+    {
+      "input": "normal_seed20261018_scale1",
+      "origin": "generated_not_model_activation",
+      "seed": 20261018,
+      "scale": 1.0,
+      "image_span": true,
+      "input_bf16_sha256": "d744900ae082e1afe9817f296a4e18c65817422ab0a2f7f7a31bc533439e3aa0",
+      "logits_sha256": "d7a3b69cb901713aa2c66a3cd80da7d09a3109dc8c59f73b4bfd535a0fa04c63",
+      "indices": [
+        155,
+        174,
+        250,
+        40,
+        340,
+        142
+      ],
+      "weight_bits": [
+        1048888326,
+        1048553316,
+        1048252750,
+        1048616734,
+        1048331018,
+        1048460799
+      ]
+    },
+    {
+      "input": "normal_seed42_scale0.0625",
+      "origin": "generated_not_model_activation",
+      "seed": 42,
+      "scale": 0.0625,
+      "image_span": false,
+      "input_bf16_sha256": "2cd8abe9f93ac9f50d62b58f53981ec2b312727f75c8ead310717b4c545fcbc5",
+      "logits_sha256": "0490b1b40c892deef86a126fb8b2a3bce5c83ae096bc666474c8041fedc11027",
+      "indices": [
+        272,
+        3,
+        313,
+        309,
+        43,
+        57
+      ],
+      "weight_bits": [
+        1048829554,
+        1048807816,
+        1048433408,
+        1048520000,
+        1048376334,
+        1048003518
+      ]
+    },
+    {
+      "input": "normal_seed42_scale0.0625",
+      "origin": "generated_not_model_activation",
+      "seed": 42,
+      "scale": 0.0625,
+      "image_span": true,
+      "input_bf16_sha256": "2cd8abe9f93ac9f50d62b58f53981ec2b312727f75c8ead310717b4c545fcbc5",
+      "logits_sha256": "0490b1b40c892deef86a126fb8b2a3bce5c83ae096bc666474c8041fedc11027",
+      "indices": [
+        3,
+        254,
+        203,
+        258,
+        93,
+        272
+      ],
+      "weight_bits": [
+        1049050000,
+        1047695060,
+        1047648130,
+        1049004846,
+        1047586424,
+        1049072348
+      ]
+    },
+    {
+      "input": "normal_seed0_scale16",
+      "origin": "generated_not_model_activation",
+      "seed": 0,
+      "scale": 16.0,
+      "image_span": false,
+      "input_bf16_sha256": "9c8a5aaa5c18ca9faf418f11da032ce857471f0eea52bab67192be7ea13a21f4",
+      "logits_sha256": "fe20920cf91ef0f08797fc745c121a65a646fa3b22a130cb064202ddc57ed772",
+      "indices": [
+        221,
+        324,
+        298,
+        155,
+        201,
+        181
+      ],
+      "weight_bits": [
+        1049125622,
+        1048782462,
+        1048776411,
+        1048481062,
+        1047745533,
+        1047588423
+      ]
+    },
+    {
+      "input": "normal_seed0_scale16",
+      "origin": "generated_not_model_activation",
+      "seed": 0,
+      "scale": 16.0,
+      "image_span": true,
+      "input_bf16_sha256": "9c8a5aaa5c18ca9faf418f11da032ce857471f0eea52bab67192be7ea13a21f4",
+      "logits_sha256": "fe20920cf91ef0f08797fc745c121a65a646fa3b22a130cb064202ddc57ed772",
+      "indices": [
+        221,
+        324,
+        298,
+        155,
+        201,
+        181
+      ],
+      "weight_bits": [
+        1049125622,
+        1048782462,
+        1048776411,
+        1048481062,
+        1047745533,
+        1047588423
+      ]
+    },
+    {
+      "input": "normal_seed65535_scale1",
+      "origin": "generated_not_model_activation",
+      "seed": 65535,
+      "scale": 1.0,
+      "image_span": false,
+      "input_bf16_sha256": "a8ec840b05db0c25b4a2f2a7e68e47184dcb5f2c9cf32df7cfa599aca4fb9d39",
+      "logits_sha256": "ee77b5c261c16f4b6ef6c318029119fd5925bf32882791bc08f242df737f640b",
+      "indices": [
+        198,
+        97,
+        288,
+        51,
+        34,
+        37
+      ],
+      "weight_bits": [
+        1049043537,
+        1048907101,
+        1048490144,
+        1048333940,
+        1048098542,
+        1047784104
+      ]
+    },
+    {
+      "input": "normal_seed65535_scale1",
+      "origin": "generated_not_model_activation",
+      "seed": 65535,
+      "scale": 1.0,
+      "image_span": true,
+      "input_bf16_sha256": "a8ec840b05db0c25b4a2f2a7e68e47184dcb5f2c9cf32df7cfa599aca4fb9d39",
+      "logits_sha256": "ee77b5c261c16f4b6ef6c318029119fd5925bf32882791bc08f242df737f640b",
+      "indices": [
+        198,
+        112,
+        97,
+        51,
+        34,
+        37
+      ],
+      "weight_bits": [
+        1049069278,
+        1048246052,
+        1048932446,
+        1048382001,
+        1048145920,
+        1047830568
+      ]
+    }
+  ],
+  "expert_ids": [
+    3,
+    34,
+    37,
+    38,
+    40,
+    43,
+    51,
+    57,
+    93,
+    97,
+    98,
+    112,
+    142,
+    155,
+    174,
+    181,
+    198,
+    201,
+    203,
+    221,
+    250,
+    254,
+    258,
+    272,
+    288,
+    298,
+    309,
+    313,
+    324,
+    340
+  ],
+  "max_experts": 48,
+  "selected_weight_bytes": 564019200,
+  "maximum_weight_bytes": 902430720,
+  "native_profile": {
+    "cublas_version": 120402,
+    "router_cubin_sha256": "e63945048cf3910dde4c2d0f99af16d352f2f67bdf001aa458bfd3e8fce20535"
+  },
+  "input_source": "generated",
+  "scope": "Actual original gate decisions; no forced IDs, cache bias or expert downloads"
+}
