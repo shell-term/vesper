@@ -12,7 +12,7 @@ import numpy as np
 from .cuda import Device, Driver, compile_probe
 from .resources import GiB, MiB, MemoryBudget
 
-WIDTHS, MAX_ROWS, MAX_POSITION, MAX_FREQUENCIES = (512, 1280, 5120), 514, 131072, 4096
+WIDTHS, MAX_ROWS, MAX_POSITION, MAX_FREQUENCIES = (128, 512, 1280, 5120), 514, 131072, 4096
 NORM_EPS = 1e-20
 NORM_CUBIN_SHA256 = "41b9fbd12ea07f2c1bcb8766f1725b730f570e4969de86ebd41ceaf090156607"
 NORM_STAGES = ("square_fp32", "mean_fp32", "mean_eps_fp32", "rstd_fp32", "normalized_fp32", "weighted_fp32", "output_bf16")
@@ -48,7 +48,7 @@ def validate_positions(positions, profile):
 
 def validate_rope(values, start_pos, profile, inverse):
     if (not isinstance(values, np.ndarray) or values.dtype != np.uint16 or values.ndim not in (3, 4)
-            or values.shape[-1] not in (64, 512) or values.shape[0] not in (1, 2)
+            or values.shape[-1] not in (64, 128, 512) or values.shape[0] not in (1, 2)
             or not 1 <= values.shape[1] <= 257 or not values.flags.c_contiguous
             or not 1 <= math.prod(values.shape[:-1]) <= MAX_ROWS or type(start_pos) is not int
             or start_pos < 0 or start_pos + values.shape[1] > MAX_POSITION or type(inverse) is not bool

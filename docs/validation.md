@@ -4,7 +4,7 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 
 | Gate | Evidence required | Current evidence |
 | --- | --- | --- |
-| Released artifacts | Pinned checkpoint, exact weight/scale bytes, matching tokenizer and Engram | Original expert/gate/shared/Attention/HC fixtures and five compressor tensors; tokenizer/Engram pending |
+| Released artifacts | Pinned checkpoint, exact weight/scale bytes, matching tokenizer and Engram | Original expert/gate/shared/Attention/HC fixtures, five compressor tensors and thirteen indexer tensors; tokenizer/Engram pending |
 | Format specification | All FP4 codes, scale encodings, FP8/BF16 rounding boundaries, signed zero | Pass on Ada and Ampere |
 | Projection specification | Native weight slice against an independent block arithmetic oracle | Pass on Ada and Ampere |
 | Official kernels | Per-operation exact comparisons with the pinned TileLang code | W1 slice: 4090 passes 8 inputs; 3080 Ti candidate fails, 14/1,024 output mismatches |
@@ -23,7 +23,8 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Original-weight native window Attention layer | Original query/KV/output projections, grouped BF16 conversion, complete forward output/cache, real inputs and atomic failure recovery | 90 component cases and 309 successful layer calls (304 corpus calls + five retries), 17,355 comparisons, zero differences; four real prefix inputs and two window wraps; independent native-only replay passes; layer-0, one rank, batch 1/2, prefill at most three queries |
 | Native Hyper-Connections and residuals | Original FP32 projection/reduction, Sinkhorn iterations, coefficient handoff and BF16 boundaries | 84 component cases pass; all four changed-arithmetic controls detected; independent native-only replay passes |
 | Full Transformer block | Connected Attention, MoE, Hyper-Connections, residuals and layer-specific Engram/compressed profiles | Uncompressed layer 0 passes 26 single-token calls / 225 boundaries each plus unchanged Block.forward hidden/next-coefficient/KV controls; other profiles and Engram pending |
-| Original compressor and compressed KV | Original learned FP32/BF16 projections, softmax pooling, partial groups, group-position RoPE, FP4/E4M3 rounding and state publication | 49 component cases and 432 state calls, 8,751 comparisons, zero differences; five refusal/retries and both snapshot profiles pass; independent native-only replay passes; generated inputs and host diagnostic cache only, index selection/sharing pending |
+| Original compressor and compressed KV | Original learned FP32/BF16 projections, softmax pooling, partial groups, group-position RoPE, FP4/E4M3 rounding and state publication | 49 component cases and 432 state calls, 8,751 comparisons, zero differences; five refusal/retries and both snapshot profiles pass; independent native-only replay passes; generated inputs and host diagnostic cache only; subsequent indexer probe below |
+| Native indexers and named index sharing | Original key/query/weight projections, FP4/E8M0 rounding, BF16 score boundaries, ordered top-512, candidate blocks, source/consumer ownership and atomic state | Layers 2/20/24 pass 261 component cases and 99 frames, 11,189 comparisons, zero differences; unchanged forward/sharing controls, five refusal/retries, snapshot restoration and native-only replay pass; bounded generated-input/primed-history diagnostic scope, complete compressed Attention/KV sharing pending |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
 | Resource policy | All owned memory plus pressure behavior, concurrency with other work | Bounded cache buffers and injected pressure/refusal/recovery pass; full-engine/OS policy pending |
@@ -185,5 +186,19 @@ All 49 component cases and 432 state calls match, including incomplete groups,
 failure/retry and snapshots. Unchanged original compressor/cache bodies control
 latents and state writes, with an explicit empty-index callback. This does not
 qualify index-key/query arithmetic, candidate/top-k selection, source sharing or
-complete compressed Attention. The cache is a bounded host diagnostic copy;
+complete compressed Attention. Those indexer operations are a separate probe
+below. The cache is a bounded host diagnostic copy;
 original-weight tests use generated inputs, not captured later-layer activations.
+
+The [indexer probe](indexer-validation.md) separately qualifies layers 2/20/24
+through original key/query projections, FP4/E8M0 rounding, BF16 score stages,
+candidate-block and ordered top-512 selection. Named handoffs cover indices
+2-to-3 and 24-to-25, plus keys/candidates 20-to-24. Every successful frame also
+matches separately executed unchanged indexer/wrapper controls. Six arithmetic
+or membership changes are detected; whole-frame failures and snapshot rollback
+preserve both key owners and sharing state. The 261 components and 99 frames
+match every checked bit in paired and native-only processes. This is generated
+input with explicit diagnostic long-history priming, at most 16,392 index
+positions and the pinned single-block CUDA top-k profile. It does not yet
+connect compressors through complete compressed Attention, compressed-KV
+sharing, every layer/context/distributed profile or full-model quality/speed.

@@ -135,6 +135,26 @@ uses the pinned ATen cuBLAS calling convention. The complete
 distributions. Bounded host-cache publication, snapshot ownership and failure
 handling are Vesper runtime code.
 
+## Original indexers and selected source-layer sharing
+
+Native index-key/query projections, per-32 FP4/E8M0 rounding, causal masks,
+eight-position candidate blocks, newest-block pinning and selected index
+handoffs follow `Indexer.forward`, `select_candidate_blocks` and
+`Attention._compress_topk_idxs` in the pinned DeepSeek sources. The DeepSeek
+license above covers these adapted formulas and CUDA implementation. The
+optional oracle executes unchanged original methods independently of its
+diagnostic stages. Downloaded sources, original tensors and generated binaries
+remain local artifacts.
+
+BF16 GEMM layout, ReLU/product boundaries and head-sum order follow pinned ATen
+BLAS/activation/reduction sources. Native radix threshold and equal-threshold
+membership adapt the selected-set semantics of the pinned CUDA `sbtopk` path
+and `TopKTypeConfig` for BF16, followed by the original position sort. This
+bounded implementation does not reproduce all ATen top-k dispatch profiles.
+The complete [PyTorch license](third_party/PyTorch-LICENSE) remains included in
+source and binary distributions. Diagnostic key-cache transactions, snapshot
+ownership and admission guards are Vesper runtime code.
+
 ## Runtime dependencies
 
 The native window KV quantizer, ring-slot formulas and index construction follow

@@ -5,8 +5,10 @@ The original **layer-2 ratio-2** and **layer-20 ratio-1** compressors now execut
 without Torch/TileLang at runtime. Their pre-RoPE latents, native rotary math,
 original FP4 rounding and bounded compressed-KV publication pass exact reference
 comparisons. This follows the [uncompressed layer-0 block](layer0-block-validation.md).
-It does not qualify a complete compressed Attention layer: sparse index
-selection and source-layer sharing remain unfinished. Issue #7 and M2 stay open.
+It does not qualify a complete compressed Attention layer. The subsequent
+[indexer probe](indexer-validation.md) qualifies bounded index arithmetic and
+named key/candidate/index handoffs separately; their integration and compressed-KV
+source sharing remain unfinished. Issue #7 and M2 stay open.
 
 ## Results
 
@@ -162,6 +164,8 @@ atomic reset failure and incomplete/tampered source, coverage or golden records.
 - [Independent native-only replay](../results/2026-10-18-compression/native-only-recheck.json)
 - [Summary, raw-file hashes and resource observations](../results/2026-10-18-compression/summary.json)
 
-Next: index-key/query computation, sparse/candidate selection, source-layer
-sharing, then connected compressed Attention. Engram, other block profiles,
-full-model logits/sampling, quality and generation speed remain unfinished.
+The [indexer follow-up](indexer-validation.md) now covers index-key/query
+computation, sparse/candidate selection and named indexer source handoffs.
+Next: connect these to compressed Attention and its compressed-KV source
+sharing. Engram, other block profiles, full-model logits/sampling, quality and
+generation speed remain unfinished.

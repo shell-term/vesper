@@ -14,9 +14,15 @@ def main(argv=None) -> int:
                  "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
                  "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router", "fetch-gate-fixture", "compare-gate",
                  "fetch-shared-fixture", "compare-shared", "compare-aggregation", "compare-original-accumulation",
-                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization", "compare-projections", "compare-block", "fetch-compression-fixture", "compare-compression"):
+                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization", "compare-projections", "compare-block", "fetch-compression-fixture", "compare-compression", "fetch-indexer-fixture", "compare-indexer"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
+        if name == "fetch-indexer-fixture":
+            command.add_argument("--directory", type=Path, default=Path("artifacts/indexer-fixture"))
+        if name == "compare-indexer":
+            command.add_argument("--fixture", type=Path, required=True)
+            command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
+            command.add_argument("--device", type=int, default=0)
         if name == "fetch-compression-fixture":
             command.add_argument("--directory", type=Path, default=Path("artifacts/compression-fixture"))
         if name == "compare-compression":
@@ -193,6 +199,12 @@ def main(argv=None) -> int:
         elif args.command == "compare-projections":
             from .projection_reference import compare_projections
             result = compare_projections(args.reference_directory, args.prefix_fixture, args.attention_bundle, args.device)
+        elif args.command == "fetch-indexer-fixture":
+            from .indexer_fixture import fetch_indexer_fixture
+            result = fetch_indexer_fixture(args.directory)
+        elif args.command == "compare-indexer":
+            from .indexer_reference import compare_indexer
+            result = compare_indexer(args.reference_directory, args.fixture, args.device)
         elif args.command == "fetch-compression-fixture":
             from .compression_fixture import fetch_compression_fixture
             result = fetch_compression_fixture(args.directory)

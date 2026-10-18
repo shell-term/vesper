@@ -179,8 +179,10 @@ admission and guard cleanup, finalizer rollback and tampered/incomplete evidence
 - [Summary, raw-file hashes and resource observations](../results/2026-10-18-layer0-block/summary.json)
 
 The [compression follow-up](compression-validation.md) now qualifies original
-compressed-KV construction/rounding with bounded diagnostic state. Sparse index
-selection, source-layer sharing and complete compressed Attention remain next.
+compressed-KV construction/rounding with bounded diagnostic state. The
+[indexer follow-up](indexer-validation.md) separately qualifies bounded index
+selection and named key/candidate/index handoffs. Complete compressed Attention
+and compressed-KV source sharing remain next.
 Other block profiles, larger prefill/batching, Engram, full-model
 logits/sampling, full-engine memory governance and workload performance remain
 open gates.

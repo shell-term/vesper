@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Complete layer-0 block](docs/layer0-block-validation.md) · [Compressed KV](docs/compression-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Complete layer-0 block](docs/layer0-block-validation.md) · [Compressed KV](docs/compression-validation.md) · [Indexers](docs/indexer-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 [Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
 
@@ -118,7 +118,7 @@ exactly. Every block call compares 225 boundaries and also matches unchanged
 `Block.forward` hidden-state, next-layer coefficient and KV controls. Five
 failure/retry checks and independent replay without Torch/TileLang pass. This
 covers the uncompressed layer-0 profile, reusing 27 original experts. The
-compressor/cache follow-up is below; sparse index selection/source-layer sharing,
+compressor/cache and indexer follow-ups are below; complete compressed Attention,
 Engram and full-model execution remain unfinished. See the
 [complete-block report](docs/layer0-block-validation.md).
 
@@ -128,8 +128,23 @@ original FP4/E4M3 compressed-KV rounding. Across 49 component cases and 432
 state calls, all 8,751 checked boundaries match. Five fault/retry conditions,
 snapshot restoration and independent replay without Torch/TileLang pass. This
 uses bounded host diagnostic cache copies and generated inputs with original
-layer-2/layer-20 weights; index selection and connected compressed Attention
-remain pending. See the [compression report](docs/compression-validation.md).
+layer-2/layer-20 weights; the subsequent indexer probe is below, while connected
+compressed Attention remains pending. See the [compression report](docs/compression-validation.md).
+
+Original index-key/query arithmetic, sparse selection and selected source-layer
+handoffs now pass **261 component cases and 99 index frames**. All 11,189 checked
+boundaries match, including FP4/E8M0 index rounding, BF16 score boundaries,
+signed-zero top-k membership and latest-block candidate pinning. Layers 2/20/24
+use original weights; the frame checks selected-index sharing 2-to-3 and 24-to-25,
+plus key/candidate sharing 20-to-24. Five failure/retries, snapshot restoration
+and independent replay without Torch/TileLang pass. The cache remains a bounded
+host diagnostic copy and long histories are explicitly primed, generated data.
+Complete compressed Attention, compressed-KV sharing and full-model execution
+remain unfinished. See the [indexer report](docs/indexer-validation.md).
+
+Vesper uses the released weights; its design does not require retraining.
+Model-wide output and quality verification remain required before that engine
+is ready for use.
 
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is
