@@ -35,9 +35,17 @@ and the [initial transfer/storage measurements](docs/first-probe.md).
 Single-row routing postprocessing now matches all ordered output bits in 244
 official gate conditions and 232 additional selection/normalization conditions,
 including the previously unsupported ties. This is scoped to the pinned CUDA
-PyTorch top-k path; gate projection, connected MoE execution and other batch
-shapes remain pending. See [issue #3](https://github.com/shell-term/vesper/issues/3)
+PyTorch top-k path; other batch shapes remain pending.
+See [issue #3](https://github.com/shell-term/vesper/issues/3)
 and the [routing report](docs/router-validation.md).
+
+The original BF16 gate matrix is now promoted exactly to FP32 and projected
+through native cuBLAS without a PyTorch runtime dependency. Across 307 generated
+inputs and both text/image masks, all 614 comparisons with the unchanged full
+gate match logits, ordered expert IDs and weights bit-for-bit. See
+[issue #4](https://github.com/shell-term/vesper/issues/4) and the
+[gate report](docs/gate-validation.md). Connected MoE execution and model quality
+remain unverified.
 
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is

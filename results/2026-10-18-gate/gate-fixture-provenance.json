@@ -1,0 +1,23 @@
+{
+  "probe": "fetch_gate_fixture",
+  "status": "pass",
+  "kind": "gate_projection_fixture",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "layer": 0,
+  "config_sha256": "8be45ce0476004a3f529fd896115a4a2e800a129ad2d3ec05b16050f52e21879",
+  "tensor": {
+    "name": "layers.0.ffn.gate.weight",
+    "dtype": "BF16",
+    "shape": [
+      384,
+      5120
+    ],
+    "bytes": 3932160,
+    "shard": "model-00003-of-00048.safetensors",
+    "shard_byte_offset": 4207672,
+    "sha256": "f9c67489d1b40f9921b6d040ddd67858a9e68ab63c9116049b7d5c265d8f8c44"
+  },
+  "weights_fetched_bytes": 3932160,
+  "scope": "One original gate matrix only; no full shard/model"
+}

@@ -2,7 +2,7 @@
 
 These gates describe evidence, not a list of interchangeable accuracy scores.
 
-| Gate | Evidence required | Initial state |
+| Gate | Evidence required | Current evidence |
 | --- | --- | --- |
 | Released artifacts | Pinned checkpoint, exact weight/scale bytes, matching tokenizer and Engram | W1 slice and three complete experts; tokenizer/Engram pending |
 | Format specification | All FP4 codes, scale encodings, FP8/BF16 rounding boundaries, signed zero | Pass on Ada and Ampere |
@@ -12,6 +12,7 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Tiered expert storage | Identity, original bytes, eviction/reload and unchanged expert computation | Three native experts pass 232 calls across SSD/RAM/two GPUs, including intermediate bits |
 | Device integrity audits | Original-byte digest anchors, padding/chunk boundaries, corruption refusal and unchanged computation | Both GPUs pass 96 payload cases and 10 fault injections; optional path passes another 232 official comparisons |
 | Routing postprocessing | Scores, trained bias, ordered expert IDs/weights and tie handling from supplied FP32 logits | 244 official gate conditions and 232 selection conditions pass all checked bits; pinned single-row CUDA top-k profile only |
+| Original gate projection and routing | Original BF16 weights promoted to FP32, actual linear projection and connected expert selection | 307 generated inputs across both masks give 614 exact-bit passes against unchanged linear/Gate.forward; one row, named cuBLAS/PyTorch builds |
 | Connected MoE sublayer | Gate projection, routing, accumulation order and shared expert | Not implemented |
 | Full Transformer block | Connected attention, MoE, Engram, Hyper-Connections and residual boundaries | Not implemented |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
@@ -92,3 +93,10 @@ equivalence is assumed. The original partial report is retained as historical
 evidence. Qualification covers one row, 384 finite FP32 logits and top-six
 selection against the named PyTorch build; other shapes/builds and connected
 MoE/model execution remain separate gates.
+
+The [gate probe](gate-validation.md) now uses the original gate matrix and
+unchanged `linear` plus `Gate.forward` bodies without an identity substitution.
+Native cuBLAS with explicit FP32/default-math settings reproduces the observed
+reference projection and routing bits. Inputs are generated boundary vectors,
+not recorded full-model activations. This does not establish expert/shared-
+expert accumulation, connected MoE execution, whole-model quality or speed.

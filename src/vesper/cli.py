@@ -12,14 +12,14 @@ def main(argv=None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     for name in ("inventory", "validate", "bench-transfer", "fetch-fixture", "bench-disk", "compare-reference",
                  "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
-                 "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router"):
+                 "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router", "fetch-gate-fixture", "compare-gate"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
         if name in ("validate", "bench-transfer", "validate-integrity"):
             command.add_argument("--devices", type=int, nargs="+")
         if name in ("validate", "compare-reference"):
             command.add_argument("--fixture", type=Path)
-        if name in ("trace-reduction", "compare-expert", "compare-router"):
+        if name in ("trace-reduction", "compare-expert", "compare-router", "compare-gate"):
             command.add_argument("--fixture", type=Path, required=True)
         if name == "fetch-fixture":
             command.add_argument("--directory", type=Path, default=Path("artifacts/fixture"))
@@ -30,6 +30,12 @@ def main(argv=None) -> int:
         if name == "fetch-router-fixture":
             command.add_argument("--directory", type=Path, default=Path("artifacts/router-fixture"))
             command.add_argument("--layer", type=int, default=0)
+        if name == "fetch-gate-fixture":
+            command.add_argument("--directory", type=Path, default=Path("artifacts/gate-fixture"))
+            command.add_argument("--layer", type=int, default=0)
+        if name == "compare-gate":
+            command.add_argument("--router-fixture", type=Path, required=True)
+            command.add_argument("--cublas-library", type=Path)
         if name in ("build-store", "validate-cache"):
             command.add_argument("--fixtures", type=Path, nargs="+", required=True)
         if name == "build-store":
@@ -46,9 +52,9 @@ def main(argv=None) -> int:
         if name == "bench-disk":
             command.add_argument("--directory", type=Path, default=Path("artifacts/disk-probe"))
             command.add_argument("--file", type=Path, help="Read an existing model file without creating scratch")
-        if name in ("compare-reference", "compare-expert", "validate-cache", "compare-router"):
+        if name in ("compare-reference", "compare-expert", "validate-cache", "compare-router", "compare-gate"):
             command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
-        if name in ("compare-reference", "compare-expert", "trace-reduction", "validate-cache", "bench-cache", "compare-router"):
+        if name in ("compare-reference", "compare-expert", "trace-reduction", "validate-cache", "bench-cache", "compare-router", "compare-gate"):
             command.add_argument("--device", type=int, default=0)
             if name != "bench-cache":
                 command.add_argument("--reference-device", type=int)
@@ -83,6 +89,14 @@ def main(argv=None) -> int:
             from .router_reference import compare_router
             reference = args.device if args.reference_device is None else args.reference_device
             result = compare_router(args.fixture, args.reference_directory, args.device, reference)
+        elif args.command == "fetch-gate-fixture":
+            from .gate import fetch_gate_fixture
+            result = fetch_gate_fixture(args.directory, args.layer)
+        elif args.command == "compare-gate":
+            from .gate_reference import compare_gate
+            reference = args.device if args.reference_device is None else args.reference_device
+            result = compare_gate(args.fixture, args.router_fixture, args.reference_directory,
+                                  args.device, reference, args.cublas_library)
         elif args.command == "build-store":
             from .storage import build_store
             result = build_store(args.fixtures, args.directory)

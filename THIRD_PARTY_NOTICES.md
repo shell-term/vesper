@@ -37,9 +37,15 @@ retained in [third_party/PyTorch-LICENSE](third_party/PyTorch-LICENSE), includin
 binary distributions. This scoped adaptation does not claim stable top-k ties
 for other PyTorch versions, backends or shapes.
 
+The gate projection binding follows the same revision's FP32 `cublasSgemm`
+calling convention and default workspace budget in `aten/src/ATen/cuda/CUDABlas.cpp`,
+`aten/src/ATen/native/cuda/Blas.cpp` and `aten/src/ATen/cuda/CublasHandlePool.cpp`.
+Its oracle executes the unchanged DeepSeek `linear` and `Gate.forward` bodies
+with real weights and projection, without a projection substitution.
+
 ## Runtime dependencies
 
-CUDA libraries and headers are supplied by the user's CUDA installation and are
+CUDA libraries (including cuBLAS) and headers are supplied by the user's CUDA installation and are
 not redistributed here. NumPy, PyTorch and TileLang retain their upstream licenses.
 Vesper does not contain Strata, Maya, Xolotl or llama.cpp source code. They are
 research references, not dependencies or code authors of this implementation.
