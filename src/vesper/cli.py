@@ -14,7 +14,7 @@ def main(argv=None) -> int:
                  "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
                  "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router", "fetch-gate-fixture", "compare-gate",
                  "fetch-shared-fixture", "compare-shared", "compare-aggregation", "compare-original-accumulation",
-                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory"):
+                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
         if name in ("validate", "bench-transfer", "validate-integrity"):
@@ -59,9 +59,11 @@ def main(argv=None) -> int:
         if name == "capture-prefix":
             command.add_argument("--fixture", type=Path, required=True)
             command.add_argument("--attention-reference", choices=("original", "ptx-memory"), default="original")
-        if name in ("plan-connected", "compare-connected", "prefix-preflight", "capture-prefix", "compare-attention-storage", "compare-attention-memory"):
+        if name == "compare-native-attention":
+            command.add_argument("--bundle", type=Path, required=True, help="New local kernel bundle directory")
+        if name in ("plan-connected", "compare-connected", "prefix-preflight", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention"):
             command.add_argument("--device", type=int, default=0)
-        if name in ("compare-connected", "prefix-preflight", "capture-prefix", "compare-attention-storage", "compare-attention-memory"):
+        if name in ("compare-connected", "prefix-preflight", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention"):
             command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
         if name == "compare-gate":
             command.add_argument("--router-fixture", type=Path, required=True)
@@ -166,6 +168,9 @@ def main(argv=None) -> int:
         elif args.command == "compare-attention-memory":
             from .attention_memory_reference import compare_attention_memory
             result = compare_attention_memory(args.reference_directory, args.device)
+        elif args.command == "compare-native-attention":
+            from .attention_reference import compare_native_attention
+            result = compare_native_attention(args.reference_directory, args.bundle, args.device)
         elif args.command == "fetch-prefix-fixture":
             from .prefix import fetch_prefix_fixture
             result = fetch_prefix_fixture(args.directory)

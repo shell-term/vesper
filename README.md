@@ -74,6 +74,15 @@ Head partitioning was rejected after intermediate differences. See
 [Issue #7](https://github.com/shell-term/vesper/issues/7) and the
 [Attention memory-adapter report](docs/attention-memory-validation.md).
 
+The qualified sparse Attention candidate now also runs through Vesper's CUDA
+Driver executor without Torch or TileLang installed. Across 36 conditions, all
+six output/intermediate boundaries match the qualified oracle exactly, including
+1,261,568 final BF16 elements. Both pressure/retry checks pass. Optional tools
+build pinned local kernels once; execution checks their identities and needs
+only NumPy and the driver. This is a bounded operation, with native projections,
+KV state and full-layer integration still pending. See the
+[native Attention report](docs/native-attention-validation.md).
+
 The goal is to preserve the released model's precision and semantics. Native FP4
 expert weights are already part of the official checkpoint; using those bytes is
 different from applying another lossy quantization. Vesper prohibits extra

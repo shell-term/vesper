@@ -65,6 +65,12 @@ with real weights and projection, without a projection substitution.
 
 ## Runtime dependencies
 
+The optional native Attention bundle builder compiles the explicitly adapted
+DeepSeek Query-storage candidate described above through TileLang. Generated
+source and binaries remain local artifacts; the exporter retains the pinned
+DeepSeek license alongside them. Vesper's committed CUDA Driver executor and
+bundle/input validation code do not vendor TileLang or CUDA runtime source.
+
 CUDA libraries (including cuBLAS) and headers are supplied by the user's CUDA installation and are
 not redistributed here. NumPy, PyTorch and TileLang retain their upstream licenses.
 Vesper does not contain Strata, Maya, Xolotl or llama.cpp source code. They are

@@ -17,6 +17,7 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Connected MoE sublayer | Gate projection, routing, accumulation order, shared expert and bounded offload | Generated and real-prefix inputs each pass 30 calls / 108 boundaries and four refusal/retry checks; native-only rechecks match |
 | Attention Query storage candidate | Exact intermediates with executable original profiles, then full-shape original parity | 24 smaller-profile cases match all checked bits; full 64 × 512 candidate executes at 74 KiB shared memory; full original gate blocked at 138 KiB |
 | Storage-adapted official Attention arithmetic | Original PTX arithmetic/control retention, exact bit transport and intermediate comparisons | All six original binaries reproduce; 36 conditions / 456 comparisons match; explicit capture supplies four real layer-0 vectors; untouched full-kernel launch remains blocked |
+| Native sparse Attention operation | Framework-free dispatch, exact boundaries and bounded failure recovery | 36 conditions, 216 oracle-boundary comparisons, zero differences; independent NumPy-only replay passes; projections/KV state pending |
 | Full Transformer block | Connected attention, MoE, Engram, Hyper-Connections and residual boundaries | Not implemented |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |

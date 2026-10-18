@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "probe": "native_attention_component",
+  "artifacts_sha256": {
+    "attention.json": "25485ed4e6e5c399dfa71ba0ee37e565b1f6dc95d5ec8a11a581efac401a1bf3",
+    "native-only-recheck.json": "1b5f2ee6b1e80e029939456a14de8e8542a68abd8d78216f68d249b77e8e6e28",
+    "qualification.json": "57c43fd454982209777d644d33f425100c698663e27868c9a597cf40a9c1d604",
+    "kernel-manifest.json": "b0e50760224c68bb2206bceff1f17d5ef40748e7b0df60b56efe96c7320a98c4"
+  },
+  "normal_conditions": 36,
+  "normal_comparisons": 252,
+  "normal_compared_elements": 7150528,
+  "oracle_boundary_comparisons": 216,
+  "oracle_boundary_elements": 5888960,
+  "final_BF16_elements": 1261568,
+  "mismatches": 0,
+  "expected_failure_conditions": 2,
+  "successful_native_calls_per_process": 74,
+  "native_only_frameworks_installed": false,
+  "native_only_frameworks_imported": false,
+  "native_memory": {
+    "host_allowance_bytes": 33554432,
+    "host_reserved_bytes": 0,
+    "device_peak_owned_bytes": 2897168,
+    "device_owned_bytes": 0,
+    "owned_context_active": false,
+    "owned_modules_active": 0,
+    "reservation_is_RSS_limit": false,
+    "driver_module_memory_excluded": true,
+    "minimum_sampled_host_available_bytes": 126071169024
+  },
+  "full_attention_layer": "not_implemented",
+  "kv_state": "not_implemented",
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured",
+  "issue_7_complete": false
+}

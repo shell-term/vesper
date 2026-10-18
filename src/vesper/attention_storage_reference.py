@@ -45,37 +45,11 @@ def _check(expected, actual, label):
 
 
 def _inputs(torch, heads, dimension, case, ordinal):
-    batch, sequence, topk, mode, scale = case
-    rng = np.random.default_rng(20261018 + topk + batch * 1000 + sequence * 100)
-    q = bf16_bits(rng.standard_normal((batch, sequence, heads, dimension)).astype(np.float32) * np.float32(scale))
-    kv = bf16_bits(rng.standard_normal((batch, 257, dimension)).astype(np.float32) * np.float32(scale))
-    sink = rng.standard_normal(heads).astype(np.float32)
-    idx = rng.integers(0, 257, (batch, sequence, topk), dtype=np.int32)
-    if mode == "masked":
-        idx[:, :, ::3] = -1
-    elif mode == "empty":
-        idx.fill(-1)
-    elif mode == "duplicates":
-        idx[:, :, 1::2] = idx[:, :, ::2][:, :, :topk // 2]
-    elif mode == "zeros":
-        q.fill(0)
-        kv.fill(0)
-    elif mode == "signed_zeros":
-        q.fill(0x8000)
-        kv[..., ::2] = 0
-        kv[..., 1::2] = 0x8000
-    elif mode == "ties":
-        q.fill(0x3F00)
-        kv.fill(0x3F00)
-        sink.fill(0)
-    elif mode == "sink_positive":
-        sink.fill(300)
-    elif mode == "sink_negative":
-        sink.fill(-300)
+    from .attention_inputs import attention_inputs
+    (q, kv, sink, idx), provenance = attention_inputs(heads, dimension, case)
     device = f"cuda:{ordinal}"
     tensors = (torch.from_numpy(q).view(torch.bfloat16).to(device), torch.from_numpy(kv).view(torch.bfloat16).to(device),
                torch.from_numpy(sink).to(device), torch.from_numpy(idx).to(device))
-    provenance = {name: hashlib.sha256(array.tobytes()).hexdigest() for name, array in zip(("q", "kv", "sink", "indices"), (q, kv, sink, idx))}
     return tensors, provenance
 
 

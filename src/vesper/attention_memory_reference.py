@@ -15,18 +15,13 @@ from pathlib import Path
 import numpy as np
 
 from .attention_memory import FUNCTION, inspect_codegen, loader_check_cuda
+from .attention_inputs import CASES
 from .attention_ptx import virtualize_ptx
 from .attention_storage import STAGES, load_variant, trace_shapes
 from .attention_storage_reference import _check, _inputs
 from .checkpoint import MODEL, REVISION, fetch_reference
 from .cuda import Driver, Device, _bind
 from .resources import GiB, MiB, MemoryBudget, physical_memory
-
-CASES = ((1, 1, 1, "normal", .125), (1, 3, 32, "normal", 1.), (1, 2, 64, "masked", 8.),
-         (2, 2, 65, "masked", .5), (1, 2, 128, "empty", 1.), (1, 2, 193, "duplicates", 1.),
-         (1, 1, 128, "zeros", 1.), (1, 2, 65, "signed_zeros", 1.), (1, 1, 127, "normal", 1e-6),
-         (1, 2, 128, "ties", 1.), (1, 1, 129, "sink_positive", .125), (1, 1, 129, "sink_negative", .125))
-
 
 def missing_dependencies():
     return [name for name in ("torch", "tilelang") if importlib.util.find_spec(name) is None]
