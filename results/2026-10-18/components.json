@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "probe": "component_conformance",
+  "backend": "CUDA Driver + NVRTC",
+  "compiler_options": [
+    "fmad=false",
+    "ftz=false"
+  ],
+  "inventory": {
+    "driver_api_version": 13040,
+    "devices": [
+      {
+        "ordinal": 0,
+        "name": "NVIDIA GeForce RTX 4090",
+        "compute_capability": "8.9",
+        "total_bytes": 25756696576
+      },
+      {
+        "ordinal": 1,
+        "name": "NVIDIA GeForce RTX 3080 Ti",
+        "compute_capability": "8.6",
+        "total_bytes": 12884377600
+      }
+    ],
+    "peers": [
+      {
+        "source": 0,
+        "destination": 1,
+        "direct_peer_access": false
+      },
+      {
+        "source": 1,
+        "destination": 0,
+        "direct_peer_access": false
+      }
+    ]
+  },
+  "devices": [
+    {
+      "device": {
+        "ordinal": 0,
+        "name": "NVIDIA GeForce RTX 4090",
+        "compute_capability": "8.9",
+        "total_bytes": 25756696576
+      },
+      "checks": [
+        {
+          "check": "E2M1_all_codes_E8M0_all_codes",
+          "status": "pass",
+          "elements": 8192,
+          "mismatches": 0,
+          "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+          "first_mismatch_indices": []
+        },
+        {
+          "check": "E4M3_BF16_finite_space_and_rounding_midpoints",
+          "status": "pass",
+          "elements": 65784,
+          "mismatches": 0,
+          "comparison": "exact_storage_bits",
+          "first_mismatch_indices": []
+        },
+        {
+          "check": "per32_activation_E4M3_bytes",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "comparison": "exact_storage_bits",
+          "first_mismatch_indices": []
+        },
+        {
+          "check": "per32_activation_E8M0_scale_bytes",
+          "status": "pass",
+          "elements": 1024,
+          "mismatches": 0,
+          "comparison": "exact_storage_bits",
+          "first_mismatch_indices": []
+        },
+        {
+          "check": "synthetic_FP8xFP4_block_GEMV_BF16_output",
+          "status": "pass",
+          "elements": 128,
+          "mismatches": 0,
+          "comparison": "exact_storage_bits",
+          "first_mismatch_indices": []
+        },
+        {
+          "check": "official_weight_slice_FP8xFP4_GEMV_specification",
+          "status": "pass",
+          "elements": 128,
+          "mismatches": 0,
+          "comparison": "exact_storage_bits",
+          "first_mismatch_indices": []
+        }
+      ],
+      "memory_after_context_before_probes": {
+        "free": 24154996736,
+        "total": 25756696576
+      },
+      "peak_explicit_device_allocation_bytes": 353696,
+      "compiled_cubin_sha256": "4c6975955b3169d27cd8995f505ea1dee73ec264a51d2b7ba9a68afff6731a14",
+      "status": "pass"
+    },
+    {
+      "device": {
+        "ordinal": 1,
+        "name": "NVIDIA GeForce RTX 3080 Ti",
+        "compute_capability": "8.6",
+        "total_bytes": 12884377600
+      },
+      "checks": [
+        {
+          "check": "E2M1_all_codes_E8M0_all_codes",
+          "status": "pass",
+          "elements": 8192,
+          "mismatches": 0,
+          "comparison": "exact_float32_bits_with_NaN_classification; signed_zero_preserved",
+          "first_mismatch_indices": []
+        },
+        {
+          "check": "E4M3_BF16_finite_space_and_rounding_midpoints",
+          "status": "pass",
+          "elements": 65784,
+          "mismatches": 0,
+          "comparison": "exact_storage_bits",
+          "first_mismatch_indices": []
+        },
+        {
+          "check": "per32_activation_E4M3_bytes",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "comparison": "exact_storage_bits",
+          "first_mismatch_indices": []
+        },
+        {
+          "check": "per32_activation_E8M0_scale_bytes",
+          "status": "pass",
+          "elements": 1024,
+          "mismatches": 0,
+          "comparison": "exact_storage_bits",
+          "first_mismatch_indices": []
+        },
+        {
+          "check": "synthetic_FP8xFP4_block_GEMV_BF16_output",
+          "status": "pass",
+          "elements": 128,
+          "mismatches": 0,
+          "comparison": "exact_storage_bits",
+          "first_mismatch_indices": []
+        },
+        {
+          "check": "official_weight_slice_FP8xFP4_GEMV_specification",
+          "status": "pass",
+          "elements": 128,
+          "mismatches": 0,
+          "comparison": "exact_storage_bits",
+          "first_mismatch_indices": []
+        }
+      ],
+      "memory_after_context_before_probes": {
+        "free": 11637096448,
+        "total": 12884377600
+      },
+      "peak_explicit_device_allocation_bytes": 353696,
+      "compiled_cubin_sha256": "d0e9f27d86a011a053af86c98861824d520a0619079101201c47a68322639387",
+      "status": "pass"
+    }
+  ],
+  "status": "pass",
+  "oracle": "Independent NumPy format/block arithmetic specification; no tolerances",
+  "official_TileLang_kernel_parity": "not_run",
+  "full_model_quality": "not_run",
+  "limitations": [
+    "Scalar GEMV is a correctness probe, not an optimized inference kernel.",
+    "Passing component checks is not proof of official-kernel parity or unchanged full-model quality.",
+    "NaNs are compared by classification, finite values and signed zero by exact bits."
+  ],
+  "timestamp_utc": "2026-10-18T01:30:39Z"
+}

@@ -1,0 +1,44 @@
+{
+  "probe": "disk_bandwidth",
+  "status": "pass",
+  "direct_io": true,
+  "queue_depth": 1,
+  "file_kind": "existing_read_only_file",
+  "file_bytes": 47678327584,
+  "peak_reserved_buffer_bytes": 18800640,
+  "measurements": [
+    {
+      "pattern": "expert_sized_sequential",
+      "request_bytes": 18800640,
+      "requests": 12,
+      "median_ms": 4.859150000356749,
+      "min_ms": 4.148499999246269,
+      "effective_GBps": 3.8691211423026033,
+      "first_page_at_every_offset_verified": true
+    },
+    {
+      "pattern": "expert_sized_random",
+      "request_bytes": 18800640,
+      "requests": 12,
+      "median_ms": 4.259650000221882,
+      "min_ms": 3.5606000001280336,
+      "effective_GBps": 4.413658398934346,
+      "first_page_at_every_offset_verified": true
+    },
+    {
+      "pattern": "engram_page_random",
+      "request_bytes": 4096,
+      "requests": 64,
+      "median_ms": 0.143849999858503,
+      "min_ms": 0.07829999958630651,
+      "effective_GBps": 0.028474104998463683,
+      "first_page_at_every_offset_verified": true
+    }
+  ],
+  "limitations": [
+    "Queue-depth-one direct reads; no buffered fallback or asynchronous overlap.",
+    "Drive firmware caches and other workload contention can affect results.",
+    "4 KiB reads model physical Engram pages, not the complete Engram lookup algorithm."
+  ],
+  "timestamp_utc": "2026-10-18T01:17:08Z"
+}

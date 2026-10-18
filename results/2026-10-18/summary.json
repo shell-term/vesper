@@ -1,0 +1,35 @@
+{
+  "experiment_date": "2026-10-18",
+  "scope": "One 128-row W1 slice; eight BF16 input vectors; official oracle on RTX 4090",
+  "devices": [
+    {
+      "name": "NVIDIA GeForce RTX 4090",
+      "candidate_kernel": "gemv_fp4_mma",
+      "cases": 8,
+      "cases_passed": 8,
+      "projection_elements": 1024,
+      "projection_mismatches": 0,
+      "activation_quantization_matches": true
+    },
+    {
+      "name": "NVIDIA GeForce RTX 3080 Ti",
+      "candidate_kernel": "gemv_fp4_bf16_mma",
+      "cases": 8,
+      "cases_passed": 1,
+      "projection_elements": 1024,
+      "projection_mismatches": 14,
+      "activation_quantization_matches": true
+    }
+  ],
+  "full_model_quality": "not_run",
+  "generation_throughput": "not_run",
+  "files_sha256": {
+    "components.json": "a89957fb53293cae7219e9389ce0aa16ca1d390f5ff7c25cb72f4ae24c24ee43",
+    "official-matrix.json": "b9a61d3da14f6824d2c66e096a4da2695f880afa4fe510b4c35550e0cedfe1af",
+    "scalar-reference-negative.json": "1eacfaceb1381421c1898747d5139d4df0b437c03be0490a145bcccf42b3db66",
+    "transfers.json": "c31fb9a69ab60f323ad51f49b729ce2b198813ff2983f0e4355987976d93e346",
+    "storage-model-volume.json": "d245a741b46be9e511bd5dafdd9e0e5a773f8e0fefaf5b03efdac787218b04ef",
+    "storage-workspace.json": "0a6830443a5cee9f61a15291d66b5815052208c2ff098a76f122e04d34386d08",
+    "fixture-provenance.json": "c1c50ebac20e74f1038ffab85283f2603712ae8776054b426610233c3501153f"
+  }
+}

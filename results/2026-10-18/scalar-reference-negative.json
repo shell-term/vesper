@@ -1,0 +1,51 @@
+{
+  "probe": "official_kernel_parity",
+  "status": "fail",
+  "device": {
+    "ordinal": 0,
+    "name": "NVIDIA GeForce RTX 4090",
+    "compute_capability": "8.9",
+    "total_bytes": 25756696576
+  },
+  "checks": [
+    {
+      "check": "official_act_quant_E4M3",
+      "status": "pass",
+      "elements": 5120,
+      "mismatches": 0,
+      "comparison": "exact_storage_bits",
+      "first_mismatch_indices": []
+    },
+    {
+      "check": "official_act_quant_E8M0",
+      "status": "pass",
+      "elements": 160,
+      "mismatches": 0,
+      "comparison": "exact_storage_bits",
+      "first_mismatch_indices": []
+    },
+    {
+      "check": "official_fp4_gemm_BF16_output",
+      "status": "fail",
+      "elements": 128,
+      "mismatches": 2,
+      "comparison": "exact_storage_bits",
+      "first_mismatch_indices": [
+        20,
+        67
+      ]
+    }
+  ],
+  "reference": {
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "files": {
+      "kernel.py": "1236c3507019ed176f5dba5e04bcea58867cf654818c6cf138ed4845398c2455",
+      "LICENSE": "f2c6c602815669d292889e5be8c802f2ed950653b77999b1584e8e6aed25d040"
+    }
+  },
+  "torch_version": "2.14.1+cu130",
+  "tilelang_version": "0.1.12",
+  "full_model_quality": "not_run",
+  "timestamp_utc": "2026-10-18T01:26:12Z"
+}

@@ -1,0 +1,42 @@
+{
+  "probe": "fetch_fixture",
+  "status": "pass",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "weights_fetched_bytes": 348160,
+  "tensors": [
+    {
+      "tensor": "layers.0.ffn.experts.0.w1.weight",
+      "dtype": "I8",
+      "original_shape": [
+        2304,
+        2560
+      ],
+      "selected_shape": [
+        128,
+        2560
+      ],
+      "shard": "model-00003-of-00048.safetensors",
+      "shard_byte_offset": 594986552,
+      "bytes": 327680,
+      "sha256": "67a09b9d58445c6a783e4d9c6b6e66e5e46579fa681e2f02d3771b9c909639a5"
+    },
+    {
+      "tensor": "layers.0.ffn.experts.0.w1.scale",
+      "dtype": "F8_E8M0",
+      "original_shape": [
+        2304,
+        160
+      ],
+      "selected_shape": [
+        128,
+        160
+      ],
+      "shard": "model-00003-of-00048.safetensors",
+      "shard_byte_offset": 8273720,
+      "bytes": 20480,
+      "sha256": "81432279eee3e21a0f9a9b87e497c506c571241fbf58b36175fda53af78dfdf4"
+    }
+  ],
+  "note": "Original packed bytes and scales; a small W1 slice, not a full expert or model."
+}

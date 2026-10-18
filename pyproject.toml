@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vesper-moe"
+version = "0.1.0"
+description = "Native-precision MoE inference research across GPU, RAM, and SSD"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md", "third_party/DeepSeek-LICENSE"]
+dependencies = ["numpy>=1.26,<3"]
+
+[project.urls]
+Repository = "https://github.com/shell-term/vesper"
+Issues = "https://github.com/shell-term/vesper/issues"
+
+[project.optional-dependencies]
+reference = ["torch>=2.10.0", "tilelang==0.1.12"]
+
+[project.scripts]
+vesper = "vesper.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+vesper = ["kernels/*.cu"]

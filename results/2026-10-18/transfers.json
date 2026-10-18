@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "probe": "transfer_bandwidth",
+  "status": "pass",
+  "inventory": {
+    "driver_api_version": 13040,
+    "devices": [
+      {
+        "ordinal": 0,
+        "name": "NVIDIA GeForce RTX 4090",
+        "compute_capability": "8.9",
+        "total_bytes": 25756696576
+      },
+      {
+        "ordinal": 1,
+        "name": "NVIDIA GeForce RTX 3080 Ti",
+        "compute_capability": "8.6",
+        "total_bytes": 12884377600
+      }
+    ],
+    "peers": [
+      {
+        "source": 0,
+        "destination": 1,
+        "direct_peer_access": false
+      },
+      {
+        "source": 1,
+        "destination": 0,
+        "direct_peer_access": false
+      }
+    ]
+  },
+  "transfers": [
+    {
+      "device": 0,
+      "direction": "pinned_host_to_device",
+      "bytes_per_operation": 20480,
+      "repeats": 12,
+      "median_ms": 0.011000000085914508,
+      "min_ms": 0.009999999747378752,
+      "p90_ms": 0.021599999854515772,
+      "effective_GBps": 1.861818167276619,
+      "bytes_verified": true
+    },
+    {
+      "device": 0,
+      "direction": "device_to_pinned_host",
+      "bytes_per_operation": 20480,
+      "repeats": 12,
+      "median_ms": 0.010000000202126103,
+      "min_ms": 0.009200000022246968,
+      "p90_ms": 0.015700000403739978,
+      "effective_GBps": 2.047999958604575,
+      "bytes_verified": true
+    },
+    {
+      "device": 0,
+      "direction": "pinned_host_to_device",
+      "bytes_per_operation": 65536,
+      "repeats": 12,
+      "median_ms": 0.014449999980570283,
+      "min_ms": 0.014000000192027073,
+      "p90_ms": 0.015199999324977398,
+      "effective_GBps": 4.5353633278976355,
+      "bytes_verified": true
+    },
+    {
+      "device": 0,
+      "direction": "device_to_pinned_host",
+      "bytes_per_operation": 65536,
+      "repeats": 12,
+      "median_ms": 0.01970000039364095,
+      "min_ms": 0.013700000636163168,
+      "p90_ms": 0.025800000003073364,
+      "effective_GBps": 3.3267004411408365,
+      "bytes_verified": true
+    },
+    {
+      "device": 0,
+      "direction": "pinned_host_to_device",
+      "bytes_per_operation": 18800640,
+      "repeats": 12,
+      "median_ms": 1.5234000002237735,
+      "min_ms": 1.519200000075216,
+      "p90_ms": 1.5339000001404202,
+      "effective_GBps": 12.34123670555229,
+      "bytes_verified": true
+    },
+    {
+      "device": 0,
+      "direction": "device_to_pinned_host",
+      "bytes_per_operation": 18800640,
+      "repeats": 12,
+      "median_ms": 1.4590000000680448,
+      "min_ms": 1.4419999997699051,
+      "p90_ms": 1.48799999988114,
+      "effective_GBps": 12.885976695766399,
+      "bytes_verified": true
+    },
+    {
+      "device": 1,
+      "direction": "pinned_host_to_device",
+      "bytes_per_operation": 20480,
+      "repeats": 12,
+      "median_ms": 0.01004999967335607,
+      "min_ms": 0.009200000022246968,
+      "p90_ms": 0.019099999917671084,
+      "effective_GBps": 2.0378110115063284,
+      "bytes_verified": true
+    },
+    {
+      "device": 1,
+      "direction": "device_to_pinned_host",
+      "bytes_per_operation": 20480,
+      "repeats": 12,
+      "median_ms": 0.00934999980017892,
+      "min_ms": 0.00850000014906982,
+      "p90_ms": 0.010599999768601265,
+      "effective_GBps": 2.190374378361815,
+      "bytes_verified": true
+    },
+    {
+      "device": 1,
+      "direction": "pinned_host_to_device",
+      "bytes_per_operation": 65536,
+      "repeats": 12,
+      "median_ms": 0.014649999684479553,
+      "min_ms": 0.014000000192027073,
+      "p90_ms": 0.016200000573007856,
+      "effective_GBps": 4.4734471953217785,
+      "bytes_verified": true
+    },
+    {
+      "device": 1,
+      "direction": "device_to_pinned_host",
+      "bytes_per_operation": 65536,
+      "repeats": 12,
+      "median_ms": 0.014000000192027073,
+      "min_ms": 0.012599999536178075,
+      "p90_ms": 0.02299999960087007,
+      "effective_GBps": 4.681142792935275,
+      "bytes_verified": true
+    },
+    {
+      "device": 1,
+      "direction": "pinned_host_to_device",
+      "bytes_per_operation": 18800640,
+      "repeats": 12,
+      "median_ms": 1.520500000424363,
+      "min_ms": 1.516299999821058,
+      "p90_ms": 1.5548999999737134,
+      "effective_GBps": 12.364774741698684,
+      "bytes_verified": true
+    },
+    {
+      "device": 1,
+      "direction": "device_to_pinned_host",
+      "bytes_per_operation": 18800640,
+      "repeats": 12,
+      "median_ms": 1.4429500001824636,
+      "min_ms": 1.4387999999598833,
+      "p90_ms": 1.4457999996011495,
+      "effective_GBps": 13.02930801318315,
+      "bytes_verified": true
+    }
+  ],
+  "staged_transfers": [
+    {
+      "source_device": 0,
+      "destination_device": 1,
+      "route": "explicit_device_to_pinned_host_to_device",
+      "bytes_per_operation": 20480,
+      "repeats": 12,
+      "median_ms": 0.02679999988686177,
+      "min_ms": 0.023800000235496555,
+      "p90_ms": 0.030100000003585592,
+      "effective_GBps": 0.7641791077036519,
+      "bytes_verified": true
+    },
+    {
+      "source_device": 0,
+      "destination_device": 1,
+      "route": "explicit_device_to_pinned_host_to_device",
+      "bytes_per_operation": 18800640,
+      "repeats": 12,
+      "median_ms": 3.0431500003942347,
+      "min_ms": 2.9746999998678803,
+      "p90_ms": 3.064500000618864,
+      "effective_GBps": 6.178019485587108,
+      "bytes_verified": true
+    },
+    {
+      "source_device": 1,
+      "destination_device": 0,
+      "route": "explicit_device_to_pinned_host_to_device",
+      "bytes_per_operation": 20480,
+      "repeats": 12,
+      "median_ms": 0.027349999982106965,
+      "min_ms": 0.026599999728205148,
+      "p90_ms": 0.027999999474559445,
+      "effective_GBps": 0.7488117006727061,
+      "bytes_verified": true
+    },
+    {
+      "source_device": 1,
+      "destination_device": 0,
+      "route": "explicit_device_to_pinned_host_to_device",
+      "bytes_per_operation": 18800640,
+      "repeats": 12,
+      "median_ms": 2.9804999999214488,
+      "min_ms": 2.9657000004590373,
+      "p90_ms": 3.0484999997497653,
+      "effective_GBps": 6.307881228148126,
+      "bytes_verified": true
+    }
+  ],
+  "peak_reserved_pinned_bytes": 18800640,
+  "limitations": [
+    "Other workloads remain active; measurements include contention and host-call overhead.",
+    "Synchronous end-to-end transfer timing, not PCIe peak bandwidth or full-model throughput.",
+    "GPU contexts and module allocations are additional to explicit device-buffer accounting."
+  ],
+  "timestamp_utc": "2026-10-18T01:15:24Z"
+}
