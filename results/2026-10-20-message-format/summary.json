@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "probe": "message_format_file_bound_summary",
+  "status": "pass",
+  "format_comparison_only": true,
+  "model_inference_run": false,
+  "model_quality_scored": false,
+  "encoding_cases": 30,
+  "parsing_cases": 11,
+  "rejection_cases": 13,
+  "input_token_ids_compared": 2336,
+  "reference_canonical_sha256": "177d00d1b6ede9e415c5034c1018eaf60f8cba053a9cf37ae643196d0ade4bc2",
+  "complete_goldens_sha256": "9b0b7e7833a625281ba85a4f7008005d376493cc0ffb947c579523d73a88038c",
+  "files": {
+    "original.json": {
+      "bytes": 58266,
+      "sha256": "cc278155dfa3edfee96e2c7603b4bd14eea00edfd18a6595133d2cb4dd040df0"
+    },
+    "native.json": {
+      "bytes": 58439,
+      "sha256": "dca1f7cae782d40d2a9e1eeb1ca792f582cec38f7ca3920199baa948a55e09ef"
+    }
+  },
+  "quality_preflight": [
+    {
+      "id": "reasoning-integer",
+      "category": "reasoning",
+      "prompt_tokens": 63,
+      "requested_max_new_tokens": 128,
+      "maximum_model_calls_requested": 190,
+      "current_fixture_maximum_calls": 8,
+      "fits_current_fixture": false,
+      "status": "blocked_by_runtime_scope",
+      "model_inference_run": false,
+      "model_quality_scored": false,
+      "completion": null,
+      "score": null
+    },
+    {
+      "id": "coding-python-expression",
+      "category": "coding",
+      "prompt_tokens": 30,
+      "requested_max_new_tokens": 32,
+      "maximum_model_calls_requested": 61,
+      "current_fixture_maximum_calls": 8,
+      "fits_current_fixture": false,
+      "status": "blocked_by_runtime_scope",
+      "model_inference_run": false,
+      "model_quality_scored": false,
+      "completion": null,
+      "score": null
+    },
+    {
+      "id": "tool-add",
+      "category": "tool_use",
+      "prompt_tokens": 293,
+      "requested_max_new_tokens": 96,
+      "maximum_model_calls_requested": 388,
+      "current_fixture_maximum_calls": 8,
+      "fits_current_fixture": false,
+      "status": "blocked_by_runtime_scope",
+      "model_inference_run": false,
+      "model_quality_scored": false,
+      "completion": null,
+      "score": null
+    }
+  ]
+}

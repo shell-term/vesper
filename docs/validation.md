@@ -4,6 +4,7 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 
 | Gate | Evidence required | Current evidence |
 | --- | --- | --- |
+| V4.1 text-message input/output | Unchanged upstream encoder/parser and original AutoTokenizer against independent native text adapter/Rust tokenizer | 30 encodings, 11 parses, 13 rejections and 2,336 token IDs match; [complete CPU evidence](message-format-validation.md); three complete quality-task prompts exceed the eight-call runtime fixture, so model quality is not evaluated |
 | Original all-forty-layer text backbone | Unchanged original Transformer/Block methods, both Engrams, all actual hidden/HC handoffs, routing, true final logits/sampling and whole-token state | Two fixed BOS/PAD calls match 10,504 typed/shaped boundaries / 54,214,575 elements, 80 ordered routes and 258,560 FP32 logits; offline framework-free native replay, four late failure/cancellation restorations and exact second-token retry pass; [complete evidence and limits](backbone-validation.md); natural-language generation/quality and broader histories pending |
 | Released artifacts | Pinned checkpoint, exact weight/scale bytes, matching tokenizer and Engram | Original component fixtures, all 48 headers / 96,085 tensor descriptors and released whole-file identities; complete tokenizer map and bounded Engram pass; full local checkpoint registration not run |
 | Format specification | All FP4 codes, scale encodings, FP8/BF16 rounding boundaries, signed zero | Pass on Ada and Ampere |

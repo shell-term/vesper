@@ -62,6 +62,14 @@ Full-checkpoint registration, arbitrary prompts, broader whole-model histories,
 reasoning/coding/tool-use evaluation and generation performance remain M2/M3 work. See the
 [acceptance evidence and exact scope](docs/block-ops-qualification.md).
 
+The [V4.1 text-message format gate](docs/message-format-validation.md) now
+matches 30 encodings, 11 response parses, 13 rejection cases and 2,336 original
+input token IDs. This CPU comparison includes complete reasoning/coding/tool
+task prompts. Their inputs exceed the current eight-call execution fixture;
+all three model evaluations are explicitly **not run**. The text adapter and
+deterministic scorers are implemented, while longer original-route execution
+and its numerical/state comparison remain open under #10.
+
 Direct comparisons with the pinned official implementation give:
 
 | Candidate | Scope | Result |

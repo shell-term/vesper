@@ -75,6 +75,15 @@ raw-text corpus with a serialized prompt adapter. Broader histories, chat/chunk
 prefill and reasoning/coding/tool-use evaluations remain under #10. Its original
 checks and M2 stay open until the remaining acceptance requirements pass.
 
+The [V4.1 message format gate](message-format-validation.md) now qualifies
+30 encodings, 11 parses, 13 rejection cases and 2,336 token IDs against the
+unchanged original CPU encoder/tokenizer. Three complete quality tasks are
+prepared with deterministic scorers. Their prompts contain 63/30/293 tokens;
+their maximum requested single-query trajectories are 190/61/388 calls, beyond
+the current eight-call fixture. These evaluations did not run. Longer bounded
+expert/Engram/embedding stores and reference/native trajectories remain #10
+work; formatting/scorer tests do not close its model-quality requirement.
+
 ## Working on an issue
 
 1. State the concrete outcome, acceptance checks, resource limits and dependencies.
