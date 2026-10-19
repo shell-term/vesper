@@ -14,6 +14,7 @@ import threading
 import numpy as np
 
 from .blas import Cublas, GATE_BLAS_WORKSPACE
+from .attention_topology import compression_layout, role
 from .compression_fixture import COMPRESSION_LAYOUT
 from .cuda import Device, Driver, _bind, compile_probe
 from .formats import bf16_values
@@ -46,9 +47,11 @@ def validate_quantized_kv(values):
 
 
 class NativeCompression:
-    def __init__(self, arrays, ordinal=0):
+    def __init__(self, arrays, ordinal=0, *, layers=(2, 20)):
+        self.layout = compression_layout(layers)
+        self.layers = {l: role(l).ratio for l in layers}
         self.arrays, self.ordinal = arrays, ordinal
-        for name, shape in COMPRESSION_LAYOUT.items():
+        for name, shape in self.layout.items():
             a = arrays.get(name)
             if (not isinstance(a, np.ndarray) or a.dtype != np.uint16 or a.shape != shape
                     or not a.flags.c_contiguous or np.any((a & 0x7f80) == 0x7f80)):
@@ -95,11 +98,11 @@ class NativeCompression:
                     C.c_void_p, C.c_void_p, C.c_int, C.c_int, C.c_int, C.c_int])
                 self.blas.workspace(self._allocate(self.stack, GATE_BLAS_WORKSPACE), GATE_BLAS_WORKSPACE)
                 self.weights = {}
-                for layer in LAYERS:
-                    for part in (("wkv", "wgate") if layer == 2 else ("wkv",)):
+                for layer, ratio in self.layers.items():
+                    for part in (("wkv", "wgate") if ratio == 2 else ("wkv",)):
                         a = self.arrays[f"layers.{layer}.attn.compressor.{part}.weight"]
                         # The original ratio-2 module loads these BF16 bytes into FP32 parameters.
-                        self.weights[layer, part] = self._upload(self.stack, bf16_values(a) if layer == 2 else a)
+                        self.weights[layer, part] = self._upload(self.stack, bf16_values(a) if ratio == 2 else a)
                 self.norm = self.stack.enter_context(NativeNormRoPE(self.ordinal))
                 self.resident_bytes = sum(self.device.allocations.values())
                 self.opened = True
@@ -117,31 +120,32 @@ class NativeCompression:
     def project(self, values, layer):
         with self.lock:
             self._ready()
-            if type(layer) is not int or layer not in LAYERS:
+            if type(layer) is not int or layer not in self.layers:
                 raise ValueError("Unsupported original compressor layer")
+            ratio = self.layers[layer]
             validate_compression_input(values, values.shape[0] if isinstance(values, np.ndarray) and values.ndim == 3 else 0, 0, 0)
             if values.shape[0] not in (1, 2):
                 raise ValueError("Compression supports batches one/two")
             rows = int(np.prod(values.shape[:2]))
             with ExitStack() as temporary:
                 source = self._upload(temporary, values)
-                if layer == 2:
+                if ratio == 2:
                     x = self._allocate(temporary, values.size * 4)
                     self.device.launch(self.module, "compression_promote", [C.c_uint64(source), C.c_uint64(x), C.c_int(values.size)], values.size)
                 else:
                     x = source
                 result = {}
-                for part in (("wkv", "wgate") if layer == 2 else ("wkv",)):
-                    out = self._allocate(temporary, rows * 512 * (4 if layer == 2 else 2))
+                for part in (("wkv", "wgate") if ratio == 2 else ("wkv",)):
+                    out = self._allocate(temporary, rows * 512 * (4 if ratio == 2 else 2))
                     alpha, beta = C.c_float(1), C.c_float(0)
-                    if layer == 2:
+                    if ratio == 2:
                         self.blas.check(self.blas.cublasSgemm_v2(self.blas.handle, 1, 0, 512, rows, 5120, C.byref(alpha),
                             self.weights[layer, part], 5120, x, 5120, C.byref(beta), out, 512))
                     else:
                         # CUDA_R_16BF inputs/output, original FP32 compute and default Tensor Core algorithm.
                         self.blas.check(self.gemm_ex(self.blas.handle, 1, 0, 512, rows, 5120, C.byref(alpha),
                             self.weights[layer, part], 14, 5120, x, 14, 5120, C.byref(beta), out, 14, 512, 0, 99))
-                    result[part + ("_fp32" if layer == 2 else "_bf16")] = self.device.download(out, (*values.shape[:2], 512), np.float32 if layer == 2 else np.uint16)
+                    result[part + ("_fp32" if ratio == 2 else "_bf16")] = self.device.download(out, (*values.shape[:2], 512), np.float32 if ratio == 2 else np.uint16)
                 return result
 
     def pool(self, kv, scores):
@@ -295,7 +299,7 @@ class NativeCompressedKV:
 def stage_compression(runtime, layer, batch, pos, source, values, *, max_position=MAX_POSITION):
     """Return original compressor/cache work without changing committed state."""
     validate_compression_input(values, batch, pos, pos, max_position=max_position)
-    ratio, sequence = LAYERS[layer], values.shape[1]
+    ratio, sequence = getattr(runtime, "layers", LAYERS)[layer], values.shape[1]
     stages = runtime.project(values, layer)
     kv_state, score_state, cache = (a.copy() for a in source)
     if ratio == 2:

@@ -163,6 +163,17 @@ original controls and native-only replay. Failure/retry and snapshots pass.
 All registered CUDA binaries remain unchanged. See the
 [long-context report and complete evidence](docs/long-context-validation.md).
 
+Original KV/index sharing now also covers **sixteen named Attention profiles**,
+including KV sources 8/14, index sources 28/32/36 and consumers that reuse
+selected IDs. Four independent sharing groups pass **2,224 frames / 8,896 layer
+calls**, with **684,616 boundary comparisons and zero differences**. Each frame
+also passes unchanged original full-forward controls; all boundaries reproduce
+without Torch/TileLang. Twenty failure/retries and four snapshot restorations
+pass. These are independent generated-input groups, with continuous 260-position
+streams and explicit synthetic histories through 1,028 positions, rather than
+complete compressed Transformer blocks. See the
+[sharing topology report](docs/attention-topology-validation.md).
+
 Vesper uses the released weights; its design does not require retraining.
 Model-wide output and quality verification remain required before that engine
 is ready for use.

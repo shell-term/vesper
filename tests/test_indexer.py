@@ -74,6 +74,7 @@ class IndexerTests(unittest.TestCase):
         native = object.__new__(NativeIndexer)
         import threading
         native.lock, native._ready = threading.RLock(), lambda: None
+        native.layers = (2, 20, 24)
         native._bf16_linear = lambda *args: self.fail("Invalid positions reached GEMM")
         latent = np.zeros((1, 2, 512), np.uint16)
         for positions in (np.array([0], np.int32), np.array([0, 2], np.int64), np.array([0, 131072], np.int32)):

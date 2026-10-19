@@ -61,7 +61,10 @@ def fetch_softmax_sources(directory):
 
 
 class CompressionOracle:
-    def __init__(self, directory, arrays, ordinal=0):
+    def __init__(self, directory, arrays, ordinal=0, *, layers=(2, 20)):
+        from .attention_topology import role, compression_layout
+        compression_layout(layers)
+        self.layers = {l: role(l).ratio for l in layers}
         import torch
         import tilelang
         if (torch.version.git_version != ROUTER_TORCH_REVISION
@@ -97,10 +100,10 @@ class CompressionOracle:
         if self.methods != COMPRESSION_METHODS:
             raise ValueError("Unregistered original compressor method AST")
         self.weights = {}
-        for layer in LAYERS:
-            for part in (("wkv", "wgate") if layer == 2 else ("wkv",)):
+        for layer, ratio in self.layers.items():
+            for part in (("wkv", "wgate") if ratio == 2 else ("wkv",)):
                 w = self.tensor(arrays[f"layers.{layer}.attn.compressor.{part}.weight"])
-                self.weights[layer, part] = w.float() if layer == 2 else w
+                self.weights[layer, part] = w.float() if ratio == 2 else w
         self.controls, self.quantization_controls = [], []
 
     def tensor(self, values):
@@ -109,10 +112,10 @@ class CompressionOracle:
 
     def project(self, values, layer):
         x = self.tensor(values)
-        if layer == 2:
+        if self.layers[layer] == 2:
             x = x.float()
-        return {part + ("_fp32" if layer == 2 else "_bf16"): _numpy(self.functions["linear"](x, self.weights[layer, part]))
-                for part in (("wkv", "wgate") if layer == 2 else ("wkv",))}
+        return {part + ("_fp32" if self.layers[layer] == 2 else "_bf16"): _numpy(self.functions["linear"](x, self.weights[layer, part]))
+                for part in (("wkv", "wgate") if self.layers[layer] == 2 else ("wkv",))}
 
     def pool(self, kv, scores):
         torch = self.torch
@@ -153,11 +156,11 @@ class CompressionOracle:
 
     def reset(self, layer=2, batch=1):
         torch = self.torch
-        self.layer, self.batch, self.ratio = layer, batch, LAYERS[layer]
+        self.layer, self.batch, self.ratio = layer, batch, self.layers[layer]
         self.original = SimpleNamespace(compress_ratio=self.ratio, head_dim=512,
             norm=self.math.modules[f"layers.{layer}.attn.compressor.norm.weight"],
             wkv=lambda x: self.functions["linear"](x, self.weights[layer, "wkv"]))
-        if layer == 2:
+        if self.ratio == 2:
             self.original.wgate = lambda x: self.functions["linear"](x, self.weights[layer, "wgate"])
             self.original.kv_state = torch.zeros((batch, 2, 512), dtype=torch.float32, device=f"cuda:{self.ordinal}")
             self.original.score_state = torch.full_like(self.original.kv_state, -torch.inf)

@@ -160,6 +160,8 @@ python examples/recheck_long_context.py \
 - [Independent native-only replay](../results/2026-10-19-long-context/native-only-recheck.json)
 - [Summary, exact file hashes and individual resource observations](../results/2026-10-19-long-context/summary.json)
 
-Next: other source/consumer profiles and compressed Attention inside complete
-Transformer blocks. Engram, full-model logits/sampling/quality and generation
-performance remain separate unfinished gates.
+The subsequent [sharing-topology probe](attention-topology-validation.md) covers
+all configured KV/index sources and eight ordinary consumers, in four independent
+generated-input groups. Next: compressed Attention inside complete Transformer
+blocks. Engram, full-model logits/sampling/quality and generation performance
+remain separate unfinished gates.

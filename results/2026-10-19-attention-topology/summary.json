@@ -1,0 +1,1131 @@
+{
+  "schema_version": 1,
+  "probe": "original_attention_sharing_topology",
+  "status": "pass",
+  "artifacts_sha256": {
+    "group-2-3.json": "94385f4274716bb2e5c7ec8bfe13ebb113643d32a9fbdbadf777e96339760228",
+    "group-2-3-native-only.json": "9c35a6c9d1999befac0f12c981304094e124f4288eed5370fb92aa7473816fb7",
+    "group-8-9.json": "a773d212458709a8beab1e2dc3c3f5344f2589c2773a183a76817e15da1ffa1d",
+    "group-8-9-native-only.json": "13a4184af9912464a8d6f695baad056a816b5f2deec7babc7c548f44c91e1e4b",
+    "group-14-15.json": "941e9f07eb5560f765b9d96cebf45ea93d78084365cef20481cb0935141a1b5f",
+    "group-14-15-native-only.json": "4a39a450a2105a8b3e2f35d21da010f986fa7cf7256284ef0c75e9cc2de87852",
+    "group-20-21-24-25-28-29-32-33-36-37.json": "1c8bc6b0d80feeddd3838f25bfe38548f4a3ac13f6c0e255d359c9ba1b121eec",
+    "group-20-21-24-25-28-29-32-33-36-37-native-only.json": "50d3de7abbc709a1d2cc05be92bc44631b045a5df580031e7200bd2c3e63ef97"
+  },
+  "groups": [
+    {
+      "layers": [
+        2,
+        3
+      ],
+      "paired_report": "group-2-3.json",
+      "native_only_report": "group-2-3-native-only.json",
+      "successful_frames": 556,
+      "complete_Attention_layer_calls": 1112,
+      "boundary_comparisons": 91800,
+      "compared_storage_elements": 1641987122,
+      "original_controls_per_frame": 20,
+      "instrumentation_counts": {
+        "projection": {
+          "2": 2232,
+          "3": 2232
+        },
+        "index_projection": 554,
+        "index_sum": 554,
+        "index_packed_vs_inplace": 843,
+        "compressed_packed_vs_inplace": 289
+      },
+      "negative_controls": [
+        {
+          "check": "omit_reused_compressed_indices",
+          "status": "fail",
+          "elements": 32768,
+          "mismatches": 32736,
+          "dtype": "uint16",
+          "expected_sha256": "f8762ae9b1d586bdf6a12de9d188f073ea79e3b2be4c6b480f668d61b0c31f22",
+          "actual_sha256": "3dd32980a9eb2123e869331574be0d85076c791cda43a661ee79c98ef1f243f9"
+        },
+        {
+          "check": "replace_shared_KV_with_consumer_window",
+          "status": "fail",
+          "elements": 32768,
+          "mismatches": 32734,
+          "dtype": "uint16",
+          "expected_sha256": "f8762ae9b1d586bdf6a12de9d188f073ea79e3b2be4c6b480f668d61b0c31f22",
+          "actual_sha256": "2dc90d3b927a612a5c679a2aac74591ab5de7409525a1d0e5b08f99cd622dd35"
+        },
+        {
+          "check": "omit_shared_index_offset",
+          "status": "fail",
+          "elements": 32768,
+          "mismatches": 32622,
+          "dtype": "uint16",
+          "expected_sha256": "f8762ae9b1d586bdf6a12de9d188f073ea79e3b2be4c6b480f668d61b0c31f22",
+          "actual_sha256": "6134a226bbc18d5ec3f3ded89078ce89961c06481e898bd9ab5b361ff00a752c"
+        }
+      ],
+      "paired_memory": {
+        "cleanup": {
+          "projection_2": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_3": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 886028,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 30605312,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer": {
+            "host_allowance_bytes": 268435456,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 14709656,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 40096,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 148748,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "attention": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 5146880,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "owned_modules_active": 0,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          }
+        },
+        "combined_native_host_allowance_bytes": 5133828096,
+        "combined_native_and_reference_host_allowance_bytes": 6274678784,
+        "retained_fixture_host_allowance_bytes": 2147483648,
+        "minimum_sampled_host_available_bytes": 139954659328,
+        "all_frame_reservations_released": true,
+        "state_storage": "bounded_host_diagnostic_frame",
+        "reservation_is_RSS_limit": false
+      },
+      "native_only_memory": {
+        "cleanup": {
+          "projection_2": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_3": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 886028,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 30605312,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer": {
+            "host_allowance_bytes": 268435456,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 14709656,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 40096,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 148748,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "attention": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 5146880,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "owned_modules_active": 0,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          }
+        },
+        "combined_native_host_allowance_bytes": 5133828096,
+        "retained_fixture_host_allowance_bytes": 2147483648,
+        "minimum_sampled_host_available_bytes": 142397591552,
+        "all_frame_reservations_released": true,
+        "state_storage": "bounded_host_diagnostic_frame",
+        "reservation_is_RSS_limit": false
+      }
+    },
+    {
+      "layers": [
+        8,
+        9
+      ],
+      "paired_report": "group-8-9.json",
+      "native_only_report": "group-8-9-native-only.json",
+      "successful_frames": 556,
+      "complete_Attention_layer_calls": 1112,
+      "boundary_comparisons": 91800,
+      "compared_storage_elements": 1641987122,
+      "original_controls_per_frame": 20,
+      "instrumentation_counts": {
+        "projection": {
+          "8": 2232,
+          "9": 2232
+        },
+        "index_projection": 554,
+        "index_sum": 554,
+        "index_packed_vs_inplace": 843,
+        "compressed_packed_vs_inplace": 289
+      },
+      "negative_controls": [
+        {
+          "check": "omit_reused_compressed_indices",
+          "status": "fail",
+          "elements": 32768,
+          "mismatches": 32725,
+          "dtype": "uint16",
+          "expected_sha256": "3fad8b38da64fde8e733e882171b125f0753797aa073f8d1f63b6bb6ab44d19c",
+          "actual_sha256": "e5258ec696e4e905838eef5309505cd85ba8cf5737dfb84609b193f652cc6670"
+        },
+        {
+          "check": "replace_shared_KV_with_consumer_window",
+          "status": "fail",
+          "elements": 32768,
+          "mismatches": 32730,
+          "dtype": "uint16",
+          "expected_sha256": "3fad8b38da64fde8e733e882171b125f0753797aa073f8d1f63b6bb6ab44d19c",
+          "actual_sha256": "0680c469aa366142ef56688d17711df04d0bc0f1929715e91f069cd39470d0d8"
+        },
+        {
+          "check": "omit_shared_index_offset",
+          "status": "fail",
+          "elements": 32768,
+          "mismatches": 32617,
+          "dtype": "uint16",
+          "expected_sha256": "3fad8b38da64fde8e733e882171b125f0753797aa073f8d1f63b6bb6ab44d19c",
+          "actual_sha256": "a7579630342189ebab0dad88593f2d9391c51909b9e2c2c67790672aeb15b5c4"
+        }
+      ],
+      "paired_memory": {
+        "cleanup": {
+          "projection_8": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_9": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 886028,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 30605312,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer": {
+            "host_allowance_bytes": 268435456,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 14709656,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 40096,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 148748,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "attention": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 5146880,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "owned_modules_active": 0,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          }
+        },
+        "combined_native_host_allowance_bytes": 5133828096,
+        "combined_native_and_reference_host_allowance_bytes": 6274678784,
+        "retained_fixture_host_allowance_bytes": 2147483648,
+        "minimum_sampled_host_available_bytes": 140371898368,
+        "all_frame_reservations_released": true,
+        "state_storage": "bounded_host_diagnostic_frame",
+        "reservation_is_RSS_limit": false
+      },
+      "native_only_memory": {
+        "cleanup": {
+          "projection_8": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_9": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 886028,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 30605312,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer": {
+            "host_allowance_bytes": 268435456,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 14709656,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 40096,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 148748,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "attention": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 5146880,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "owned_modules_active": 0,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          }
+        },
+        "combined_native_host_allowance_bytes": 5133828096,
+        "retained_fixture_host_allowance_bytes": 2147483648,
+        "minimum_sampled_host_available_bytes": 142410129408,
+        "all_frame_reservations_released": true,
+        "state_storage": "bounded_host_diagnostic_frame",
+        "reservation_is_RSS_limit": false
+      }
+    },
+    {
+      "layers": [
+        14,
+        15
+      ],
+      "paired_report": "group-14-15.json",
+      "native_only_report": "group-14-15-native-only.json",
+      "successful_frames": 556,
+      "complete_Attention_layer_calls": 1112,
+      "boundary_comparisons": 91800,
+      "compared_storage_elements": 1641987122,
+      "original_controls_per_frame": 20,
+      "instrumentation_counts": {
+        "projection": {
+          "14": 2232,
+          "15": 2232
+        },
+        "index_projection": 554,
+        "index_sum": 554,
+        "index_packed_vs_inplace": 843,
+        "compressed_packed_vs_inplace": 289
+      },
+      "negative_controls": [
+        {
+          "check": "omit_reused_compressed_indices",
+          "status": "fail",
+          "elements": 32768,
+          "mismatches": 32738,
+          "dtype": "uint16",
+          "expected_sha256": "bb40f984834a4f39fd63624953b9d906412b78ac735d8829242c3bb826e34728",
+          "actual_sha256": "84f8d3fb85b51b7e4e8763633e86cfd1d58ba62d9ca3fa4a75181ab96631f244"
+        },
+        {
+          "check": "replace_shared_KV_with_consumer_window",
+          "status": "fail",
+          "elements": 32768,
+          "mismatches": 32739,
+          "dtype": "uint16",
+          "expected_sha256": "bb40f984834a4f39fd63624953b9d906412b78ac735d8829242c3bb826e34728",
+          "actual_sha256": "e4b272df932a8f88a50663e8fb4f1782f46bd911e3ce0c9bf4c4392150ec2f9d"
+        },
+        {
+          "check": "omit_shared_index_offset",
+          "status": "fail",
+          "elements": 32768,
+          "mismatches": 32641,
+          "dtype": "uint16",
+          "expected_sha256": "bb40f984834a4f39fd63624953b9d906412b78ac735d8829242c3bb826e34728",
+          "actual_sha256": "368585d9cadd0483359bf1bd43632ad2b3a0bc753ab3e177d6f8d1cab9d22b70"
+        }
+      ],
+      "paired_memory": {
+        "cleanup": {
+          "projection_14": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_15": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 886028,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 30605312,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer": {
+            "host_allowance_bytes": 268435456,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 14709656,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 40096,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 148748,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "attention": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 5146880,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "owned_modules_active": 0,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          }
+        },
+        "combined_native_host_allowance_bytes": 5133828096,
+        "combined_native_and_reference_host_allowance_bytes": 6274678784,
+        "retained_fixture_host_allowance_bytes": 2147483648,
+        "minimum_sampled_host_available_bytes": 140055494656,
+        "all_frame_reservations_released": true,
+        "state_storage": "bounded_host_diagnostic_frame",
+        "reservation_is_RSS_limit": false
+      },
+      "native_only_memory": {
+        "cleanup": {
+          "projection_14": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_15": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 886028,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 30605312,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer": {
+            "host_allowance_bytes": 268435456,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 14709656,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 40096,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 148748,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "attention": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 5146880,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "owned_modules_active": 0,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          }
+        },
+        "combined_native_host_allowance_bytes": 5133828096,
+        "retained_fixture_host_allowance_bytes": 2147483648,
+        "minimum_sampled_host_available_bytes": 142374633472,
+        "all_frame_reservations_released": true,
+        "state_storage": "bounded_host_diagnostic_frame",
+        "reservation_is_RSS_limit": false
+      }
+    },
+    {
+      "layers": [
+        20,
+        21,
+        24,
+        25,
+        28,
+        29,
+        32,
+        33,
+        36,
+        37
+      ],
+      "paired_report": "group-20-21-24-25-28-29-32-33-36-37.json",
+      "native_only_report": "group-20-21-24-25-28-29-32-33-36-37-native-only.json",
+      "successful_frames": 556,
+      "complete_Attention_layer_calls": 5560,
+      "boundary_comparisons": 409216,
+      "compared_storage_elements": 8248908801,
+      "original_controls_per_frame": 83,
+      "instrumentation_counts": {
+        "projection": {
+          "20": 2232,
+          "21": 2232,
+          "24": 2232,
+          "25": 2232,
+          "28": 2232,
+          "29": 2232,
+          "32": 2232,
+          "33": 2232,
+          "36": 2232,
+          "37": 2232
+        },
+        "index_projection": 2780,
+        "index_sum": 2780,
+        "index_packed_vs_inplace": 3344,
+        "compressed_packed_vs_inplace": 564
+      },
+      "negative_controls": [
+        {
+          "check": "omit_reused_compressed_indices",
+          "status": "fail",
+          "elements": 32768,
+          "mismatches": 32722,
+          "dtype": "uint16",
+          "expected_sha256": "442b77ff0ed3f75c30e2b0697cb037e8b0d5c8df5b2f767ec750a333e6cd0e18",
+          "actual_sha256": "7f067dc7e8b7f11217ac377c3ee1d86b2e35609847ef2ef61866fef435c4a588"
+        },
+        {
+          "check": "replace_shared_KV_with_consumer_window",
+          "status": "fail",
+          "elements": 32768,
+          "mismatches": 32716,
+          "dtype": "uint16",
+          "expected_sha256": "442b77ff0ed3f75c30e2b0697cb037e8b0d5c8df5b2f767ec750a333e6cd0e18",
+          "actual_sha256": "a6513fc14bd2820b149e0f912056db4ae71c19a30595b049eb8cd8ec3107874e"
+        },
+        {
+          "check": "omit_shared_index_offset",
+          "status": "fail",
+          "elements": 32768,
+          "mismatches": 32513,
+          "dtype": "uint16",
+          "expected_sha256": "442b77ff0ed3f75c30e2b0697cb037e8b0d5c8df5b2f767ec750a333e6cd0e18",
+          "actual_sha256": "fc6125a352a1207d58ad0b50f87f882e5f113c818c03fc45de936db60cea0aa5"
+        }
+      ],
+      "paired_memory": {
+        "cleanup": {
+          "projection_20": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_21": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_24": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_25": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_28": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_29": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_32": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_33": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_36": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_37": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 886028,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 14123008,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer": {
+            "host_allowance_bytes": 268435456,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 37479088,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 80064,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 148748,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "attention": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 6199552,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "owned_modules_active": 0,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          }
+        },
+        "combined_native_host_allowance_bytes": 9428795392,
+        "combined_native_and_reference_host_allowance_bytes": 10569646080,
+        "retained_fixture_host_allowance_bytes": 2147483648,
+        "minimum_sampled_host_available_bytes": 138778431488,
+        "all_frame_reservations_released": true,
+        "state_storage": "bounded_host_diagnostic_frame",
+        "reservation_is_RSS_limit": false
+      },
+      "native_only_memory": {
+        "cleanup": {
+          "projection_20": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_21": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_24": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_25": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_28": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_29": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_32": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_33": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_36": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "projection_37": {
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 202367744,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 886028,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 14123008,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer": {
+            "host_allowance_bytes": 268435456,
+            "host_reserved_bytes": 0,
+            "device_owned_bytes": 0,
+            "device_peak_owned_bytes": 37479088,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "compression_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 80064,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "indexer_normalization": {
+            "host_allowance_bytes": 100663296,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 148748,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          },
+          "attention": {
+            "host_allowance_bytes": 134217728,
+            "host_reserved_bytes": 0,
+            "device_peak_owned_bytes": 6199552,
+            "device_owned_bytes": 0,
+            "owned_context_active": false,
+            "owned_modules_active": 0,
+            "reservation_is_RSS_limit": false,
+            "driver_module_memory_excluded": true
+          }
+        },
+        "combined_native_host_allowance_bytes": 9428795392,
+        "retained_fixture_host_allowance_bytes": 2147483648,
+        "minimum_sampled_host_available_bytes": 141115035648,
+        "all_frame_reservations_released": true,
+        "state_storage": "bounded_host_diagnostic_frame",
+        "reservation_is_RSS_limit": false
+      }
+    }
+  ],
+  "successful_frames": 2224,
+  "complete_Attention_layer_calls": 8896,
+  "boundary_comparisons": 684616,
+  "compared_storage_elements": 13174870167,
+  "mismatches": 0,
+  "unchanged_original_controls": 79508,
+  "native_layers": [
+    2,
+    3,
+    8,
+    9,
+    14,
+    15,
+    20,
+    21,
+    24,
+    25,
+    28,
+    29,
+    32,
+    33,
+    36,
+    37
+  ],
+  "KV_sources": [
+    2,
+    8,
+    14,
+    20
+  ],
+  "index_sources": [
+    2,
+    8,
+    14,
+    20,
+    24,
+    28,
+    32,
+    36
+  ],
+  "ordinary_selected_index_consumers": [
+    3,
+    9,
+    15,
+    21,
+    25,
+    29,
+    33,
+    37
+  ],
+  "independent_groups": 4,
+  "unprimed_continuous_streams": 8,
+  "unprimed_continuous_positions_per_stream": 260,
+  "unprimed_window_wrap_events": 16,
+  "maximum_explicit_synthetic_history_positions": 1028,
+  "full_model_autoregressive_history": false,
+  "generated_independent_layer_inputs": true,
+  "expected_failed_frames": 20,
+  "exact_failure_retries": 20,
+  "snapshot_restorations": 4,
+  "expired_or_duplicate_snapshot_refusals": 12,
+  "negative_controls_count": 12,
+  "fixture_tensor_count": 251,
+  "fixture_tensor_bytes": 2109723648,
+  "new_original_weight_bytes": 1696774144,
+  "reused_original_weight_bytes": 412949504,
+  "weights_fetched_during_comparison_bytes": 0,
+  "native_frameworks_installed": false,
+  "native_frameworks_imported": false,
+  "minimum_paired_sampled_host_available_bytes": 138778431488,
+  "minimum_native_only_sampled_host_available_bytes": 141115035648,
+  "untouched_full_Attention_kernel": "blocked_by_shared_memory_limit",
+  "all_40_backbone_weight_bindings": "not_qualified",
+  "complete_compressed_Transformer_blocks": "not_implemented",
+  "Engram": "not_implemented",
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured",
+  "issue_7_complete": false
+}

@@ -172,6 +172,13 @@ formulas. Synthetic-history construction, compact evidence records and replay
 validation are Vesper test/runtime code; no additional third-party source or
 model tensors are redistributed.
 
+The named KV/index ownership profile reuses the same licensed projection,
+compressor, indexer and Attention formulas and binaries. Its optional controls
+execute unchanged original forward bodies with named original weight fixtures.
+Topology validation, per-layer fixture management and host frame transactions
+are Vesper runtime/test code. Downloaded weights and reference sources remain
+local artifacts.
+
 ## Runtime dependencies
 
 The native window KV quantizer, ring-slot formulas and index construction follow

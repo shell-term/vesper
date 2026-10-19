@@ -10,6 +10,7 @@ import threading
 import numpy as np
 
 from .blas import Cublas, GATE_BLAS_WORKSPACE
+from .attention_topology import indexer_layout, role
 from .cuda import Device, Driver, _bind, compile_probe
 from .indexer_fixture import DTYPES, INDEXER_LAYOUT
 from .normalization import NativeNormRoPE, validate_positions
@@ -26,10 +27,10 @@ def finite_bf16(a, width, max_rows=514):
         raise ValueError("Expected bounded contiguous finite BF16 indexer input")
 
 
-def validate_query(x, qr, layer, position):
+def validate_query(x, qr, layer, position, *, layers=(2, 20, 24)):
     finite_bf16(x, 5120, 16)
     finite_bf16(qr, 1280, 16)
-    if (type(layer) is not int or layer not in (2, 20, 24) or x.ndim != 3 or x.shape[0] not in (1, 2)
+    if (type(layer) is not int or layer not in layers or x.ndim != 3 or x.shape[0] not in (1, 2)
             or not 1 <= x.shape[1] <= MAX_QUERY_LENGTH or qr.shape != (*x.shape[:2], 1280)
             or type(position) is not int or not 0 <= position <= 131072 - x.shape[1]):
         raise ValueError("Unsupported original indexer query profile")
@@ -50,9 +51,10 @@ def validate_selection(scores, lengths, offset, source, candidates):
 
 
 class NativeIndexer:
-    def __init__(self, arrays, ordinal=0):
+    def __init__(self, arrays, ordinal=0, *, layers=(2, 20, 24)):
+        self.layout, self.layers = indexer_layout(layers), layers
         self.arrays, self.ordinal = arrays, ordinal
-        for name, (dtype, shape) in INDEXER_LAYOUT.items():
+        for name, (dtype, shape) in self.layout.items():
             a = arrays.get(name)
             if not isinstance(a, np.ndarray) or a.dtype != DTYPES[dtype] or a.shape != shape or not a.flags.c_contiguous:
                 raise ValueError("Expected complete original indexer weights/scales")
@@ -106,7 +108,7 @@ class NativeIndexer:
                     C.c_void_p, C.c_void_p, C.c_int, C.c_int, C.c_longlong, C.c_void_p, C.c_int, C.c_int, C.c_longlong,
                     C.c_void_p, C.c_void_p, C.c_int, C.c_int, C.c_longlong, C.c_int, C.c_int, C.c_int])
                 self.blas.workspace(self._allocate(self.stack, GATE_BLAS_WORKSPACE), GATE_BLAS_WORKSPACE)
-                self.weights = {n: self._upload(self.stack, self.arrays[n]) for n in INDEXER_LAYOUT if not n.endswith("k_norm.weight")}
+                self.weights = {n: self._upload(self.stack, self.arrays[n]) for n in self.layout if not n.endswith("k_norm.weight")}
                 self.norm = self.stack.enter_context(NativeNormRoPE(ordinal=self.ordinal))
                 self.resident_bytes = sum(self.device.allocations.values())
                 self.opened = True
@@ -146,7 +148,7 @@ class NativeIndexer:
         with self.lock:
             self._ready()
             finite_bf16(latent, 512)
-            if type(layer) is not int or layer not in (2, 20) or latent.ndim != 3 or latent.shape[0] not in (1, 2) or not 1 <= latent.shape[1] <= 257:
+            if type(layer) is not int or layer not in self.layers or not role(layer).owns_kv or latent.ndim != 3 or latent.shape[0] not in (1, 2) or not 1 <= latent.shape[1] <= 257:
                 raise ValueError("Unsupported original index-key owner/profile")
             validate_positions(positions, "compressed-yarn")
             if positions.shape != (latent.shape[1],):
@@ -165,7 +167,7 @@ class NativeIndexer:
     def queries(self, x, qr, layer, position):
         with self.lock:
             self._ready()
-            validate_query(x, qr, layer, position)
+            validate_query(x, qr, layer, position, layers=self.layers)
             batch, sequence = x.shape[:2]
             tokens = batch * sequence
             with ExitStack() as temp:

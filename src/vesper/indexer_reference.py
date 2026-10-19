@@ -54,7 +54,9 @@ def fetch_index_sources(directory):
 
 
 class IndexerOracle:
-    def __init__(self, directory, arrays, ordinal=0):
+    def __init__(self, directory, arrays, ordinal=0, *, layers=(2, 20, 24)):
+        from .attention_topology import indexer_layout
+        self.layout, self.layers = indexer_layout(layers), layers
         import torch
         import tilelang
         if (torch.version.git_version != ROUTER_TORCH_REVISION or torch.get_default_dtype() != torch.bfloat16
@@ -93,9 +95,10 @@ class IndexerOracle:
         if self.methods != INDEX_METHODS: raise ValueError("Unregistered original indexer method AST")
         self.scope = scope
         self.weights = {}
-        for name, a in arrays.items():
+        for name in self.layout:
+            a = arrays[name]
             self.weights[name] = self.tensor(a).view(torch.float8_e4m3fn if name.endswith("wq_b.weight") else torch.float8_e8m0fnu) if a.dtype == np.uint8 else self.tensor(a)
-        for layer in (2, 20, 24):
+        for layer in self.layers:
             self.weights[f"layers.{layer}.attn.indexer.wq_b.weight"].scale = self.weights[f"layers.{layer}.attn.indexer.wq_b.scale"]
         self.trace_kernel = self.kernel.fp8_gemm_kernel(4096, 1280, block_size=32, out_dtype="float32", scale_dtype="float8_e8m0fnu")
         self.projection_controls, self.sum_controls, self.candidate_controls, self.quant_controls, self.forward_controls = [], [], [], [], []
@@ -188,6 +191,7 @@ class IndexerOracle:
         return result
 
     def reset(self, batch=1, capacity=128):
+        from .attention_topology import role
         torch = self.torch
         forward, weights = self.functions["Indexer.forward"], self.weights
         class IndexCall(SimpleNamespace):
@@ -195,21 +199,21 @@ class IndexerOracle:
                 return forward(stub, *args)
         self.states = {}
         self.scope["shared_attn"] = SimpleNamespace()
-        for layer in (2, 20, 24):
+        for layer in self.layers:
             prefix = f"layers.{layer}.attn.indexer."
-            stub = IndexCall(owns_k=layer != 24, compress_ratio=2 if layer == 2 else 1,
-                is_candidate_source=layer == 20, uses_candidates=layer == 24,
+            stub = IndexCall(owns_k=role(layer).owns_kv, compress_ratio=role(layer).ratio,
+                is_candidate_source=layer == 20, uses_candidates=layer > 20,
                 candidate_topk_blocks=2048, candidate_block_size=8, n_heads=32, n_local_heads=32,
                 index_head_dim=128, rope_head_dim=64, index_topk=512, softmax_scale=128**-0.5,
                 freqs_cis=self.math.tables["compressed-yarn"],
                 wq_b=lambda x, p=prefix: self.functions["linear"](x, weights[p + "wq_b.weight"]),
                 weights_proj=lambda x, p=prefix: self.functions["linear"](x, weights[p + "weights_proj.weight"]))
-            if layer != 24:
+            if role(layer).owns_kv:
                 stub.wk = lambda x, p=prefix: self.functions["linear"](x, weights[p + "wk.weight"])
                 stub.k_norm = self.math.modules[prefix + "k_norm.weight"]
                 stub.k_cache = torch.zeros((batch, capacity, 128), dtype=torch.bfloat16, device=f"cuda:{self.ordinal}")
             self.states[layer] = stub
-        self.diagnostic_caches = {layer: np.zeros((batch, capacity, 128), np.uint16) for layer in (2, 20)}
+        self.diagnostic_caches = {layer: np.zeros((batch, capacity, 128), np.uint16) for layer in self.layers if role(layer).owns_kv}
         self.batch, self.capacity, self.position = batch, capacity, 0
 
     def prime(self, keys2, keys20, position):

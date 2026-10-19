@@ -44,7 +44,7 @@ class NormBridge:
         if positions is not None:
             if inverse or profile != "compressed-yarn": raise ValueError("Unexpected explicit reference rotation")
             return self.compression.rope(values, positions)
-        return self.projections[2].math.rope(values, start, profile, inverse)
+        return next(iter(self.projections.values())).math.rope(values, start, profile, inverse)
 
 
 class CompressedAttentionOracle:

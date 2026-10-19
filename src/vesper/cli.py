@@ -14,9 +14,19 @@ def main(argv=None) -> int:
                  "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
                  "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router", "fetch-gate-fixture", "compare-gate",
                  "fetch-shared-fixture", "compare-shared", "compare-aggregation", "compare-original-accumulation",
-                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization", "compare-projections", "compare-block", "fetch-compression-fixture", "compare-compression", "fetch-indexer-fixture", "compare-indexer", "fetch-compressed-attention-fixture", "compare-compressed-attention", "compare-long-context"):
+                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization", "compare-projections", "compare-block", "fetch-compression-fixture", "compare-compression", "fetch-indexer-fixture", "compare-indexer", "fetch-compressed-attention-fixture", "compare-compressed-attention", "compare-long-context", "fetch-topology-fixture", "compare-attention-topology"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
+        if name == "fetch-topology-fixture":
+            command.add_argument("--directory", type=Path, default=Path("artifacts/topology-fixture"))
+            for flag in ("reuse-attention", "reuse-compression", "reuse-indexer"):
+                command.add_argument("--" + flag, type=Path)
+        if name == "compare-attention-topology":
+            command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
+            command.add_argument("--fixture-directory", type=Path, required=True)
+            command.add_argument("--attention-bundle", type=Path, required=True)
+            command.add_argument("--group", type=int, choices=range(4), required=True)
+            command.add_argument("--device", type=int, default=0)
         if name == "fetch-compressed-attention-fixture":
             command.add_argument("--directory", type=Path, default=Path("artifacts/compressed-attention-fixture"))
         if name in ("compare-compressed-attention", "compare-long-context"):
@@ -215,6 +225,15 @@ def main(argv=None) -> int:
         elif args.command == "compare-long-context":
             from .long_context_reference import compare_long_context
             result = compare_long_context(args.reference_directory, args.fixture, args.compression_fixture, args.indexer_fixture, args.attention_bundle, args.device)
+        elif args.command == "fetch-topology-fixture":
+            from .topology_fixture import fetch_topology_fixture
+            reuse = (args.reuse_attention, args.reuse_compression, args.reuse_indexer)
+            if any(reuse) and not all(reuse): raise ValueError("Provide all three reuse fixtures or none")
+            result = fetch_topology_fixture(args.directory, reuse if all(reuse) else None)
+        elif args.command == "compare-attention-topology":
+            from .attention_topology import GROUPS
+            from .topology_comparison import compare_group
+            result = compare_group(args.reference_directory, args.fixture_directory, args.attention_bundle, GROUPS[args.group], args.device)
         elif args.command == "fetch-indexer-fixture":
             from .indexer_fixture import fetch_indexer_fixture
             result = fetch_indexer_fixture(args.directory)
@@ -270,7 +289,7 @@ def main(argv=None) -> int:
     except Exception as exc:
         result = {"probe": args.command, "status": "error", "error_type": type(exc).__name__, "error": str(exc)}
     result["timestamp_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    if args.command == "compare-long-context" and args.output:
+    if args.command in ("compare-long-context", "compare-attention-topology") and args.output:
         from .long_context_reference import write_report
         write_report(args.output, result)
         print(json.dumps({"probe": result.get("probe"), "status": result.get("status"), "frames": len(result.get("frame_cases", [])),
