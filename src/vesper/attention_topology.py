@@ -10,6 +10,13 @@ REFRESH_CHAIN = (20, 21, 22, 23, 24, 25)
 CHAIN_PREFIXES = tuple(REFRESH_CHAIN[:n] for n in range(2, len(REFRESH_CHAIN) + 1))
 QUALIFIED_INPUT_LAYERS = tuple(l for group in GROUPS for l in group)
 REGISTERED_INPUT_LAYERS = tuple(sorted(set(QUALIFIED_INPUT_LAYERS) | set(REFRESH_CHAIN)))
+BACKBONE_COMPRESSED_LAYERS = tuple(range(2, 40))
+
+
+def validate_backbone_layers(layers):
+    if type(layers) is not tuple or any(type(l) is not int for l in layers) or layers != BACKBONE_COMPRESSED_LAYERS:
+        raise ValueError("Expected every original compressed backbone layer in order")
+    return layers
 
 
 @dataclass(frozen=True)

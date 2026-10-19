@@ -58,8 +58,15 @@ The [connected original 0..3 prefix](token-prefix-validation.md) now includes
 embedding/Engram placement, actual hidden/HC handoffs, both window rings and
 source-2 KV/index reuse. Complete original/native boundaries and nine failed-token
 rollbacks pass under the governor, including diagnostic full-head/RNG state.
-The attached head follows only four blocks; all-forty-layer execution and #10's
-remaining original acceptance checks are still open.
+The attached prefix head follows only four blocks. Its historical cancellation
+label was corrected with a fresh complete replay requiring actual runtime
+cancellation. The subsequent [all-forty-layer gate](backbone-validation.md)
+connects both Engrams and the real head/sampler: two fixed BOS/PAD calls match
+10,504 typed boundaries, all 80 router decisions and 258,560 logits. Four late
+failures restore whole-model state, including actual cancellation, and healthy
+retry reproduces every second-token boundary. These are scoped numerical/state
+results; natural-language generation, broader histories and reasoning/coding/
+tool-use evaluations remain under #10. Its original checks and M2 stay open.
 
 ## Working on an issue
 

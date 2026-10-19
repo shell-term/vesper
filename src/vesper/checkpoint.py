@@ -174,8 +174,9 @@ def validate_expert_provenance(manifest: dict) -> None:
             raise ValueError("Expert tensor provenance differs from its pinned identity and layout")
 
 
-def fetch_expert_fixture(directory: Path, layer: int = 0, expert: int = 0) -> dict:
+def fetch_expert_fixture(directory: Path, layer: int = 0, expert: int = 0, *, reader=None) -> dict:
     """Fetch one identified expert: six bounded tensors, 18,800,640 bytes."""
+    small, ranges = (read_small, read_range) if reader is None else (reader.small, reader.range)
     from .resources import MemoryBudget, MiB
 
     validate_expert_identity(layer, expert)
@@ -183,8 +184,8 @@ def fetch_expert_fixture(directory: Path, layer: int = 0, expert: int = 0) -> di
     budget.acquire(64 * MiB)
     directory = Path(directory)
     try:
-        index = json.loads(read_small("model.safetensors.index.json"))
-        config = json.loads(read_small("config.json"))["text_config"]
+        index = json.loads(small("model.safetensors.index.json"))
+        config = json.loads(small("config.json"))["text_config"]
         if (config["hidden_size"], config["moe_intermediate_size"], config["swiglu_limit"]) != (5120, 2304, 10.0):
             raise ValueError("Pinned expert configuration differs from this probe's scope")
         headers, arrays, entries = {}, {}, []
@@ -193,10 +194,10 @@ def fetch_expert_fixture(directory: Path, layer: int = 0, expert: int = 0) -> di
                 key = f"layers.{layer}.ffn.experts.{expert}.{projection}.{suffix}"
                 shard = index["weight_map"][key]
                 if shard not in headers:
-                    header_size = struct.unpack("<Q", read_range(shard, 0, 8))[0]
+                    header_size = struct.unpack("<Q", ranges(shard, 0, 8))[0]
                     if not 0 < header_size <= LIMIT:
                         raise ValueError("Excessive safetensors header size")
-                    headers[shard] = (json.loads(read_range(shard, 8, header_size)), 8 + header_size)
+                    headers[shard] = (json.loads(ranges(shard, 8, header_size)), 8 + header_size)
                 header, data_start = headers[shard]
                 tensor = header[key]
                 expected_shape = [rows, width // divisor]
@@ -204,7 +205,7 @@ def fetch_expert_fixture(directory: Path, layer: int = 0, expert: int = 0) -> di
                 size = rows * (width // divisor)
                 if tensor["dtype"] != dtype or tensor["shape"] != expected_shape or end - begin != size:
                     raise ValueError("Unexpected complete expert tensor layout")
-                raw = read_range(shard, data_start + begin, size)
+                raw = ranges(shard, data_start + begin, size)
                 name = f"{projection}_{suffix}"
                 arrays[name] = np.frombuffer(raw, dtype=np.uint8).reshape(expected_shape).copy()
                 entries.append({"name": name, "tensor": key, "dtype": dtype, "shape": expected_shape,

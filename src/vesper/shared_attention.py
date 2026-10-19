@@ -4,7 +4,7 @@ import copy
 import numpy as np
 
 from .memory import runtime_operation
-from .attention_topology import role, validate_group, COMPLETE_BLOCK_PAIRS, CHAIN_PREFIXES
+from .attention_topology import role, validate_group, COMPLETE_BLOCK_PAIRS, CHAIN_PREFIXES, validate_backbone_layers
 from .compressed_attention import NativeCompressedAttention
 from .compression import stage_compression
 from .kv import window_indices
@@ -13,7 +13,9 @@ from .projections import validate_values
 CAPACITY = 1152
 
 
-def validate_frame_layers(layers):
+def validate_frame_layers(layers, *, binding_profile="qualified"):
+    if binding_profile == "backbone_probe": return validate_backbone_layers(layers)
+    if binding_profile != "qualified": raise ValueError("Unregistered Attention binding profile")
     # Source-only planners and complete pairs do not extend the four independent
     # Attention sharing corpora or admit arbitrary incomplete ownership groups.
     if type(layers) is tuple and all(type(l) is int for l in layers) and layers in ((2,), (20,), *COMPLETE_BLOCK_PAIRS, *CHAIN_PREFIXES):
@@ -21,8 +23,8 @@ def validate_frame_layers(layers):
     return validate_group(layers)
 
 
-def initial_state(layers, batch):
-    validate_frame_layers(layers)
+def initial_state(layers, batch, *, binding_profile="qualified"):
+    validate_frame_layers(layers, binding_profile=binding_profile)
     owners = [l for l in layers if role(l).owns_kv]
     return {"windows": {l: np.zeros((batch, 128, 512), np.uint16) for l in layers},
         "compressors": {l: (np.zeros((batch, 2 if role(l).ratio == 2 else 0, 512), np.float32),
@@ -31,8 +33,8 @@ def initial_state(layers, batch):
         "index_keys": {l: np.zeros((batch, CAPACITY // role(l).ratio, 128), np.uint16) for l in owners}, "sharing": None}
 
 
-def validate_frame(xs, layers, batch, position):
-    validate_frame_layers(layers)
+def validate_frame(xs, layers, batch, position, *, binding_profile="qualified"):
+    validate_frame_layers(layers, binding_profile=binding_profile)
     if (type(position) is not int or not 0 <= position < CAPACITY or not isinstance(xs, dict) or set(xs) != set(layers)):
         raise ValueError("Invalid exact sharing-frame position/owners")
     shape = None
@@ -74,8 +76,8 @@ def validate_seed(state, layers, batch, position):
             raise ValueError("Diagnostic future cache positions must be zero")
 
 
-def stage_group(arrays, projections, norm, compressor, indexer, attention, layers, batch, pos, source, xs):
-    sequence = validate_frame(xs, layers, batch, pos)
+def stage_group(arrays, projections, norm, compressor, indexer, attention, layers, batch, pos, source, xs, *, binding_profile="qualified"):
+    sequence = validate_frame(xs, layers, batch, pos, binding_profile=binding_profile)
     return _stage_pipeline(arrays, projections, norm, compressor, indexer, attention, layers, batch, pos,
                            source, sequence, lambda layer: xs[layer])
 
@@ -163,8 +165,9 @@ def _stage_pipeline(arrays, projections, norm, compressor, indexer, attention, l
 
 
 class SharedAttentionFrame(NativeCompressedAttention):
-    def __init__(self, arrays, projections, norm, compressor, indexer, attention, layers, batch=1):
-        self.layers = validate_frame_layers(layers)
+    def __init__(self, arrays, projections, norm, compressor, indexer, attention, layers, batch=1, *, binding_profile="qualified"):
+        self.binding_profile = binding_profile
+        self.layers = validate_frame_layers(layers, binding_profile=binding_profile)
         super().__init__(arrays, projections, norm, compressor, indexer, attention, batch, profile="long_context", capacity=CAPACITY)
 
     def __enter__(self):
@@ -187,7 +190,7 @@ class SharedAttentionFrame(NativeCompressedAttention):
                 raise
 
     def _clear(self):
-        state = initial_state(self.layers, self.batch)
+        state = initial_state(self.layers, self.batch, binding_profile=self.binding_profile)
         self.state, self.position, self.handle, self.saved = state, 0, None, None
 
     @runtime_operation
@@ -198,7 +201,7 @@ class SharedAttentionFrame(NativeCompressedAttention):
             if type(pos) is not int or pos != self.position or (finalize is not None and not callable(finalize)):
                 raise ValueError("Sharing frame requires its next exact position and optional callable finalizer")
             stages, state = stage_group(self.arrays, self.projections, self.norm, self.compressor, self.indexer, self.attention,
-                                       self.layers, self.batch, pos, self.state, xs)
+                                       self.layers, self.batch, pos, self.state, xs, binding_profile=self.binding_profile)
             result = stages if finalize is None else finalize(stages)
             self.budget.acquire(0)
             with self.budget.publication(): self.state, self.position = state, pos + xs[self.layers[0]].shape[1]
@@ -219,7 +222,7 @@ class SharedAttentionFrame(NativeCompressedAttention):
         with self.lock:
             self._ready()
             pos = self.position if start_pos is None else start_pos
-            if (self.layers not in (*COMPLETE_BLOCK_PAIRS, *CHAIN_PREFIXES) or self.batch != 1 or type(pos) is not int or pos != self.position or not 0 <= pos < CAPACITY
+            if ((self.binding_profile != "backbone_probe" and self.layers not in (*COMPLETE_BLOCK_PAIRS, *CHAIN_PREFIXES)) or self.batch != 1 or type(pos) is not int or pos != self.position or not 0 <= pos < CAPACITY
                     or not callable(input_for_layer) or not callable(after_layer) or (finalize is not None and not callable(finalize))):
                 raise ValueError("Connected blocks require a registered pair's next position and callbacks")
             stages, state = _stage_pipeline(self.arrays, self.projections, self.norm, self.compressor, self.indexer, self.attention,

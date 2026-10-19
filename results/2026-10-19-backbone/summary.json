@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "probe": "all40_original_text_backbone_qualification",
+  "status": "pass",
+  "scope": {
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "layers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39
+    ],
+    "tokens": [
+      0,
+      2
+    ],
+    "batch": 1,
+    "queries_per_call": 1,
+    "rank": 1,
+    "text_only": true,
+    "temperature": 0.7,
+    "seed": 2026,
+    "head_attached_after_layer": 39,
+    "head_is_diagnostic_only": false,
+    "full_backbone_execution_run": true,
+    "serial_autoregressive_path": true,
+    "speculative_MTP_run": false,
+    "vision_run": false,
+    "original_auxiliary_target_layers": [
+      37,
+      38,
+      39
+    ],
+    "auxiliary_main_hidden_comparison_run": false,
+    "text_generation_available": false,
+    "full_model_quality": "not_run",
+    "end_to_end_speed": "not_measured",
+    "full_checkpoint_downloaded": false,
+    "corpus": "two_fixed_token_ids_not_a_generated_continuation"
+  },
+  "original_identity_sha256": "1746fa338af812fad3d981c3e6ccdc00db94094acc6f28e07644004c3b3afcb4",
+  "complete_goldens_sha256": "b56cdc2062210bd0388806a3057882c84c78b3ef47bc9eaab274c95ae3f1febc",
+  "bindings_sha256": "4d23b35c17915c52d201f7a14932af445abf63ea96bea9aca7c3bfa5474db097",
+  "original_baseline": {
+    "token_calls": 2,
+    "complete_block_calls": 80,
+    "ordered_router_decisions": 80,
+    "full_vocabulary_logits": 258560,
+    "typed_shaped_boundaries": 10504,
+    "storage_elements": 54214575,
+    "original_expert_union": 459,
+    "control_tensors": 1251,
+    "control_tensor_bytes": 7199083968
+  },
+  "native_replay": {
+    "baseline_matched_boundaries": 10504,
+    "late_failure_conditions": 4,
+    "all_states_restored": true,
+    "healthy_second_token_retry_boundaries": 5252,
+    "actual_cancellation_exception": "RuntimeCancelled",
+    "HTTP_disabled": true,
+    "reference_frameworks_absent": true
+  },
+  "negative_controls_rejected": [
+    "skip_original_Engram14",
+    "stale_pre_at_ratio_transition"
+  ],
+  "sampled_ids": [
+    [
+      201
+    ],
+    [
+      201
+    ]
+  ],
+  "resources": {
+    "original": {
+      "host_cap_bytes": 34359738368,
+      "available_floor_bytes": 34359738368,
+      "charged_host_peak_bytes": 22689091584,
+      "device_peak_bytes": {},
+      "minimum_observed_available_bytes": 127676538880,
+      "sampled_process_peaks": {
+        "resident_bytes": 9567027200,
+        "private_commit_bytes": 28250984448
+      },
+      "charged_host_bytes": 0,
+      "pinned_bytes": 0,
+      "device_used_bytes": {},
+      "live_leases": 0,
+      "live_reclaimers": 0,
+      "inflight_operations": 0,
+      "monitor_thread_stopped": true,
+      "reservation_is_RSS_or_OS_limit": false
+    },
+    "native": {
+      "host_cap_bytes": 68719476736,
+      "available_floor_bytes": 34359738368,
+      "charged_host_peak_bytes": 49811353600,
+      "device_peak_bytes": {
+        "0": 10442542756,
+        "1": 37748160
+      },
+      "minimum_observed_available_bytes": 129833201664,
+      "sampled_process_peaks": {
+        "resident_bytes": 8519917568,
+        "private_commit_bytes": 21370937344
+      },
+      "charged_host_bytes": 0,
+      "pinned_bytes": 0,
+      "device_used_bytes": {
+        "0": 0,
+        "1": 0
+      },
+      "live_leases": 0,
+      "live_reclaimers": 0,
+      "inflight_operations": 0,
+      "monitor_thread_stopped": true,
+      "reservation_is_RSS_or_OS_limit": false
+    }
+  },
+  "original_framework": {
+    "reference_torch_device_peak_allocated_bytes": 12726041600,
+    "reference_torch_device_allocated_baseline_bytes": 0,
+    "reference_torch_device_allocated_before_workspace_cleanup_bytes": 9437184,
+    "reference_torch_device_allocated_after_cleanup_bytes": 0,
+    "minimum_sampled_reference_device_free_bytes": 7251951616
+  },
+  "files": {
+    "controls.json": {
+      "bytes": 806314,
+      "sha256": "ad07a219a2e49ca8e9a3497e83c2d039475fd4e3b505ef8be1c730a6b2abbc6a"
+    },
+    "original.json": {
+      "bytes": 5709664,
+      "sha256": "5d987c5b04c661e39d55a3a1ec1352bea16521e70038a62bd58382778d1fa688"
+    },
+    "native.json": {
+      "bytes": 5515875,
+      "sha256": "384d8704b917f6ed808ed1a74a3b2de2eede8e3635aee64f28dd26276ad17882"
+    }
+  },
+  "issue": 10,
+  "issue_complete": false,
+  "milestone_M2_complete": false,
+  "remaining": [
+    "natural_language_prompt_artifact_import_and_generated_continuation_loop",
+    "broader_deterministic_whole_model_decode_state_and_context_tests",
+    "scoped_reasoning_coding_tool_use_evaluations",
+    "measured_end_to_end_performance_under_issue11"
+  ],
+  "default_host_cap_bytes": 103079215104,
+  "default_available_floor_bytes": 34359738368,
+  "reservation_is_RSS_or_OS_limit": false
+}

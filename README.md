@@ -16,7 +16,7 @@ on heterogeneous consumer NVIDIA GPUs.
 This is a **verification runtime**, not a working text-generation engine. Native
 experts now run on the RTX 4090 through SSD, bounded RAM and two GPU cache tiers.
 Issue #7's five original block-operation checks are qualified by seventeen
-sealed original/native evidence groups. The latest gate executes complete
+sealed original/native evidence groups. Earlier chain tests execute complete
 blocks **20 -> 21 -> 22 -> 23 -> 24 -> 25**, including every actual hidden/HC
 coefficient handoff, source-20 KV/candidates, index refresh at 24 and reuse at 25.
 Tokenizer and bounded Engram now pass 110 steps / 6,820 exact intermediate
@@ -41,8 +41,17 @@ Both window rings, shared compressed/index state, token history and RNG restore
 together across nine failed-token/retry conditions. A full-vocabulary head after
 block 3 is diagnostic only; these are not the forty-layer model's logits.
 See [the connected-prefix evidence](docs/token-prefix-validation.md).
-Full-model loading, all-layer boundary/logit/sampling integration, model-wide
-quality and generation performance remain M2/M3 work. See the
+The latest [all-forty-layer probe](docs/backbone-validation.md) now connects
+**embedding -> all blocks 0..39**, both original Engrams and the real final
+norm/head/sampler. Two fixed BOS/PAD input calls match **10,504 typed boundaries /
+54,214,575 storage elements**, including 258,560 full FP32 logits and all 80
+ordered router decisions. Four late-failure/cancellation conditions restore all
+state; the second-token retry matches every original boundary. Native replay is
+offline and has no reference frameworks installed/imported. Measured resident
+RAM peaks at **7.93 GiB**, with **120.92 GiB minimum sampled system-available RAM**
+under a 64 GiB admission envelope and the unchanged 32 GiB reserve.
+Full-checkpoint registration, natural-language generation, broader whole-model
+histories, quality evaluation and generation performance remain M2/M3 work. See the
 [acceptance evidence and exact scope](docs/block-ops-qualification.md).
 
 Direct comparisons with the pinned official implementation give:

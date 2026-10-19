@@ -26,29 +26,30 @@ LAYOUT = block_layout(2)
 TENSOR_BYTES = sum(int(np.prod(s)) * STORAGE_DTYPES[d].itemsize for d, s in LAYOUT.values())
 
 
-def fetch_block_fixture(directory, *, layer=2, profile="qualified"):
+def fetch_block_fixture(directory, *, layer=2, profile="qualified", reader=None):
+    small, ranges = (read_small, read_range) if reader is None else (reader.small, reader.range)
     layout = block_layout(layer, profile=profile)
     directory = Path(directory)
     if directory.exists(): raise FileExistsError("Refusing to replace an original block fixture")
     budget = MemoryBudget(cap=32 * MiB)
     budget.acquire(32 * MiB)
     try:
-        index = json.loads(read_small("model.safetensors.index.json"))["weight_map"]
+        index = json.loads(small("model.safetensors.index.json"))["weight_map"]
         arrays, entries, headers = {}, [], {}
         for name, (dtype, shape) in layout.items():
             budget.acquire(0)
             shard = index[name]
             if shard not in headers:
-                size = struct.unpack("<Q", read_range(shard, 0, 8))[0]
+                size = struct.unpack("<Q", ranges(shard, 0, 8))[0]
                 if not 0 < size <= LIMIT: raise ValueError("Excessive block shard header")
-                headers[shard] = json.loads(read_range(shard, 8, size)), size + 8
+                headers[shard] = json.loads(ranges(shard, 8, size)), size + 8
             header, start = headers[shard]
             tensor = header[name]
             begin, end = tensor["data_offsets"]
             size = int(np.prod(shape)) * STORAGE_DTYPES[dtype].itemsize
             if (tensor["dtype"], tensor["shape"], end - begin) != (dtype, list(shape), size) or begin < 0:
                 raise ValueError("Original block tensor layout differs")
-            raw = read_range(shard, start + begin, size)
+            raw = ranges(shard, start + begin, size)
             a = np.frombuffer(raw, STORAGE_DTYPES[dtype]).reshape(shape).copy()
             if invalid(a, dtype): raise ValueError("Original block tensor is nonfinite")
             arrays[name] = a

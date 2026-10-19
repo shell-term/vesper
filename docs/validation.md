@@ -4,6 +4,7 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 
 | Gate | Evidence required | Current evidence |
 | --- | --- | --- |
+| Original all-forty-layer text backbone | Unchanged original Transformer/Block methods, both Engrams, all actual hidden/HC handoffs, routing, true final logits/sampling and whole-token state | Two fixed BOS/PAD calls match 10,504 typed/shaped boundaries / 54,214,575 elements, 80 ordered routes and 258,560 FP32 logits; offline framework-free native replay, four late failure/cancellation restorations and exact second-token retry pass; [complete evidence and limits](backbone-validation.md); natural-language generation/quality and broader histories pending |
 | Released artifacts | Pinned checkpoint, exact weight/scale bytes, matching tokenizer and Engram | Original component fixtures, all 48 headers / 96,085 tensor descriptors and released whole-file identities; complete tokenizer map and bounded Engram pass; full local checkpoint registration not run |
 | Format specification | All FP4 codes, scale encodings, FP8/BF16 rounding boundaries, signed zero | Pass on Ada and Ampere |
 | Projection specification | Native weight slice against an independent block arithmetic oracle | Pass on Ada and Ampere |

@@ -31,23 +31,24 @@ def layout(layer, *, profile="qualified"):
     return rows
 
 
-def fetch_layer(directory, layer, *, reuse=None, profile="qualified"):
+def fetch_layer(directory, layer, *, reuse=None, profile="qualified", reader=None):
+    small, ranges = (read_small, read_range) if reader is None else (reader.small, reader.range)
     directory, specs = Path(directory), layout(layer, profile=profile)
     if directory.exists(): raise FileExistsError("Refusing to replace an existing original layer fixture")
     reuse = {} if reuse is None else reuse
     budget = MemoryBudget(cap=384 * MiB)
     budget.acquire(384 * MiB)
     try:
-        index = json.loads(read_small("model.safetensors.index.json"))["weight_map"]
+        index = json.loads(small("model.safetensors.index.json"))["weight_map"]
         arrays, entries, headers, fetched = {}, [], {}, 0
         for name, (dtype, shape) in specs.items():
             budget.acquire(0)
             size = int(np.prod(shape)) * STORAGE_DTYPES[dtype].itemsize
             shard = index[name]
             if shard not in headers:
-                n = struct.unpack("<Q", read_range(shard, 0, 8))[0]
+                n = struct.unpack("<Q", ranges(shard, 0, 8))[0]
                 if not 0 < n <= LIMIT: raise ValueError("Excessive topology shard header")
-                headers[shard] = json.loads(read_range(shard, 8, n)), n + 8
+                headers[shard] = json.loads(ranges(shard, 8, n)), n + 8
             header, start = headers[shard]
             t = header[name]
             begin, end = t["data_offsets"]
@@ -61,7 +62,7 @@ def fetch_layer(directory, layer, *, reuse=None, profile="qualified"):
                 a = np.empty(shape, STORAGE_DTYPES[dtype])
                 view = a.view(np.uint8).reshape(-1)
                 for offset in range(0, size, LIMIT):
-                    raw = read_range(shard, start + begin + offset, min(LIMIT, size - offset))
+                    raw = ranges(shard, start + begin + offset, min(LIMIT, size - offset))
                     view[offset:offset + len(raw)] = np.frombuffer(raw, np.uint8)
                 fetched += size
             if invalid(a, dtype): raise ValueError("Original topology tensor is nonfinite")

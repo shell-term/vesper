@@ -27,6 +27,7 @@ class NativeBlock:
 
     def __init__(self, arrays, hc, normalization, projections, sparse_attention, moe, *, layer=0, compressor=None, indexer=None, profile="qualified"):
         from .prefix_profile import validate_layer
+        if profile == "backbone_probe": raise ValueError("Use the complete backbone coordinator for the all-layer probe")
         validate_layer(layer, (0, 2), profile)
         if (layer < 2 and (compressor is not None or indexer is not None)) or (layer == 2 and (compressor is None or indexer is None)):
             raise ValueError("Block compression/index operators differ from the original layer role")

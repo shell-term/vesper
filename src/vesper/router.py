@@ -61,19 +61,20 @@ def top6_indices(selection):
     return indices[:6].copy()
 
 
-def fetch_router_fixture(directory: Path, layer=0):
+def fetch_router_fixture(directory: Path, layer=0, *, reader=None):
+    small, ranges = (read_small, read_range) if reader is None else (reader.small, reader.range)
     validate_expert_identity(layer, 0)
     budget = MemoryBudget(cap=64 * MiB)
     budget.acquire(64 * MiB)
     try:
-        config_raw = read_small("config.json")
+        config_raw = small("config.json")
         config = json.loads(config_raw)["text_config"]
         if (config["n_routed_experts"], config["num_experts_per_tok"], config["scoring_func"],
                 config["norm_topk_prob"], config["routed_scaling_factor"]) != (384, 6, "sqrtsoftplus", True, 1.5):
             raise ValueError("Routing configuration differs from this pinned probe")
         if any("temp" in name for name in config):
             raise ValueError("A routing temperature override requires explicit qualification")
-        inference_raw = read_small("inference/config.json")
+        inference_raw = small("inference/config.json")
         if hashlib.sha256(inference_raw).hexdigest() != ROUTER_INFERENCE_CONFIG_HASH:
             raise ValueError("Released inference configuration hash differs from the pinned source")
         inference = json.loads(inference_raw)
@@ -81,22 +82,22 @@ def fetch_router_fixture(directory: Path, layer=0):
                 inference["route_scale"], inference.get("gate_temp", 1.0), inference.get("norm_topk_prob", True)) != (
                 384, 6, "sqrtsoftplus", 1.5, 1.0, True):
             raise ValueError("Released inference routing parameters differ from the probe")
-        index = json.loads(read_small("model.safetensors.index.json"))
+        index = json.loads(small("model.safetensors.index.json"))
         headers, arrays, tensors = {}, {}, []
         for name in ("bias", "bias_vl"):
             key = f"layers.{layer}.ffn.gate.{name}"
             shard = index["weight_map"][key]
             if shard not in headers:
-                size = struct.unpack("<Q", read_range(shard, 0, 8))[0]
+                size = struct.unpack("<Q", ranges(shard, 0, 8))[0]
                 if not 0 < size <= LIMIT:
                     raise ValueError("Excessive router shard header")
-                headers[shard] = (json.loads(read_range(shard, 8, size)), 8 + size)
+                headers[shard] = (json.loads(ranges(shard, 8, size)), 8 + size)
             header, data_start = headers[shard]
             tensor = header[key]
             begin, end = tensor["data_offsets"]
             if (tensor["dtype"], tensor["shape"], end - begin) != ("F32", [384], 1536):
                 raise ValueError("Unexpected original router-bias layout")
-            raw = read_range(shard, data_start + begin, end - begin)
+            raw = ranges(shard, data_start + begin, end - begin)
             arrays[name] = np.frombuffer(raw, dtype="<f4").copy()
             tensors.append({"name": name, "tensor": key, "dtype": "F32", "shape": [384], "bytes": len(raw),
                             "shard": shard, "shard_byte_offset": data_start + begin,

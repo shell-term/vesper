@@ -19,27 +19,28 @@ GATE_SHAPE = (384, 5120)
 GATE_NATIVE_BYTES = 384 * 5120 * 2
 
 
-def fetch_gate_fixture(directory, layer=0):
+def fetch_gate_fixture(directory, layer=0, *, reader=None):
+    small, ranges = (read_small, read_range) if reader is None else (reader.small, reader.range)
     validate_expert_identity(layer, 0)
     budget = MemoryBudget(cap=64 * MiB)
     budget.acquire(64 * MiB)
     try:
-        config_raw = read_small("config.json")
+        config_raw = small("config.json")
         config = json.loads(config_raw)["text_config"]
         if (config["hidden_size"], config["n_routed_experts"]) != (5120, 384):
             raise ValueError("Unexpected pinned gate shape")
-        index = json.loads(read_small("model.safetensors.index.json"))
+        index = json.loads(small("model.safetensors.index.json"))
         key = f"layers.{layer}.ffn.gate.weight"
         shard = index["weight_map"][key]
-        size = struct.unpack("<Q", read_range(shard, 0, 8))[0]
+        size = struct.unpack("<Q", ranges(shard, 0, 8))[0]
         if not 0 < size <= LIMIT:
             raise ValueError("Excessive gate shard header")
-        header = json.loads(read_range(shard, 8, size))
+        header = json.loads(ranges(shard, 8, size))
         tensor = header[key]
         begin, end = tensor["data_offsets"]
         if (tensor["dtype"], tensor["shape"], end - begin) != ("BF16", list(GATE_SHAPE), GATE_NATIVE_BYTES):
             raise ValueError("Unexpected original gate weight layout")
-        raw = read_range(shard, 8 + size + begin, end - begin)
+        raw = ranges(shard, 8 + size + begin, end - begin)
         weight = np.frombuffer(raw, dtype="<u2").reshape(GATE_SHAPE).copy()
         validate_gate_weight(weight)
         manifest = {"probe": "fetch_gate_fixture", "status": "pass", "kind": "gate_projection_fixture",

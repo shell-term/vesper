@@ -27,6 +27,18 @@ class TokenPrefixEvidenceTests(unittest.TestCase):
         self.assertFalse(summary["issue_complete"])
         self.assertFalse(summary["milestone_M2_complete"])
 
+    def test_corrected_cancellation_is_actual_runtime_cancellation(self):
+        root = self.root.parent / "2026-10-19-token-prefix-cancellation"
+        raw = (root / "native.json").read_bytes(); fresh = json.loads(raw)
+        self.assertTrue(validate_native(fresh, self.original, self.raw))
+        historical = next(f for f in self.native["faults"] if f["condition"] == "cancel_after_sampling")
+        corrected = next(f for f in fresh["faults"] if f["condition"] == "cancel_after_sampling")
+        self.assertEqual(historical["caught"], "TypeError")
+        self.assertEqual(corrected["caught"], "RuntimeCancelled")
+        self.assertTrue(corrected["runtime_cancelled_before_resume"])
+        summary = json.loads((root / "summary.json").read_bytes())
+        self.assertEqual(summary["full_native_report"]["sha256"], digest(raw))
+
     def test_original_omission_wrong_shape_or_model_claim_is_rejected(self):
         for mutation in (lambda r: r["cases"][1]["boundaries"].pop(),
                          lambda r: r["cases"][0]["boundaries"][0].__setitem__("shape", [1]),

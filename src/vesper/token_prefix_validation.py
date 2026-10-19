@@ -11,6 +11,7 @@ from .attention_validation import array_digest
 from .checkpoint import MODEL, REVISION
 from .connected import ConnectedMoE
 from .model_artifacts import canonical, digest
+from .memory import RuntimeCancelled
 from .output import NativeOutput
 from .output_assets import load as load_head
 from .resources import MemoryBudget, GiB
@@ -226,7 +227,7 @@ def run_native(root, original, policy, progress=None, *, require_qualified=True)
                             if mode in ("after_sampling", "window1_recovery_transfer"):
                                 raise OSError("Injected failure after diagnostic sampling")
                             if mode == "cancel_after_sampling":
-                                policy.cancel("Injected cancellation after diagnostic sampling")
+                                policy.cancel()
                             if mode == "publication_floor":
                                 injected.enter_context(patch("vesper.resources.physical_memory", return_value={"available": 16 * GiB}))
                             return result
@@ -234,9 +235,14 @@ def run_native(root, original, policy, progress=None, *, require_qualified=True)
                             prefix.step(np.array([[TOKENS[1]]], np.int64), finalize=fail_finalizer)
                         except BaseException as error:
                             caught = type(error).__name__
+                            if mode == "cancel_after_sampling" and not isinstance(error, RuntimeCancelled):
+                                raise RuntimeError("Cancellation probe must exercise actual runtime cancellation") from error
                         else:
                             raise RuntimeError("Injected prefix failure returned a partial token")
                         pending = list(prefix.transaction.pending)
+                        runtime_cancelled = policy.cancelled
+                        if mode == "cancel_after_sampling" and not runtime_cancelled:
+                            raise RuntimeError("Cancellation probe never cancelled the runtime")
                         if pending:
                             try:
                                 prefix.step(np.array([[TOKENS[1]]], np.int64), finalize=finish)
@@ -257,6 +263,7 @@ def run_native(root, original, policy, progress=None, *, require_qualified=True)
                     if state_digest(state) != original["cases"][1]["state_sha256"]:
                         raise RuntimeError("Whole-token retry changed original state")
                     faults.append({"condition": mode, "status": "pass", "caught": caught, "partial_token_returned": False,
+                        "runtime_cancelled_before_resume": runtime_cancelled,
                         "recovery_pending_before_disarm": pending, "state_before_sha256": before, "restored_state_sha256": restored,
                         "retry_state_sha256": state_digest(state), "retry_boundaries": checks, "transaction": prefix.transaction.stats()})
                     if progress: progress({"whole_token_fault": mode, "retry_boundaries": len(checks), "status": "pass"})

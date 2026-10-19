@@ -90,7 +90,8 @@ class NativeIndexer:
                 self.info = next(d for d in self.driver.inventory()["devices"] if d["ordinal"] == self.ordinal)
                 if self.info["compute_capability"] != "8.9":
                     raise ValueError("Indexer qualification requires SM89")
-                self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=128 * MiB, free_floor=2 * GiB))
+                device_cap = (256 if len(self.layers) > 3 else 128) * MiB
+                self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=device_cap, free_floor=2 * GiB))
                 self.compiler = {}
                 binary = compile_probe("89", indexer=True, compiler_info=self.compiler)
                 self.cubin_sha256 = hashlib.sha256(binary).hexdigest()

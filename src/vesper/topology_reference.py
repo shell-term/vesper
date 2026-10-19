@@ -21,13 +21,14 @@ from .shared_attention import CAPACITY, SharedAttentionFrame
 
 
 class SharingOracle:
-    def __init__(self, directory, arrays, layers, memory, ordinal=0):
+    def __init__(self, directory, arrays, layers, memory, ordinal=0, *, binding_profile="qualified"):
         import json
         raw = (Path(directory) / "config.json").read_bytes()
         if hashlib.sha256(raw).hexdigest() != PREFIX_SOURCE_HASHES["config.json"]: raise ValueError("Pinned topology config bytes differ")
         self.config = json.loads(raw)
         validate_config(self.config)
         self.arrays, self.layers, self.memory, self.ordinal = arrays, layers, memory, ordinal
+        self.binding_profile = binding_profile
         self.p = {l: ProjectionOracle(directory, arrays, ordinal, layer=l) for l in layers}
         owners, sources = tuple(l for l in layers if role(l).owns_kv), tuple(l for l in layers if role(l).owns_index)
         self.comp = CompressionOracle(directory, arrays, ordinal, layers=owners)
@@ -70,7 +71,7 @@ class SharingOracle:
                 vals = reference.index.tensor(q), reference.index.tensor(kv), reference.torch.from_numpy(sink).to(f"cuda:{reference.ordinal}"), reference.index.tensor(idx)
                 out, traces, _ = reference.memory._run(64, 512, diagnostics, vals)
                 return dict(zip(("output_bf16", *STAGES), map(_numpy, (out, *traces))))
-        self.diagnostic = SharedAttentionFrame(self.arrays, self.p, self.norm, self.comp_adapter, self.index, AttentionCall(), self.layers, batch)
+        self.diagnostic = SharedAttentionFrame(self.arrays, self.p, self.norm, self.comp_adapter, self.index, AttentionCall(), self.layers, batch, binding_profile=self.binding_profile)
         self.diagnostic.__enter__()
         self.index.reset(batch, CAPACITY)
         self.scope["shared_attn"] = SimpleNamespace()

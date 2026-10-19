@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "probe": "actual_runtime_cancellation_correction",
+  "status": "pass",
+  "original_reference": "results/2026-10-19-token-prefix/original.json",
+  "original_reference_sha256": "93eca73da986b0e01154e7e49edd13035a4896d9d5b57c073bde8bc02e15f65b",
+  "historical_report": "results/2026-10-19-token-prefix/native.json",
+  "historical_cancellation_exception": "TypeError",
+  "historical_report_preserved": true,
+  "actual_cancellation_exception": "RuntimeCancelled",
+  "runtime_cancelled_before_resume": true,
+  "all_committed_states_restored": true,
+  "all_retry_boundaries_match_original": 1046,
+  "all_nine_fault_conditions_replayed": 9,
+  "full_native_report": {
+    "file": "native.json",
+    "bytes": 6213478,
+    "sha256": "4d271ac950feec0fb3c7b650885245e77f8ae906835804d75d1377a1631a4955"
+  },
+  "scope": {
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "layers": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tokens": [
+      0,
+      2
+    ],
+    "batch": 1,
+    "queries_per_call": 1,
+    "rank": 1,
+    "text_only": true,
+    "head_attached_after_layer": 3,
+    "head_is_diagnostic_only": true,
+    "full_model_execution_run": false,
+    "text_generation_available": false,
+    "full_model_quality": "not_run",
+    "end_to_end_speed": "not_measured",
+    "full_checkpoint_downloaded": false
+  },
+  "full_model_cancellation_evidence": false
+}

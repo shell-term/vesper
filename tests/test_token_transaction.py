@@ -6,7 +6,7 @@ from unittest.mock import patch
 import numpy as np
 
 from vesper.kv import NativeWindowKV, WindowCheckpoint
-from vesper.memory import MemoryPolicy, RuntimeMemory
+from vesper.memory import MemoryPolicy, RuntimeMemory, RuntimeCancelled
 from vesper.ngram import NgramState
 from vesper.resources import GiB, MiB
 from vesper.token_transaction import TokenTransaction
@@ -156,12 +156,13 @@ class TokenTransactionTests(unittest.TestCase):
         with RuntimeMemory(config, available=lambda: 64 * GiB) as policy:
             with TokenTransaction(states, history, rng) as transaction:
                 def cancel(c):
-                    self.advance(states, rng); policy.cancel("test cancellation")
+                    self.advance(states, rng); policy.cancel()
                     return {"output": 42}
-                with self.assertRaises(Exception):
+                with self.assertRaises(RuntimeCancelled):
                     transaction.step(self.ids, cancel)
+                self.assertTrue(policy.cancelled)
                 self.assertEqual((transaction.position, history.position, rng.position), (0, 0, 2026))
-                with self.assertRaises(Exception):
+                with self.assertRaises(RuntimeCancelled):
                     transaction.step(self.ids, lambda c: self.fail("cancelled computation reached"))
                 policy.resume()
                 transaction.step(self.ids, lambda c: self.advance(states, rng))

@@ -14,6 +14,19 @@ The complete sanitized [original goldens](../results/2026-10-19-token-prefix/ori
 [file-bound summary](../results/2026-10-19-token-prefix/summary.json) contain the
 full evidence. They contain tensor metadata and hashes, not checkpoint weights.
 
+**Cancellation correction:** the historical `cancel_after_sampling` record
+caught a `TypeError` from an extra argument to `RuntimeMemory.cancel`. It proves
+generic late-failure rollback, not runtime cancellation. The call and its CPU
+test are corrected to require `RuntimeCancelled` and verify that cancellation
+remains active until explicit resume. The historical JSON files are preserved;
+their cancellation label must not be treated as cancellation qualification.
+The [corrected complete replay](../results/2026-10-19-token-prefix-cancellation/native.json)
+now catches **`RuntimeCancelled`**, verifies cancellation before resume, restores
+the committed state and matches all **1,046** second-token boundaries. All nine
+failure conditions and the real ring-checkpoint probe were rerun; the
+[correction receipt](../results/2026-10-19-token-prefix-cancellation/summary.json)
+binds the complete new report to the unchanged original goldens.
+
 ## Exact scope
 
 - Released model/revision: `deepseek-ai/DeepSeek-V4.1-Flash-1017`,

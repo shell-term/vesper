@@ -83,7 +83,10 @@ class NativeCompression:
                 self.info = next(d for d in self.driver.inventory()["devices"] if d["ordinal"] == self.ordinal)
                 if self.info["compute_capability"] != "8.9":
                     raise ValueError("Compression profile is qualified only for SM89")
-                self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=64 * MiB, free_floor=2 * GiB))
+                # The all-layer probe binds four source owners at once. The
+                # original two-owner qualification retains its smaller cap.
+                device_cap = (192 if len(self.layers) > 2 else 64) * MiB
+                self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=device_cap, free_floor=2 * GiB))
                 self.compiler = {}
                 binary = compile_probe("89", compression=True, compiler_info=self.compiler)
                 self.cubin_sha256 = hashlib.sha256(binary).hexdigest()

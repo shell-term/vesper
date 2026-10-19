@@ -50,14 +50,15 @@ class VirtualTables:
 
     def table(self,shape,rows):
         import torch
-        if (shape not in ((384006168,256),(384006168,8),(384016682,256),(384016682,8)) or not 1<=len(rows)<=1024
+        if (shape not in ((384006168,256),(384006168,8),(384016682,256),(384016682,8),(129280,10240)) or not 1<=len(rows)<=1024
                 or any(type(i) is not int or not 0<=i<shape[0] or type(raw) is not bytes or len(raw)!=shape[1] for i,raw in rows.items())):
             raise ValueError("Expected bounded original virtual table rows")
         self.device.current(); total=int(np.prod(shape)); size=((total+self.page-1)//self.page)*self.page
         address=C.c_uint64(); self.driver.check(self.reserve(C.byref(address),size,0,0,0)); base=address.value
         self.virtual+=size; self.virtual_peak=max(self.virtual_peak,self.virtual)
         self.stack.callback(self._drop_address,base,size)
-        pages=sorted({(int(row)*shape[1])//self.page for row in rows})
+        pages=sorted({page for row in rows for page in range((int(row)*shape[1])//self.page,
+            ((int(row)+1)*shape[1]-1)//self.page+1)})
         for page in pages:
             if self.physical+self.page>self.cap or self.device.memory()['free']-self.page<2*GiB:
                 raise MemoryError("Original-shape Engram oracle exceeds its physical VMM cap/reserve")

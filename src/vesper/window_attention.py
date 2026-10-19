@@ -27,6 +27,8 @@ class NativeWindowAttention:
 
     def __init__(self, arrays, projections, normalization, attention, batch=1, *, profile="qualified"):
         from .prefix_profile import validate_layer
+        if type(projections.layer) is not int or projections.layer not in (0, 1):
+            raise ValueError("Window Attention belongs only to original layers zero and one")
         self.layer = validate_layer(projections.layer, (0,), profile)
         self.arrays, self.projections, self.norm, self.attention = arrays, projections, normalization, attention
         self.kv = NativeWindowKV(batch, projections.ordinal)

@@ -53,15 +53,16 @@ def validate_shared_provenance(manifest):
             raise ValueError("Shared tensor provenance differs from its pinned identity/layout")
 
 
-def fetch_shared_fixture(directory: Path, layer=0):
+def fetch_shared_fixture(directory: Path, layer=0, *, reader=None):
     """Fetch 35,424,000 bytes; every HTTP range is at most 8 MiB."""
+    small, ranges = (read_small, read_range) if reader is None else (reader.small, reader.range)
     if type(layer) is not int or not 0 <= layer < 40:
         raise ValueError("Shared layer is outside the pinned backbone")
     budget = MemoryBudget(cap=128 * MiB)
     budget.acquire(128 * MiB)
     try:
-        index = json.loads(read_small("model.safetensors.index.json"))
-        config = json.loads(read_small("config.json"))["text_config"]
+        index = json.loads(small("model.safetensors.index.json"))
+        config = json.loads(small("config.json"))["text_config"]
         if (config["hidden_size"], config["moe_intermediate_size"], config["swiglu_limit"]) != (5120, 2304, 10.0):
             raise ValueError("Shared configuration differs from this probe's scope")
         arrays, entries, headers = {}, [], {}
@@ -70,10 +71,10 @@ def fetch_shared_fixture(directory: Path, layer=0):
             key = f"layers.{layer}.ffn.shared_experts.{projection}.{suffix}"
             shard = index["weight_map"][key]
             if shard not in headers:
-                header_size = struct.unpack("<Q", read_range(shard, 0, 8))[0]
+                header_size = struct.unpack("<Q", ranges(shard, 0, 8))[0]
                 if not 0 < header_size <= LIMIT:
                     raise ValueError("Excessive safetensors header size")
-                headers[shard] = (json.loads(read_range(shard, 8, header_size)), 8 + header_size)
+                headers[shard] = (json.loads(ranges(shard, 8, header_size)), 8 + header_size)
             header, data_start = headers[shard]
             tensor = header[key]
             begin, end = tensor["data_offsets"]
@@ -84,7 +85,7 @@ def fetch_shared_fixture(directory: Path, layer=0):
             array = np.empty(shape, np.uint8)
             flat = array.reshape(-1)
             for offset in range(0, size, LIMIT):
-                raw = read_range(shard, data_start + begin + offset, min(LIMIT, size - offset))
+                raw = ranges(shard, data_start + begin + offset, min(LIMIT, size - offset))
                 flat[offset:offset + len(raw)] = np.frombuffer(raw, np.uint8)
             arrays[name] = array
             entries.append({"name": name, "tensor": key, "dtype": dtype, "shape": list(shape),
