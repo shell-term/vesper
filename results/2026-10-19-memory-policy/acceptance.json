@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "probe": "issue9_memory_acceptance_audit",
+  "status": "pass",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "manifest_sha256": "a9d9507d3cb531a241365ce499cf911d50310863ccb760543d1264164171a7ef",
+  "criteria": [
+    {
+      "id": "all_owned_resources",
+      "criterion": "Account for all runtime-owned caches, weights, activations, KV, Engram, metadata, pinned buffers, integrity tables and scratch.",
+      "status": "pass"
+    },
+    {
+      "id": "explicit_cap_floor",
+      "criterion": "Enforce the provisional 96 GiB owned-host cap and 32 GiB available-memory floor; keep configuration explicit and revise only with evidence.",
+      "status": "pass"
+    },
+    {
+      "id": "pressure_reclaim_refuse",
+      "criterion": "Reclaim/shrink eligible resources under pressure and refuse work safely if the reserve cannot be restored.",
+      "status": "pass"
+    },
+    {
+      "id": "process_external_measurements",
+      "criterion": "Measure process memory and driver/compiler/reference exclusions separately; do not present a reservation counter as an OS limit.",
+      "status": "pass"
+    },
+    {
+      "id": "failure_cancel_other_work",
+      "criterion": "Test failure/cancellation/retry/cleanup alongside other workloads without stopping them, resetting GPUs or changing the page file.",
+      "status": "pass"
+    },
+    {
+      "id": "representative_model_scale",
+      "criterion": "Validate resource behavior at representative model scale, not solely the three-expert fixture.",
+      "status": "pass"
+    }
+  ],
+  "evidence": [
+    {
+      "file": "results/2026-10-19-memory-policy/scale.json",
+      "bytes": 9905380,
+      "sha256": "4f24ea85f03f762d83c282cc015bec7d23c0cce065afacb9135bd8272aa062cf"
+    },
+    {
+      "file": "results/2026-10-19-memory-policy/chain.json",
+      "bytes": 284461,
+      "sha256": "3c7ad102b348b1cfdf48c2bde2f8d9ad71d9ac34f2e4221deb5e5bb51a2a6f30"
+    },
+    {
+      "file": "results/2026-10-19-memory-policy/chain-memory.json",
+      "bytes": 129625,
+      "sha256": "ef5420a324d5e9c6b4c61fe263292f3d422bf7ec510a18861917ad8054cbd99d"
+    },
+    {
+      "file": "results/2026-10-19-memory-policy/default-boundaries.json",
+      "bytes": 7161,
+      "sha256": "a6c0c18ca266aa0da5545642bbcfc5a20aeeaba5f4108d876fc5d3ce441b8a1a"
+    },
+    {
+      "file": "results/2026-10-19-memory-policy/reference-memory.json",
+      "bytes": 12089,
+      "sha256": "64511b4d1ff6800edbb0d5a3ac0a8bbf7ac5db9f9a3661cbdc145178016028ce"
+    },
+    {
+      "file": "results/2026-10-19-memory-policy/reference-original.json",
+      "bytes": 4551728,
+      "sha256": "140d17a23cfde87ecaac21500ca2a0cffac4f97135a1f1d1df4f40ea1fb5677d"
+    },
+    {
+      "file": "results/2026-10-19-engram/original.json",
+      "bytes": 4551728,
+      "sha256": "f2cbaf3659532c5a495ce4b37105f7bb0c045cc101c2a6f30ddf65281d97131e"
+    },
+    {
+      "file": "results/2026-10-19-refresh-block-chain/chain.json",
+      "bytes": 10817181,
+      "sha256": "c00ebb289006adb2e758e5fcfca3addf8670e75ea308ee6b34aab4c5585dc015"
+    }
+  ],
+  "default_host_cap_bytes": 103079215104,
+  "available_floor_bytes": 34359738368,
+  "resource_probe_host_cap_bytes": 8589934592,
+  "resource_probe_host_peak_bytes": 8369594496,
+  "resource_probe_sampled_process_peaks": {
+    "resident_bytes": 7850340352,
+    "private_commit_bytes": 8837902336
+  },
+  "physical_available_min_sampled_bytes": 128392814592,
+  "original_expert_identities_visited": 15360,
+  "synthetic_expert_bytes_touched": 288777830400,
+  "retained_KV_bytes_per_copy": 424714240,
+  "governed_Engram_steps": 116,
+  "governed_Engram_boundaries": 7192,
+  "governed_chain_steps": 40,
+  "governed_chain_boundaries": 59600,
+  "reservation_is_RSS_or_OS_limit": false,
+  "all_forty_layers_numerically_executed": false,
+  "full_checkpoint_downloaded": false,
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured",
+  "milestone2_complete": false,
+  "remaining_integration_issues": [
+    10
+  ],
+  "scope": "Cooperative process-wide runtime admission and representative touched resource geometry, with independent original numerical replay gates",
+  "audit_host_allowance_bytes": 536870912
+}

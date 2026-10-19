@@ -14,6 +14,7 @@ import threading
 
 import numpy as np
 
+from .memory import runtime_operation
 from .cuda import Device, Driver, compile_probe
 from .resources import GiB, MiB, MemoryBudget
 
@@ -113,6 +114,7 @@ class NativeWindowKV:
     def _cache(self, pointer):
         return self.device.download(pointer, (self.batch, WINDOW, WIDTH), np.uint16)
 
+    @runtime_operation
     def append(self, values, *, start_pos=None):
         with self.lock:
             self._require_open()
@@ -142,7 +144,7 @@ class NativeWindowKV:
                           "cache_bf16": cache, "indices_i32": indices}
                 result["window_bf16"] = result["rounded_bf16"] if position == 0 else cache
             # Publish only after kernels, downloads and temporary-buffer cleanup succeed.
-            self.active, self.position = 1 - self.active, position + sequence
+            with self.budget.publication(): self.active, self.position = 1 - self.active, position + sequence
             return result
 
     def inspect(self):
@@ -162,7 +164,7 @@ class NativeWindowKV:
             if self.handle is not None:
                 raise RuntimeError("Window KV has only one bounded live snapshot slot")
             self._copy(self.buffers[self.active], self.buffers[2])
-            self.handle = WindowSnapshot(self.position)
+            with self.budget.publication(): self.handle = WindowSnapshot(self.position)
             return self.handle
 
     def _check_handle(self, handle):
@@ -170,12 +172,12 @@ class NativeWindowKV:
             raise ValueError("Foreign, expired or already consumed Window KV snapshot")
 
     def rollback(self, handle):
-        with self.lock:
+        with self.lock,self.budget.restoration():
             self._require_open()
             self._check_handle(handle)
             self._copy(self.buffers[2], self.buffers[1 - self.active])
             cache = self._cache(self.buffers[1 - self.active])
-            self.active, self.position, self.handle = 1 - self.active, handle.position, None
+            with self.budget.publication(): self.active, self.position, self.handle = 1 - self.active, handle.position, None
             return {"position": self.position, "cache_bf16": cache}
 
     def discard(self, handle):

@@ -25,12 +25,13 @@ class EngramRows:
         self.root=Path(directory); self.layer=layer; self.cache_rows=cache_rows
         self.budget=MemoryBudget(cap=8*MiB); self.cache=OrderedDict(); self.lock=threading.RLock(); self.reader=None
         self.entries={}; self.manifest=None
+        self._memory_reclaimer=None
         self.hits=self.misses=self.physical_bytes=self.logical_bytes=0
 
     def __enter__(self):
         with self.lock:
             if self.reader is not None: raise RuntimeError("Engram rows are already open")
-            self.budget.acquire(METADATA_ALLOWANCE)
+            self.budget.acquire(METADATA_ALLOWANCE,category='metadata')
             try:
                 path=self.root/'manifest.json'
                 if path.stat().st_size>MiB: raise ValueError("Excessive selected-row metadata")
@@ -49,15 +50,25 @@ class EngramRows:
                 self.entries={r['row']:r for r in rows}; self.manifest=m
                 if (self.root/'rows.bin').stat().st_size!=m['file_bytes']: raise ValueError("Selected-row store byte count differs")
                 self.reader=DirectReader(self.root/'rows.bin',4096,self.budget)
+                self._register_pressure()
                 return self
             except BaseException:
                 if self.reader: self.reader.close(); self.reader=None
                 self.entries={}; self.manifest=None
-                self.budget.release(METADATA_ALLOWANCE); raise
+                self.budget.release(METADATA_ALLOWANCE,category='metadata'); raise
+
+    def _register_pressure(self):
+        self._memory_reclaimer=self.budget.register_reclaimer(self.reclaim)
+
+    def reclaim(self,requested):
+        if not self.lock.acquire(blocking=False): return 0
+        try:
+            before=self.budget.reserved; self.clear(); return before-self.budget.reserved
+        finally: self.lock.release()
 
     def clear(self):
         with self.lock:
-            self.budget.release(len(self.cache)*ENTRY_ALLOWANCE); self.cache.clear()
+            self.budget.release(len(self.cache)*ENTRY_ALLOWANCE,category='engram'); self.cache.clear()
 
     def _headroom(self):
         try: self.budget.acquire(0)
@@ -90,8 +101,8 @@ class EngramRows:
                     self._headroom(); raw=self._load_row(row)
                     self.misses+=1
                     if len(self.cache)==self.cache_rows:
-                        self.cache.popitem(last=False); self.budget.release(ENTRY_ALLOWANCE)
-                    self.budget.acquire(ENTRY_ALLOWANCE); self.cache[row]=raw
+                        self.cache.popitem(last=False); self.budget.release(ENTRY_ALLOWANCE,category='engram')
+                    self.budget.acquire(ENTRY_ALLOWANCE,category='engram'); self.cache[row]=raw
                 codes.reshape(-1,256)[i]=np.frombuffer(raw[:256],np.uint8)
                 scales.reshape(-1,8)[i]=np.frombuffer(raw[256:],np.uint8)
             return codes,scales
@@ -105,7 +116,8 @@ class EngramRows:
 
     def __exit__(self,*_):
         with self.lock:
+            self.budget.unregister_reclaimer(self._memory_reclaimer); self._memory_reclaimer=None
             self.clear()
             if self.reader is not None:
-                self.reader.close(); self.reader=None; self.budget.release(METADATA_ALLOWANCE)
+                self.reader.close(); self.reader=None; self.budget.release(METADATA_ALLOWANCE,category='metadata')
                 self.entries={}; self.manifest=None

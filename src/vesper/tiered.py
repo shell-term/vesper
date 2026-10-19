@@ -81,8 +81,8 @@ class CudaCacheBackend:
                 shape = digest_shape(self.size)
                 self.digest_readback = self.stack.enter_context(Pinned(self.executor.driver, shape[0] * shape[1], self.budget)).array().reshape(shape)
                 scratch_bytes = shape[0] * shape[1]
-                self.budget.acquire(scratch_bytes)
-                self.stack.callback(self.budget.release, scratch_bytes)
+                self.budget.acquire(scratch_bytes,category='scratch')
+                self.stack.callback(self.budget.release, scratch_bytes,category='scratch')
                 self.digest_comparison = np.empty(shape, np.bool_)
                 self.stack.callback(delattr, self, "digest_comparison")
                 devices = self.executor.driver.inventory()["devices"]
@@ -143,12 +143,12 @@ class TieredExpertRuntime:
         if self.stack is not None:
             raise RuntimeError("Tiered runtime is already open")
         c = self.config
-        self.budget = MemoryBudget(c.host_cap_bytes, c.available_floor)
+        self.budget = MemoryBudget(c.host_cap_bytes, c.available_floor,owner='expert_tiers')
         self.stack = ExitStack()
         self.timings = Timings(c.profile)
         try:
-            self.budget.acquire(c.metadata_allowance_bytes)
-            self.stack.callback(self.budget.release, c.metadata_allowance_bytes)
+            self.budget.acquire(c.metadata_allowance_bytes,category='metadata')
+            self.stack.callback(self.budget.release, c.metadata_allowance_bytes,category='metadata')
             self.store = NativeStore(self.store_path, self.budget, max_experts=c.max_store_experts)
             self.store.timings = self.timings
             self.store.gpu_integrity = c.integrity_mode == "gpu-sha256"

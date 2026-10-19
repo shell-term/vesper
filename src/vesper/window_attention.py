@@ -5,6 +5,7 @@ import threading
 
 import numpy as np
 
+from .memory import runtime_operation
 from .kv import NativeWindowKV, window_indices
 from .projections import validate_values
 
@@ -68,6 +69,7 @@ class NativeWindowAttention:
             self.kv.reset()
             self.pending, self.position = None, 0
 
+    @runtime_operation
     def step(self, values, *, start_pos=None, finalize=None):
         with self.lock:
             self._ready()
@@ -98,8 +100,9 @@ class NativeWindowAttention:
                 o = add("wo_a_", self.projections.grouped(o.reshape(self.batch, sequence, 8, 4096)))
                 add("wo_b_", self.projections.fp8("wo_b", o.reshape(self.batch, sequence, 8192)))
                 result = stages if finalize is None else finalize(stages)
-                self.kv.discard(self.pending)
-                self.pending, self.position = None, self.kv.position
+                with self.kv.budget.publication():
+                    self.kv.discard(self.pending)
+                    self.pending, self.position = None, self.kv.position
                 return result
             except BaseException:
                 try:

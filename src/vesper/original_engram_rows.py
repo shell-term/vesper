@@ -18,7 +18,7 @@ class OriginalShardRows(EngramRows):
 
     def __enter__(self):
         if self.reader is not None: raise RuntimeError('Original shard rows already open')
-        self.budget.acquire(METADATA_ALLOWANCE)
+        self.budget.acquire(METADATA_ALLOWANCE,category='metadata')
         try:
             path=self.integrity/'manifest.json'
             if path.stat().st_size>65536: raise ValueError('Excessive original registration receipt')
@@ -34,10 +34,11 @@ class OriginalShardRows(EngramRows):
             self.reader=VerifiedBlob(self.root/filename,self.integrity,entry,inventory[filename],self.budget)
             self.manifest={'kind':'registered_original_Engram_rows','layer':self.layer,'receipt_sha256':digest(raw),
                 'original_shard':inventory[filename],'catalog_sha256':CATALOG_SHA256,'all_original_row_addresses_available':True}
+            self._register_pressure()
             return self
         except BaseException:
             if self.reader: self.reader.close(); self.reader=None
-            self.budget.release(METADATA_ALLOWANCE); raise
+            self.budget.release(METADATA_ALLOWANCE,category='metadata'); raise
 
     def _contains(self,row): return 0<=row<TABLE_ROWS[LAYERS.index(self.layer)]
 

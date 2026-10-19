@@ -10,6 +10,7 @@ import threading
 
 import numpy as np
 
+from .memory import runtime_operation
 from .indexer import MAX_INDEX_POSITIONS, finite_bf16, validate_query
 from .resources import MemoryBudget, MiB
 
@@ -90,6 +91,7 @@ class NativeIndexSession:
                 raise ValueError("Incomplete compression groups must not publish an index latent")
         return shape[1]
 
+    @runtime_operation
     def step(self, xs, qrs, latents, *, start_pos=None):
         with self.lock:
             self._ready()
@@ -138,7 +140,7 @@ class NativeIndexSession:
             shared["position"], shared["sequence"] = pos, sequence
             self.budget.acquire(0)
             # Commit all owners and sharing metadata only after the complete frame succeeds.
-            self._caches, self.position, self._last = caches, pos + sequence, shared
+            with self.budget.publication(): self._caches, self.position, self._last = caches, pos + sequence, shared
             return stages
 
     def shared_indices(self, consumer, position, sequence):
@@ -156,7 +158,7 @@ class NativeIndexSession:
             if self.handle is not None:
                 raise RuntimeError("Only one bounded index snapshot is available")
             saved = ({layer: a.copy() for layer, a in self._caches.items()}, copy.deepcopy(self._last))
-            self.handle, self.saved = IndexSnapshot(self.position), saved
+            with self.budget.publication(): self.handle, self.saved = IndexSnapshot(self.position), saved
             return self.handle
 
     def _check_handle(self, handle):
@@ -164,13 +166,14 @@ class NativeIndexSession:
             raise ValueError("Foreign, expired or consumed index snapshot")
 
     def rollback(self, handle):
-        with self.lock:
+        with self.lock,self.budget.restoration():
             self._ready()
             self._check_handle(handle)
             caches, last = copy.deepcopy(self.saved)
             result = {"position": handle.position, "cache2_bf16": caches[2].copy(), "cache20_bf16": caches[20].copy(), "shared": copy.deepcopy(last)}
-            self._caches, self.position, self._last = caches, handle.position, last
-            self.handle, self.saved = None, None
+            with self.budget.publication():
+                self._caches, self.position, self._last = caches, handle.position, last
+                self.handle, self.saved = None, None
             return result
 
     def discard(self, handle):

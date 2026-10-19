@@ -3,6 +3,7 @@
 import copy
 import numpy as np
 
+from .memory import runtime_operation
 from .attention_topology import role, validate_group, COMPLETE_BLOCK_PAIRS, CHAIN_PREFIXES
 from .compressed_attention import NativeCompressedAttention
 from .compression import stage_compression
@@ -189,6 +190,7 @@ class SharedAttentionFrame(NativeCompressedAttention):
         state = initial_state(self.layers, self.batch)
         self.state, self.position, self.handle, self.saved = state, 0, None, None
 
+    @runtime_operation
     def step(self, xs, *, start_pos=None, finalize=None):
         with self.lock:
             self._ready()
@@ -199,7 +201,7 @@ class SharedAttentionFrame(NativeCompressedAttention):
                                        self.layers, self.batch, pos, self.state, xs)
             result = stages if finalize is None else finalize(stages)
             self.budget.acquire(0)
-            self.state, self.position = state, pos + xs[self.layers[0]].shape[1]
+            with self.budget.publication(): self.state, self.position = state, pos + xs[self.layers[0]].shape[1]
             return result
 
     def prime_diagnostic(self, state, position):
@@ -209,8 +211,9 @@ class SharedAttentionFrame(NativeCompressedAttention):
             validate_seed(state, self.layers, self.batch, position)
             candidate = copy.deepcopy(state)
             self.budget.acquire(0)
-            self.state, self.position = candidate, position
+            with self.budget.publication(): self.state, self.position = candidate, position
 
+    @runtime_operation
     def step_connected(self, input_for_layer, after_layer, *, start_pos=None, finalize=None):
         """Registered single-token source/consumer blocks, committed together."""
         with self.lock:
@@ -223,5 +226,5 @@ class SharedAttentionFrame(NativeCompressedAttention):
                 self.layers, self.batch, pos, self.state, 1, input_for_layer, after_layer)
             result = stages if finalize is None else finalize(stages)
             self.budget.acquire(0)
-            self.state, self.position = state, pos + 1
+            with self.budget.publication(): self.state, self.position = state, pos + 1
             return result

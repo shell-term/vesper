@@ -3,6 +3,7 @@
 from contextlib import ExitStack
 import threading
 
+from .memory import runtime_operation
 from .block import validate_block_input
 from .attention_topology import validate_block_pair
 from .connected_reference import native_connected_stages
@@ -113,6 +114,7 @@ class NativeBlockPair:
             if not self.opened: raise RuntimeError("Complete pair is not open")
             self.attention.reset()
 
+    @runtime_operation
     def step(self, hidden, pre_mix, image_span=False, *, start_pos=None):
         with self.lock:
             if not self.opened: raise RuntimeError("Complete pair is not open")

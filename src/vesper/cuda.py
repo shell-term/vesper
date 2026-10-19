@@ -5,11 +5,13 @@ from __future__ import annotations
 import ctypes as C
 import ctypes.util
 import os
+from contextlib import nullcontext
 from pathlib import Path
 
 import numpy as np
 
 from .resources import GiB, MiB, MemoryBudget
+from .memory import current_policy,observe_external
 
 
 class CudaError(RuntimeError):
@@ -23,6 +25,7 @@ def _bind(lib, name, args):
 
 
 class Driver:
+    @observe_external('driver_initialization')
     def __init__(self):
         if os.name == "nt":
             self.lib = C.WinDLL(str(Path(os.environ.get("WINDIR", r"C:\Windows")) / "System32/nvcuda.dll"))
@@ -87,6 +90,7 @@ class Driver:
 
 
 class Device:
+    @observe_external('driver_context_initialization')
     def __init__(self, driver: Driver, ordinal: int, cap=256 * MiB, free_floor=GiB):
         self.driver, self.ordinal = driver, ordinal
         self.cap, self.free_floor = cap, free_floor
@@ -94,10 +98,17 @@ class Device:
         self.allocations = {}
         self.modules = []
         self.peak = 0
+        self._memory_policy=current_policy()
         driver.check(driver.cuDevicePrimaryCtxRetain(C.byref(self.context), ordinal))
         self.current()
 
     def current(self):
+        policy=current_policy()
+        if self._memory_policy is not None and not self._memory_policy.opened and not self.allocations: self._memory_policy=None
+        if self._memory_policy is None and policy is not None:
+            if self.allocations: raise RuntimeError('Start the runtime memory policy before device allocations')
+            self._memory_policy=policy
+        if policy is not None and self._memory_policy is not policy: raise RuntimeError('Device belongs to another runtime memory policy')
         self.driver.check(self.driver.cuCtxSetCurrent(self.context))
 
     def memory(self):
@@ -107,23 +118,30 @@ class Device:
         return {"free": free.value, "total": total.value}
 
     def allocate(self, size: int) -> int:
+        if type(size) is not int or size<=0: raise MemoryError('Invalid device allocation byte count')
         self.current()
-        used = sum(self.allocations.values())
-        if size <= 0 or used + size > self.cap:
-            raise MemoryError("Device probe allocation exceeds its explicit cap")
-        if self.memory()["free"] - size < self.free_floor:
-            raise MemoryError("Device probe would consume the VRAM reserve")
-        pointer = C.c_uint64()
-        self.driver.check(self.driver.cuMemAlloc_v2(C.byref(pointer), size))
-        self.allocations[pointer.value] = size
-        self.peak = max(self.peak, used + size)
-        return pointer.value
+        policy=self._memory_policy
+        with (policy.lock if policy is not None else nullcontext()):
+            used = sum(self.allocations.values())
+            if size <= 0 or used + size > self.cap: raise MemoryError("Device probe allocation exceeds its explicit cap")
+            floor=max(self.free_floor,0 if policy is None else policy.config.device_free_floor_bytes)
+            if self.memory()["free"] - size < floor: raise MemoryError("Device probe would consume the VRAM reserve")
+            if policy is not None: policy.reserve_device(self.ordinal,size)
+            pointer = C.c_uint64()
+            try: self.driver.check(self.driver.cuMemAlloc_v2(C.byref(pointer), size))
+            except BaseException:
+                if policy is not None: policy.release_device(self.ordinal,size)
+                raise
+            self.allocations[pointer.value] = size
+            self.peak = max(self.peak, used + size)
+            return pointer.value
 
     def free(self, pointer: int):
         self.current()
         if pointer not in self.allocations:
             raise ValueError("Cannot free an allocation owned by another device")
         self.driver.check(self.driver.cuMemFree_v2(pointer))
+        if self._memory_policy is not None: self._memory_policy.release_device(self.ordinal,self.allocations[pointer])
         del self.allocations[pointer]
 
     def upload(self, array: np.ndarray) -> int:
@@ -140,6 +158,7 @@ class Device:
         self.driver.check(self.driver.cuMemcpyDtoH_v2(result.ctypes.data, pointer, result.nbytes))
         return result
 
+    @observe_external('device_module_load')
     def load(self, cubin: bytes):
         self.current()
         module = C.c_void_p()
@@ -181,11 +200,11 @@ class Pinned:
     def __init__(self, driver, size: int, budget: MemoryBudget):
         self.driver, self.size, self.budget = driver, size, budget
         self.pointer = C.c_void_p()
-        budget.acquire(size)
+        budget.acquire(size,category='pinned')
         try:
             driver.check(driver.cuMemHostAlloc(C.byref(self.pointer), size, 1))  # PORTABLE
         except Exception:
-            budget.release(size)
+            budget.release(size,category='pinned')
             raise
 
     def array(self):
@@ -195,12 +214,13 @@ class Pinned:
         return self
 
     def __exit__(self, *_):
-        try:
+        if self.pointer:
             self.driver.check(self.driver.cuMemFreeHost(self.pointer))
-        finally:
-            self.budget.release(self.size)
+            self.pointer=C.c_void_p()
+            self.budget.release(self.size,category='pinned')
 
 
+@observe_external('native_compiler')
 def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: bool = False,
                   integrity: bool = False, routing: bool = False, shared: bool = False,
                   aggregation: bool = False, kv: bool = False, normalization: bool = False,

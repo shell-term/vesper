@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "probe": "issue9_memory_evidence_manifest",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "criteria": [
+    {
+      "id": "all_owned_resources",
+      "criterion": "Account for all runtime-owned caches, weights, activations, KV, Engram, metadata, pinned buffers, integrity tables and scratch."
+    },
+    {
+      "id": "explicit_cap_floor",
+      "criterion": "Enforce the provisional 96 GiB owned-host cap and 32 GiB available-memory floor; keep configuration explicit and revise only with evidence."
+    },
+    {
+      "id": "pressure_reclaim_refuse",
+      "criterion": "Reclaim/shrink eligible resources under pressure and refuse work safely if the reserve cannot be restored."
+    },
+    {
+      "id": "process_external_measurements",
+      "criterion": "Measure process memory and driver/compiler/reference exclusions separately; do not present a reservation counter as an OS limit."
+    },
+    {
+      "id": "failure_cancel_other_work",
+      "criterion": "Test failure/cancellation/retry/cleanup alongside other workloads without stopping them, resetting GPUs or changing the page file."
+    },
+    {
+      "id": "representative_model_scale",
+      "criterion": "Validate resource behavior at representative model scale, not solely the three-expert fixture."
+    }
+  ],
+  "evidence": [
+    {
+      "file": "results/2026-10-19-memory-policy/scale.json",
+      "bytes": 9905380,
+      "sha256": "4f24ea85f03f762d83c282cc015bec7d23c0cce065afacb9135bd8272aa062cf"
+    },
+    {
+      "file": "results/2026-10-19-memory-policy/chain.json",
+      "bytes": 284461,
+      "sha256": "3c7ad102b348b1cfdf48c2bde2f8d9ad71d9ac34f2e4221deb5e5bb51a2a6f30"
+    },
+    {
+      "file": "results/2026-10-19-memory-policy/chain-memory.json",
+      "bytes": 129625,
+      "sha256": "ef5420a324d5e9c6b4c61fe263292f3d422bf7ec510a18861917ad8054cbd99d"
+    },
+    {
+      "file": "results/2026-10-19-memory-policy/default-boundaries.json",
+      "bytes": 7161,
+      "sha256": "a6c0c18ca266aa0da5545642bbcfc5a20aeeaba5f4108d876fc5d3ce441b8a1a"
+    },
+    {
+      "file": "results/2026-10-19-memory-policy/reference-memory.json",
+      "bytes": 12089,
+      "sha256": "64511b4d1ff6800edbb0d5a3ac0a8bbf7ac5db9f9a3661cbdc145178016028ce"
+    },
+    {
+      "file": "results/2026-10-19-memory-policy/reference-original.json",
+      "bytes": 4551728,
+      "sha256": "140d17a23cfde87ecaac21500ca2a0cffac4f97135a1f1d1df4f40ea1fb5677d"
+    },
+    {
+      "file": "results/2026-10-19-engram/original.json",
+      "bytes": 4551728,
+      "sha256": "f2cbaf3659532c5a495ce4b37105f7bb0c045cc101c2a6f30ddf65281d97131e"
+    },
+    {
+      "file": "results/2026-10-19-refresh-block-chain/chain.json",
+      "bytes": 10817181,
+      "sha256": "c00ebb289006adb2e758e5fcfca3addf8670e75ea308ee6b34aab4c5585dc015"
+    }
+  ],
+  "native_environment": {
+    "python": "3.13.2",
+    "numpy": "2.5.4",
+    "platform": "Windows",
+    "system_physical_bytes": 171586277376,
+    "compute_GPU": "NVIDIA GeForce RTX 4090",
+    "helper_GPU": "NVIDIA GeForce RTX 3080 Ti",
+    "native_NVRTC": [
+      12,
+      4
+    ],
+    "reference_NVRTC": [
+      13,
+      4
+    ]
+  },
+  "scope": "Original full-backbone resource geometry with touched synthetic bytes; original Engram and six-block numerical replays are separate; full-model generation and quality not run",
+  "default_owned_host_cap_bytes": 103079215104,
+  "system_available_floor_bytes": 34359738368,
+  "live_geometry_probe_host_cap_bytes": 8589934592,
+  "actual_96GiB_allocation_attempted": false,
+  "real_pressure_to_32GiB_forced": false,
+  "external_existing_workloads_stopped": false,
+  "full_checkpoint_downloaded": false
+}

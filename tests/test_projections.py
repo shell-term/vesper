@@ -11,12 +11,14 @@ import numpy as np
 from vesper.projections import FP8_LAYOUT, validate_values, validate_projection_weights
 from vesper.projection_validation import component_plan, decode_real_inputs, validate_goldens
 from vesper.window_attention import NativeWindowAttention, validate_layer_input
+from vesper.resources import MemoryBudget
 
 
 class FakeKV:
     """Model a committed position and one saved state without a CUDA dependency."""
     def __init__(self, batch, ordinal):
         self.position, self.handle, self.fail_rollback = 0, None, False
+        self.budget=MemoryBudget(cap=16*1024**2,available_floor=0,owner='test_window_KV')
 
     def __enter__(self):
         self.position = 0

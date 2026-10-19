@@ -21,6 +21,15 @@ cache and 16 GiB for other owned state. A 32 GiB available-memory floor applies
 independently. Runtime pressure must shrink caches or reject work. Fixed
 allocations, pinned staging, metadata, scratch and Engram row cache all count.
 
+The [whole-runtime governor](memory-policy-validation.md) now enforces a shared
+admission policy across components/threads. The 80/16 GiB split remains a sizing
+hypothesis, not a tested full-model allocation or required fixed partition.
+Typed resources and conservative existing component envelopes share the 96 GiB
+ceiling; process residency/private commit and driver/compiler/reference effects
+are observed separately. Retained KV/history are never pressure-evicted.
+Representative touched resource geometry and original numerical regression
+gates pass; forty-layer model integration remains Issue #10.
+
 ## Implemented cache prototype
 
 The [three-expert probe](cache-validation.md) uses exclusive tiers: the compute

@@ -24,7 +24,7 @@ class DirectReader:
     def __init__(self, path: Path, capacity: int, budget: MemoryBudget):
         self.capacity, self.budget = capacity, budget
         self.handle, self.buffer = None, None
-        budget.acquire(capacity)
+        budget.acquire(capacity,category='scratch')
         try:
             if os.name == "nt":
                 self.lib = C.WinDLL("kernel32", use_last_error=True)
@@ -76,7 +76,7 @@ class DirectReader:
     def close(self):
         if os.name == "nt":
             if self.buffer:
-                self.lib.VirtualFree(self.buffer, 0, 0x8000)
+                if not self.lib.VirtualFree(self.buffer, 0, 0x8000): raise C.WinError(C.get_last_error())
             if self.handle is not None:
                 self.lib.CloseHandle(self.handle)
         else:
@@ -86,7 +86,7 @@ class DirectReader:
                 os.close(self.handle)
         self.buffer, self.handle = None, None
         if self.budget is not None:
-            self.budget.release(self.capacity)
+            self.budget.release(self.capacity,category='scratch')
             self.budget = None
 
     def array(self) -> np.ndarray:

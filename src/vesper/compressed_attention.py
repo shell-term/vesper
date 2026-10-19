@@ -10,6 +10,7 @@ import threading
 
 import numpy as np
 
+from .memory import runtime_operation
 from .compression import stage_compression
 from .indexer_state import NativeIndexSession
 from .kv import window_indices
@@ -188,6 +189,7 @@ class NativeCompressedAttention:
         if not self.opened: raise RuntimeError("Compressed Attention frame is not open")
         self.budget.acquire(0)
 
+    @runtime_operation
     def step(self, xs, *, start_pos=None, finalize=None):
         with self.lock:
             self._ready()
@@ -197,7 +199,7 @@ class NativeCompressedAttention:
             stages, state = stage_frame(self.arrays, self.projections, self.norm, self.compressor, self.indexer, self.attention, self.batch, pos, self.state, xs, profile=self.profile)
             result = stages if finalize is None else finalize(stages)
             self.budget.acquire(0)
-            self.state, self.position = state, pos + xs[2].shape[1]
+            with self.budget.publication(): self.state, self.position = state, pos + xs[2].shape[1]
             return result
 
     def inspect(self):
@@ -213,27 +215,27 @@ class NativeCompressedAttention:
             validate_diagnostic_seed(state, self.batch, self.capacity, position)
             copied = copy.deepcopy(state)
             self.budget.acquire(0)
-            self.state, self.position = copied, position
+            with self.budget.publication(): self.state, self.position = copied, position
 
     def snapshot(self):
         with self.lock:
             self._ready()
             if self.handle is not None: raise RuntimeError("Only one compressed Attention snapshot is available")
             saved = copy.deepcopy(self.state)
-            self.saved, self.handle = saved, CompressedAttentionSnapshot(self.position)
+            with self.budget.publication(): self.saved, self.handle = saved, CompressedAttentionSnapshot(self.position)
             return self.handle
 
     def _check(self, handle):
         if self.handle is None or handle is not self.handle: raise ValueError("Foreign, consumed or expired compressed Attention snapshot")
 
     def rollback(self, handle):
-        with self.lock:
+        with self.lock,self.budget.restoration():
             self._ready()
             self._check(handle)
             state = copy.deepcopy(self.saved)
             result = {"position": handle.position, "state": copy.deepcopy(state)}
             self.budget.acquire(0)
-            self.state, self.position, self.handle, self.saved = state, handle.position, None, None
+            with self.budget.publication(): self.state, self.position, self.handle, self.saved = state, handle.position, None, None
             return result
 
     def discard(self, handle):

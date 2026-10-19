@@ -37,6 +37,16 @@ checkpoint; small probes remain separate. Its component caps and combined Engram
 GPU ledger are inputs to #9, not the whole-runtime governor. Completing #8 also
 leaves M2 open for #9 and #10.
 
+Issue #9's six original checks are audited in the
+[memory-policy report](memory-policy-validation.md). The shared 96 GiB / 32 GiB
+policy covers component admissions, typed resources and state publication.
+All 15,360 original expert allocation identities are traversed with touched
+synthetic bytes under an 8 GiB probe cap; original Engram and complete 20..25
+numerical replays also pass under the governor. Separate process/reference
+measurements and complete cleanup are recorded. This is a resource-scale gate;
+all-forty-layer numerical/logit/sampling integration remains Issue #10 and M2
+stays open until that required work passes.
+
 ## Working on an issue
 
 1. State the concrete outcome, acceptance checks, resource limits and dependencies.

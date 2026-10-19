@@ -4,6 +4,7 @@ from contextlib import ExitStack
 import threading
 import numpy as np
 
+from .memory import runtime_operation
 from .engram import validate_input
 from .ngram import LAYERS
 from .resources import MemoryBudget,MiB
@@ -39,6 +40,7 @@ class EngramSession:
                 self.opened=True; return self
             except BaseException: self.stack.close(); raise
 
+    @runtime_operation
     def step(self,ids,hidden,mask=None,start_pos=None):
         with self.lock,self.hash.lock:
             if not self.opened: raise RuntimeError("Engram session is not open")
@@ -50,7 +52,7 @@ class EngramSession:
             result={l:self.operators[l].forward(hidden[l],indices[l],mask) for l in LAYERS}
             self.budget.acquire(0)
             if self._owned()>self.primary_cap: raise MemoryError("Combined native Engram publication cap")
-            self.hash.commit(candidate)
+            with self.budget.publication(): self.hash.commit(candidate)
             return {'hash_ids':candidate.hash_ids.copy(),'compressed':candidate.compressed.copy(),'lookbacks':candidate.lookbacks.copy(),
                 'layers':result,'state_sha256':self.hash.state_sha256()}
 

@@ -114,7 +114,7 @@ class VerifiedBlob:
             raise ValueError('Original artifact or integrity-index size differs')
         try:
             metadata=(receipt['index_bytes']//4096)*96
-            budget.acquire(metadata); self.metadata_reserved=metadata
+            budget.acquire(metadata,category='integrity'); self.metadata_reserved=metadata
             self.data=DirectBytes(self.path,budget); self.index=DirectBytes(self.index_path,budget)
             sha=hashlib.sha256(); self.index_page_hashes=[]
             for offset in range(0,receipt['index_bytes'],BLOCK):
@@ -139,8 +139,8 @@ class VerifiedBlob:
                 expected=index_page[index_offset%4096:index_offset%4096+32]
                 raw=self.data.read(number*BLOCK,BLOCK)
                 if hashlib.sha256(raw).digest()!=expected: raise ValueError('Original artifact block SHA-256 differs before row publication')
-                if len(self.pages)==2: self.pages.popitem(last=False); self.budget.release(BLOCK)
-                self.budget.acquire(BLOCK); self.pages[number]=raw
+                if len(self.pages)==2: self.pages.popitem(last=False); self.budget.release(BLOCK,category='cache')
+                self.budget.acquire(BLOCK,category='cache'); self.pages[number]=raw
             begin=max(offset-number*BLOCK,0); end=min(offset+size-number*BLOCK,len(raw)); result.append(raw[begin:end])
         output=b''.join(result)
         if len(output)!=size: raise OSError('Original artifact row range is incomplete')
@@ -152,7 +152,7 @@ class VerifiedBlob:
             if reader: reader.close()
         self.data=self.index=None; self.closed=True
         self.index_page_hashes=[]
-        self.budget.release(self.metadata_reserved); self.metadata_reserved=0
+        self.budget.release(self.metadata_reserved,category='integrity'); self.metadata_reserved=0
 
     def clear(self):
-        self.budget.release(len(self.pages)*BLOCK); self.pages.clear()
+        self.budget.release(len(self.pages)*BLOCK,category='cache'); self.pages.clear()

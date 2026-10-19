@@ -3,6 +3,7 @@
 from contextlib import ExitStack
 import threading
 
+from .memory import runtime_operation
 from .connected_reference import native_connected_stages
 from .hc import coefficients, hidden_shape
 from .resources import MemoryBudget, MiB
@@ -109,6 +110,7 @@ class NativeBlock:
             self.attention._ready()
             return self.attention.inspect()
 
+    @runtime_operation
     def step(self, hidden, pre_mix, image_span=False, *, start_pos=None):
         with self.lock:
             if not self.opened:

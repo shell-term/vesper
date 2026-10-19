@@ -165,7 +165,7 @@ class NativeStore:
         if self.gpu_integrity and key not in self.expected_chunks:
             shape = digest_shape(self.size)
             size = int(np.prod(shape))
-            self.budget.acquire(size)
+            self.budget.acquire(size,category='integrity')
             try:
                 digests = np.empty(shape, np.uint8)
                 with self.timings.section("integrity.prepare_cpu_chunks"):
@@ -173,14 +173,14 @@ class NativeStore:
                 digests.setflags(write=False)
                 self.expected_chunks[key] = digests
             except BaseException:
-                self.budget.release(size)
+                self.budget.release(size,category='integrity')
                 raise
 
     def __exit__(self, *_):
         for key in list(self.expected_chunks):
             size = self.expected_chunks[key].nbytes
             del self.expected_chunks[key]
-            self.budget.release(size)
+            self.budget.release(size,category='integrity')
         if self.reader is not None:
             self.reader.close()
             self.reader = None

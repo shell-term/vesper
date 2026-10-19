@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "probe": "default_memory_admission_boundaries",
+  "status": "pass",
+  "available_observation_is_injected": true,
+  "physical_payload_allocation_attempted": false,
+  "default_cap_refuses_one_more_byte": true,
+  "default_floor_refuses_one_more_byte": true,
+  "at_cap_governor": {
+    "host_cap_bytes": 103079215104,
+    "available_floor_bytes": 34359738368,
+    "charged_host_bytes": 103079215104,
+    "charged_host_peak_bytes": 103079215104,
+    "explicit_host_bytes": 0,
+    "explicit_host_peak_bytes": 0,
+    "pinned_bytes": 0,
+    "pinned_peak_bytes": 0,
+    "pinned_cap_bytes": 1073741824,
+    "categories": {
+      "cache": 0,
+      "weights": 0,
+      "activations": 0,
+      "kv": 0,
+      "engram": 0,
+      "metadata": 67108864,
+      "pinned": 0,
+      "integrity": 0,
+      "scratch": 0,
+      "diagnostics": 0,
+      "admission": 103012106240
+    },
+    "accounting_kinds": {
+      "control_admission": 67108864,
+      "boundary_admission_only": 103012106240
+    },
+    "owners": {
+      "memory_policy_control": 67108864,
+      "default_cap_boundary": 103012106240
+    },
+    "device_caps": {
+      "0": 21474836480,
+      "1": 10737418240
+    },
+    "device_used_bytes": {},
+    "device_peak_bytes": {},
+    "minimum_observed_available_bytes": 137438953472,
+    "refusals": 0,
+    "reclaim_events": 0,
+    "reclaimed_charge_bytes": 0,
+    "live_leases": 2,
+    "live_reclaimers": 0,
+    "inflight_operations": 0,
+    "cancelled": false,
+    "process_baseline": {
+      "resident_bytes": 29741056,
+      "peak_resident_bytes": 29741056,
+      "private_commit_bytes": 659951616,
+      "virtual_bytes": null,
+      "locked_bytes": null,
+      "platform": "Windows",
+      "measurement": "GetProcessMemoryInfo"
+    },
+    "samples": [
+      {
+        "phase": "runtime_entry",
+        "process": {
+          "resident_bytes": 29741056,
+          "peak_resident_bytes": 29741056,
+          "private_commit_bytes": 659951616,
+          "virtual_bytes": null,
+          "locked_bytes": null,
+          "platform": "Windows",
+          "measurement": "GetProcessMemoryInfo"
+        },
+        "available_bytes": 137438953472,
+        "charged_host_bytes": 67108864,
+        "explicit_buffer_bytes": 0,
+        "pinned_bytes": 0,
+        "device_bytes": {}
+      },
+      {
+        "phase": "default_cap_counter_boundary",
+        "process": {
+          "resident_bytes": 29896704,
+          "peak_resident_bytes": 29896704,
+          "private_commit_bytes": 660078592,
+          "virtual_bytes": null,
+          "locked_bytes": null,
+          "platform": "Windows",
+          "measurement": "GetProcessMemoryInfo"
+        },
+        "available_bytes": 137438953472,
+        "charged_host_bytes": 103079215104,
+        "explicit_buffer_bytes": 0,
+        "pinned_bytes": 0,
+        "device_bytes": {}
+      }
+    ],
+    "external_phase_samples": [],
+    "reservation_is_RSS_or_OS_limit": false,
+    "sampled_process_peaks": {
+      "resident_bytes": 29896704,
+      "private_commit_bytes": 660078592
+    },
+    "external_phase_counts": {},
+    "control_metadata_admission_bytes": 67108864,
+    "maximum_live_allocation_records": 16384,
+    "maximum_reclaimers": 512,
+    "monitor_interval_seconds": 0.25,
+    "monitor_checks": 0,
+    "monitor_pressure_refusals": 0,
+    "monitor_thread_stopped": false,
+    "monitor_error": null,
+    "accounting": "explicit buffers plus conservative existing component admissions; overlapping admissions may overestimate payload bytes"
+  },
+  "cleanup_governor": {
+    "host_cap_bytes": 103079215104,
+    "available_floor_bytes": 34359738368,
+    "charged_host_bytes": 0,
+    "charged_host_peak_bytes": 103079215104,
+    "explicit_host_bytes": 0,
+    "explicit_host_peak_bytes": 0,
+    "pinned_bytes": 0,
+    "pinned_peak_bytes": 0,
+    "pinned_cap_bytes": 1073741824,
+    "categories": {
+      "cache": 0,
+      "weights": 0,
+      "activations": 0,
+      "kv": 0,
+      "engram": 0,
+      "metadata": 0,
+      "pinned": 0,
+      "integrity": 0,
+      "scratch": 0,
+      "diagnostics": 0,
+      "admission": 0
+    },
+    "accounting_kinds": {},
+    "owners": {},
+    "device_caps": {
+      "0": 21474836480,
+      "1": 10737418240
+    },
+    "device_used_bytes": {},
+    "device_peak_bytes": {},
+    "minimum_observed_available_bytes": 34359738368,
+    "refusals": 2,
+    "reclaim_events": 0,
+    "reclaimed_charge_bytes": 0,
+    "live_leases": 0,
+    "live_reclaimers": 0,
+    "inflight_operations": 0,
+    "cancelled": false,
+    "process_baseline": {
+      "resident_bytes": 29741056,
+      "peak_resident_bytes": 29741056,
+      "private_commit_bytes": 659951616,
+      "virtual_bytes": null,
+      "locked_bytes": null,
+      "platform": "Windows",
+      "measurement": "GetProcessMemoryInfo"
+    },
+    "samples": [
+      {
+        "phase": "runtime_entry",
+        "process": {
+          "resident_bytes": 29741056,
+          "peak_resident_bytes": 29741056,
+          "private_commit_bytes": 659951616,
+          "virtual_bytes": null,
+          "locked_bytes": null,
+          "platform": "Windows",
+          "measurement": "GetProcessMemoryInfo"
+        },
+        "available_bytes": 137438953472,
+        "charged_host_bytes": 67108864,
+        "explicit_buffer_bytes": 0,
+        "pinned_bytes": 0,
+        "device_bytes": {}
+      },
+      {
+        "phase": "default_cap_counter_boundary",
+        "process": {
+          "resident_bytes": 29896704,
+          "peak_resident_bytes": 29896704,
+          "private_commit_bytes": 660078592,
+          "virtual_bytes": null,
+          "locked_bytes": null,
+          "platform": "Windows",
+          "measurement": "GetProcessMemoryInfo"
+        },
+        "available_bytes": 137438953472,
+        "charged_host_bytes": 103079215104,
+        "explicit_buffer_bytes": 0,
+        "pinned_bytes": 0,
+        "device_bytes": {}
+      },
+      {
+        "phase": "default_gates_recovered",
+        "process": {
+          "resident_bytes": 29896704,
+          "peak_resident_bytes": 29896704,
+          "private_commit_bytes": 660078592,
+          "virtual_bytes": null,
+          "locked_bytes": null,
+          "platform": "Windows",
+          "measurement": "GetProcessMemoryInfo"
+        },
+        "available_bytes": 137438953472,
+        "charged_host_bytes": 67108864,
+        "explicit_buffer_bytes": 0,
+        "pinned_bytes": 0,
+        "device_bytes": {}
+      }
+    ],
+    "external_phase_samples": [],
+    "reservation_is_RSS_or_OS_limit": false,
+    "sampled_process_peaks": {
+      "resident_bytes": 29896704,
+      "private_commit_bytes": 660078592
+    },
+    "external_phase_counts": {},
+    "control_metadata_admission_bytes": 67108864,
+    "maximum_live_allocation_records": 16384,
+    "maximum_reclaimers": 512,
+    "monitor_interval_seconds": 0.25,
+    "monitor_checks": 0,
+    "monitor_pressure_refusals": 0,
+    "monitor_thread_stopped": true,
+    "monitor_error": null,
+    "accounting": "explicit buffers plus conservative existing component admissions; overlapping admissions may overestimate payload bytes"
+  },
+  "scope": "Counter gates only; the separate full-backbone probe touches actual bounded payloads"
+}

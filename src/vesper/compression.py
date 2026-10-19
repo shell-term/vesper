@@ -13,6 +13,7 @@ import threading
 
 import numpy as np
 
+from .memory import runtime_operation
 from .blas import Cublas, GATE_BLAS_WORKSPACE
 from .attention_topology import compression_layout, role
 from .compression_fixture import COMPRESSION_LAYOUT
@@ -240,6 +241,7 @@ class NativeCompressedKV:
             return {"position": self.position, "kv_state_fp32": self.kv_state.copy(),
                     "score_state_fp32": self.score_state.copy(), "cache_bf16": self.cache.copy()}
 
+    @runtime_operation
     def step(self, values, *, start_pos=None):
         with self.lock:
             self._ready()
@@ -250,7 +252,7 @@ class NativeCompressedKV:
                 self.runtime, self.layer, self.batch, pos, (self.kv_state, self.score_state, self.cache), values)
             self.budget.acquire(0)
             # No publication until all arithmetic, diagnostic downloads and copies succeed.
-            self.kv_state, self.score_state, self.cache, self.position = kv_state, score_state, cache, pos + sequence
+            with self.budget.publication(): self.kv_state, self.score_state, self.cache, self.position = kv_state, score_state, cache, pos + sequence
             return stages
 
     def reset(self):
@@ -264,7 +266,7 @@ class NativeCompressedKV:
             if self.handle is not None:
                 raise RuntimeError("Only one bounded compression snapshot is available")
             saved = tuple(a.copy() for a in (self.kv_state, self.score_state, self.cache))
-            self.handle, self.saved = CompressionSnapshot(self.position), saved
+            with self.budget.publication(): self.handle, self.saved = CompressionSnapshot(self.position), saved
             return self.handle
 
     def _check_handle(self, handle):
@@ -272,13 +274,14 @@ class NativeCompressedKV:
             raise ValueError("Foreign, expired or consumed compression snapshot")
 
     def rollback(self, handle):
-        with self.lock:
+        with self.lock,self.budget.restoration():
             self._ready()
             self._check_handle(handle)
             kv, score, cache = (a.copy() for a in self.saved)
             result = {"position": handle.position, "kv_state_fp32": kv.copy(), "score_state_fp32": score.copy(), "cache_bf16": cache.copy()}
-            self.kv_state, self.score_state, self.cache, self.position = kv, score, cache, handle.position
-            self.handle, self.saved = None, None
+            with self.budget.publication():
+                self.kv_state, self.score_state, self.cache, self.position = kv, score, cache, handle.position
+                self.handle, self.saved = None, None
             return result
 
     def discard(self, handle):

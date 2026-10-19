@@ -24,7 +24,12 @@ comparisons, including original CPU/CUDA hashes, required-row direct reads,
 ten failure/retries and independent replay without PyTorch. All 48 original
 artifact identities and actual full-import capacity are planned; the full
 checkpoint is not downloaded. See [Issue #8's evidence](docs/engram-artifacts-validation.md).
-Full-model loading, memory governance, logits/sampling, model-wide
+The process-wide memory governor now shares admissions across components and
+threads, retaining the 96 GiB host cap and 32 GiB physical reserve. All 15,360
+original expert identities pass an actual bounded synthetic-resource traversal;
+Engram and the six-block chain preserve original bits under the same policy.
+See [Issue #9's measurements and exact scope](docs/memory-policy-validation.md).
+Full-model loading, all-layer logits/sampling, model-wide
 quality and generation performance remain M2/M3 work. See the
 [acceptance evidence and exact scope](docs/block-ops-qualification.md).
 
@@ -360,11 +365,16 @@ separate costs. See [the profiling report and complete records](docs/cache-perfo
 
 The provisional full-engine design has a **96 GiB host-memory cap** and a **32 GiB
 system-available floor**, including caches, pinned staging, metadata and scratch.
-The full memory governor is not implemented yet. The cache runtime now enforces
-its owned buffer cap, shrinks RAM under observed pressure and refuses requests if
-the reserve remains unavailable. This ledger covers explicit buffers and a
-metadata allowance; Python, CUDA contexts, compilation, returned diagnostics and
-the optional official oracle remain outside it. It is not an OS memory limit.
+The process-wide governor is implemented and its six original acceptance checks
+pass. It includes explicit owned buffers and conservative component admissions,
+typed caches/pinned/metadata/integrity/scratch, retained KV and bounded
+diagnostics. Eligible cache copies shrink under pressure; work is refused if the
+physical reserve cannot be restored. Driver/compiler overhead and the optional
+reference have separate process observations. Reservations, resident RAM and
+private commit remain distinct; this is not an OS memory limit. The live
+representative gate uses explicit 8/16 GiB probe caps, and does not allocate
+96 GiB or execute the whole numerical model. See the
+[memory policy and complete evidence](docs/memory-policy-validation.md).
 
 The initial transfer probes cap explicit allocations at 256 MiB per GPU and check a 1 GiB
 free-memory reserve. GPU contexts and modules consume additional memory. Transfer

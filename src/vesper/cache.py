@@ -85,10 +85,11 @@ class TieredCache:
                  "primary_gpu_audit_payload_bytes", "helper_gpu_audit_payload_bytes",
                  "primary_gpu_audit_digest_d2h_bytes", "helper_gpu_audit_digest_d2h_bytes")
         self.stats = dict.fromkeys(names, 0)
+        self._memory_reclaimer=budget.register_reclaimer(self.reclaim)
 
     def _drop_ram(self, key, reason=None):
         del self.ram[key]
-        self.budget.release(self.size)
+        self.budget.release(self.size,category='cache')
         if reason:
             self.stats[reason] += 1
 
@@ -98,6 +99,16 @@ class TieredCache:
         if self.available() < self.budget.available_floor:
             self.stats["pressure_refusals"] += 1
             raise MemoryError("System memory remains below the reserve after releasing the RAM cache")
+        if self.budget._policy is not None: self.budget.acquire(0,available=self.available())
+
+    def reclaim(self,requested):
+        if not self.lock.acquire(blocking=False): return 0
+        try:
+            freed=0
+            while self.ram and freed<requested:
+                self._drop_ram(next(iter(self.ram)),"ram_pressure_evictions"); freed+=self.size
+            return freed
+        finally: self.lock.release()
 
     def _verify(self, key, data):
         if self.gpu_verify:
@@ -148,7 +159,7 @@ class TieredCache:
         if not fits():
             self.stats["ram_admission_refused"] += 1
             return False
-        self.budget.acquire(self.size, available=self.available())
+        self.budget.acquire(self.size, available=self.available(),category='cache')
         array, reserved = None, True
         try:
             with self.timings.section("host.ram_allocate"):
@@ -159,7 +170,7 @@ class TieredCache:
             if self.available() < self.budget.available_floor:
                 del array
                 array = None
-                self.budget.release(self.size)
+                self.budget.release(self.size,category='cache')
                 reserved = False
                 self.enforce_pressure()
                 self.stats["ram_admission_refused"] += 1
@@ -171,7 +182,7 @@ class TieredCache:
             # If pressure cleanup released the reservation already, do not
             # release a different live entry's allocation on exception.
             if reserved:
-                self.budget.release(self.size)
+                self.budget.release(self.size,category='cache')
             raise
 
     def _demote_primary(self):
@@ -273,3 +284,4 @@ class TieredCache:
             for key in list(self.ram):
                 self._drop_ram(key)
             self.closed = True
+            self.budget.unregister_reclaimer(self._memory_reclaimer)
