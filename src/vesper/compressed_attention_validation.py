@@ -202,7 +202,7 @@ def cleanup(ops):
             "indexer_normalization": index.norm.stats(), "attention": attn.stats()}
 
 
-def validate_goldens(report):
+def validate_provenance(report, probe="native_compressed_attention_parity"):
     from .attention_memory import validate_qualification
     from .checkpoint import MODEL, REVISION, REFERENCE_HASHES
     from .compressed_attention_fixture import LAYOUT, FIXTURE_BYTES
@@ -221,7 +221,7 @@ def validate_goldens(report):
     from .projections import PROJECTION_CUBIN_SHA256
     from .router import ROUTER_TORCH_REVISION
     from .router_reference import TOPK_SOURCE_HASHES
-    if (report.get("probe") != "native_compressed_attention_parity" or report.get("status") != "pass"
+    if (report.get("probe") != probe or report.get("status") != "pass"
             or report.get("model") != MODEL or report.get("revision") != REVISION or report.get("torch_git_version") != ROUTER_TORCH_REVISION
             or report.get("tilelang_version") != "0.1.12" or report.get("original_methods_ast_sha256") != METHODS
             or report.get("original_index_quant_cuda_sha256") != INDEX_QUANT_CUDA
@@ -268,6 +268,10 @@ def validate_goldens(report):
             dtype, shape = layout[t["name"]]
             if t.get("dtype") != dtype or t.get("shape") != list(shape) or t.get("bytes") != int(np.prod(shape)) * STORAGE_DTYPES[dtype].itemsize:
                 raise ValueError("Connected fixture tensor layout differs")
+
+
+def validate_goldens(report):
+    validate_provenance(report)
     rows, goldens = report.get("frame_cases", []), report.get("reference_goldens", [])
     expected = {m["id"]: m for m in expected_metadata()}
     indexed = {g["meta"]["id"]: g for g in goldens}

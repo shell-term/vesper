@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Complete layer-0 block](docs/layer0-block-validation.md) · [Compressed Attention](docs/compressed-attention-validation.md) · [Indexers](docs/indexer-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Long-context Attention](docs/long-context-validation.md) · [Complete layer-0 block](docs/layer0-block-validation.md) · [Compressed Attention](docs/compressed-attention-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 [Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
 
@@ -149,10 +149,19 @@ differences. Every frame also matches separately executed unchanged full-forward
 output/cache controls. Five failure/retries, snapshot restoration and independent
 replay without Torch/TileLang pass. This is generated independent layer input,
 one rank, batch 1/2, prefill at most three queries and context at most 64 tokens;
-state remains bounded host diagnostic storage. Larger-context window wraps and
-actual top-512/candidate pruning inside complete Attention, other profiles,
-Engram and full-model execution remain unfinished. See the
+state remains bounded host diagnostic storage. The longer-context follow-up is
+below; other profiles, Engram and full-model execution remain unfinished. See the
 [connected compressed-Attention report](docs/compressed-attention-validation.md).
+
+The same profiles now pass **1,441 longer-context frames / 4,323 layer calls**,
+with **440,997 boundary comparisons and zero differences**. Empty-start generated
+streams reach 1,152 tokens (batch 1) and 260 (batch 2), including ten window wraps
+and real top-512 truncation. Explicit synthetic histories at 16,384 positions
+exercise 2,049-to-2,048 candidate-block pruning through consumer-24 output;
+they are not preceding full-model executions. Every frame matches unchanged
+original controls and native-only replay. Failure/retry and snapshots pass.
+All registered CUDA binaries remain unchanged. See the
+[long-context report and complete evidence](docs/long-context-validation.md).
 
 Vesper uses the released weights; its design does not require retraining.
 Model-wide output and quality verification remain required before that engine

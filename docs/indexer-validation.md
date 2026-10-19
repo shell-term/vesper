@@ -203,7 +203,8 @@ identities reproduce unchanged, alongside the newly pinned indexer binary.
 The [connected follow-up](compressed-attention-validation.md) now qualifies
 complete Attention output/cache state for profiles 2/20/24, including
 compressed-KV/key/candidate sharing 20-to-24, in a generated-input context <=64.
-Next: larger-context connected comparisons, other indexer sources
-(8/14/28/32/36) and complete-block integration. Larger batching, distributed
+The subsequent [long-context report](long-context-validation.md) covers window
+wraps, top-512 truncation and candidate pruning through complete Attention output.
+Next: other indexer sources (8/14/28/32/36) and complete-block integration. Larger batching, distributed
 execution, Engram and full-model logits/sampling/quality/performance remain
 separate gates.

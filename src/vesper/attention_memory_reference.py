@@ -28,7 +28,10 @@ def missing_dependencies():
 
 
 class AttentionMemoryReference:
-    def __init__(self, directory: Path, ordinal=0):
+    def __init__(self, directory: Path, ordinal=0, *, profile="baseline"):
+        if profile not in ("baseline", "long_context"):
+            raise ValueError("Unknown Attention reference input profile")
+        self.profile = profile
         self.directory, self.ordinal = Path(directory), ordinal
         self.stack, self.qualified, self.opened = ExitStack(), False, False
 
@@ -127,9 +130,10 @@ class AttentionMemoryReference:
         if q.ndim != 4 or idx.ndim != 3:
             raise ValueError("Expected four-dimensional Query and three-dimensional indices")
         batch, sequence = q.shape[:2]
-        shapes = trace_shapes(batch, sequence, heads, dimension, idx.shape[-1])
+        shapes = trace_shapes(batch, sequence, heads, dimension, idx.shape[-1], profile=self.profile)
+        maximum = 16520 if self.profile == "long_context" and sequence == 1 and (heads, dimension) == (64, 512) else 257
         if (q.shape != (batch, sequence, heads, dimension) or kv.ndim != 3 or kv.shape[0] != batch
-                or not 1 <= kv.shape[1] <= 257 or kv.shape[2] != dimension or sink.shape != (heads,)
+                or not 1 <= kv.shape[1] <= maximum or kv.shape[2] != dimension or sink.shape != (heads,)
                 or idx.shape[:2] != (batch, sequence)
                 or tuple(t.dtype for t in inputs) != (torch.bfloat16, torch.bfloat16, torch.float32, torch.int32)
                 or any(t.device != q.device or not t.is_contiguous() for t in inputs)

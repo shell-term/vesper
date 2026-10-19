@@ -83,11 +83,11 @@ class CompressedAttentionOracle:
         self.captured = {"query_bf16": _numpy(q), "KV_bf16": _numpy(kv), "indices_i32": _numpy(idx), "output_bf16": _numpy(out)}
         return out
 
-    def reset(self, batch):
+    def reset(self, batch, *, profile="baseline", capacity=None):
         if hasattr(self, "diagnostic"): self.diagnostic.__exit__()
         self.batch = batch
         self.diagnostic = NativeCompressedAttention(self.arrays, self.p, self.norm, self.comp_adapter, self.index,
-            SimpleNamespace(opened=True, ordinal=self.ordinal, __call__=None), batch)
+            SimpleNamespace(opened=True, ordinal=self.ordinal, __call__=None), batch, profile=profile, capacity=capacity)
         # Native frame calls this callable, while __enter__ also checks identity.
         class AttentionCall:
             opened, ordinal = True, self.ordinal
@@ -97,10 +97,12 @@ class CompressedAttentionOracle:
                 out, traces, _ = self.memory._run(64, 512, diagnostics, values)
                 return dict(zip(("output_bf16", *STAGES), map(_numpy, (out, *traces))))
         self.diagnostic.attention = AttentionCall()
+        self.diagnostic.attention.profile = profile
         self.diagnostic.__enter__()
         torch, functions = self.torch, self.functions
         self.scope["shared_attn"] = SimpleNamespace()
-        self.index.reset(batch, CAPACITY)
+        self.capacity = self.diagnostic.capacity
+        self.index.reset(batch, self.capacity)
         class IndexCall(SimpleNamespace):
             def __call__(stub, *args): return functions["Indexer.forward"](stub, *args)
         class CompressorCall(SimpleNamespace):
@@ -127,7 +129,7 @@ class CompressedAttentionOracle:
                     comp.kv_state = torch.zeros((batch, 2, 512), dtype=torch.float32, device=f"cuda:{self.ordinal}")
                     comp.score_state = torch.full_like(comp.kv_state, -torch.inf)
                 stub.compressor = comp
-                stub.compress_kv_cache = torch.zeros((batch, CAPACITY // ratio, 512), dtype=torch.bfloat16, device=f"cuda:{self.ordinal}")
+                stub.compress_kv_cache = torch.zeros((batch, self.capacity // ratio, 512), dtype=torch.bfloat16, device=f"cuda:{self.ordinal}")
             for name in ("_window_kv", "_compress_kv", "_compress_topk_idxs"):
                 setattr(stub, name, MethodType(functions["Attention." + name], stub))
             self.originals[layer] = stub
@@ -171,6 +173,18 @@ class CompressedAttentionOracle:
                 for l, o in self.originals.items()}, {l: o.indexer.k_cache.clone() for l, o in self.originals.items() if l != 24},
                 self.originals[2].compressor.kv_state.clone(), self.originals[2].compressor.score_state.clone(),
                 {n: v.clone() for n, v in vars(self.scope["shared_attn"]).items()})
+
+    def prime_diagnostic(self, state, position):
+        self.diagnostic.prime_diagnostic(state, position)
+        for layer, original in self.originals.items():
+            original.window_kv_cache.copy_(self.index.tensor(state["windows"][layer]))
+            if layer in (2, 20):
+                original.compress_kv_cache.copy_(self.index.tensor(state["compressors"][layer][2]))
+                original.indexer.k_cache.copy_(self.index.tensor(state["index_keys"][layer]))
+        torch = self.torch
+        for name, value in zip(("kv_state", "score_state"), state["compressors"][2][:2]):
+            getattr(self.originals[2].compressor, name).copy_(torch.from_numpy(value).to(f"cuda:{self.ordinal}"))
+        self.scope["shared_attn"] = SimpleNamespace(compress_kv=self.originals[20].compress_kv_cache, index_k=self.originals[20].indexer.k_cache)
 
     def rollback(self, saved):
         handle, layers, indices, kv, scores, shared = saved

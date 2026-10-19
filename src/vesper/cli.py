@@ -14,12 +14,12 @@ def main(argv=None) -> int:
                  "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
                  "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router", "fetch-gate-fixture", "compare-gate",
                  "fetch-shared-fixture", "compare-shared", "compare-aggregation", "compare-original-accumulation",
-                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization", "compare-projections", "compare-block", "fetch-compression-fixture", "compare-compression", "fetch-indexer-fixture", "compare-indexer", "fetch-compressed-attention-fixture", "compare-compressed-attention"):
+                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization", "compare-projections", "compare-block", "fetch-compression-fixture", "compare-compression", "fetch-indexer-fixture", "compare-indexer", "fetch-compressed-attention-fixture", "compare-compressed-attention", "compare-long-context"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
         if name == "fetch-compressed-attention-fixture":
             command.add_argument("--directory", type=Path, default=Path("artifacts/compressed-attention-fixture"))
-        if name == "compare-compressed-attention":
+        if name in ("compare-compressed-attention", "compare-long-context"):
             for flag in ("fixture", "compression-fixture", "indexer-fixture", "attention-bundle"):
                 command.add_argument("--" + flag, type=Path, required=True)
             command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
@@ -212,6 +212,9 @@ def main(argv=None) -> int:
         elif args.command == "compare-compressed-attention":
             from .compressed_attention_reference import compare_compressed_attention
             result = compare_compressed_attention(args.reference_directory, args.fixture, args.compression_fixture, args.indexer_fixture, args.attention_bundle, args.device)
+        elif args.command == "compare-long-context":
+            from .long_context_reference import compare_long_context
+            result = compare_long_context(args.reference_directory, args.fixture, args.compression_fixture, args.indexer_fixture, args.attention_bundle, args.device)
         elif args.command == "fetch-indexer-fixture":
             from .indexer_fixture import fetch_indexer_fixture
             result = fetch_indexer_fixture(args.directory)
@@ -267,6 +270,12 @@ def main(argv=None) -> int:
     except Exception as exc:
         result = {"probe": args.command, "status": "error", "error_type": type(exc).__name__, "error": str(exc)}
     result["timestamp_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    if args.command == "compare-long-context" and args.output:
+        from .long_context_reference import write_report
+        write_report(args.output, result)
+        print(json.dumps({"probe": result.get("probe"), "status": result.get("status"), "frames": len(result.get("frame_cases", [])),
+                          **{k: result[k] for k in ("missing_dependencies", "error_type", "error") if k in result}}))
+        return 0 if result.get("status") == "pass" else 2
     rendered = json.dumps(result, indent=2, ensure_ascii=False, allow_nan=False) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

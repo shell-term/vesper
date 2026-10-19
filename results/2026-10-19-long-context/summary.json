@@ -1,0 +1,483 @@
+{
+  "schema_version": 1,
+  "probe": "original_connected_long_context_Attention",
+  "status": "pass",
+  "artifacts_sha256": {
+    "long-context.json": "db5ec59f00f31ed3eb3278f69754145d03580a9be34b3a5cdae44b35b5470570",
+    "native-only-recheck.json": "a0ea920be3d382de15bbf4f815040fb520e756f4803f51bef1fb5ccb58d7065b"
+  },
+  "successful_frames": 1441,
+  "complete_Attention_layer_calls": 4323,
+  "boundary_comparisons": 440997,
+  "compared_storage_elements": 13429385909,
+  "mismatches": 0,
+  "unchanged_original_control_groups": 1441,
+  "unchanged_original_controls_per_frame": 28,
+  "instrumentation_counts": {
+    "projection": {
+      "2": 5773,
+      "20": 5782,
+      "24": 5782
+    },
+    "index_projection": 4341,
+    "index_sum": 4341,
+    "index_packed_vs_inplace": 6522,
+    "compressed_packed_vs_inplace": 2181
+  },
+  "layers": [
+    2,
+    20,
+    24
+  ],
+  "compressed_KV_key_candidate_sharing": "20-to-24",
+  "unprimed_continuous_streams": [
+    {
+      "batch": 1,
+      "tokens": 1152,
+      "frames": 1150
+    },
+    {
+      "batch": 2,
+      "tokens": 260,
+      "frames": 258
+    }
+  ],
+  "unprimed_wrap_events": 10,
+  "explicit_synthetic_seed_cases": 9,
+  "maximum_seeded_context_positions": 16392,
+  "maximum_prefill": 3,
+  "maximum_batch": 2,
+  "maximum_combined_index_width": 640,
+  "actual_top512_truncation_for_ratio1_and_ratio2": true,
+  "candidate_blocks_before_pruning": 2049,
+  "candidate_blocks_kept": 2048,
+  "excluded_positions_per_pruned_block": 8,
+  "generated_independent_layer_inputs": true,
+  "autoregressive_full_model_history": false,
+  "synthetic_history_from_original_weight_component_banks": true,
+  "expected_failed_frames": 5,
+  "failure_retries": 5,
+  "snapshot_restorations": 1,
+  "expired_or_duplicate_snapshot_refusals": 3,
+  "state_and_sharing_checks_per_fault_or_restore": 17,
+  "negative_controls": [
+    {
+      "check": "ignore_source_candidates_selected_indices",
+      "status": "fail",
+      "elements": 512,
+      "mismatches": 512,
+      "dtype": "int32",
+      "expected_sha256": "832dc79ee1105006b87c031c236ce28a992049afa57ef3a7522cc70c01cb505f",
+      "actual_sha256": "415f6cf9264c501906f7bd0952d12c9d6bd868200b2b7175bf241112f2994e09"
+    },
+    {
+      "check": "ignore_source_candidates_Attention_output",
+      "status": "fail",
+      "elements": 32768,
+      "mismatches": 31102,
+      "dtype": "uint16",
+      "expected_sha256": "1a375930143ebf6982e65979926d27ab1958ea09eaa63d3f1335e4ad947827d1",
+      "actual_sha256": "f5ec307fbbb74cd5d0200a3be8469c704066e7f4c9f0b10e79c526474e439e3d"
+    },
+    {
+      "check": "omit_compressed_index_window_offset",
+      "status": "fail",
+      "elements": 32768,
+      "mismatches": 32677,
+      "dtype": "uint16",
+      "expected_sha256": "1a375930143ebf6982e65979926d27ab1958ea09eaa63d3f1335e4ad947827d1",
+      "actual_sha256": "80160560ed777d85b1b0244874c27a80b1c35fdb52c2a8320a84031c6ae24fea"
+    },
+    {
+      "check": "reverse_window_slot_order_QK",
+      "status": "fail",
+      "elements": 40960,
+      "mismatches": 8192,
+      "dtype": "float32",
+      "expected_sha256": "e82a11ddfb0959a1a5f77bcc039b128e707300789724ec1e29e67e7e907b049c",
+      "actual_sha256": "14b6539335878a8a8e606a439c3e8a751050494b1806f3a74937567fad5e81b8"
+    }
+  ],
+  "new_fixture_tensor_count": 0,
+  "new_fixture_original_weight_bytes": 0,
+  "weights_fetched_during_comparison_bytes": 0,
+  "native_frameworks_installed": false,
+  "native_frameworks_imported": false,
+  "native_profiles": {
+    "projections": {
+      "2": {
+        "compiler": {
+          "nvrtc_version": [
+            12,
+            4
+          ],
+          "architecture": "89",
+          "concatenated_source_sha256": "56ca03fb20f1208b226ddf810f2d508f4b35037e4ecb45b4e91a9c7384397262",
+          "options": [
+            "--gpu-architecture=sm_89",
+            "--std=c++17",
+            "--fmad=false",
+            "--ftz=false",
+            "--include-path=<CUDA>/include"
+          ],
+          "include_path_redacted": true
+        },
+        "cubin_sha256": "1ca16c1fa7fab955f88a246f4851aa8ff96b1178afda1af483647f9feb431332",
+        "device": {
+          "ordinal": 0,
+          "name": "NVIDIA GeForce RTX 4090",
+          "compute_capability": "8.9",
+          "total_bytes": 25756696576
+        },
+        "cublas_version": 120402,
+        "cublas_math_mode": 0,
+        "converted_wo_a_bf16_sha256": "329e0e1cb44d22d715e82aafb4b868474519f1d04842d7a30b13ab1ba282b77c"
+      },
+      "20": {
+        "compiler": {
+          "nvrtc_version": [
+            12,
+            4
+          ],
+          "architecture": "89",
+          "concatenated_source_sha256": "56ca03fb20f1208b226ddf810f2d508f4b35037e4ecb45b4e91a9c7384397262",
+          "options": [
+            "--gpu-architecture=sm_89",
+            "--std=c++17",
+            "--fmad=false",
+            "--ftz=false",
+            "--include-path=<CUDA>/include"
+          ],
+          "include_path_redacted": true
+        },
+        "cubin_sha256": "1ca16c1fa7fab955f88a246f4851aa8ff96b1178afda1af483647f9feb431332",
+        "device": {
+          "ordinal": 0,
+          "name": "NVIDIA GeForce RTX 4090",
+          "compute_capability": "8.9",
+          "total_bytes": 25756696576
+        },
+        "cublas_version": 120402,
+        "cublas_math_mode": 0,
+        "converted_wo_a_bf16_sha256": "bce6e1d5b2391dc811e17aa2c5b87288669bc8d2949c3a26d8d90a733bb8f78f"
+      },
+      "24": {
+        "compiler": {
+          "nvrtc_version": [
+            12,
+            4
+          ],
+          "architecture": "89",
+          "concatenated_source_sha256": "56ca03fb20f1208b226ddf810f2d508f4b35037e4ecb45b4e91a9c7384397262",
+          "options": [
+            "--gpu-architecture=sm_89",
+            "--std=c++17",
+            "--fmad=false",
+            "--ftz=false",
+            "--include-path=<CUDA>/include"
+          ],
+          "include_path_redacted": true
+        },
+        "cubin_sha256": "1ca16c1fa7fab955f88a246f4851aa8ff96b1178afda1af483647f9feb431332",
+        "device": {
+          "ordinal": 0,
+          "name": "NVIDIA GeForce RTX 4090",
+          "compute_capability": "8.9",
+          "total_bytes": 25756696576
+        },
+        "cublas_version": 120402,
+        "cublas_math_mode": 0,
+        "converted_wo_a_bf16_sha256": "3d65cf3450e72ed36ca6cd0a3cc3212c327d1b6a81648674c807aa208bdf1080"
+      }
+    },
+    "normalization": {
+      "compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "357dc794add97f0d98a00dc72e10dfb054bdfc911dc4fda6c724c1098c764ff1",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      },
+      "cubin_sha256": "41b9fbd12ea07f2c1bcb8766f1725b730f570e4969de86ebd41ceaf090156607"
+    },
+    "compression": {
+      "compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "4e4eee19934c224a2f4fb8bbf3eaf2c7213c1fb00dc349665a028c57641d898a",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      },
+      "cubin_sha256": "dc315e262350061173bc2f772a3975dd6f6eee5993d057b5453af7545a01ef5c",
+      "cublas_version": 120402,
+      "cublas_math_mode": 0
+    },
+    "indexer": {
+      "compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "aaeade922ba2f4efb56e23f3320d8f45716e3d72aab0cefef908463b7f0d63e5",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      },
+      "cubin_sha256": "411f05580290d098d830bac502f9c6b1c7c98eafc12f65628823a9fdbc3d277f",
+      "cublas_version": 120402,
+      "cublas_math_mode": 0
+    },
+    "compression_normalization": {
+      "compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "357dc794add97f0d98a00dc72e10dfb054bdfc911dc4fda6c724c1098c764ff1",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      },
+      "cubin_sha256": "41b9fbd12ea07f2c1bcb8766f1725b730f570e4969de86ebd41ceaf090156607"
+    },
+    "indexer_normalization": {
+      "compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "357dc794add97f0d98a00dc72e10dfb054bdfc911dc4fda6c724c1098c764ff1",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      },
+      "cubin_sha256": "41b9fbd12ea07f2c1bcb8766f1725b730f570e4969de86ebd41ceaf090156607"
+    },
+    "attention_bundle_manifest_sha256": "b0e50760224c68bb2206bceff1f17d5ef40748e7b0df60b56efe96c7320a98c4"
+  },
+  "paired_memory": {
+    "cleanup": {
+      "projection_2": {
+        "host_allowance_bytes": 536870912,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 202367744,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "projection_20": {
+        "host_allowance_bytes": 536870912,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 202367744,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "projection_24": {
+        "host_allowance_bytes": 536870912,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 202367744,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "normalization": {
+        "host_allowance_bytes": 100663296,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 886028,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "compression": {
+        "host_allowance_bytes": 134217728,
+        "host_reserved_bytes": 0,
+        "device_owned_bytes": 0,
+        "device_peak_owned_bytes": 35848192,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "indexer": {
+        "host_allowance_bytes": 268435456,
+        "host_reserved_bytes": 0,
+        "device_owned_bytes": 0,
+        "device_peak_owned_bytes": 40409312,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "compression_normalization": {
+        "host_allowance_bytes": 100663296,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 1051136,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "indexer_normalization": {
+        "host_allowance_bytes": 100663296,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 263936,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "attention": {
+        "host_allowance_bytes": 134217728,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 37665024,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "owned_modules_active": 0,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      }
+    },
+    "combined_native_host_allowance_bytes": 3657433088,
+    "combined_native_and_reference_host_allowance_bytes": 6006243328,
+    "minimum_sampled_host_available_bytes": 140441968640,
+    "all_frame_reservations_released": true,
+    "state_storage": "bounded_host_diagnostic_frame",
+    "reservation_is_RSS_limit": false
+  },
+  "native_only_memory": {
+    "cleanup": {
+      "projection_2": {
+        "host_allowance_bytes": 536870912,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 202367744,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "projection_20": {
+        "host_allowance_bytes": 536870912,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 202367744,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "projection_24": {
+        "host_allowance_bytes": 536870912,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 202367744,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "normalization": {
+        "host_allowance_bytes": 100663296,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 886028,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "compression": {
+        "host_allowance_bytes": 134217728,
+        "host_reserved_bytes": 0,
+        "device_owned_bytes": 0,
+        "device_peak_owned_bytes": 35848192,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "indexer": {
+        "host_allowance_bytes": 268435456,
+        "host_reserved_bytes": 0,
+        "device_owned_bytes": 0,
+        "device_peak_owned_bytes": 40409312,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "compression_normalization": {
+        "host_allowance_bytes": 100663296,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 1051136,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "indexer_normalization": {
+        "host_allowance_bytes": 100663296,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 263936,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "attention": {
+        "host_allowance_bytes": 134217728,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 37665024,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "owned_modules_active": 0,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      }
+    },
+    "combined_native_host_allowance_bytes": 3657433088,
+    "minimum_sampled_host_available_bytes": 143111503872,
+    "all_frame_reservations_released": true,
+    "state_storage": "bounded_host_diagnostic_frame",
+    "reservation_is_RSS_limit": false
+  },
+  "untouched_full_Attention_kernel": "blocked_by_shared_memory_limit",
+  "other_layers": "not_qualified",
+  "complete_Transformer_blocks": "not_implemented_for_these_layers",
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured",
+  "issue_7_complete": false
+}

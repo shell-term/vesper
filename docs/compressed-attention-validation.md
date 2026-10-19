@@ -16,6 +16,11 @@ later-layer activations. Other layers, larger contexts, Engram, full-model
 quality/logits/sampling and generation speed remain unfinished. Issue #7 and M2
 remain open.
 
+The subsequent [long-context probe](long-context-validation.md) now covers
+continuous 1,152/260-token generated-input streams, window wraps, actual top-512
+truncation and candidate pruning with explicit synthetic 16,384-position history.
+The 103-frame evidence below remains the original bounded baseline.
+
 ## Original data and source controls
 
 The model and inference sources remain pinned to revision
@@ -196,7 +201,7 @@ the earlier compressor and layer-0 HC/block native-only matrices still pass.
 - [Independent native-only replay](../results/2026-10-19-compressed-attention/native-only-recheck.json)
 - [Summary, raw-file hashes and resource observations](../results/2026-10-19-compressed-attention/summary.json)
 
-Next: larger-context connected comparisons including window wraps and actual
-top-512/candidate pruning, other source/consumer profiles, and their integration
-into complete Transformer blocks. Engram, full-model output/quality and measured
-generation performance remain separate gates.
+The [long-context follow-up](long-context-validation.md) covers window wraps and
+actual top-512/candidate pruning. Next: other source/consumer profiles and their
+integration into complete Transformer blocks. Engram, full-model output/quality
+and measured generation performance remain separate gates.

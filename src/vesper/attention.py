@@ -102,15 +102,16 @@ def load_bundle(directory):
     return manifest, binaries, digest(raw)
 
 
-def validate_inputs(q, kv, sink, indices, diagnostics=False):
+def validate_inputs(q, kv, sink, indices, diagnostics=False, *, profile="baseline"):
     if type(diagnostics) is not bool or not all(isinstance(a, np.ndarray) for a in (q, kv, sink, indices)):
         raise ValueError("Expected NumPy arrays and an explicit diagnostic flag")
     if q.ndim != 4 or indices.ndim != 3:
         raise ValueError("Expected rank-four Query and rank-three indices")
     batch, sequence, heads, dimension = q.shape
-    shapes = trace_shapes(batch, sequence, heads, dimension, indices.shape[-1])
+    shapes = trace_shapes(batch, sequence, heads, dimension, indices.shape[-1], profile=profile)
+    maximum = 16520 if profile == "long_context" and sequence == 1 and (heads, dimension) == (64, 512) else 257
     if ((heads, dimension, diagnostics) not in CANDIDATES or kv.ndim != 3 or kv.shape[0] != batch
-            or not 1 <= kv.shape[1] <= 257 or kv.shape[2] != dimension or sink.shape != (heads,)
+            or not 1 <= kv.shape[1] <= maximum or kv.shape[2] != dimension or sink.shape != (heads,)
             or indices.shape[:2] != (batch, sequence)
             or tuple(a.dtype for a in (q, kv, sink, indices)) != (np.uint16, np.uint16, np.float32, np.int32)
             or any(not a.flags.c_contiguous for a in (q, kv, sink, indices))):
@@ -124,10 +125,15 @@ def validate_inputs(q, kv, sink, indices, diagnostics=False):
 class NativeAttention:
     """Synchronous, serialized operation; per-call device buffers are transactional."""
 
-    def __init__(self, bundle: Path, ordinal=0):
+    def __init__(self, bundle: Path, ordinal=0, *, profile="baseline"):
+        if profile not in ("baseline", "long_context"):
+            raise ValueError("Unknown native Attention input profile")
+        self.profile = profile
+        self.host_allowance = (128 if profile == "long_context" else 32) * MiB
+        self.device_cap = (64 if profile == "long_context" else 16) * MiB
         self.bundle, self.ordinal = Path(bundle), ordinal
         self.lock, self.opened = threading.Lock(), False
-        self.budget = MemoryBudget(cap=32 * MiB)
+        self.budget = MemoryBudget(cap=self.host_allowance)
         self.stack = ExitStack()
 
     def __enter__(self):
@@ -135,15 +141,15 @@ class NativeAttention:
             if self.opened:
                 raise RuntimeError("Native Attention is already open")
             try:
-                self.budget.acquire(32 * MiB)
-                self.stack.callback(self.budget.release, 32 * MiB)
+                self.budget.acquire(self.host_allowance)
+                self.stack.callback(self.budget.release, self.host_allowance)
                 self.manifest, binaries, self.manifest_sha256 = load_bundle(self.bundle)
                 self.driver = Driver()
                 inventory = self.driver.inventory()
                 self.device_info = next(d for d in inventory["devices"] if d["ordinal"] == self.ordinal)
                 if self.device_info["compute_capability"] != "8.9" or inventory["driver_api_version"] < 13040:
                     raise ValueError("Native Attention currently requires SM89 and a CUDA 13.4-capable driver")
-                self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=16 * MiB, free_floor=2 * GiB))
+                self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=self.device_cap, free_floor=2 * GiB))
                 query = _bind(self.driver.lib, "cuDeviceGetAttribute", [C.POINTER(C.c_int), C.c_int, C.c_int])
                 limit = C.c_int()
                 self.driver.check(query(C.byref(limit), 97, self.ordinal))
@@ -168,7 +174,7 @@ class NativeAttention:
         with self.lock:
             if not self.opened:
                 raise RuntimeError("Native Attention is not open")
-            shapes = validate_inputs(q, kv, sink, indices, diagnostics)
+            shapes = validate_inputs(q, kv, sink, indices, diagnostics, profile=self.profile)
             self.budget.acquire(0)
             batch, sequence, heads, dimension = q.shape
             self.device.current()

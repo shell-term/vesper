@@ -167,6 +167,11 @@ Downloaded source, model weights and generated binaries remain local artifacts.
 Whole-frame host publication, snapshot ownership and finalizer failure handling
 are Vesper runtime code; no additional tensor-framework code is redistributed.
 
+The longer-context diagnostic profile reuses those same binaries and original
+formulas. Synthetic-history construction, compact evidence records and replay
+validation are Vesper test/runtime code; no additional third-party source or
+model tensors are redistributed.
+
 ## Runtime dependencies
 
 The native window KV quantizer, ring-slot formulas and index construction follow

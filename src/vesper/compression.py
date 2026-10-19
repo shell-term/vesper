@@ -27,12 +27,14 @@ POOL_STAGES = ("maximum_fp32", "exponents_fp32", "sum_exp_fp32", "weights_fp32",
                "products_fp32", "pooled_fp32", "pooled_bf16")
 
 
-def validate_compression_input(values, batch, position, expected):
+def validate_compression_input(values, batch, position, expected, *, max_position=MAX_POSITION):
+    if type(max_position) is not int or max_position not in (128, 1152, 16392):
+        raise ValueError("Unregistered compression context bound")
     if (type(batch) is not int or batch not in (1, 2) or not isinstance(values, np.ndarray) or values.dtype != np.uint16 or values.ndim != 3
             or values.shape[0] != batch or values.shape[-1] != 5120 or not 1 <= values.shape[1] <= MAX_PREFILL
             or not values.flags.c_contiguous or np.any((values & 0x7f80) == 0x7f80)
             or type(position) is not int or position != expected or position < 0
-            or position + values.shape[1] > MAX_POSITION or (position and values.shape[1] != 1)):
+            or position + values.shape[1] > max_position or (position and values.shape[1] != 1)):
         raise ValueError("Expected bounded finite BF16 compressor input at the next exact position")
 
 
@@ -290,9 +292,9 @@ class NativeCompressedKV:
             self.budget.release(16 * MiB)
 
 
-def stage_compression(runtime, layer, batch, pos, source, values):
+def stage_compression(runtime, layer, batch, pos, source, values, *, max_position=MAX_POSITION):
     """Return original compressor/cache work without changing committed state."""
-    validate_compression_input(values, batch, pos, pos)
+    validate_compression_input(values, batch, pos, pos, max_position=max_position)
     ratio, sequence = LAYERS[layer], values.shape[1]
     stages = runtime.project(values, layer)
     kv_state, score_state, cache = (a.copy() for a in source)

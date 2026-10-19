@@ -138,10 +138,13 @@ def load_variant(raw: bytes, directory: Path, storage="register-query", diagnost
     return isolate_nvrtc_handles(module.sparse_attn_kernel), metadata
 
 
-def trace_shapes(batch, sequence, heads, dimension, topk):
+def trace_shapes(batch, sequence, heads, dimension, topk, *, profile="baseline"):
+    if profile not in ("baseline", "long_context"):
+        raise ValueError("Unknown Attention shape profile")
+    maximum = 640 if profile == "long_context" and sequence == 1 and (heads, dimension) == (64, 512) else 193
     if (any(type(v) is not int for v in (batch, sequence, heads, dimension, topk))
             or not 1 <= batch <= 2 or not 1 <= sequence <= 3 or heads not in (16, 32, 64)
-            or dimension not in (128, 256, 512) or not 1 <= topk <= 193):
+            or dimension not in (128, 256, 512) or not 1 <= topk <= maximum):
         raise ValueError("Attention diagnostics exceed the bounded probe shapes")
     blocks = (topk + 63) // 64
     return ((batch, sequence, blocks, heads, 64), (batch, sequence, blocks, heads, 64),

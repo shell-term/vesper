@@ -21,10 +21,11 @@ WIDTH, WINDOW, MAX_PREFILL, MAX_POSITION = 512, 128, 257, 4096
 KV_CUBIN_SHA256 = "65a5efd3670668e6b1c5d748e958282706e826ccaf8bfdaf2d9172ee5cab9342"
 
 
-def window_indices(batch, sequence, position):
+def window_indices(batch, sequence, position, *, max_position=MAX_POSITION):
     """Preserve the original slot order, padding and materialized int32 layout."""
-    if (any(type(v) is not int for v in (batch, sequence, position)) or batch not in (1, 2)
-            or not 1 <= sequence <= MAX_PREFILL or position < 0 or position + sequence > MAX_POSITION
+    if (type(max_position) is not int or max_position not in (4096, 16392)
+            or any(type(v) is not int for v in (batch, sequence, position)) or batch not in (1, 2)
+            or not 1 <= sequence <= MAX_PREFILL or position < 0 or position + sequence > max_position
             or (position and sequence != 1)):
         raise ValueError("Unsupported bounded window index shape or position")
     if position == 0:
