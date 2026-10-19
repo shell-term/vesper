@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Ratio-1 blocks](docs/ratio1-block-pair-validation.md) · [Consecutive blocks](docs/block-pair-validation.md) · [Complete compressed block](docs/compressed-block-validation.md) · [Long-context Attention](docs/long-context-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Block-operation acceptance](docs/block-ops-qualification.md) · [Six consecutive blocks](docs/refreshed-block-chain-validation.md) · [Long-context Attention](docs/long-context-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 [Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
 
@@ -15,6 +15,14 @@ on heterogeneous consumer NVIDIA GPUs.
 
 This is a **verification runtime**, not a working text-generation engine. Native
 experts now run on the RTX 4090 through SSD, bounded RAM and two GPU cache tiers.
+Issue #7's five original block-operation checks are qualified by seventeen
+sealed original/native evidence groups. The latest gate executes complete
+blocks **20 -> 21 -> 22 -> 23 -> 24 -> 25**, including every actual hidden/HC
+coefficient handoff, source-20 KV/candidates, index refresh at 24 and reuse at 25.
+Full-model artifacts/Engram, memory governance, logits/sampling, model-wide
+quality and generation performance remain M2/M3 work. See the
+[acceptance evidence and exact scope](docs/block-ops-qualification.md).
+
 Direct comparisons with the pinned official implementation give:
 
 | Candidate | Scope | Result |
@@ -203,8 +211,9 @@ storage elements**, with zero differences, plus 648 unchanged block and 684
 Attention controls. Eight failure/retries, snapshots, five changed-input/state
 controls and replay without Torch/TileLang pass. The pair uses 26/24 actually
 selected original experts and four-position generated entry streams. This is
-separate from the 2/3 chain; refreshed-index blocks, longer complete chains and
-the full model remain unfinished. See the
+separate from the 2/3 chain; the six-block index-refresh follow-up is described
+in the [complete-chain report](docs/refreshed-block-chain-validation.md).
+Longer complete contexts and the full model remain unfinished. See the
 [ratio-1 complete-pair report](docs/ratio1-block-pair-validation.md).
 
 Vesper uses the released weights; its design does not require retraining.
@@ -386,6 +395,14 @@ The 2/3 run peaks at 586,739,584 / 75,496,320 bytes and the 20/21 run at
 in both. See the [pair resource scope](docs/block-pair-validation.md#atomic-state-and-bounded-resources)
 and [ratio-1 measurements](docs/ratio1-block-pair-validation.md#publication-and-resources)
 for exclusions and the distinction between allowances and process RSS.
+
+The complete 20..25 chain admits **9,728 MiB** of native host allowances,
+including retained fixtures; the optional original comparison adds **6,144 MiB**.
+Combined owned buffers during chain calls are capped at **2 GiB primary /
+384 MiB helper** and peak at 1,660,849,784 / 226,488,960 bytes. The original
+comparison's sampled available RAM remains above 125.95 GiB. The 32-GiB floor
+still applies; contexts/modules and optional compiler allocations are outside
+the GPU ledger. See the [complete-chain resource scope](docs/refreshed-block-chain-validation.md#atomic-publication-and-resources).
 
 ## Development
 

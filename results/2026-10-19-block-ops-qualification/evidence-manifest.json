@@ -1,0 +1,338 @@
+{
+  "schema_version": 1,
+  "probe": "issue7_evidence_manifest",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "evidence": [
+    {
+      "id": "sparse_attention",
+      "validator": "attention_validation",
+      "reference": {
+        "file": "results/2026-10-18-native-attention/attention.json",
+        "bytes": 160793,
+        "sha256": "25485ed4e6e5c399dfa71ba0ee37e565b1f6dc95d5ec8a11a581efac401a1bf3"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/sparse_attention.json",
+        "bytes": 105432,
+        "sha256": "7b6c06f18ebd3b76de8b0a451a5db36b2bf0a9b81a8e929e989b11c26c2bc05c"
+      }
+    },
+    {
+      "id": "window_kv",
+      "validator": "kv_validation",
+      "reference": {
+        "file": "results/2026-10-18-window-kv/window-kv.json",
+        "bytes": 2025198,
+        "sha256": "57b3421a0a6c9a792aea5805b16eb2a33f22612223d8395abec29061f8c0c3cc"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/window_kv.json",
+        "bytes": 1124080,
+        "sha256": "af9dbda9cccfee51666347b1017226e6f4ebd6117cabcf3b7538e59b1229545d"
+      }
+    },
+    {
+      "id": "normalization_rope",
+      "validator": "normalization_validation",
+      "reference": {
+        "file": "results/2026-10-18-normalization-rope/normalization.json",
+        "bytes": 2320031,
+        "sha256": "1fa30eca707766a5e37f8b08e09b4ba93c5099129b7b5e2b411844b72b003df8"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/normalization_rope.json",
+        "bytes": 1285854,
+        "sha256": "f068066d4c946cc81b914b7c41c8ebade4433ca80006e2515edc166de4133a5e"
+      }
+    },
+    {
+      "id": "window_projections",
+      "validator": "projection_validation",
+      "reference": {
+        "file": "results/2026-10-18-attention-projections/projections.json",
+        "bytes": 8938017,
+        "sha256": "a32aaeac1323cb5bba740340c1d872026ff5cc56336576ff46b0468ea8a413c2"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/window_projections.json",
+        "bytes": 5518626,
+        "sha256": "34b43087fdf4b11db58604b0062b1c0a591090b41f10f99c19ee9b8e0df8990a"
+      }
+    },
+    {
+      "id": "layer0_hc_block",
+      "validator": "block_validation",
+      "reference": {
+        "file": "results/2026-10-18-layer0-block/block.json",
+        "bytes": 3814182,
+        "sha256": "c0dcb2bf8dd09f8bec5247ec2084caad39a147a368c1cea0e5c0fe17f1fa2aa0"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/layer0_hc_block.json",
+        "bytes": 2142556,
+        "sha256": "6c4814e959e238b7ea8db193052408ce70032374374fffd5d5a4ab989bd9496e"
+      }
+    },
+    {
+      "id": "compression",
+      "validator": "compression_validation",
+      "reference": {
+        "file": "results/2026-10-18-compression/compression.json",
+        "bytes": 4955224,
+        "sha256": "71152868a65e6e5c43d4b2bd76e50e7193e3900b76fbea4ccf9068aa74b40d98"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/compression.json",
+        "bytes": 2848274,
+        "sha256": "0d81f193047e72172cabf526ff6a9e7f288f6a06205ffccf6d923cedacb2c6d3"
+      }
+    },
+    {
+      "id": "indexer",
+      "validator": "indexer_validation",
+      "reference": {
+        "file": "results/2026-10-18-indexer/indexer.json",
+        "bytes": 6608974,
+        "sha256": "932d7516f5a9f4f77f10d2fbc30f27e92f8723e9e0279a38a02d48c0e813f8d5"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/indexer.json",
+        "bytes": 3761245,
+        "sha256": "5d17b01b13cd1ad493ed7739127aca89d996d8fe3e8a86ad9c5f9658d22d7938"
+      }
+    },
+    {
+      "id": "compressed_attention",
+      "validator": "compressed_attention_validation",
+      "reference": {
+        "file": "results/2026-10-19-compressed-attention/compressed-attention.json",
+        "bytes": 17395831,
+        "sha256": "40eaf814543e47bd727793cb3608a2a498b147f308dd64d059fe94e408379fa4"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/compressed_attention.json",
+        "bytes": 10285993,
+        "sha256": "7e8a269884e15fb5450240021a3648d02a2bcb493bfd0817d043212161118a13"
+      }
+    },
+    {
+      "id": "long_context",
+      "validator": "long_context_validation",
+      "reference": {
+        "file": "results/2026-10-19-long-context/long-context.json",
+        "bytes": 40328669,
+        "sha256": "db5ec59f00f31ed3eb3278f69754145d03580a9be34b3a5cdae44b35b5470570"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/long_context.json",
+        "bytes": 2202859,
+        "sha256": "3fcded7d0c6383834beca99fe08b701030918ad597e094a4f64d36392f6316f5"
+      }
+    },
+    {
+      "id": "topology_2_3",
+      "validator": "topology_validation",
+      "reference": {
+        "file": "results/2026-10-19-attention-topology/group-2-3.json",
+        "bytes": 9113089,
+        "sha256": "94385f4274716bb2e5c7ec8bfe13ebb113643d32a9fbdbadf777e96339760228"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/topology_2_3.json",
+        "bytes": 828683,
+        "sha256": "82e014614b3d2ee2b90503d804480a56ac41f647bea131ff83452e64c7a689e3"
+      }
+    },
+    {
+      "id": "topology_8_9",
+      "validator": "topology_validation",
+      "reference": {
+        "file": "results/2026-10-19-attention-topology/group-8-9.json",
+        "bytes": 9113091,
+        "sha256": "a773d212458709a8beab1e2dc3c3f5344f2589c2773a183a76817e15da1ffa1d"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/topology_8_9.json",
+        "bytes": 828683,
+        "sha256": "8fcbb523f05a17691ed9e108e470cd59f69a3e1f8dce226d95e9e82b8c6a7976"
+      }
+    },
+    {
+      "id": "topology_14_15",
+      "validator": "topology_validation",
+      "reference": {
+        "file": "results/2026-10-19-attention-topology/group-14-15.json",
+        "bytes": 9121341,
+        "sha256": "941e9f07eb5560f765b9d96cebf45ea93d78084365cef20481cb0935141a1b5f"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/topology_14_15.json",
+        "bytes": 836557,
+        "sha256": "a4efd4159acd6c7eef8d141b87934e727eee5e4271d800c44fe05716cd87be73"
+      }
+    },
+    {
+      "id": "topology_20_21_24_25_28_29_32_33_36_37",
+      "validator": "topology_validation",
+      "reference": {
+        "file": "results/2026-10-19-attention-topology/group-20-21-24-25-28-29-32-33-36-37.json",
+        "bytes": 37719741,
+        "sha256": "1c8bc6b0d80feeddd3838f25bfe38548f4a3ac13f6c0e255d359c9ba1b121eec"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/topology_20_21_24_25_28_29_32_33_36_37.json",
+        "bytes": 1582518,
+        "sha256": "5ed832d4c7e99f9625192e72057a053d2b8425a366c5a5e5f254ccea8b41251f"
+      }
+    },
+    {
+      "id": "layer2_block",
+      "validator": "compressed_block_validation",
+      "reference": {
+        "file": "results/2026-10-19-compressed-block/block.json",
+        "bytes": 1952503,
+        "sha256": "f978e72caeec4e9454cca3bd2cf01548ddcde850c6ad8b25b14331777289095f"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/layer2_block.json",
+        "bytes": 60961,
+        "sha256": "ecd251383766d23781169c41151675d4fc31eb1158343edd37d1f21d207fbe07"
+      }
+    },
+    {
+      "id": "pair_2_3",
+      "validator": "block_pair_validation",
+      "reference": {
+        "file": "results/2026-10-19-block-pair/pair.json",
+        "bytes": 3505371,
+        "sha256": "733a67b86d404d220c02ec755637e4d9ceea094872a2839f7e7d498fe52b1f67"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/pair_2_3.json",
+        "bytes": 117943,
+        "sha256": "e2e3fa498de2cd84307b629cc2fe8b82bdd97073a363eafe20aad7017d98bed0"
+      }
+    },
+    {
+      "id": "pair_20_21",
+      "validator": "block_pair_validation",
+      "reference": {
+        "file": "results/2026-10-19-ratio1-block-pair/pair.json",
+        "bytes": 3577964,
+        "sha256": "051e099765baa20deaf09e37a1022afb181f35933b0abde3268010ea76e4af85"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/pair_20_21.json",
+        "bytes": 118516,
+        "sha256": "ca913f3142179b53164e77b064bb742e6d7bc2644e77333e3d02c917ece96d00"
+      }
+    },
+    {
+      "id": "refresh_chain",
+      "validator": "block_chain_validation",
+      "reference": {
+        "file": "results/2026-10-19-refresh-block-chain/chain.json",
+        "bytes": 10817181,
+        "sha256": "c00ebb289006adb2e758e5fcfca3addf8670e75ea308ee6b34aab4c5585dc015"
+      },
+      "native_recheck": {
+        "file": "results/2026-10-19-block-ops-qualification/rechecks/refresh_chain.json",
+        "bytes": 284461,
+        "sha256": "e20d9d3f2835bd3be8cf23f9c08c77006c92c5e97182032b375e6aa4cccd0369"
+      }
+    }
+  ],
+  "criteria": [
+    {
+      "id": "position_kv_sharing_selection",
+      "criterion": "Preserve rotary/position behavior, compressed and sliding-window KV state, source-layer sharing and sparse index selection.",
+      "evidence": [
+        "sparse_attention",
+        "window_kv",
+        "normalization_rope",
+        "window_projections",
+        "compression",
+        "indexer",
+        "compressed_attention",
+        "long_context",
+        "topology_2_3",
+        "topology_8_9",
+        "topology_14_15",
+        "topology_20_21_24_25_28_29_32_33_36_37",
+        "refresh_chain"
+      ]
+    },
+    {
+      "id": "quantization_rollback",
+      "criterion": "Preserve original activation/KV quantization and rollback/state semantics.",
+      "evidence": [
+        "window_kv",
+        "compression",
+        "indexer",
+        "compressed_attention",
+        "long_context",
+        "topology_2_3",
+        "topology_8_9",
+        "topology_14_15",
+        "topology_20_21_24_25_28_29_32_33_36_37",
+        "layer0_hc_block",
+        "layer2_block",
+        "pair_2_3",
+        "pair_20_21",
+        "refresh_chain"
+      ]
+    },
+    {
+      "id": "rms_hc_residuals",
+      "criterion": "Qualify RMS normalization, Hyper-Connection mixes/Sinkhorn and residual boundaries against the pinned source.",
+      "evidence": [
+        "normalization_rope",
+        "layer0_hc_block",
+        "layer2_block",
+        "pair_2_3",
+        "pair_20_21",
+        "refresh_chain"
+      ]
+    },
+    {
+      "id": "bounded_intermediate_gates",
+      "criterion": "Use bounded per-component fixtures and publish exact intermediate comparisons before connecting the full block.",
+      "evidence": [
+        "sparse_attention",
+        "window_kv",
+        "normalization_rope",
+        "window_projections",
+        "layer0_hc_block",
+        "compression",
+        "indexer",
+        "compressed_attention",
+        "long_context",
+        "topology_2_3",
+        "topology_8_9",
+        "topology_14_15",
+        "topology_20_21_24_25_28_29_32_33_36_37",
+        "layer2_block",
+        "pair_2_3",
+        "pair_20_21",
+        "refresh_chain"
+      ]
+    },
+    {
+      "id": "prefill_decode_scope",
+      "criterion": "Cover chunk/prefill/decode boundaries; keep batching and distributed scope explicit.",
+      "evidence": [
+        "window_kv",
+        "window_projections",
+        "compression",
+        "compressed_attention",
+        "long_context",
+        "topology_2_3",
+        "topology_8_9",
+        "topology_14_15",
+        "topology_20_21_24_25_28_29_32_33_36_37",
+        "refresh_chain"
+      ]
+    }
+  ]
+}

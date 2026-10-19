@@ -13,8 +13,9 @@ three queries, subsequent one-query decode and at most **64 tokens**. Inputs are
 generated independently at each layer's `Attention.forward` boundary. These are
 three Attention profiles, not three connected Transformer blocks or captured
 later-layer activations. Other layers, larger contexts, Engram, full-model
-quality/logits/sampling and generation speed remain unfinished. Issue #7 and M2
-remain open.
+quality/logits/sampling and generation speed remain unfinished. Issue #7 was
+still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open.
 
 The subsequent [long-context probe](long-context-validation.md) now covers
 continuous 1,152/260-token generated-input streams, window wraps, actual top-512

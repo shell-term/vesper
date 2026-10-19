@@ -10,7 +10,8 @@ It does not qualify a complete compressed Attention layer. The subsequent
 named key/candidate/index handoffs separately. The later
 [connected probe](compressed-attention-validation.md) joins profiles 2/20/24
 and compressed-KV sharing 20-to-24 at context <=64. Other profiles and larger
-contexts remain unfinished. Issue #7 and M2 stay open.
+contexts remain unfinished. Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open.
 
 ## Results
 

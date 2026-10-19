@@ -7,7 +7,8 @@ Native Hyper-Connections (HC) and residuals now connect the qualified
 Transformer block. The qualified block profile is **one rank, batch one, one
 token per call, uncompressed window KV**. The subsequent
 [compression probe](compression-validation.md) qualifies original compressor/cache
-construction. Other layers, indexed/shared KV and Engram remain separate gates. Issue #7 and M2 stay open; text generation
+construction. Other layers, indexed/shared KV and Engram remain separate gates. Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open; text generation
 and full-model quality are unfinished.
 
 ## Results

@@ -108,5 +108,7 @@ before GPU execution, then uses NumPy/native CUDA without Torch/TileLang.
 Comparison/recheck fetch no model weights. Full upstream histories, refreshed
 index blocks, other complete roles, longer complete-chain context/batching,
 all forty bindings, Engram, logits/sampling, model quality and generation speed
-remain pending. [Issue #7](https://github.com/shell-term/vesper/issues/7) and M2
-remain open for those gates.
+remain pending. These remain M2 integration gates. The later
+[six-block chain](refreshed-block-chain-validation.md) covers index refresh
+with actual intervening-layer execution. The original Issue #7 checks are
+qualified separately in the [acceptance audit](block-ops-qualification.md).

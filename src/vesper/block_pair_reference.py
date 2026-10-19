@@ -13,10 +13,12 @@ from .formats import bf16_values
 
 
 class BlockPairOracle:
+    _validate_layers = staticmethod(validate_block_pair)
+
     def __init__(self, arrays, hc, sharing, norm, moe):
         self.arrays, self.hc, self.sharing, self.norm, self.moe = arrays, hc, sharing, norm, moe
-        self.layers = validate_block_pair(sharing.layers)
-        self.source, self.consumer = self.layers
+        self.layers = self._validate_layers(sharing.layers)
+        self.source, self.consumer = self.layers[0], self.layers[-1]
         self.forward = sharing.p[self.source].method("Block", "forward")
         self.block_controls, self.attention_controls = [], []
 
@@ -55,15 +57,19 @@ class BlockPairOracle:
             stages["output_bf16"], stages["next_pre_mix_fp32"] = out, ffn["pre_fp32"]
             carry[:] = out, ffn["pre_fp32"]
         def finalize(attention):
-            result.update({f"layer{l}": phases[l][0] for l in self.layers})
-            result.update(attention=attention, handoff_hidden_bf16=phases[self.consumer][3].copy(),
-                handoff_pre_mix_fp32=phases[self.consumer][0]["incoming_pre_fp32"].copy(), output_bf16=carry[0], next_pre_mix_fp32=carry[1])
+            result.update(self._result(phases, attention, carry))
             return result
         self.sharing.diagnostic.step_connected(prepare, finish, start_pos=position, finalize=finalize)
         state = self.sharing.diagnostic.inspect()["state"]
         self._full_controls(hidden, pre, image, position, result, state)
         self.last_result, self.last_initial_pre = result, pre
         return result, state
+
+    def _result(self, phases, attention, carry):
+        result = {f"layer{l}": phases[l][0] for l in self.layers}
+        result.update(attention=attention, handoff_hidden_bf16=phases[self.consumer][3].copy(),
+            handoff_pre_mix_fp32=phases[self.consumer][0]["incoming_pre_fp32"].copy(), output_bf16=carry[0], next_pre_mix_fp32=carry[1])
+        return result
 
     def _full_controls(self, hidden, pre, image, position, result, state):
         torch = self.hc[self.source].torch

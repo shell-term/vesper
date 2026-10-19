@@ -11,7 +11,8 @@ to window wraps, actual top-512 truncation in both compression ratios, and
 candidate pruning inside the complete Attention path. Inputs are generated
 independently at each Attention layer. These are not captured later-layer
 activations, complete Transformer blocks or an autoregressive full-model run.
-Issue #7 and M2 remain open.
+Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open.
 
 ## Continuous streams and explicit diagnostic history
 

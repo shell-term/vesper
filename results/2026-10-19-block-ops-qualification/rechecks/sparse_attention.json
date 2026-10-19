@@ -1,0 +1,2624 @@
+{
+  "schema_version": 1,
+  "probe": "native_attention_recheck",
+  "status": "pass",
+  "reference_report_sha256": "25485ed4e6e5c399dfa71ba0ee37e565b1f6dc95d5ec8a11a581efac401a1bf3",
+  "bundle_manifest_sha256": "b0e50760224c68bb2206bceff1f17d5ef40748e7b0df60b56efe96c7320a98c4",
+  "device": {
+    "ordinal": 0,
+    "name": "NVIDIA GeForce RTX 4090",
+    "compute_capability": "8.9",
+    "total_bytes": 25756696576
+  },
+  "cases": [
+    {
+      "heads": 64,
+      "dimension": 256,
+      "case": 0,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 1,
+      "mode": "normal",
+      "input_sha256": {
+        "q": "05436292677dcd75764aac8c7740d10e8b6893ecca11ac3271ab8ffecefbdf2c",
+        "kv": "e230fbca344f2a06c527f479fe6c2038ab217d2bd17bddc8367d1f316b7ebdb9",
+        "sink": "7576647651b138fce14a008e3bf2388acd193039b4e7bda0a24ba45aca949300",
+        "indices": "a5dcf5b8418dfafec16079148ec90cf81dfc6276c1cce220017c782ecb7d7aea"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 16384,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "d79410334fa50af2aa9570e837eda17710eb8a89cd1fb6127ba6804bdefdba78",
+          "actual_sha256": "d79410334fa50af2aa9570e837eda17710eb8a89cd1fb6127ba6804bdefdba78"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "d79410334fa50af2aa9570e837eda17710eb8a89cd1fb6127ba6804bdefdba78",
+          "actual_sha256": "d79410334fa50af2aa9570e837eda17710eb8a89cd1fb6127ba6804bdefdba78",
+          "elements": 16384
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "cc952f3807f1f3ffed3a11306d053e81ea5154fdf1a95909332d99582c63abd8",
+          "actual_sha256": "cc952f3807f1f3ffed3a11306d053e81ea5154fdf1a95909332d99582c63abd8",
+          "elements": 4096
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "e0da17f6fce449e97d13f760345e8135bc559168def1a88e9c9b534898a93d6a",
+          "actual_sha256": "e0da17f6fce449e97d13f760345e8135bc559168def1a88e9c9b534898a93d6a",
+          "elements": 4096
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "e69b17db330de916b40b49c0b69e4da305f1f867e119ded709fccfd885d63a80",
+          "actual_sha256": "e69b17db330de916b40b49c0b69e4da305f1f867e119ded709fccfd885d63a80",
+          "elements": 320
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "62b8e6fccfd26d5c8cab977c4499ae5e9b7d02b509bc340e4ef583acb89a037a",
+          "actual_sha256": "62b8e6fccfd26d5c8cab977c4499ae5e9b7d02b509bc340e4ef583acb89a037a",
+          "elements": 16384
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "a1d9710116aa0ec4412687243191e012915b74cf683e0432c8ac6dc3780d7afe",
+          "actual_sha256": "a1d9710116aa0ec4412687243191e012915b74cf683e0432c8ac6dc3780d7afe",
+          "elements": 16384
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 256,
+      "case": 1,
+      "batch": 1,
+      "sequence": 3,
+      "topk": 32,
+      "mode": "normal",
+      "input_sha256": {
+        "q": "48a19ca66ac08a4499523efff71d7ac52913771f10ebf8a6c969e7a01222245c",
+        "kv": "3084261e3e5f95489c5f3389f53f9e65ced2623cd9522aff2c67967ed1f1ae7d",
+        "sink": "11001eaba75624288462e37201076849de3e66168b55ec36e26c1c9f9c29d1f3",
+        "indices": "c13b82652a718f9ff1146c6f337667ca9c295c36303e89210ce0a1dcae07e41b"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 49152,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "0557df8e6aa900a190dff23627820a3e1671a123e40853e837e4778896529210",
+          "actual_sha256": "0557df8e6aa900a190dff23627820a3e1671a123e40853e837e4778896529210"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "0557df8e6aa900a190dff23627820a3e1671a123e40853e837e4778896529210",
+          "actual_sha256": "0557df8e6aa900a190dff23627820a3e1671a123e40853e837e4778896529210",
+          "elements": 49152
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "1d7a53cd09bfb6c5270b65d9770ad42057a285917a1023f8783075305edabbd4",
+          "actual_sha256": "1d7a53cd09bfb6c5270b65d9770ad42057a285917a1023f8783075305edabbd4",
+          "elements": 12288
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "ff14fb424463ccaff3d21b3ed835743b575ef98ae27387364c2c3bd7ec491d2e",
+          "actual_sha256": "ff14fb424463ccaff3d21b3ed835743b575ef98ae27387364c2c3bd7ec491d2e",
+          "elements": 12288
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "0fcca481a5c062c512df26161f65c5fb5bdefcad86e4ba21eaa3f7d38bdbd8ea",
+          "actual_sha256": "0fcca481a5c062c512df26161f65c5fb5bdefcad86e4ba21eaa3f7d38bdbd8ea",
+          "elements": 960
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "c3a2254d4701c512530e448639af37542ff0d89228baef383a62e301c47b7b6f",
+          "actual_sha256": "c3a2254d4701c512530e448639af37542ff0d89228baef383a62e301c47b7b6f",
+          "elements": 49152
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "ada32659dd58234056ce28e5601e797f834d18b098bf025c176fff2be6393cc1",
+          "actual_sha256": "ada32659dd58234056ce28e5601e797f834d18b098bf025c176fff2be6393cc1",
+          "elements": 49152
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 256,
+      "case": 2,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 64,
+      "mode": "masked",
+      "input_sha256": {
+        "q": "79cfc0c12a923f1bbfcfbafabbd31bfe2fa50ebf3da4a528871e5a9154937ee9",
+        "kv": "4e40d3e1fe4a594901875d435db91800ae28003ca2d2a86e2f5a933b1b2f5597",
+        "sink": "8b2efac4f92a299c524c2a464f1850010d35bb1c5bd3a9859d42d816455b8b96",
+        "indices": "9f8c38b260df4b241b9c14cd09d9db46048be56c68e01dd239ffaabd64669337"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "904daa8a3c45fb13ff80eddb8a857c7ef3ea4a453e7f3a46b1957714e5a45fd4",
+          "actual_sha256": "904daa8a3c45fb13ff80eddb8a857c7ef3ea4a453e7f3a46b1957714e5a45fd4"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "904daa8a3c45fb13ff80eddb8a857c7ef3ea4a453e7f3a46b1957714e5a45fd4",
+          "actual_sha256": "904daa8a3c45fb13ff80eddb8a857c7ef3ea4a453e7f3a46b1957714e5a45fd4",
+          "elements": 32768
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "2f853be8515150582ae7ec5582da4afb6fba9dc406753563cfb2fb6559fe17ee",
+          "actual_sha256": "2f853be8515150582ae7ec5582da4afb6fba9dc406753563cfb2fb6559fe17ee",
+          "elements": 8192
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "5131d55d9cff3c4449175ceb452a1f8191eaaffada645c6b29c09f48325ce0bc",
+          "actual_sha256": "5131d55d9cff3c4449175ceb452a1f8191eaaffada645c6b29c09f48325ce0bc",
+          "elements": 8192
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "77ce26d5c412e5d97fa5367d3d935ff7d502a7ca05d773c55dc3b8b42c66718a",
+          "actual_sha256": "77ce26d5c412e5d97fa5367d3d935ff7d502a7ca05d773c55dc3b8b42c66718a",
+          "elements": 640
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "f19149cc98ce8bb08599217b50aeeff350ff93b24869df24bb8196745de4c89c",
+          "actual_sha256": "f19149cc98ce8bb08599217b50aeeff350ff93b24869df24bb8196745de4c89c",
+          "elements": 32768
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "eb14ac0664f56f2c51858e63d103f3cc10b876e1c4243c1fd6d86a65375de64d",
+          "actual_sha256": "eb14ac0664f56f2c51858e63d103f3cc10b876e1c4243c1fd6d86a65375de64d",
+          "elements": 32768
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 256,
+      "case": 3,
+      "batch": 2,
+      "sequence": 2,
+      "topk": 65,
+      "mode": "masked",
+      "input_sha256": {
+        "q": "7d9a42a0b1e50522bfbe43fe811ad95d9b7e8b581e0a6b4b7e16786417455de3",
+        "kv": "caad1a6fc52b59d092229ea760b5aaa74ecf4f1316dcacd2ed0490a8a32e71dd",
+        "sink": "f716dd68b784e01dd0f200a2e63dbdc3600cda432057a60c51a0061382233577",
+        "indices": "587373e14c2a9e118ceae402baa09b33c0d3f8ed50b1a18cb73ddf64416e9631"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 65536,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "b03fc7cf7fa7acaebcc97b6142794749107be173b9e0797af2f5e02f38cc2418",
+          "actual_sha256": "b03fc7cf7fa7acaebcc97b6142794749107be173b9e0797af2f5e02f38cc2418"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "b03fc7cf7fa7acaebcc97b6142794749107be173b9e0797af2f5e02f38cc2418",
+          "actual_sha256": "b03fc7cf7fa7acaebcc97b6142794749107be173b9e0797af2f5e02f38cc2418",
+          "elements": 65536
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "fcf93998080f113f2a9d1c74d2c457293abecb1a491e20bc07ef6c572fb4d6fb",
+          "actual_sha256": "fcf93998080f113f2a9d1c74d2c457293abecb1a491e20bc07ef6c572fb4d6fb",
+          "elements": 32768
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "a5a0df1e2beb5a7131fe38218fa020f48b2cd380d9069c03fffe4b85102c41a0",
+          "actual_sha256": "a5a0df1e2beb5a7131fe38218fa020f48b2cd380d9069c03fffe4b85102c41a0",
+          "elements": 32768
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "b7c1abbef032794238b472bd31adf5d29c32adcfbef822064d15b1d74914da94",
+          "actual_sha256": "b7c1abbef032794238b472bd31adf5d29c32adcfbef822064d15b1d74914da94",
+          "elements": 2560
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "669b071b29c071bbe45e1f64e613b21326cfcf047099f5571dbe44e8eebb49d6",
+          "actual_sha256": "669b071b29c071bbe45e1f64e613b21326cfcf047099f5571dbe44e8eebb49d6",
+          "elements": 131072
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "327b65b25d306fc5182a6ccd89b504f78bfd6a65dc6bc56c4e130214be9d0a24",
+          "actual_sha256": "327b65b25d306fc5182a6ccd89b504f78bfd6a65dc6bc56c4e130214be9d0a24",
+          "elements": 65536
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 256,
+      "case": 4,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 128,
+      "mode": "empty",
+      "input_sha256": {
+        "q": "499cfae9faec593da0df34ce4a00b42d3c425f83a8b136ec09d06221c77691fa",
+        "kv": "e6ef1b17118f667b324473fd775836ca5a06bcc10f4a23c27f20dd27713b492f",
+        "sink": "18b4d615b2ae6fb67bd1194ff9663ad3ef0b37f9c4aab74eb08f93667e9d503f",
+        "indices": "5f4ecdb7b71c3e403983fe405cddcdc2f2576b655fdb3e80d94a6f7c32e58bc2"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "elements": 32768
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "a8a633554471dcbb5786c2707791c9369cde21d68ff85a46b97c6526cf8e0524",
+          "actual_sha256": "a8a633554471dcbb5786c2707791c9369cde21d68ff85a46b97c6526cf8e0524",
+          "elements": 16384
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "elements": 16384
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "42b9b4f98dee0c47b19c7d498e2dfe001763d5a1eae4110c0fef0198fba8f3b2",
+          "actual_sha256": "42b9b4f98dee0c47b19c7d498e2dfe001763d5a1eae4110c0fef0198fba8f3b2",
+          "elements": 1280
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "actual_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "elements": 65536
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "elements": 32768
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 256,
+      "case": 5,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 193,
+      "mode": "duplicates",
+      "input_sha256": {
+        "q": "fd107911a6fea7893db40602a24a4e06559bdf05481f99bf2d6f4a60489fd3a6",
+        "kv": "44eb53b1590353e1fe79b47dd573743ccc9008437e66fc192d00049320d29f89",
+        "sink": "81437daddf8655d5eb236dc37fcab293746d993cbcde683b682898580751a7f4",
+        "indices": "6a3d5325c6665df17a36089f7b436a90d45c1408a9e34e2a8c6882b23351a08d"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "364f275f8bf8f540d3614e2861d6a09769cbdf580d130713dfba6d0ba3094498",
+          "actual_sha256": "364f275f8bf8f540d3614e2861d6a09769cbdf580d130713dfba6d0ba3094498"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "364f275f8bf8f540d3614e2861d6a09769cbdf580d130713dfba6d0ba3094498",
+          "actual_sha256": "364f275f8bf8f540d3614e2861d6a09769cbdf580d130713dfba6d0ba3094498",
+          "elements": 32768
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "be1e7658a1eebc80684c2cb12aafe3636b00245f7e8063e58c33c1a3f66c92ec",
+          "actual_sha256": "be1e7658a1eebc80684c2cb12aafe3636b00245f7e8063e58c33c1a3f66c92ec",
+          "elements": 32768
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "9d0215bd8d0aef642dfa480c055a9e419b916d665909122b3eb016bcfeb40025",
+          "actual_sha256": "9d0215bd8d0aef642dfa480c055a9e419b916d665909122b3eb016bcfeb40025",
+          "elements": 32768
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "fcf2bbc027323c7f34d63dc2d26c29839a27255fa1ea218206a639308789a4ff",
+          "actual_sha256": "fcf2bbc027323c7f34d63dc2d26c29839a27255fa1ea218206a639308789a4ff",
+          "elements": 2560
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "906ccdbe25f6fe572af576a2bdeb6477e0132536b4b364d9cea609caacafb185",
+          "actual_sha256": "906ccdbe25f6fe572af576a2bdeb6477e0132536b4b364d9cea609caacafb185",
+          "elements": 131072
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "9e6a44c647a010996ceb9dbc49f7982712e07155fc18f3c53ea7fc0fdfd0d87b",
+          "actual_sha256": "9e6a44c647a010996ceb9dbc49f7982712e07155fc18f3c53ea7fc0fdfd0d87b",
+          "elements": 32768
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 256,
+      "case": 6,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 128,
+      "mode": "zeros",
+      "input_sha256": {
+        "q": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+        "kv": "7bfa89ee41f18871269c5b9b6970fc8411661211c4f11631ef51eab4afd8f839",
+        "sink": "e86768247140a3c226c5650d2f587054948613d5216d61b83050fbca2446d400",
+        "indices": "0f54fbe7ca10206fe5ea66382bc27dbe88042578351fb4334602d1c362569bf0"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 16384,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "elements": 16384
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "elements": 8192
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "46ac448298521650c9dfcc1d8dad9f941244e7bb071dc84c6841750d864015a9",
+          "actual_sha256": "46ac448298521650c9dfcc1d8dad9f941244e7bb071dc84c6841750d864015a9",
+          "elements": 8192
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "e26d192442cc59a256c39b950dc3391ee9657d2520ccb05d5ba02035dbffbda1",
+          "actual_sha256": "e26d192442cc59a256c39b950dc3391ee9657d2520ccb05d5ba02035dbffbda1",
+          "elements": 640
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "elements": 32768
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "elements": 16384
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 256,
+      "case": 7,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 65,
+      "mode": "signed_zeros",
+      "input_sha256": {
+        "q": "05bc9ce65f21ac5f7143ffe72f51a14b418775644a461398a715e22e957b3dff",
+        "kv": "45ed38c5221ec26aeaa7ad817a058f4f30c51145a3556d70c12cde5c99c9b097",
+        "sink": "f388a012a817b4f7062620c4a5a49a55693c619baec52087c0cb842141eac4bf",
+        "indices": "b4a865029785c14f56211e82b92309b79b370379c3afe68d54006828f1462eff"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "elements": 32768
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "110e0985f9ada109351a384aaa3a01899d1f71fb3cfcf49e7a88920eb7a9968b",
+          "actual_sha256": "110e0985f9ada109351a384aaa3a01899d1f71fb3cfcf49e7a88920eb7a9968b",
+          "elements": 16384
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "559d7ebc47e6d3ae0a32be9f3ccd05814029290f95960fabd451eabcbc23c980",
+          "actual_sha256": "559d7ebc47e6d3ae0a32be9f3ccd05814029290f95960fabd451eabcbc23c980",
+          "elements": 16384
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "221e3cf6c8dc68d0100346173a37b397ff2b588aec0414461d84c4f69ebb3fb8",
+          "actual_sha256": "221e3cf6c8dc68d0100346173a37b397ff2b588aec0414461d84c4f69ebb3fb8",
+          "elements": 1280
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "actual_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "elements": 65536
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "elements": 32768
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 256,
+      "case": 8,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 127,
+      "mode": "normal",
+      "input_sha256": {
+        "q": "c5f0316b4914e053533bc5780ea5e55bbab06684c52d179f47133eefb9630483",
+        "kv": "33526b2068a6cb6b3fc8fcb95cb3ae42cd383368ecc2c2340102e36390e8c68b",
+        "sink": "23b481e811c860a73d1b9cc75f0f49ed982de15e9a09ad1c6e8fa49a9befdbbe",
+        "indices": "66297df60f3a5dd9c5ff583ee255c17a6c407ecfae4b7a46d9e2f168a88c1e26"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 16384,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "ff73de2f20ce7bf0f6aff48eff7c98fc71891bb990033e7e11cb114f42d3edb6",
+          "actual_sha256": "ff73de2f20ce7bf0f6aff48eff7c98fc71891bb990033e7e11cb114f42d3edb6"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "ff73de2f20ce7bf0f6aff48eff7c98fc71891bb990033e7e11cb114f42d3edb6",
+          "actual_sha256": "ff73de2f20ce7bf0f6aff48eff7c98fc71891bb990033e7e11cb114f42d3edb6",
+          "elements": 16384
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "4402973867a5af4792f23cc6f907c99d5f78a6ead7bdaa95c8693d81adf43375",
+          "actual_sha256": "4402973867a5af4792f23cc6f907c99d5f78a6ead7bdaa95c8693d81adf43375",
+          "elements": 8192
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "8866b714422521b7e63b2badd02f3b67a70897d9f9cc2ea2fc26751427d3cad2",
+          "actual_sha256": "8866b714422521b7e63b2badd02f3b67a70897d9f9cc2ea2fc26751427d3cad2",
+          "elements": 8192
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "e60d21f412784415e05078f3e7ad30eab253ba4d14ba645030931363e2c7a605",
+          "actual_sha256": "e60d21f412784415e05078f3e7ad30eab253ba4d14ba645030931363e2c7a605",
+          "elements": 640
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "6a619c5b8b9b7ada2df566028fcf7ec752bc94cd68034fbe68be1dcab25ec0fe",
+          "actual_sha256": "6a619c5b8b9b7ada2df566028fcf7ec752bc94cd68034fbe68be1dcab25ec0fe",
+          "elements": 32768
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "1b327adbbcf0f06cc756224eee86975a906365c0c3a0f1c49f1e95427a114184",
+          "actual_sha256": "1b327adbbcf0f06cc756224eee86975a906365c0c3a0f1c49f1e95427a114184",
+          "elements": 16384
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 256,
+      "case": 9,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 128,
+      "mode": "ties",
+      "input_sha256": {
+        "q": "a2c08c06829e47e99274f88377b06d592ceae70d812ec2998bfdb663ed486a07",
+        "kv": "426a37e7e9cde86983b1f524634adec2e30a12a737eeb109270aa898cbbbb54d",
+        "sink": "5341e6b2646979a70e57653007a1f310169421ec9bdd9f1a5648f75ade005af1",
+        "indices": "d7f0941af16d394ce591ca99a1cb12b80f972cd83a89f4a80ff1ecfd2013ab80"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "a2c08c06829e47e99274f88377b06d592ceae70d812ec2998bfdb663ed486a07",
+          "actual_sha256": "a2c08c06829e47e99274f88377b06d592ceae70d812ec2998bfdb663ed486a07"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "a2c08c06829e47e99274f88377b06d592ceae70d812ec2998bfdb663ed486a07",
+          "actual_sha256": "a2c08c06829e47e99274f88377b06d592ceae70d812ec2998bfdb663ed486a07",
+          "elements": 32768
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "eb7cc1ba68de70bbbc55659bf69f11c838b9923721eb882e090ed3b070e16364",
+          "actual_sha256": "eb7cc1ba68de70bbbc55659bf69f11c838b9923721eb882e090ed3b070e16364",
+          "elements": 16384
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "3513f7981d1ead42bde088485afbba413d675b83c061c6362634bcb044bf8613",
+          "actual_sha256": "3513f7981d1ead42bde088485afbba413d675b83c061c6362634bcb044bf8613",
+          "elements": 16384
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "3db6986c5f9831d56f3f73602aafc25bcdd26f16625cb73f7808fca58e352d94",
+          "actual_sha256": "3db6986c5f9831d56f3f73602aafc25bcdd26f16625cb73f7808fca58e352d94",
+          "elements": 1280
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "55161db899b5fd492d543c0ff3ae486e4e1059c3cadbd9c98f65f31b11a23dc8",
+          "actual_sha256": "55161db899b5fd492d543c0ff3ae486e4e1059c3cadbd9c98f65f31b11a23dc8",
+          "elements": 65536
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "c295ce2cff0e91fc2667353a1e2f7afb42b8910d04cbce5be68e9dd8f36566cb",
+          "actual_sha256": "c295ce2cff0e91fc2667353a1e2f7afb42b8910d04cbce5be68e9dd8f36566cb",
+          "elements": 32768
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 256,
+      "case": 10,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 129,
+      "mode": "sink_positive",
+      "input_sha256": {
+        "q": "a70fb11e156369bd663bea45395768e5ff7229d6320627f884fbc5a009fe29b4",
+        "kv": "178f802971524062e70307de811fc1a4aef6a7b796c0f888419220e1b9269364",
+        "sink": "282bec2d67fdd884738fe4aed779d35d9212b33420e0e75efccc757bb3fc6835",
+        "indices": "caf35557fb06e9f856b8aa0ccac3642773ee00aba7c9601d5929649e9094fb82"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 16384,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "7ed433d2f9b345ba11ce1ba0a559d7d286eb6b9efde4c4ab73ab4d8770126685",
+          "actual_sha256": "7ed433d2f9b345ba11ce1ba0a559d7d286eb6b9efde4c4ab73ab4d8770126685"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "7ed433d2f9b345ba11ce1ba0a559d7d286eb6b9efde4c4ab73ab4d8770126685",
+          "actual_sha256": "7ed433d2f9b345ba11ce1ba0a559d7d286eb6b9efde4c4ab73ab4d8770126685",
+          "elements": 16384
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "38fe5cd85ffc78fdf4285a980e76b06fb026510519865ccfc3f5492deda93209",
+          "actual_sha256": "38fe5cd85ffc78fdf4285a980e76b06fb026510519865ccfc3f5492deda93209",
+          "elements": 12288
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "45ffa56bd4fdf72bc48b5b4d1fff2dc836f6022c688a29cbd1f62b92e8562020",
+          "actual_sha256": "45ffa56bd4fdf72bc48b5b4d1fff2dc836f6022c688a29cbd1f62b92e8562020",
+          "elements": 12288
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "39fd027aaf36bc6123449403d905594e9c1083669fd5744158721984c4d5e788",
+          "actual_sha256": "39fd027aaf36bc6123449403d905594e9c1083669fd5744158721984c4d5e788",
+          "elements": 960
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "4d5f59c2bb0dcf6a04c6b170bc93e93012b01ea29fafb8758a93473c594ecf1a",
+          "actual_sha256": "4d5f59c2bb0dcf6a04c6b170bc93e93012b01ea29fafb8758a93473c594ecf1a",
+          "elements": 49152
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "a63214e17afb1568b2d5f89f8b9f93a82a6bde5c59f58e861e33c5b3fab0e65c",
+          "actual_sha256": "a63214e17afb1568b2d5f89f8b9f93a82a6bde5c59f58e861e33c5b3fab0e65c",
+          "elements": 16384
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 256,
+      "case": 11,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 129,
+      "mode": "sink_negative",
+      "input_sha256": {
+        "q": "a70fb11e156369bd663bea45395768e5ff7229d6320627f884fbc5a009fe29b4",
+        "kv": "178f802971524062e70307de811fc1a4aef6a7b796c0f888419220e1b9269364",
+        "sink": "dd19c33a4c672d87940410177f37aebaa487ce6f73ed438b9a25fe47add9d429",
+        "indices": "caf35557fb06e9f856b8aa0ccac3642773ee00aba7c9601d5929649e9094fb82"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 16384,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "5467c40ea341977c154d7892bb76d70e40a2d5bac7504c0098d616f39bf0a118",
+          "actual_sha256": "5467c40ea341977c154d7892bb76d70e40a2d5bac7504c0098d616f39bf0a118"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "5467c40ea341977c154d7892bb76d70e40a2d5bac7504c0098d616f39bf0a118",
+          "actual_sha256": "5467c40ea341977c154d7892bb76d70e40a2d5bac7504c0098d616f39bf0a118",
+          "elements": 16384
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "38fe5cd85ffc78fdf4285a980e76b06fb026510519865ccfc3f5492deda93209",
+          "actual_sha256": "38fe5cd85ffc78fdf4285a980e76b06fb026510519865ccfc3f5492deda93209",
+          "elements": 12288
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "45ffa56bd4fdf72bc48b5b4d1fff2dc836f6022c688a29cbd1f62b92e8562020",
+          "actual_sha256": "45ffa56bd4fdf72bc48b5b4d1fff2dc836f6022c688a29cbd1f62b92e8562020",
+          "elements": 12288
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "39fd027aaf36bc6123449403d905594e9c1083669fd5744158721984c4d5e788",
+          "actual_sha256": "39fd027aaf36bc6123449403d905594e9c1083669fd5744158721984c4d5e788",
+          "elements": 960
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "4d5f59c2bb0dcf6a04c6b170bc93e93012b01ea29fafb8758a93473c594ecf1a",
+          "actual_sha256": "4d5f59c2bb0dcf6a04c6b170bc93e93012b01ea29fafb8758a93473c594ecf1a",
+          "elements": 49152
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "e52d8f8da6c4a089af0d262894650a3f15bb1b5c88b4988a8d611aa5c80bac0d",
+          "actual_sha256": "e52d8f8da6c4a089af0d262894650a3f15bb1b5c88b4988a8d611aa5c80bac0d",
+          "elements": 16384
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 16,
+      "dimension": 512,
+      "case": 0,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 1,
+      "mode": "normal",
+      "input_sha256": {
+        "q": "85edd4ec9181f7fd47b4a29428b5f1db3db633fda7be77483bbcb215aba24895",
+        "kv": "f6d8d51f3defe8ff4d0e5245f5d76b0bcec61119f812924934268d8959aad0b1",
+        "sink": "064946a21c5de3b68574c2a30eaab9128e4e5f85cc3e760efd737dae78a97a74",
+        "indices": "a5dcf5b8418dfafec16079148ec90cf81dfc6276c1cce220017c782ecb7d7aea"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 8192,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "39d3288ebaee2ee33ec1ddcce648c764efc8c715e65b63ad8031cb2b71d0787a",
+          "actual_sha256": "39d3288ebaee2ee33ec1ddcce648c764efc8c715e65b63ad8031cb2b71d0787a"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "39d3288ebaee2ee33ec1ddcce648c764efc8c715e65b63ad8031cb2b71d0787a",
+          "actual_sha256": "39d3288ebaee2ee33ec1ddcce648c764efc8c715e65b63ad8031cb2b71d0787a",
+          "elements": 8192
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "4ed9e63cd29b2d8c2db4e355a5ddf28ed628a7ed2e540c972027d2762cfb95ab",
+          "actual_sha256": "4ed9e63cd29b2d8c2db4e355a5ddf28ed628a7ed2e540c972027d2762cfb95ab",
+          "elements": 1024
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "99a90c182e6edcc9b072b7aef9a15623877ae575ab9e6e3bf2a4289e67dea541",
+          "actual_sha256": "99a90c182e6edcc9b072b7aef9a15623877ae575ab9e6e3bf2a4289e67dea541",
+          "elements": 1024
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "a9e005959896a7805a6b3baf0d0f1edc9f882437a8065520bf2542855dbe2f6f",
+          "actual_sha256": "a9e005959896a7805a6b3baf0d0f1edc9f882437a8065520bf2542855dbe2f6f",
+          "elements": 80
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "1745efdbef1d52ccd1754228c7e92e0a44f745995e9fc2cb8da8d09fc7dd0fa4",
+          "actual_sha256": "1745efdbef1d52ccd1754228c7e92e0a44f745995e9fc2cb8da8d09fc7dd0fa4",
+          "elements": 8192
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "ca38b0ffe199127f61a61ba6261817a054cfa57a29f03d02c0f1105a1a52284d",
+          "actual_sha256": "ca38b0ffe199127f61a61ba6261817a054cfa57a29f03d02c0f1105a1a52284d",
+          "elements": 8192
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 16,
+      "dimension": 512,
+      "case": 1,
+      "batch": 1,
+      "sequence": 3,
+      "topk": 32,
+      "mode": "normal",
+      "input_sha256": {
+        "q": "ab27cc2adc1c39bef67c302c77164e0234b808ba71b26e21e3f807f864ff3c22",
+        "kv": "2e99ab5a6fa40951d6f678b7d67a414505959679aaa17ae9f55ca8c307756eaf",
+        "sink": "ed194387ef4eae5ee2ebdef256155181d6d84956b4ffdb028e4175d32f0d26bc",
+        "indices": "fce62be5cbaf5a0c9023449c0b278c9ebbb2aeeb063932c4fa239138ee7b1458"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 24576,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "85bf9357e3fe900617c0b927d6b00f0768fbd51443bca2b4b91f1ff794766f59",
+          "actual_sha256": "85bf9357e3fe900617c0b927d6b00f0768fbd51443bca2b4b91f1ff794766f59"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "85bf9357e3fe900617c0b927d6b00f0768fbd51443bca2b4b91f1ff794766f59",
+          "actual_sha256": "85bf9357e3fe900617c0b927d6b00f0768fbd51443bca2b4b91f1ff794766f59",
+          "elements": 24576
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "66ce087e9ec999c118ad70a2a4d13d68d63f0a9cc16e741288cf42a27a2a5766",
+          "actual_sha256": "66ce087e9ec999c118ad70a2a4d13d68d63f0a9cc16e741288cf42a27a2a5766",
+          "elements": 3072
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "7291b93b0c3e2b458012dbfe6ace027854062110acfecd3417a27a8714d46481",
+          "actual_sha256": "7291b93b0c3e2b458012dbfe6ace027854062110acfecd3417a27a8714d46481",
+          "elements": 3072
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "bd49ba8d5551ebfec4cdcf886230590261075f353ca24a97d5c769118ffc9763",
+          "actual_sha256": "bd49ba8d5551ebfec4cdcf886230590261075f353ca24a97d5c769118ffc9763",
+          "elements": 240
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "75607e3ff8d7ce034adfea6c167297233b3c59d1ead555e0f125fa04ff085689",
+          "actual_sha256": "75607e3ff8d7ce034adfea6c167297233b3c59d1ead555e0f125fa04ff085689",
+          "elements": 24576
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "f126577e322b1bb34f52421a2f79127f45fbb75530ea79351fbaf29d48c7211a",
+          "actual_sha256": "f126577e322b1bb34f52421a2f79127f45fbb75530ea79351fbaf29d48c7211a",
+          "elements": 24576
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 16,
+      "dimension": 512,
+      "case": 2,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 64,
+      "mode": "masked",
+      "input_sha256": {
+        "q": "f3048780a065133279b86749b13a72b992aa2ddf43e3a4cdd7e41fd5263ef59b",
+        "kv": "074922b3235c8ecdc166016bb5e317aad489c2a2be9e91a87dd63255a19a8c9b",
+        "sink": "721ad3d45f179c8d6512e639ea923f6b2642f3b078a276ecaabab75cce02b524",
+        "indices": "080716b2052dfd70ba141d1b663b1674a7c895aca4b9bca33cd7d3bc65bedc72"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 16384,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "6ace028007ca826e909685ad63f62653586ed47dafcf3ef88011cb7c3fa72a82",
+          "actual_sha256": "6ace028007ca826e909685ad63f62653586ed47dafcf3ef88011cb7c3fa72a82"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "6ace028007ca826e909685ad63f62653586ed47dafcf3ef88011cb7c3fa72a82",
+          "actual_sha256": "6ace028007ca826e909685ad63f62653586ed47dafcf3ef88011cb7c3fa72a82",
+          "elements": 16384
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "424a39f1e72eb1cd826b5d5ccb646785b6d9464f7440975856eab6e351dcff69",
+          "actual_sha256": "424a39f1e72eb1cd826b5d5ccb646785b6d9464f7440975856eab6e351dcff69",
+          "elements": 2048
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "9f6798f882bc44c5b46363c3976723f2d73f43198e3a63ef357fc26ee2993ca4",
+          "actual_sha256": "9f6798f882bc44c5b46363c3976723f2d73f43198e3a63ef357fc26ee2993ca4",
+          "elements": 2048
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "3543b431e9cd5c86a0935895c0949730d5c9b0359c2027d978fd6e4747227a01",
+          "actual_sha256": "3543b431e9cd5c86a0935895c0949730d5c9b0359c2027d978fd6e4747227a01",
+          "elements": 160
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "3411f0e7a64114c73e887f143988740de519a8c410183fb5c0de4ba3821afe41",
+          "actual_sha256": "3411f0e7a64114c73e887f143988740de519a8c410183fb5c0de4ba3821afe41",
+          "elements": 16384
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "87cc3a4c9e47f0bbaa4d8d049bba2efc96b53aa0e2d2e8412a12e765c5e8c52e",
+          "actual_sha256": "87cc3a4c9e47f0bbaa4d8d049bba2efc96b53aa0e2d2e8412a12e765c5e8c52e",
+          "elements": 16384
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 16,
+      "dimension": 512,
+      "case": 3,
+      "batch": 2,
+      "sequence": 2,
+      "topk": 65,
+      "mode": "masked",
+      "input_sha256": {
+        "q": "534e2661641cc1e27d5d36f45a00032e03b64f1249fdbe44a1bdcbd6d909f127",
+        "kv": "8cf5f4a619825c9e4f45e58f79a819c8f9b89ec345be285d123c17ee55c69f4c",
+        "sink": "639ef48c19adbe80260bc1a388a4ff5f6997fc33d23114a3019f06c3e3d4d106",
+        "indices": "e7746c288335ab8e9bdb0e63d8abae1597154b46afbbf0052c393a904bd8bbad"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "750f5daa9ce78f36afe761f0f31520928b97298a174dff2d70dcc203eaf84579",
+          "actual_sha256": "750f5daa9ce78f36afe761f0f31520928b97298a174dff2d70dcc203eaf84579"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "750f5daa9ce78f36afe761f0f31520928b97298a174dff2d70dcc203eaf84579",
+          "actual_sha256": "750f5daa9ce78f36afe761f0f31520928b97298a174dff2d70dcc203eaf84579",
+          "elements": 32768
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "5c3ac2a3105025c8e49aa349b87a013a71c6c49bab165f6e9918961727641cab",
+          "actual_sha256": "5c3ac2a3105025c8e49aa349b87a013a71c6c49bab165f6e9918961727641cab",
+          "elements": 8192
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "e75776f374caf4e68cb0fe99b4ffbbdf4d3de6242a932fa747b42a13c3f44395",
+          "actual_sha256": "e75776f374caf4e68cb0fe99b4ffbbdf4d3de6242a932fa747b42a13c3f44395",
+          "elements": 8192
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "2933ad7d7d00b88b97c93ab81847fa66680c214615b8f149767358c65d30dead",
+          "actual_sha256": "2933ad7d7d00b88b97c93ab81847fa66680c214615b8f149767358c65d30dead",
+          "elements": 640
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "df3c34a83018ec862f7005b93896387ec42c366c472691da2cc489e40bc23048",
+          "actual_sha256": "df3c34a83018ec862f7005b93896387ec42c366c472691da2cc489e40bc23048",
+          "elements": 65536
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "2e4db49386afe23ec5f858aac8ff35c17c51834aa969db3356a224a8f6d21034",
+          "actual_sha256": "2e4db49386afe23ec5f858aac8ff35c17c51834aa969db3356a224a8f6d21034",
+          "elements": 32768
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 16,
+      "dimension": 512,
+      "case": 4,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 128,
+      "mode": "empty",
+      "input_sha256": {
+        "q": "be0c42e1fad0be7b426fb1e9e925f73db971985f338f1bdb898ad4a5a172f160",
+        "kv": "50838cb6983d1a2f134cec5de4d0542fa009abec8085986c58da87374e625966",
+        "sink": "9b18d9eb65e965f55d2ffaff90917ab5c29dd8566bc354e0da6a07e3eee7c04f",
+        "indices": "5f4ecdb7b71c3e403983fe405cddcdc2f2576b655fdb3e80d94a6f7c32e58bc2"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 16384,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "elements": 16384
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "b2e50d5d7f3e1936da75a863f0c00e2e5b665550b4b26b298052e843d2dbb640",
+          "actual_sha256": "b2e50d5d7f3e1936da75a863f0c00e2e5b665550b4b26b298052e843d2dbb640",
+          "elements": 4096
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+          "actual_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+          "elements": 4096
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "600e1fc16460093e071ecf6910cdaf0a062dbc9f12aed5db9cee3123189b5377",
+          "actual_sha256": "600e1fc16460093e071ecf6910cdaf0a062dbc9f12aed5db9cee3123189b5377",
+          "elements": 320
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "elements": 32768
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "elements": 16384
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 16,
+      "dimension": 512,
+      "case": 5,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 193,
+      "mode": "duplicates",
+      "input_sha256": {
+        "q": "876fee84cfd46c58a022c565e69beab53ca8b4faaa33bb1c3bfffd65f17442d9",
+        "kv": "22754925afe3d3f1dacbb5501df839aedfb6d0c4a39e867a3d548f2d154043a9",
+        "sink": "770e4e07277e967d430bca02d99108d45ea6b2fafea020810d8bde46773cf137",
+        "indices": "42ceadb0a186894e2c94fed9f30a78b96ec989ec7d8dabbedd738db951fd28cc"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 16384,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "a3e49b7e5cbb0fbbc66197efa5776bc15c68d1a028737c2bc5e0a4626d2c8cfe",
+          "actual_sha256": "a3e49b7e5cbb0fbbc66197efa5776bc15c68d1a028737c2bc5e0a4626d2c8cfe"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "a3e49b7e5cbb0fbbc66197efa5776bc15c68d1a028737c2bc5e0a4626d2c8cfe",
+          "actual_sha256": "a3e49b7e5cbb0fbbc66197efa5776bc15c68d1a028737c2bc5e0a4626d2c8cfe",
+          "elements": 16384
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "55dc1bdff5d0ea18055533c021bd75165335e5665fd40a4ec03cdca2d8a512de",
+          "actual_sha256": "55dc1bdff5d0ea18055533c021bd75165335e5665fd40a4ec03cdca2d8a512de",
+          "elements": 8192
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "daf565cdc93ac7a10f08386b8cf4c54c7bf25042871699ba409c0cb9109a3b72",
+          "actual_sha256": "daf565cdc93ac7a10f08386b8cf4c54c7bf25042871699ba409c0cb9109a3b72",
+          "elements": 8192
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "20efb67dff116ecb169ed30f6910bff57493bf85fb32437b03887f51f2708652",
+          "actual_sha256": "20efb67dff116ecb169ed30f6910bff57493bf85fb32437b03887f51f2708652",
+          "elements": 640
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "466addcfdd050681ddc16a6398b80268ec9f6528b800eedf41b8b60c56ba952c",
+          "actual_sha256": "466addcfdd050681ddc16a6398b80268ec9f6528b800eedf41b8b60c56ba952c",
+          "elements": 65536
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "e8e7988f758096053e98ad5832dbcd0027714333702999388918fce360a3abef",
+          "actual_sha256": "e8e7988f758096053e98ad5832dbcd0027714333702999388918fce360a3abef",
+          "elements": 16384
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 16,
+      "dimension": 512,
+      "case": 6,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 128,
+      "mode": "zeros",
+      "input_sha256": {
+        "q": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+        "kv": "9b94b83334ada38b48b53f19ef2c45abc9f84fb723564671290a556f75d6fdc8",
+        "sink": "03457dd9ed05b897c60958feb2ba8488778feae02bcbf29ea145c9867d5ad27d",
+        "indices": "efcb0f42b17c0f9d1eadee498d2c341389803424073c9d8804f4dc1a23aa1618"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 8192,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+          "actual_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+          "actual_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+          "elements": 8192
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+          "actual_sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+          "elements": 2048
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "fc3bd1e348ef843a5052596a42863c169d54cc3c352449596039497873862155",
+          "actual_sha256": "fc3bd1e348ef843a5052596a42863c169d54cc3c352449596039497873862155",
+          "elements": 2048
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "472678347bf4cfb7e14ccc96871601e30315ddb30915de024ac6f4248a48ba0b",
+          "actual_sha256": "472678347bf4cfb7e14ccc96871601e30315ddb30915de024ac6f4248a48ba0b",
+          "elements": 160
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "elements": 16384
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "elements": 8192
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 16,
+      "dimension": 512,
+      "case": 7,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 65,
+      "mode": "signed_zeros",
+      "input_sha256": {
+        "q": "a006db85d547330a276b53d1a61787bbb3dc46a70333aff8f072b91208b10ddd",
+        "kv": "19f9e46a431709a7d4b74de907596ea6a5ea63e6fca3cbae96bc11c2e41854fd",
+        "sink": "a9e0f22d997940373e830a95eae7582a64e76c35d0f9779cb18fbed43a0e79b6",
+        "indices": "5c698dfd052b2840cf70d93b7a180cdca9d0e2da4dfec8c71c76738b6a45da46"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 16384,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "elements": 16384
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "c8c5198c2725eaba32af437a4b203733a7ab47a1cca3f0de1d78f2cd2a2ffc7b",
+          "actual_sha256": "c8c5198c2725eaba32af437a4b203733a7ab47a1cca3f0de1d78f2cd2a2ffc7b",
+          "elements": 4096
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "b2a68601d692832a39efd3c10c0d20553679ce1fb072ee19d949205bf11d10e6",
+          "actual_sha256": "b2a68601d692832a39efd3c10c0d20553679ce1fb072ee19d949205bf11d10e6",
+          "elements": 4096
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "0301b294b5dfdc5fc1cfae9b8863db71186519ca99255ee7b2129684a841f8aa",
+          "actual_sha256": "0301b294b5dfdc5fc1cfae9b8863db71186519ca99255ee7b2129684a841f8aa",
+          "elements": 320
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "elements": 32768
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "elements": 16384
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 16,
+      "dimension": 512,
+      "case": 8,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 127,
+      "mode": "normal",
+      "input_sha256": {
+        "q": "026a3c839724e6a09af36d5ca113dd21fe4888e11a67110d83f24f9cc243cafd",
+        "kv": "092ec84d932ca27aa8132214c1acc1405c6c6c6cb7e435edffa263b07e9e1d67",
+        "sink": "8674b9ab21536231395f060cd0c1cb7bdb72ae4c279262abde0b8a70650c7f1d",
+        "indices": "8ad061f0f2dd0d84cc9b290596a208dddbc36376f2c5710b6137bc841ce496f4"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 8192,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "7948b8518d35223800b3cf9f284c3e1a31336e48819335d2f8ab9ccbd66147bc",
+          "actual_sha256": "7948b8518d35223800b3cf9f284c3e1a31336e48819335d2f8ab9ccbd66147bc"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "7948b8518d35223800b3cf9f284c3e1a31336e48819335d2f8ab9ccbd66147bc",
+          "actual_sha256": "7948b8518d35223800b3cf9f284c3e1a31336e48819335d2f8ab9ccbd66147bc",
+          "elements": 8192
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "be643251be00fb3b6f561d68eca7b82928f7a0da2f4c9fc92cd04c2b718bc477",
+          "actual_sha256": "be643251be00fb3b6f561d68eca7b82928f7a0da2f4c9fc92cd04c2b718bc477",
+          "elements": 2048
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "3e98ee4fa377e06f2d082b078c63bd7d79cdb24a1d932cc721a13c8eed3e093e",
+          "actual_sha256": "3e98ee4fa377e06f2d082b078c63bd7d79cdb24a1d932cc721a13c8eed3e093e",
+          "elements": 2048
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "1744cd9c4a79e38d9d272d0980c10c216bfa5621463a19d315e0f880c706cc97",
+          "actual_sha256": "1744cd9c4a79e38d9d272d0980c10c216bfa5621463a19d315e0f880c706cc97",
+          "elements": 160
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "e67639b6ee6b7b759d2655fc5b4516c0f0681696bf89055b6edfd17d9d4889d9",
+          "actual_sha256": "e67639b6ee6b7b759d2655fc5b4516c0f0681696bf89055b6edfd17d9d4889d9",
+          "elements": 16384
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "2b7af3d33144cdedb183f7276a4b77c51ad7739de6b3ff57573f8709863bfcf2",
+          "actual_sha256": "2b7af3d33144cdedb183f7276a4b77c51ad7739de6b3ff57573f8709863bfcf2",
+          "elements": 8192
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 16,
+      "dimension": 512,
+      "case": 9,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 128,
+      "mode": "ties",
+      "input_sha256": {
+        "q": "90acde5b4fd7d59391769e2d5207de8e14e7fe4b947d5cb3192741ddf6b39a29",
+        "kv": "1422a875fbcd734214c0e1cb361747b16a972412d9997c4b16205b31079f3844",
+        "sink": "f5a5fd42d16a20302798ef6ed309979b43003d2320d9f0e8ea9831a92759fb4b",
+        "indices": "ab4ec1d679446edf1336c311d9ac04af6c743f895bde06ccf42ae52b9b0f4545"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 16384,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "90acde5b4fd7d59391769e2d5207de8e14e7fe4b947d5cb3192741ddf6b39a29",
+          "actual_sha256": "90acde5b4fd7d59391769e2d5207de8e14e7fe4b947d5cb3192741ddf6b39a29"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "90acde5b4fd7d59391769e2d5207de8e14e7fe4b947d5cb3192741ddf6b39a29",
+          "actual_sha256": "90acde5b4fd7d59391769e2d5207de8e14e7fe4b947d5cb3192741ddf6b39a29",
+          "elements": 16384
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "fb44a4675b91b34d9335d10de218b2bcad9d9973b8659421d997c65e5d6eb87c",
+          "actual_sha256": "fb44a4675b91b34d9335d10de218b2bcad9d9973b8659421d997c65e5d6eb87c",
+          "elements": 4096
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "3035aac5fb87474c303702f9030301b4e6bb7aee93be3710b8ab8dcea201db70",
+          "actual_sha256": "3035aac5fb87474c303702f9030301b4e6bb7aee93be3710b8ab8dcea201db70",
+          "elements": 4096
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "9ddddf4682afde2c511d32f8ca473cbbd2c186e208f948452f24afab7824d87f",
+          "actual_sha256": "9ddddf4682afde2c511d32f8ca473cbbd2c186e208f948452f24afab7824d87f",
+          "elements": 320
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "1a99b0c56f711583b3df6328380dc406f2e8f9c17d539e4d7ed0a19f4ca63ee0",
+          "actual_sha256": "1a99b0c56f711583b3df6328380dc406f2e8f9c17d539e4d7ed0a19f4ca63ee0",
+          "elements": 32768
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "b3de7bcc0cd9911ceca1e5248faa07f4ebb8a0a34e088ef5e6301797f7ca5be4",
+          "actual_sha256": "b3de7bcc0cd9911ceca1e5248faa07f4ebb8a0a34e088ef5e6301797f7ca5be4",
+          "elements": 16384
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 16,
+      "dimension": 512,
+      "case": 10,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 129,
+      "mode": "sink_positive",
+      "input_sha256": {
+        "q": "ac93ce602f1995af2fe92922d988d190c7bea103f58837ab8252fe65fdbf9d5b",
+        "kv": "bef69495e3798d1470d558a2ed673fee44737de98a118eb26292dd04352f0720",
+        "sink": "983909e4f3f0fd24c6d8528ffe2a6b704edac560b29866f81f78799c185b9071",
+        "indices": "bd0425d3838bea173d772cc5dcd8f6991d19f424433dc10dafe85ff1dddea90c"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 8192,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "d2a6a5649cd67f8dd928e70d555b8469bb814c0c9eb9514ed74ac8c383024bf6",
+          "actual_sha256": "d2a6a5649cd67f8dd928e70d555b8469bb814c0c9eb9514ed74ac8c383024bf6"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "d2a6a5649cd67f8dd928e70d555b8469bb814c0c9eb9514ed74ac8c383024bf6",
+          "actual_sha256": "d2a6a5649cd67f8dd928e70d555b8469bb814c0c9eb9514ed74ac8c383024bf6",
+          "elements": 8192
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "61ac044f690d8222940498b8de008e5f148a7bed61a479a87c5c0fb0d8d6d6d9",
+          "actual_sha256": "61ac044f690d8222940498b8de008e5f148a7bed61a479a87c5c0fb0d8d6d6d9",
+          "elements": 3072
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "f341846aeba76071e55d976ed2dc41aa790c77582164772f9fe8076458561229",
+          "actual_sha256": "f341846aeba76071e55d976ed2dc41aa790c77582164772f9fe8076458561229",
+          "elements": 3072
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "e9e6f96207fd11563bee993cceab619968e055be7a4cd4ef9b9bfb0dddccae59",
+          "actual_sha256": "e9e6f96207fd11563bee993cceab619968e055be7a4cd4ef9b9bfb0dddccae59",
+          "elements": 240
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "f3878c7e549a1999ee3be31f537841a06b95e3d3aa88a291e677c47054951ff2",
+          "actual_sha256": "f3878c7e549a1999ee3be31f537841a06b95e3d3aa88a291e677c47054951ff2",
+          "elements": 24576
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "a19507218aa39de9e77b6dc358fdf21b4783321e809882ef7a16004ab86415eb",
+          "actual_sha256": "a19507218aa39de9e77b6dc358fdf21b4783321e809882ef7a16004ab86415eb",
+          "elements": 8192
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 16,
+      "dimension": 512,
+      "case": 11,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 129,
+      "mode": "sink_negative",
+      "input_sha256": {
+        "q": "ac93ce602f1995af2fe92922d988d190c7bea103f58837ab8252fe65fdbf9d5b",
+        "kv": "bef69495e3798d1470d558a2ed673fee44737de98a118eb26292dd04352f0720",
+        "sink": "bb29c747c76f744845f7610414586efb13fa7f5f8fb30a0eb26af7c86a5777f9",
+        "indices": "bd0425d3838bea173d772cc5dcd8f6991d19f424433dc10dafe85ff1dddea90c"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 8192,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "2d0551e093c03f27a6ce9f6642b358640510fe96e7617e763cff5f65fb34367e",
+          "actual_sha256": "2d0551e093c03f27a6ce9f6642b358640510fe96e7617e763cff5f65fb34367e"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "2d0551e093c03f27a6ce9f6642b358640510fe96e7617e763cff5f65fb34367e",
+          "actual_sha256": "2d0551e093c03f27a6ce9f6642b358640510fe96e7617e763cff5f65fb34367e",
+          "elements": 8192
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "61ac044f690d8222940498b8de008e5f148a7bed61a479a87c5c0fb0d8d6d6d9",
+          "actual_sha256": "61ac044f690d8222940498b8de008e5f148a7bed61a479a87c5c0fb0d8d6d6d9",
+          "elements": 3072
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "f341846aeba76071e55d976ed2dc41aa790c77582164772f9fe8076458561229",
+          "actual_sha256": "f341846aeba76071e55d976ed2dc41aa790c77582164772f9fe8076458561229",
+          "elements": 3072
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "e9e6f96207fd11563bee993cceab619968e055be7a4cd4ef9b9bfb0dddccae59",
+          "actual_sha256": "e9e6f96207fd11563bee993cceab619968e055be7a4cd4ef9b9bfb0dddccae59",
+          "elements": 240
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "f3878c7e549a1999ee3be31f537841a06b95e3d3aa88a291e677c47054951ff2",
+          "actual_sha256": "f3878c7e549a1999ee3be31f537841a06b95e3d3aa88a291e677c47054951ff2",
+          "elements": 24576
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "10da183eb766a80890383d514203263060081d952238d3a036befa24f1fa37fc",
+          "actual_sha256": "10da183eb766a80890383d514203263060081d952238d3a036befa24f1fa37fc",
+          "elements": 8192
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 512,
+      "case": 0,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 1,
+      "mode": "normal",
+      "input_sha256": {
+        "q": "f26e0544614e1b4172a113e7c34e2bb20f1f11acdc31ff175173d8431f29bad4",
+        "kv": "b66b01d5a67707c5aad54ec77e5c99c9dbabb068273500e0418a6cddb162ddf8",
+        "sink": "fbc786e2c829b42186286826a0f96c196f9384a10791fe55dc7da3ae32d36ffd",
+        "indices": "a2d398922901344d08180dc41d3e9d73d8c148c7f6e092835bbb28e02dbcf184"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "e66b47e1afc8ad1d79b81b041a73a8f71cb29ce1cf314678b3f56b55927079c5",
+          "actual_sha256": "e66b47e1afc8ad1d79b81b041a73a8f71cb29ce1cf314678b3f56b55927079c5"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "e66b47e1afc8ad1d79b81b041a73a8f71cb29ce1cf314678b3f56b55927079c5",
+          "actual_sha256": "e66b47e1afc8ad1d79b81b041a73a8f71cb29ce1cf314678b3f56b55927079c5",
+          "elements": 32768
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "db881af5f6a3ed6180beecf9965889b747e8a786a619c81eae2252759a5b21db",
+          "actual_sha256": "db881af5f6a3ed6180beecf9965889b747e8a786a619c81eae2252759a5b21db",
+          "elements": 4096
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "e0da17f6fce449e97d13f760345e8135bc559168def1a88e9c9b534898a93d6a",
+          "actual_sha256": "e0da17f6fce449e97d13f760345e8135bc559168def1a88e9c9b534898a93d6a",
+          "elements": 4096
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "e356c0013b2a263521328e6c6913bda121fe3e35d160a67acbe664e2f381c48f",
+          "actual_sha256": "e356c0013b2a263521328e6c6913bda121fe3e35d160a67acbe664e2f381c48f",
+          "elements": 320
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "c2f8f9a3ca7ea1f2026326e3429e3bb52659d78cd4ab2cc1c06182b42a5db44e",
+          "actual_sha256": "c2f8f9a3ca7ea1f2026326e3429e3bb52659d78cd4ab2cc1c06182b42a5db44e",
+          "elements": 32768
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "3f880092644014e91b6c8ff6c984283f4d1bf4762d2336e7dda3e376408e832f",
+          "actual_sha256": "3f880092644014e91b6c8ff6c984283f4d1bf4762d2336e7dda3e376408e832f",
+          "elements": 32768
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 512,
+      "case": 1,
+      "batch": 1,
+      "sequence": 3,
+      "topk": 32,
+      "mode": "normal",
+      "input_sha256": {
+        "q": "0d2f4e8ab4c0923e1e6b627319e768991b13dd3d677d526487d41e306fae2073",
+        "kv": "2a2f22abc7545510670aa4f6a95514da42c27399b01a6fce8132f93e38662558",
+        "sink": "6c1716cd271345371135e37d504c185075dee042a454c6c4a4713e7e7b78bb5b",
+        "indices": "2ad9211a243e28c1a81f63951a387e4acb68c097ab3f04f84017c0ce66d77064"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 98304,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "d65cd88e02b9853df8116bca2d82c7e97d2b012126b4757297de9ecfe7d6d11e",
+          "actual_sha256": "d65cd88e02b9853df8116bca2d82c7e97d2b012126b4757297de9ecfe7d6d11e"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "d65cd88e02b9853df8116bca2d82c7e97d2b012126b4757297de9ecfe7d6d11e",
+          "actual_sha256": "d65cd88e02b9853df8116bca2d82c7e97d2b012126b4757297de9ecfe7d6d11e",
+          "elements": 98304
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "0128b7684ba28a063387c8a39d7c9a3070f9a89300a874afe0d892e6b40bd1e3",
+          "actual_sha256": "0128b7684ba28a063387c8a39d7c9a3070f9a89300a874afe0d892e6b40bd1e3",
+          "elements": 12288
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "a1029d515c58c23e5df097023c37c51d555e608130e65b70b1abd43d9cdd7bea",
+          "actual_sha256": "a1029d515c58c23e5df097023c37c51d555e608130e65b70b1abd43d9cdd7bea",
+          "elements": 12288
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "b9b56e2794f9780d9874214200f3f16adb08b4a639b4c06fa65e2651d8556ac4",
+          "actual_sha256": "b9b56e2794f9780d9874214200f3f16adb08b4a639b4c06fa65e2651d8556ac4",
+          "elements": 960
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "73ac688811deac7372a065807966de72c9a4201fe6a9a61a85b2f69fe218fed0",
+          "actual_sha256": "73ac688811deac7372a065807966de72c9a4201fe6a9a61a85b2f69fe218fed0",
+          "elements": 98304
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "77bff2202c7cf29dd74eb24dbb06c4c57bf3237926b0c41f757ba9020447f680",
+          "actual_sha256": "77bff2202c7cf29dd74eb24dbb06c4c57bf3237926b0c41f757ba9020447f680",
+          "elements": 98304
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 512,
+      "case": 2,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 64,
+      "mode": "masked",
+      "input_sha256": {
+        "q": "d626c6f5ba475468099ba6bfa6181de2ed800ecb3432cdfad190d836d3ac7a39",
+        "kv": "cebd80bf42b8583962475634bf4e49a61af1fe9a6d2c9ab2f7320b9b597f90db",
+        "sink": "80d1582ee0f9194203e8dc8974652fbdbc17ef3afcd83b7e1bd773d49212a34f",
+        "indices": "e015bfdd91645ec86c502e5656a4689a305df416c233335e0f2e1b276413814d"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 65536,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "c01c8983df5a706ab3bdc5801e971e7c4067191206740007b8463c29d2cdc54b",
+          "actual_sha256": "c01c8983df5a706ab3bdc5801e971e7c4067191206740007b8463c29d2cdc54b"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "c01c8983df5a706ab3bdc5801e971e7c4067191206740007b8463c29d2cdc54b",
+          "actual_sha256": "c01c8983df5a706ab3bdc5801e971e7c4067191206740007b8463c29d2cdc54b",
+          "elements": 65536
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "d1fda1045e39a21072fb4875e34c9418ce8a23a85d5e55e39841aa951f48820a",
+          "actual_sha256": "d1fda1045e39a21072fb4875e34c9418ce8a23a85d5e55e39841aa951f48820a",
+          "elements": 8192
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "b468e9e2d1d3d0f6799933d368f1f51b8ad6bba9a406b23612e15e4072df02d9",
+          "actual_sha256": "b468e9e2d1d3d0f6799933d368f1f51b8ad6bba9a406b23612e15e4072df02d9",
+          "elements": 8192
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "8126fef7e056304bd59c888a46f612a0cc682367c76adb7dc7f390a1927211fc",
+          "actual_sha256": "8126fef7e056304bd59c888a46f612a0cc682367c76adb7dc7f390a1927211fc",
+          "elements": 640
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "75ff3098ee75a251975ac84200ecf81a458279a15f131689487958c047aebcbe",
+          "actual_sha256": "75ff3098ee75a251975ac84200ecf81a458279a15f131689487958c047aebcbe",
+          "elements": 65536
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "791e277df29122690aa92a1a2730a33a76951995d6dc55ecaeae01080f7a901d",
+          "actual_sha256": "791e277df29122690aa92a1a2730a33a76951995d6dc55ecaeae01080f7a901d",
+          "elements": 65536
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 512,
+      "case": 3,
+      "batch": 2,
+      "sequence": 2,
+      "topk": 65,
+      "mode": "masked",
+      "input_sha256": {
+        "q": "d570974a61c65bdf599f001f2fe6e13eb8894ec353dc69fad4fb9abda68415c2",
+        "kv": "7de6b5e00e8973eb36b472c2ffe42ac20334ee7bb7dfa83c28204b86c7db8508",
+        "sink": "f8a054e9268646beacc14a1cd1ddaa7ea187d56fbee6948864945123ac3c656f",
+        "indices": "be0ac57ce55fff62e1085a01a5c28990005990c0f3715193d0b90aa4b0b2afba"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 131072,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "209243a374710dd526f3dedc990b6fa41dc4322c2ca3ad2cf9f6badf17fbbf5c",
+          "actual_sha256": "209243a374710dd526f3dedc990b6fa41dc4322c2ca3ad2cf9f6badf17fbbf5c"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "209243a374710dd526f3dedc990b6fa41dc4322c2ca3ad2cf9f6badf17fbbf5c",
+          "actual_sha256": "209243a374710dd526f3dedc990b6fa41dc4322c2ca3ad2cf9f6badf17fbbf5c",
+          "elements": 131072
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "3d17bcece4e00630ca925adddbbc3ff44751608539cde9b0124c7a09f4b4eeb8",
+          "actual_sha256": "3d17bcece4e00630ca925adddbbc3ff44751608539cde9b0124c7a09f4b4eeb8",
+          "elements": 32768
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "83313550c9147c88509d66c61e6a943385c685ed889e0e24edb15de53dd5d853",
+          "actual_sha256": "83313550c9147c88509d66c61e6a943385c685ed889e0e24edb15de53dd5d853",
+          "elements": 32768
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "5e22ccb26aa8cbcb83ed545985f0935dd12750239ca0f41a93492cd01728f084",
+          "actual_sha256": "5e22ccb26aa8cbcb83ed545985f0935dd12750239ca0f41a93492cd01728f084",
+          "elements": 2560
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "a5eaf7de72b83ecb4c2c82b729b3dd2529e1c5d6253836e45a60b446e77a77f2",
+          "actual_sha256": "a5eaf7de72b83ecb4c2c82b729b3dd2529e1c5d6253836e45a60b446e77a77f2",
+          "elements": 262144
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "2fc0de69c1f60f0e87e9b015adc7f28c2b81d3492117eb45f020e59f707c4bb0",
+          "actual_sha256": "2fc0de69c1f60f0e87e9b015adc7f28c2b81d3492117eb45f020e59f707c4bb0",
+          "elements": 131072
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 512,
+      "case": 4,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 128,
+      "mode": "empty",
+      "input_sha256": {
+        "q": "cac855759f8350d74885e9866b1010438856e64936802d1cc73176181aa07849",
+        "kv": "ef6a7a713f308aa55f63936d7824a63b13eeedb3976bbef9a00d7767e789d3fa",
+        "sink": "ef42ae9cb638fd204dc1989a1c8d6061940d1088de53884d76224516b7fa61fe",
+        "indices": "5f4ecdb7b71c3e403983fe405cddcdc2f2576b655fdb3e80d94a6f7c32e58bc2"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 65536,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "elements": 65536
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "a8a633554471dcbb5786c2707791c9369cde21d68ff85a46b97c6526cf8e0524",
+          "actual_sha256": "a8a633554471dcbb5786c2707791c9369cde21d68ff85a46b97c6526cf8e0524",
+          "elements": 16384
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "elements": 16384
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "42b9b4f98dee0c47b19c7d498e2dfe001763d5a1eae4110c0fef0198fba8f3b2",
+          "actual_sha256": "42b9b4f98dee0c47b19c7d498e2dfe001763d5a1eae4110c0fef0198fba8f3b2",
+          "elements": 1280
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541",
+          "actual_sha256": "07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541",
+          "elements": 131072
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "actual_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "elements": 65536
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 512,
+      "case": 5,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 193,
+      "mode": "duplicates",
+      "input_sha256": {
+        "q": "5133bec0759d71abd1676e2ade16af3ae3036416db93f34a183c519bd76ddd87",
+        "kv": "08b07e3e9d6e1114a180142fd5ce69ffa6dabaf472b755ff7dfd0812d0e56e94",
+        "sink": "ecbd5c3842d8c58dc701b135396f162761ecdc696ce17bcbd7315eea9f909244",
+        "indices": "fecc31f5d1b7b66f970af0809697c6d504f73fc9b9b1eb49b96c067e8bdb1cbc"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 65536,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "241eafddc2d97648bb7669d19a984eccd13fad4f3104c19d828796be85ea10c7",
+          "actual_sha256": "241eafddc2d97648bb7669d19a984eccd13fad4f3104c19d828796be85ea10c7"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "241eafddc2d97648bb7669d19a984eccd13fad4f3104c19d828796be85ea10c7",
+          "actual_sha256": "241eafddc2d97648bb7669d19a984eccd13fad4f3104c19d828796be85ea10c7",
+          "elements": 65536
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "956b36ed68d639070b24a78c33c14c56a09f20618f7a2b3c295a8aced196be71",
+          "actual_sha256": "956b36ed68d639070b24a78c33c14c56a09f20618f7a2b3c295a8aced196be71",
+          "elements": 32768
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "7360646a29a26d4b3e9a0b1724a0c07a42f446891d86b1c0104cb808eace742e",
+          "actual_sha256": "7360646a29a26d4b3e9a0b1724a0c07a42f446891d86b1c0104cb808eace742e",
+          "elements": 32768
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "19c74c037b341d559ec9c7bf2b2ea1635d7f5f6bf2d8e82dba545f9254b1fbeb",
+          "actual_sha256": "19c74c037b341d559ec9c7bf2b2ea1635d7f5f6bf2d8e82dba545f9254b1fbeb",
+          "elements": 2560
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "324bd75e8650172643ecb63cb90f7abbe74150632adb424ab70d5bd9b2f74d8b",
+          "actual_sha256": "324bd75e8650172643ecb63cb90f7abbe74150632adb424ab70d5bd9b2f74d8b",
+          "elements": 262144
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "13d0dc098e65dbe93efb189c3a260a2b4069fda467a93b3c445be21149890e96",
+          "actual_sha256": "13d0dc098e65dbe93efb189c3a260a2b4069fda467a93b3c445be21149890e96",
+          "elements": 65536
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 512,
+      "case": 6,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 128,
+      "mode": "zeros",
+      "input_sha256": {
+        "q": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+        "kv": "9b94b83334ada38b48b53f19ef2c45abc9f84fb723564671290a556f75d6fdc8",
+        "sink": "803e121b767f734e5253bf630b0440952c40912029c139ad951dd4bfbaa4ab4a",
+        "indices": "7abcfb037cf5e79833f5e065c2d4c794ca8d222de848b2550e7dc74161a305c7"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "elements": 32768
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "elements": 8192
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "46ac448298521650c9dfcc1d8dad9f941244e7bb071dc84c6841750d864015a9",
+          "actual_sha256": "46ac448298521650c9dfcc1d8dad9f941244e7bb071dc84c6841750d864015a9",
+          "elements": 8192
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "e26d192442cc59a256c39b950dc3391ee9657d2520ccb05d5ba02035dbffbda1",
+          "actual_sha256": "e26d192442cc59a256c39b950dc3391ee9657d2520ccb05d5ba02035dbffbda1",
+          "elements": 640
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "actual_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "elements": 65536
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "elements": 32768
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 512,
+      "case": 7,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 65,
+      "mode": "signed_zeros",
+      "input_sha256": {
+        "q": "7238109db3ad4ae642f53161e4c286a377cbb4c4378334ceeffb60e6ff51ed5b",
+        "kv": "19f9e46a431709a7d4b74de907596ea6a5ea63e6fca3cbae96bc11c2e41854fd",
+        "sink": "ea56ab45863d4cde64147df7a7ce8b27e7a4ec3bc18ec2ea8a9fccca2971cca1",
+        "indices": "87e178a3d13450ddc5dabcd5025ee3dbc5755963a1f37f11c16a7dbc90cbff95"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 65536,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "elements": 65536
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "110e0985f9ada109351a384aaa3a01899d1f71fb3cfcf49e7a88920eb7a9968b",
+          "actual_sha256": "110e0985f9ada109351a384aaa3a01899d1f71fb3cfcf49e7a88920eb7a9968b",
+          "elements": 16384
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "559d7ebc47e6d3ae0a32be9f3ccd05814029290f95960fabd451eabcbc23c980",
+          "actual_sha256": "559d7ebc47e6d3ae0a32be9f3ccd05814029290f95960fabd451eabcbc23c980",
+          "elements": 16384
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "221e3cf6c8dc68d0100346173a37b397ff2b588aec0414461d84c4f69ebb3fb8",
+          "actual_sha256": "221e3cf6c8dc68d0100346173a37b397ff2b588aec0414461d84c4f69ebb3fb8",
+          "elements": 1280
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541",
+          "actual_sha256": "07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541",
+          "elements": 131072
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "actual_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "elements": 65536
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 512,
+      "case": 8,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 127,
+      "mode": "normal",
+      "input_sha256": {
+        "q": "ea578bc167c3f479bfc3d38068cb3f26eccebe2fcdafcbe72d6ae2b968138c13",
+        "kv": "094c117fc1033ea4866cdac76664c9bc095a66b654420c13bc0b9c2872b430ce",
+        "sink": "a7fcdb48008071bbd07d822c99e8a011a0dfc3e288231cd56b96b0ce357225bf",
+        "indices": "1ea04b389d32d9f046a02abcf1a3f78b8f0283db903200bf5b2d1b3d7ca197ec"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "ba8e6f1dec1c822290d7411cc3c6d81132dd5cb2a3d27fe0c82fe7fb79935549",
+          "actual_sha256": "ba8e6f1dec1c822290d7411cc3c6d81132dd5cb2a3d27fe0c82fe7fb79935549"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "ba8e6f1dec1c822290d7411cc3c6d81132dd5cb2a3d27fe0c82fe7fb79935549",
+          "actual_sha256": "ba8e6f1dec1c822290d7411cc3c6d81132dd5cb2a3d27fe0c82fe7fb79935549",
+          "elements": 32768
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "372e0db5cb11cab62a27cc3fbf0aeeffc3d0e58d92612274492e45782e107589",
+          "actual_sha256": "372e0db5cb11cab62a27cc3fbf0aeeffc3d0e58d92612274492e45782e107589",
+          "elements": 8192
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "8866b714422521b7e63b2badd02f3b67a70897d9f9cc2ea2fc26751427d3cad2",
+          "actual_sha256": "8866b714422521b7e63b2badd02f3b67a70897d9f9cc2ea2fc26751427d3cad2",
+          "elements": 8192
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "9624c089c9532d50ae08578a531781d5f9d28dfedee700bb2f6fdffd603ca668",
+          "actual_sha256": "9624c089c9532d50ae08578a531781d5f9d28dfedee700bb2f6fdffd603ca668",
+          "elements": 640
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "ec8acc9c0f5e4fb18106cbbc2f744556739ec475fa4bd36d6499ce6583a32e00",
+          "actual_sha256": "ec8acc9c0f5e4fb18106cbbc2f744556739ec475fa4bd36d6499ce6583a32e00",
+          "elements": 65536
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "349498e716cb3c9863c2b6d04e81aba923a60d53028a9c7441cf5336dcd800ca",
+          "actual_sha256": "349498e716cb3c9863c2b6d04e81aba923a60d53028a9c7441cf5336dcd800ca",
+          "elements": 32768
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 512,
+      "case": 9,
+      "batch": 1,
+      "sequence": 2,
+      "topk": 128,
+      "mode": "ties",
+      "input_sha256": {
+        "q": "67e1855aed2aa0669f09fe7256b1d7cbfce6f118d8f80486bd280f460e39d0ac",
+        "kv": "1422a875fbcd734214c0e1cb361747b16a972412d9997c4b16205b31079f3844",
+        "sink": "5341e6b2646979a70e57653007a1f310169421ec9bdd9f1a5648f75ade005af1",
+        "indices": "d5043cb39e3d375752aa3b0a64f77a6612014b1093e912da90d81f8b68f59ed8"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 65536,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "67e1855aed2aa0669f09fe7256b1d7cbfce6f118d8f80486bd280f460e39d0ac",
+          "actual_sha256": "67e1855aed2aa0669f09fe7256b1d7cbfce6f118d8f80486bd280f460e39d0ac"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "67e1855aed2aa0669f09fe7256b1d7cbfce6f118d8f80486bd280f460e39d0ac",
+          "actual_sha256": "67e1855aed2aa0669f09fe7256b1d7cbfce6f118d8f80486bd280f460e39d0ac",
+          "elements": 65536
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "f92674f9804a1e9021e9c2991f49f135aca419fc77f84d27e353998510487009",
+          "actual_sha256": "f92674f9804a1e9021e9c2991f49f135aca419fc77f84d27e353998510487009",
+          "elements": 16384
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "3513f7981d1ead42bde088485afbba413d675b83c061c6362634bcb044bf8613",
+          "actual_sha256": "3513f7981d1ead42bde088485afbba413d675b83c061c6362634bcb044bf8613",
+          "elements": 16384
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "bbb854142e10a24c9ae810ccbd5d1316260147a9a269bb9240440a76256ad936",
+          "actual_sha256": "bbb854142e10a24c9ae810ccbd5d1316260147a9a269bb9240440a76256ad936",
+          "elements": 1280
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "9f4d68261069758b0f5e16ee29d3daaf7cfd2e6253a12d44a3fe33b5ef30a59b",
+          "actual_sha256": "9f4d68261069758b0f5e16ee29d3daaf7cfd2e6253a12d44a3fe33b5ef30a59b",
+          "elements": 131072
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "672440c3ba84143a82db45b39b0ec2b4204ca25852827bfba155c539265744b5",
+          "actual_sha256": "672440c3ba84143a82db45b39b0ec2b4204ca25852827bfba155c539265744b5",
+          "elements": 65536
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 512,
+      "case": 10,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 129,
+      "mode": "sink_positive",
+      "input_sha256": {
+        "q": "0e4ea8e78eae1683ce29965128baf39d6013d1695a2f957f50329d6087488801",
+        "kv": "077ce4b08875688cb669845a3cc416b3c3af97a95bc7450cc1ae016116ca8ed0",
+        "sink": "282bec2d67fdd884738fe4aed779d35d9212b33420e0e75efccc757bb3fc6835",
+        "indices": "3dc1f21e918bf11151f1d1013fa11572518a74c177e73e0f072d589316f168ae"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "664980ff7b0afc4cd45364b7047a49eae23b121dd74bac221141dcf0f75a5d21",
+          "actual_sha256": "664980ff7b0afc4cd45364b7047a49eae23b121dd74bac221141dcf0f75a5d21"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "664980ff7b0afc4cd45364b7047a49eae23b121dd74bac221141dcf0f75a5d21",
+          "actual_sha256": "664980ff7b0afc4cd45364b7047a49eae23b121dd74bac221141dcf0f75a5d21",
+          "elements": 32768
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "6cba3a464ac2b3fbb69344a84e8f8b538948d456dff25a6587ec41dae0bb7700",
+          "actual_sha256": "6cba3a464ac2b3fbb69344a84e8f8b538948d456dff25a6587ec41dae0bb7700",
+          "elements": 12288
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "22de55255ac8e12fe8460788a156da03c9a77067cf58d124400e0a6c4fb86092",
+          "actual_sha256": "22de55255ac8e12fe8460788a156da03c9a77067cf58d124400e0a6c4fb86092",
+          "elements": 12288
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "a1dea674aa7473f2d5bc730a3c9b9988c74a2bc99ec3413e84457ae30dc6a4bf",
+          "actual_sha256": "a1dea674aa7473f2d5bc730a3c9b9988c74a2bc99ec3413e84457ae30dc6a4bf",
+          "elements": 960
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "f90cfaf3c97d6f4436588c9d5742cf5a39004718746e352eb72aa603feecc747",
+          "actual_sha256": "f90cfaf3c97d6f4436588c9d5742cf5a39004718746e352eb72aa603feecc747",
+          "elements": 98304
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "308f7e8a3f662093ca5b5a7a8cc35e1f362a6a17b7cf1e99bea1af5ec19ae9b2",
+          "actual_sha256": "308f7e8a3f662093ca5b5a7a8cc35e1f362a6a17b7cf1e99bea1af5ec19ae9b2",
+          "elements": 32768
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "heads": 64,
+      "dimension": 512,
+      "case": 11,
+      "batch": 1,
+      "sequence": 1,
+      "topk": 129,
+      "mode": "sink_negative",
+      "input_sha256": {
+        "q": "0e4ea8e78eae1683ce29965128baf39d6013d1695a2f957f50329d6087488801",
+        "kv": "077ce4b08875688cb669845a3cc416b3c3af97a95bc7450cc1ae016116ca8ed0",
+        "sink": "dd19c33a4c672d87940410177f37aebaa487ce6f73ed438b9a25fe47add9d429",
+        "indices": "3dc1f21e918bf11151f1d1013fa11572518a74c177e73e0f072d589316f168ae"
+      },
+      "checks": [
+        {
+          "check": "native_instrumentation_BF16",
+          "status": "pass",
+          "elements": 32768,
+          "mismatches": 0,
+          "dtype": "uint16",
+          "expected_sha256": "1e3c47e8e86445b4810c23b3bbe780101c160a34fceba32352588ea6ca4b6ba1",
+          "actual_sha256": "1e3c47e8e86445b4810c23b3bbe780101c160a34fceba32352588ea6ca4b6ba1"
+        },
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "1e3c47e8e86445b4810c23b3bbe780101c160a34fceba32352588ea6ca4b6ba1",
+          "actual_sha256": "1e3c47e8e86445b4810c23b3bbe780101c160a34fceba32352588ea6ca4b6ba1",
+          "elements": 32768
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "6cba3a464ac2b3fbb69344a84e8f8b538948d456dff25a6587ec41dae0bb7700",
+          "actual_sha256": "6cba3a464ac2b3fbb69344a84e8f8b538948d456dff25a6587ec41dae0bb7700",
+          "elements": 12288
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "22de55255ac8e12fe8460788a156da03c9a77067cf58d124400e0a6c4fb86092",
+          "actual_sha256": "22de55255ac8e12fe8460788a156da03c9a77067cf58d124400e0a6c4fb86092",
+          "elements": 12288
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "a1dea674aa7473f2d5bc730a3c9b9988c74a2bc99ec3413e84457ae30dc6a4bf",
+          "actual_sha256": "a1dea674aa7473f2d5bc730a3c9b9988c74a2bc99ec3413e84457ae30dc6a4bf",
+          "elements": 960
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "f90cfaf3c97d6f4436588c9d5742cf5a39004718746e352eb72aa603feecc747",
+          "actual_sha256": "f90cfaf3c97d6f4436588c9d5742cf5a39004718746e352eb72aa603feecc747",
+          "elements": 98304
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "b122118876f7a2170a5d0cc36fa94f91cc58b6ecde38eb2341ee390963cb4bfc",
+          "actual_sha256": "b122118876f7a2170a5d0cc36fa94f91cc58b6ecde38eb2341ee390963cb4bfc",
+          "elements": 32768
+        }
+      ],
+      "status": "pass"
+    }
+  ],
+  "faults": [
+    {
+      "condition": "host_pressure",
+      "status": "pass",
+      "caught": "MemoryError",
+      "allocation_attempts": 1,
+      "device_owned_bytes_after_failure": 0,
+      "partial_result_returned": false,
+      "retry_checks": [
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "209243a374710dd526f3dedc990b6fa41dc4322c2ca3ad2cf9f6badf17fbbf5c",
+          "actual_sha256": "209243a374710dd526f3dedc990b6fa41dc4322c2ca3ad2cf9f6badf17fbbf5c",
+          "elements": 131072
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "3d17bcece4e00630ca925adddbbc3ff44751608539cde9b0124c7a09f4b4eeb8",
+          "actual_sha256": "3d17bcece4e00630ca925adddbbc3ff44751608539cde9b0124c7a09f4b4eeb8",
+          "elements": 32768
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "83313550c9147c88509d66c61e6a943385c685ed889e0e24edb15de53dd5d853",
+          "actual_sha256": "83313550c9147c88509d66c61e6a943385c685ed889e0e24edb15de53dd5d853",
+          "elements": 32768
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "5e22ccb26aa8cbcb83ed545985f0935dd12750239ca0f41a93492cd01728f084",
+          "actual_sha256": "5e22ccb26aa8cbcb83ed545985f0935dd12750239ca0f41a93492cd01728f084",
+          "elements": 2560
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "a5eaf7de72b83ecb4c2c82b729b3dd2529e1c5d6253836e45a60b446e77a77f2",
+          "actual_sha256": "a5eaf7de72b83ecb4c2c82b729b3dd2529e1c5d6253836e45a60b446e77a77f2",
+          "elements": 262144
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "2fc0de69c1f60f0e87e9b015adc7f28c2b81d3492117eb45f020e59f707c4bb0",
+          "actual_sha256": "2fc0de69c1f60f0e87e9b015adc7f28c2b81d3492117eb45f020e59f707c4bb0",
+          "elements": 131072
+        }
+      ]
+    },
+    {
+      "condition": "fourth_device_allocation",
+      "status": "pass",
+      "caught": "MemoryError",
+      "allocation_attempts": 4,
+      "device_owned_bytes_after_failure": 0,
+      "partial_result_returned": false,
+      "retry_checks": [
+        {
+          "check": "output_bf16",
+          "status": "pass",
+          "expected_sha256": "209243a374710dd526f3dedc990b6fa41dc4322c2ca3ad2cf9f6badf17fbbf5c",
+          "actual_sha256": "209243a374710dd526f3dedc990b6fa41dc4322c2ca3ad2cf9f6badf17fbbf5c",
+          "elements": 131072
+        },
+        {
+          "check": "qk_fp32",
+          "status": "pass",
+          "expected_sha256": "3d17bcece4e00630ca925adddbbc3ff44751608539cde9b0124c7a09f4b4eeb8",
+          "actual_sha256": "3d17bcece4e00630ca925adddbbc3ff44751608539cde9b0124c7a09f4b4eeb8",
+          "elements": 32768
+        },
+        {
+          "check": "probability_fp32",
+          "status": "pass",
+          "expected_sha256": "83313550c9147c88509d66c61e6a943385c685ed889e0e24edb15de53dd5d853",
+          "actual_sha256": "83313550c9147c88509d66c61e6a943385c685ed889e0e24edb15de53dd5d853",
+          "elements": 32768
+        },
+        {
+          "check": "softmax_state_fp32",
+          "status": "pass",
+          "expected_sha256": "5e22ccb26aa8cbcb83ed545985f0935dd12750239ca0f41a93492cd01728f084",
+          "actual_sha256": "5e22ccb26aa8cbcb83ed545985f0935dd12750239ca0f41a93492cd01728f084",
+          "elements": 2560
+        },
+        {
+          "check": "value_accumulator_fp32",
+          "status": "pass",
+          "expected_sha256": "a5eaf7de72b83ecb4c2c82b729b3dd2529e1c5d6253836e45a60b446e77a77f2",
+          "actual_sha256": "a5eaf7de72b83ecb4c2c82b729b3dd2529e1c5d6253836e45a60b446e77a77f2",
+          "elements": 262144
+        },
+        {
+          "check": "output_fp32",
+          "status": "pass",
+          "expected_sha256": "2fc0de69c1f60f0e87e9b015adc7f28c2b81d3492117eb45f020e59f707c4bb0",
+          "actual_sha256": "2fc0de69c1f60f0e87e9b015adc7f28c2b81d3492117eb45f020e59f707c4bb0",
+          "elements": 131072
+        }
+      ]
+    }
+  ],
+  "torch_installed": false,
+  "torch_imported": false,
+  "tilelang_installed": false,
+  "tilelang_imported": false,
+  "numpy_version": "2.5.4",
+  "memory": {
+    "host_allowance_bytes": 33554432,
+    "host_reserved_bytes": 0,
+    "device_peak_owned_bytes": 2897168,
+    "device_owned_bytes": 0,
+    "owned_context_active": false,
+    "owned_modules_active": 0,
+    "reservation_is_RSS_limit": false,
+    "driver_module_memory_excluded": true,
+    "minimum_sampled_host_available_bytes": 139577311232
+  },
+  "full_model_quality": "not_run",
+  "kv_state_and_projections": "not_run",
+  "scope": "Independent framework-free replay of the same bounded sparse Attention and pressure/recovery matrix"
+}

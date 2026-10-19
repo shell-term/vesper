@@ -129,4 +129,5 @@ Source/consumer sharing across **complete consecutive blocks**, other compressed
 profiles, all forty backbone weight bindings, original upstream hidden states,
 Engram, logits/sampling, larger complete-block context, batching, model quality
 and generation speed remain unfinished. This is a four-position source-block
-gate, not a full-model or performance result. Issue #7 and M2 remain open.
+gate, not a full-model or performance result. Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open.

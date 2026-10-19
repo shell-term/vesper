@@ -52,18 +52,22 @@ def load_arrays(topology, source, consumer, *, layers=LAYERS):
 
 
 def open_operators(stack, arrays, bundle, ordinal=0, *, layers=LAYERS):
+    validate_block_pair(layers)
+    return _open_operators(stack, arrays, bundle, ordinal, layers)
+
+
+def _open_operators(stack, arrays, bundle, ordinal, layers):
     from .hc import NativeHC
     from .projections import NativeProjections
     from .normalization import NativeNormRoPE
     from .compression import NativeCompression
     from .indexer import NativeIndexer
     from .attention import NativeAttention
-    validate_block_pair(layers)
     hc = {l: stack.enter_context(NativeHC(arrays, ordinal, layer=l)) for l in layers}
     ps = {l: stack.enter_context(NativeProjections(arrays, ordinal, layer=l)) for l in layers}
     norm = stack.enter_context(NativeNormRoPE(ordinal))
-    comp = stack.enter_context(NativeCompression(arrays, ordinal, layers=(layers[0],)))
-    index = stack.enter_context(NativeIndexer(arrays, ordinal, layers=(layers[0],)))
+    comp = stack.enter_context(NativeCompression(arrays, ordinal, layers=tuple(l for l in layers if role(l).owns_kv)))
+    index = stack.enter_context(NativeIndexer(arrays, ordinal, layers=tuple(l for l in layers if role(l).owns_index)))
     sparse = stack.enter_context(NativeAttention(bundle, ordinal, profile="long_context"))
     return hc, (ps, norm, comp, index, sparse)
 

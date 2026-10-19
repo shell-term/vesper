@@ -8,7 +8,7 @@ import zipfile
 
 import numpy as np
 
-from .attention_topology import QUALIFIED_INPUT_LAYERS, role, compression_layout, indexer_layout
+from .attention_topology import REGISTERED_INPUT_LAYERS, role, compression_layout, indexer_layout
 from .checkpoint import MODEL, REVISION, LIMIT, read_small, read_range
 from .compressed_attention_fixture import invalid
 from .prefix import STORAGE_DTYPES
@@ -17,7 +17,7 @@ from .resources import MemoryBudget, MiB
 
 
 def layout(layer):
-    if type(layer) is not int or layer not in QUALIFIED_INPUT_LAYERS: raise ValueError("Unregistered fixture layer")
+    if type(layer) is not int or layer not in REGISTERED_INPUT_LAYERS: raise ValueError("Unregistered fixture layer")
     rows = {}
     for part, (r, w) in {**FP8_LAYOUT, "wo_a": (8192, 4096)}.items():
         rows[f"layers.{layer}.attn.{part}.weight"] = ("F8_E4M3", (r, w))

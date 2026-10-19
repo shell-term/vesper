@@ -10,7 +10,8 @@ This qualifies index arithmetic and the named source/consumer relationships.
 The subsequent [connected compressed-Attention probe](compressed-attention-validation.md)
 now joins profiles 2/20/24 and compressed-KV sharing 20-to-24 at context <=64.
 Larger-context integration, other layer profiles, Engram, full-model quality
-and generation speed remain unfinished. Issue #7 and M2 stay open. No retraining or new lossy quantization is
+and generation speed remain unfinished. Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open. No retraining or new lossy quantization is
 part of this implementation: the fixtures retain the released weights/scales.
 
 ## Original data and execution profile

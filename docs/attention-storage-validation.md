@@ -11,7 +11,8 @@ specialization requests **141,312 bytes (138 KiB)**, above this device's
 **101,376-byte (99 KiB)** opt-in limit. Candidate launch feasibility passes;
 the original full-profile reference gate remains **blocked**.
 
-[Issue #7](https://github.com/shell-term/vesper/issues/7) remains open. No candidate
+This was an early Issue #7 gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). No candidate
 was substituted into prefix capture or the native runtime by this experiment.
 At this point real MoE inputs had not been captured and M1 remained open.
 This is an optional TileLang experiment, not native Attention or

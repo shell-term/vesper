@@ -9,7 +9,8 @@ uncompressed window Attention** path. This extends the
 The subsequent [complete layer-0 block probe](layer0-block-validation.md) adds
 native Hyper-Connections, residuals and MoE. The [compression probe](compression-validation.md)
 qualifies original compressor/cache construction; indexing/sharing, connected
-compressed Attention and other block profiles remain unfinished. Issue #7 and M2 stay open; text generation
+compressed Attention and other block profiles remain unfinished. Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open; text generation
 is unfinished.
 
 ## Results

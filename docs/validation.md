@@ -31,6 +31,8 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Complete compressed source block | Layer-specific HC/Attention/MoE, exact actual gate, complete output and transactional source state | Original layer 2 passes 32 calls / 8,793 boundaries / 70,536,278 storage elements with zero differences; 640 unchanged Block/Attention controls, six failure/retries, snapshots and native-only replay pass; four-position generated HC streams, consecutive-block follow-up below, full model pending |
 | Complete consecutive source/consumer blocks | Actual hidden/pre-coefficient handoff, shared compressed KV/selected IDs, both complete MoEs and atomic pair state | Original blocks 2/3 pass 36 pair steps / 72 block calls / 18,447 boundaries with zero differences; 648 Block controls, 720 Attention controls, eight failures, snapshots and native-only replay pass; four-position initial generated HC streams, other complete roles/longer chains/full model pending |
 | Complete ratio-1 source/consumer blocks | Actual hidden/pre-coefficient handoff, source-20 candidate state, original KV/index reuse and atomic pair state | Original blocks 20/21 pass 36 pair steps / 72 block calls / 19,152 boundaries with zero differences; 648 Block controls, 684 Attention controls, eight failures, snapshots, five changed-state controls and native-only replay pass; generated entry, four-position context; independent from 2/3, refreshed-index blocks/full model pending |
+| Complete source-to-refreshed-index chain | Every consecutive hidden/pre handoff, source KV/candidates, layer-24 selection and layer-25 reuse, atomic six-block state | Original blocks 20..25 pass 40 chain steps / 240 block calls / 59,600 boundaries / 415,577,840 storage elements with zero differences; 2,160 unchanged Block and 2,040 Attention controls, ten failure/retries, snapshots, seven changed-state controls and native-only replay; generated entry, four-position context, batch one |
+| Original Issue #7 acceptance | All five original checks bound to complete original goldens and fresh framework-free native replay | Seventeen sealed evidence groups pass the [acceptance audit](block-ops-qualification.md); configured role coverage is distinct from all-forty-layer numerical execution, full-model quality and generation |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
 | Resource policy | All owned memory plus pressure behavior, concurrency with other work | Bounded cache buffers and injected pressure/refusal/recovery pass; full-engine/OS policy pending |
@@ -230,7 +232,8 @@ process without Torch/TileLang reproduce all goldens. The gate uses four-positio
 generated HC streams, 25 actually selected original experts, layer-specific
 weights and bounded host diagnostic state. Consecutive-block sharing is covered
 by the follow-ups below; other profiles, original upstream activations, Engram, model output/quality and
-generation speed remain unfinished. Issue #7 and M2 stay open.
+generation speed remain unfinished. Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open.
 
 The [consecutive-block probe](block-pair-validation.md) now connects complete
 blocks 2/3 through actual returned hidden states and FP32 pre coefficients,
@@ -242,7 +245,8 @@ and retry exactly. Snapshot restoration and native-only replay pass. The initial
 layer-2 HC input remains generated and context is four positions; later blocks
 receive computed inputs. Other complete compressed roles, upstream/full-model
 history, larger context/batching, Engram and model output/quality/speed remain
-separate requirements. Issue #7 and M2 remain open.
+separate requirements. Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open.
 
 The [ratio-1 complete-pair follow-up](ratio1-block-pair-validation.md) covers
 blocks 20/21 with their own original weights and actual inter-block hidden/pre
@@ -254,3 +258,13 @@ controls and native-only replay pass. Initial input is generated and context is
 four positions. The 2/3 and 20/21 pairs remain independent chains; refreshed-index
 blocks with actual intervening-layer execution, larger complete contexts,
 Engram and full model/output/quality/speed remain unfinished.
+
+The [complete 20..25 follow-up](refreshed-block-chain-validation.md) executes all
+intervening complete blocks, refreshes the index at 24 and reuses it at 25.
+It matches all 59,600 boundaries and unchanged original methods, with atomic
+six-block failure recovery. The later
+[Issue #7 acceptance audit](block-ops-qualification.md) retains all five original
+checks and validates all seventeen original/native evidence groups. This closes
+the scoped block-operation gate; original full-model artifacts/Engram, global
+memory governance, all-layer output/logit/sampling comparisons and generation
+work remain under Issues #8/#9/#10 and M2/M3.

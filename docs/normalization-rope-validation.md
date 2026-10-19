@@ -8,7 +8,8 @@ query/KV/output projections were excluded from this probe; the subsequent
 [original-weight window Attention report](attention-projection-validation.md)
 connects them, and the [complete layer-0 block follow-up](layer0-block-validation.md)
 adds native Hyper-Connections, residuals and MoE. This remains bounded component
-and chain evidence. Issue #7 and M2 remain open, and text generation is unfinished.
+and chain evidence. Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open, and text generation is unfinished.
 
 ## Results
 

@@ -18,6 +18,16 @@ become qualified because another path passes. The
 [Ampere model-compute investigation](https://github.com/shell-term/vesper/issues/12)
 remains deferred; the helper GPU can store/hash bytes without running experts.
 
+Issue #7's original five checks qualify block operations within their explicit
+component and connected-chain scopes; see the
+[sealed acceptance audit](block-ops-qualification.md). They do not require or
+prove a complete forty-layer model. Issue #8 owns tokenizer/original-artifact
+and Engram import, #9 owns the whole-runtime memory policy, and #10 integrates
+those dependencies with all-layer numerical/logit/sampling comparisons.
+Completing #7 leaves M2 open. Longer complete-chain histories and broader
+execution shapes remain integration requirements, even when their component
+Attention operations already pass.
+
 ## Working on an issue
 
 1. State the concrete outcome, acceptance checks, resource limits and dependencies.

@@ -15,7 +15,8 @@ profiles and sharing roles with generated independent layer inputs. The four
 groups are executed separately, with one KV owner each; this is not a complete
 backbone pass or hidden-state handoff between groups. Complete compressed
 Transformer blocks, layer-14 Engram, full-model quality and generation remain
-unfinished. Issue #7 and M2 stay open.
+unfinished. Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open.
 
 ## Pinned ownership and new execution path
 

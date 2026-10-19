@@ -43,14 +43,17 @@ class BlockStages:
 
 
 class NativeBlockPair:
+    _validate_layers = staticmethod(validate_block_pair)
+    primary_cap, helper_cap, host_cap = PRIMARY_CAP, HELPER_CAP, 64 * MiB
+
     def __init__(self, arrays, hc, projections, norm, compressor, indexer, attention, moe, *, layers=LAYERS):
-        self.layers = validate_block_pair(layers)
+        self.layers = self._validate_layers(layers)
         if any(not isinstance(operators, dict) or set(operators) != set(layers) for operators in (hc, projections, moe)):
             raise ValueError("Complete pair requires exactly its original layer operators")
         self.arrays, self.hc, self.ps, self.norm, self.comp, self.index, self.sparse, self.moe = arrays, hc, projections, norm, compressor, indexer, attention, moe
         self.attention = SharedAttentionFrame(arrays, projections, norm, compressor, indexer, attention, layers)
         self.stack, self.lock, self.allocation_lock = ExitStack(), threading.Lock(), threading.RLock()
-        self.budget, self.opened, self.primary_peak, self.helper_peak = MemoryBudget(cap=64 * MiB), False, 0, 0
+        self.budget, self.opened, self.primary_peak, self.helper_peak = MemoryBudget(cap=self.host_cap), False, 0, 0
 
     def __enter__(self):
         with self.lock:
@@ -60,14 +63,14 @@ class NativeBlockPair:
                     or self.moe[l].stack is None or self.moe[l].layer != l or self.moe[l].config.cache.primary_device != ordinal for l in self.layers)):
                 raise ValueError("Pair HC, projection and MoE original identities/devices differ")
             try:
-                self.budget.acquire(64 * MiB); self.stack.callback(self.budget.release, 64 * MiB)
+                self.budget.acquire(self.host_cap); self.stack.callback(self.budget.release, self.host_cap)
                 self.stack.enter_context(self.attention)
                 self.devices = [o.device for o in (*self.hc.values(), *self.ps.values(), self.norm, self.comp, self.comp.norm, self.index, self.index.norm, self.sparse)]
                 self.devices += [d for m in self.moe.values() for d in m.devices.values()]
                 self.helpers = [m.helper_device for m in self.moe.values() if m.helper_device is not None]
                 if len({id(d) for d in self.devices + self.helpers}) != len(self.devices + self.helpers):
                     raise ValueError("Pair device ledgers must have distinct ownership")
-                for devices, cap in ((self.devices, PRIMARY_CAP), (self.helpers, HELPER_CAP)):
+                for devices, cap in ((self.devices, self.primary_cap), (self.helpers, self.helper_cap)):
                     for device in devices:
                         original = device.allocate
                         def allocate(size, original=original, devices=devices, cap=cap):
@@ -95,7 +98,7 @@ class NativeBlockPair:
     def _headroom(self):
         self.budget.acquire(0)
         self._peaks()
-        if self._total(self.devices) > PRIMARY_CAP or self._total(self.helpers) > HELPER_CAP:
+        if self._total(self.devices) > self.primary_cap or self._total(self.helpers) > self.helper_cap:
             raise MemoryError("Complete pair exceeds its combined GPU caps")
         # memory() selects its device. Finish on the compute GPU before callers
         # enter a reference framework or load another SM89 kernel.
@@ -129,17 +132,21 @@ class NativeBlockPair:
                 carry[:] = phases[layer].finish(result)
                 self._headroom()
             def finalize(attention):
-                result = {f"layer{l}": phases[l].stages for l in self.layers}
-                consumer = phases[self.layers[1]]
-                result.update(attention=attention, handoff_hidden_bf16=consumer.hidden.copy(),
-                    handoff_pre_mix_fp32=consumer.stages["incoming_pre_fp32"].copy(), output_bf16=carry[0], next_pre_mix_fp32=carry[1])
+                result = self._result(phases, attention, carry)
                 self._headroom()
                 return result
             return self.attention.step_connected(prepare, finish, start_pos=start_pos, finalize=finalize)
 
+    def _result(self, phases, attention, carry):
+        result = {f"layer{l}": phases[l].stages for l in self.layers}
+        consumer = phases[self.layers[1]]
+        result.update(attention=attention, handoff_hidden_bf16=consumer.hidden.copy(),
+            handoff_pre_mix_fp32=consumer.stages["incoming_pre_fp32"].copy(), output_bf16=carry[0], next_pre_mix_fp32=carry[1])
+        return result
+
     def stats(self):
         return {"host_allowance_bytes": self.budget.peak, "host_reserved_bytes": self.budget.reserved,
-            "primary_cap_bytes": PRIMARY_CAP, "helper_cap_bytes": HELPER_CAP,
+            "primary_cap_bytes": self.primary_cap, "helper_cap_bytes": self.helper_cap,
             "peak_owned_primary_bytes": self.primary_peak, "peak_owned_helper_bytes": self.helper_peak,
             "reservation_is_RSS_limit": False}
 

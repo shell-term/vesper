@@ -3,7 +3,7 @@
 import copy
 import numpy as np
 
-from .attention_topology import role, validate_group, COMPLETE_BLOCK_PAIRS
+from .attention_topology import role, validate_group, COMPLETE_BLOCK_PAIRS, CHAIN_PREFIXES
 from .compressed_attention import NativeCompressedAttention
 from .compression import stage_compression
 from .kv import window_indices
@@ -15,7 +15,7 @@ CAPACITY = 1152
 def validate_frame_layers(layers):
     # Source-only planners and complete pairs do not extend the four independent
     # Attention sharing corpora or admit arbitrary incomplete ownership groups.
-    if type(layers) is tuple and all(type(l) is int for l in layers) and layers in ((2,), (20,), *COMPLETE_BLOCK_PAIRS):
+    if type(layers) is tuple and all(type(l) is int for l in layers) and layers in ((2,), (20,), *COMPLETE_BLOCK_PAIRS, *CHAIN_PREFIXES):
         return layers
     return validate_group(layers)
 
@@ -216,7 +216,7 @@ class SharedAttentionFrame(NativeCompressedAttention):
         with self.lock:
             self._ready()
             pos = self.position if start_pos is None else start_pos
-            if (self.layers not in COMPLETE_BLOCK_PAIRS or self.batch != 1 or type(pos) is not int or pos != self.position or not 0 <= pos < CAPACITY
+            if (self.layers not in (*COMPLETE_BLOCK_PAIRS, *CHAIN_PREFIXES) or self.batch != 1 or type(pos) is not int or pos != self.position or not 0 <= pos < CAPACITY
                     or not callable(input_for_layer) or not callable(after_layer) or (finalize is not None and not callable(finalize))):
                 raise ValueError("Connected blocks require a registered pair's next position and callbacks")
             stages, state = _stage_pipeline(self.arrays, self.projections, self.norm, self.compressor, self.indexer, self.attention,

@@ -14,7 +14,7 @@ from .prefix import STORAGE_DTYPES
 from .resources import MemoryBudget, MiB
 
 def block_layout(layer):
-    if type(layer) is not int or layer not in (2, 3, 20, 21): raise ValueError("Unregistered compressed block fixture layer")
+    if type(layer) is not int or layer not in (2, 3, 20, 21, 22, 23, 24, 25): raise ValueError("Unregistered compressed block fixture layer")
     rows = {f"layers.{layer}.hc_{p}_{n}": ("F32", s) for p in ("attn", "ffn")
             for n, s in (("fn", (24, 20480)), ("scale", (3,)), ("base", (24,)))}
     rows.update({f"layers.{layer}.{p}_norm.weight": ("BF16", (5120,)) for p in ("attn", "ffn")})

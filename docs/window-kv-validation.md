@@ -11,7 +11,8 @@ original layer-0 projections. The [complete layer-0 block follow-up](layer0-bloc
 adds native Hyper-Connections, residuals and MoE. The [compression probe](compression-validation.md)
 qualifies separate original compressor/cache construction. Sparse indexing/sharing,
 connected compressed Attention and other block profiles remain separate gates.
-Issue #7 and M2 remain open; text generation is unfinished.
+Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open; text generation is unfinished.
 
 ## Results
 

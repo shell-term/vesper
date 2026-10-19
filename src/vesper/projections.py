@@ -29,8 +29,8 @@ def validate_values(values, width):
 
 
 def validate_projection_weights(arrays, layer=0):
-    from .attention_topology import QUALIFIED_INPUT_LAYERS
-    if type(layer) is not int or layer not in (0, *QUALIFIED_INPUT_LAYERS):
+    from .attention_topology import REGISTERED_INPUT_LAYERS
+    if type(layer) is not int or layer not in (0, *REGISTERED_INPUT_LAYERS):
         raise ValueError("Unsupported original Attention projection layer")
     for name, (rows, width) in {**FP8_LAYOUT, "wo_a": (8192, 4096)}.items():
         for suffix, shape in (("weight", (rows, width)), ("scale", (rows // 32, width // 32))):

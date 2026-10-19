@@ -126,6 +126,6 @@ complete blocks 20/21 using this executor and their own original artifacts.
 It does not join these two independent chains. Other complete roles,
 longer complete-chain context, batching,
 upstream hidden states, all forty backbone bindings, Engram, logits/sampling,
-model quality and generation speed remain unfinished. Issue #7 and M2 stay
-open. The earlier sixteen-profile Attention sharing gate, standalone layer 2
+model quality and generation speed remain unfinished. Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open. The earlier sixteen-profile Attention sharing gate, standalone layer 2
 and layer-0/HC goldens all remain exact after this integration.

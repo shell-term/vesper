@@ -6,7 +6,10 @@ KV_SOURCES = (2, 8, 14, 20)
 INDEX_SOURCES = (2, 8, 14, 20, 24, 28, 32, 36)
 GROUPS = ((2, 3), (8, 9), (14, 15), (20, 21, 24, 25, 28, 29, 32, 33, 36, 37))
 COMPLETE_BLOCK_PAIRS = ((2, 3), (20, 21))
+REFRESH_CHAIN = (20, 21, 22, 23, 24, 25)
+CHAIN_PREFIXES = tuple(REFRESH_CHAIN[:n] for n in range(2, len(REFRESH_CHAIN) + 1))
 QUALIFIED_INPUT_LAYERS = tuple(l for group in GROUPS for l in group)
+REGISTERED_INPUT_LAYERS = tuple(sorted(set(QUALIFIED_INPUT_LAYERS) | set(REFRESH_CHAIN)))
 
 
 @dataclass(frozen=True)
@@ -41,6 +44,13 @@ def validate_group(layers):
 def validate_block_pair(layers):
     if type(layers) is not tuple or any(type(l) is not int for l in layers) or layers not in COMPLETE_BLOCK_PAIRS:
         raise ValueError("Unregistered complete source/consumer block pair")
+    return layers
+
+
+def validate_block_chain(layers, *, prefix=False):
+    allowed = CHAIN_PREFIXES if prefix else (REFRESH_CHAIN,)
+    if type(layers) is not tuple or any(type(l) is not int for l in layers) or layers not in allowed:
+        raise ValueError("Expected the registered consecutive source-20/index-24 chain")
     return layers
 
 

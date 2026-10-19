@@ -10,7 +10,8 @@ follow-up](attention-projection-validation.md) connects the original layer-0
 projections. The [complete layer-0 block follow-up](layer0-block-validation.md)
 adds native Hyper-Connections, residuals and MoE. The [compression probe](compression-validation.md)
 qualifies original compressor/cache construction. Indexing/sharing and connected
-compressed Attention still need integration. Issue #7 and M2 remain open;
+compressed Attention still need integration. Issue #7 was still open at this component gate; see the later
+[block-operation acceptance audit](block-ops-qualification.md). M2 remains open;
 generation is unfinished.
 
 ## Result
