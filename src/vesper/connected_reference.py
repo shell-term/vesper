@@ -50,7 +50,7 @@ class OfficialConnected:
     """Original gate, experts, shared expert and MoE.forward; six-entry oracle LRU."""
 
     def __init__(self, gate_fixture, router_fixture, shared_fixture, expert_directory, reference_directory, ordinal=0, *, layer=0):
-        if type(layer) is not int or layer not in (0, 2, 3):
+        if type(layer) is not int or layer not in (0, 2, 3, 20, 21):
             raise ValueError("Unregistered connected MoE oracle layer")
         self.layer = layer
         import torch

@@ -121,7 +121,10 @@ python examples/compare_block_pair.py --reference-directory artifacts/reference 
 python examples/recheck_block_pair.py --reference-report results/2026-10-19-block-pair/pair.json --topology-fixtures artifacts/topology-fixture --source-fixtures artifacts/compressed-block-fixture --consumer-fixtures artifacts/block3-fixture --attention-bundle artifacts/native-attention-v1 --source-store artifacts/block2-store --consumer-store artifacts/block3-store --output artifacts/block-pair-recheck.json
 ```
 
-Other complete compressed roles, longer complete-chain context, batching,
+The separate [ratio-1 follow-up](ratio1-block-pair-validation.md) qualifies
+complete blocks 20/21 using this executor and their own original artifacts.
+It does not join these two independent chains. Other complete roles,
+longer complete-chain context, batching,
 upstream hidden states, all forty backbone bindings, Engram, logits/sampling,
 model quality and generation speed remain unfinished. Issue #7 and M2 stay
 open. The earlier sixteen-profile Attention sharing gate, standalone layer 2

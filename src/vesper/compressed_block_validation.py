@@ -45,29 +45,31 @@ def expected_metadata():
         yield meta("snapshot/" + label, pos, False)
 
 
-def load_arrays(topology, fixtures):
+def load_arrays(topology, fixtures, *, layer=2):
     from .block_fixture import load_block_fixture
     from .topology_fixture import load_layer
-    arrays, attention = load_layer(Path(topology) / "2", 2)
-    control, hc = load_block_fixture(Path(fixtures) / "hc-norm")
+    if type(layer) is not int or layer not in (2, 20): raise ValueError("Unregistered complete-block source")
+    arrays, attention = load_layer(Path(topology) / str(layer), layer)
+    control, hc = load_block_fixture(Path(fixtures) / "hc-norm", layer=layer)
     arrays.update(control)
     return arrays, {"attention": attention, "hc_norm": hc}
 
 
-def open_operators(stack, arrays, bundle, ordinal=0):
+def open_operators(stack, arrays, bundle, ordinal=0, *, layer=2):
     from .attention import NativeAttention
     from .compression import NativeCompression
     from .hc import NativeHC
     from .indexer import NativeIndexer
     from .normalization import NativeNormRoPE
     from .projections import NativeProjections
-    hc = stack.enter_context(NativeHC(arrays, ordinal, layer=2))
-    p = stack.enter_context(NativeProjections(arrays, ordinal, layer=2))
+    if type(layer) is not int or layer not in (2, 20): raise ValueError("Unregistered complete-block source")
+    hc = stack.enter_context(NativeHC(arrays, ordinal, layer=layer))
+    p = stack.enter_context(NativeProjections(arrays, ordinal, layer=layer))
     norm = stack.enter_context(NativeNormRoPE(ordinal))
-    comp = stack.enter_context(NativeCompression(arrays, ordinal, layers=(2,)))
-    index = stack.enter_context(NativeIndexer(arrays, ordinal, layers=(2,)))
+    comp = stack.enter_context(NativeCompression(arrays, ordinal, layers=(layer,)))
+    index = stack.enter_context(NativeIndexer(arrays, ordinal, layers=(layer,)))
     attn = stack.enter_context(NativeAttention(bundle, ordinal, profile="long_context"))
-    return hc, ({2: p}, norm, comp, index, attn)
+    return hc, ({layer: p}, norm, comp, index, attn)
 
 
 def open_block(stack, arrays, hc, ops, store, fixtures, ordinal=0):

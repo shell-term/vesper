@@ -1,4 +1,4 @@
-"""Compare complete consecutive blocks 2/3 with unchanged original methods."""
+"""Compare a registered complete block pair with unchanged original methods."""
 
 import argparse
 import json
@@ -7,6 +7,7 @@ from pathlib import Path
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--source-layer", type=int, choices=(2, 20), default=2)
     for n in ("reference-directory", "topology-fixtures", "source-fixtures", "consumer-fixtures", "attention-bundle",
               "plan", "source-store", "consumer-store", "source-experts", "consumer-experts", "output"):
         p.add_argument("--" + n, type=Path, required=True)
@@ -14,7 +15,7 @@ def main():
     from vesper.block_pair_reference import compare_pair
     result = compare_pair(args.reference_directory, args.topology_fixtures, args.source_fixtures, args.consumer_fixtures,
         args.attention_bundle, args.plan, args.source_store, args.consumer_store, args.source_experts, args.consumer_experts,
-        progress=lambda x: print(json.dumps(x), flush=True))
+        progress=lambda x: print(json.dumps(x), flush=True), layers=(args.source_layer, args.source_layer + 1))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_bytes((json.dumps(result, indent=2, allow_nan=False) + "\n").encode())
     print(json.dumps({"status": result["status"], "pairs": len(result.get("pair_cases", []))}))

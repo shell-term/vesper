@@ -5,6 +5,7 @@ from dataclasses import dataclass
 KV_SOURCES = (2, 8, 14, 20)
 INDEX_SOURCES = (2, 8, 14, 20, 24, 28, 32, 36)
 GROUPS = ((2, 3), (8, 9), (14, 15), (20, 21, 24, 25, 28, 29, 32, 33, 36, 37))
+COMPLETE_BLOCK_PAIRS = ((2, 3), (20, 21))
 QUALIFIED_INPUT_LAYERS = tuple(l for group in GROUPS for l in group)
 
 
@@ -32,8 +33,14 @@ def role(layer):
 
 
 def validate_group(layers):
-    if type(layers) is not tuple or layers not in GROUPS:
+    if type(layers) is not tuple or any(type(l) is not int for l in layers) or layers not in GROUPS:
         raise ValueError("Unregistered bounded Attention sharing group")
+    return layers
+
+
+def validate_block_pair(layers):
+    if type(layers) is not tuple or any(type(l) is not int for l in layers) or layers not in COMPLETE_BLOCK_PAIRS:
+        raise ValueError("Unregistered complete source/consumer block pair")
     return layers
 
 

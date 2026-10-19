@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "probe": "ratio1_consecutive_complete_block_summary",
+  "status": "pass",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "layers": [
+    20,
+    21
+  ],
+  "successful_pair_steps": 36,
+  "complete_block_calls": 72,
+  "boundary_comparisons": 19152,
+  "compared_storage_elements": 160709484,
+  "mismatches": 0,
+  "unchanged_Block_forward_controls": 648,
+  "unchanged_Attention_forward_controls": 684,
+  "whole_pair_state_controls": 36,
+  "failure_retries": 8,
+  "snapshot_restorations": 1,
+  "consumed_foreign_expired_handle_refusals": 4,
+  "detected_negative_controls": [
+    "replace_transferred_pre_with_initial_pre",
+    "bypass_source_block_hidden_output",
+    "replace_shared_KV_with_consumer_window",
+    "drop_reused_source_selected_indices",
+    "clear_source20_candidates"
+  ],
+  "reports": [
+    {
+      "file": "pair.json",
+      "sha256": "051e099765baa20deaf09e37a1022afb181f35933b0abde3268010ea76e4af85",
+      "bytes": 3577964
+    },
+    {
+      "file": "native-only-recheck.json",
+      "sha256": "2fe79009ca43b3a1abb832971f12bff0ae8131800c3ad971c12f81e3148ddd93",
+      "bytes": 118516
+    },
+    {
+      "file": "source-expert-plan.json",
+      "sha256": "67e678d804e16959f7c63500ab52943d04475e1f601c11dc8f16ce254f593b4d",
+      "bytes": 20009
+    }
+  ],
+  "source_fixture_compiler_identity_sha256": "f98c6541b689a300c36d7461ad79e5072366e064b0a45d0e35dc67e5cd99e3db",
+  "complete_goldens_sha256": "f2d8753055d69d5df0759dd5dd6f24ad662e323846371a47815e654ff18ba351",
+  "original_tensors": 367,
+  "original_weight_bytes": 1291093168,
+  "original_selected_experts_per_layer": {
+    "20": 26,
+    "21": 24
+  },
+  "verified_existing_original_Attention_bytes_reused": 264436992,
+  "new_control_gate_router_shared_bytes": 86624176,
+  "new_selected_expert_bytes": 940032000,
+  "maximum_weight_HTTP_range_bytes": 8388608,
+  "weight_bytes_fetched_during_comparison_or_recheck": 0,
+  "precision": "Original weights/scales, HC, reduction/rounding, trained router and ordered accumulation; no retraining or additional lossy quantization",
+  "native_CUDA_binary_identities_unchanged": 10,
+  "sparse_Attention_bundle_kernels_unchanged": 6,
+  "framework_free_recheck": {
+    "torch_installed": false,
+    "tilelang_installed": false,
+    "torch_imported": false,
+    "tilelang_imported": false
+  },
+  "memory": {
+    "combined_native_host_allowance_bytes": 5066719232,
+    "additional_reference_host_allowance_bytes": 3221225472,
+    "retained_fixture_host_allowance_bytes": 1073741824,
+    "host_available_floor_bytes": 34359738368,
+    "paired_minimum_sampled_host_available_bytes": 139080744960,
+    "native_minimum_sampled_host_available_bytes": 141452275712,
+    "combined_primary_cap_bytes": 805306368,
+    "combined_helper_cap_bytes": 134217728,
+    "paired_peak_owned_primary_bytes": 571013000,
+    "paired_peak_owned_helper_bytes": 75496320,
+    "native_peak_owned_primary_bytes": 571013000,
+    "native_peak_owned_helper_bytes": 75496320,
+    "all_native_owned_buffers_context_retains_and_frame_reservations_released": true,
+    "reservation_is_RSS_or_OS_limit": false,
+    "state_storage": "bounded_host_diagnostic_candidate",
+    "full_engine_96GiB_governor": "not_implemented"
+  },
+  "scope": "Consecutive complete original blocks 20/21; generated initial layer-20 HC streams, actual hidden/coefficient handoff and source KV/index reuse; no upstream blocks or Engram",
+  "maximum_unprimed_continuous_context": 4,
+  "candidate_mask_checked_at_all_positions": true,
+  "complete_pair_candidate_truncation_tested": false,
+  "untouched_full_Attention_kernel": "blocked_by_shared_memory_limit",
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured",
+  "issue7_acceptance_complete": false,
+  "M2_complete": false,
+  "next_gate": "Other complete roles, refreshed-index blocks with actual intervening hidden propagation, longer complete chains and full backbone bindings",
+  "local_CPU_tests": {
+    "count": 213,
+    "status": "pass",
+    "GPU_comparisons_are_local_not_CPU_CI": true
+  },
+  "package": {
+    "status": "pass",
+    "retained_license_files": 4,
+    "weights_or_generated_binaries_packaged": false
+  },
+  "native_regressions": {
+    "status": "pass",
+    "complete_blocks_2_3_pair_steps": 36,
+    "Attention_sharing_groups": 4,
+    "Attention_profiles": 16,
+    "Attention_frames": 2224,
+    "Attention_layer_calls": 8896,
+    "standalone_layer2_block_calls": 32,
+    "layer0_HC_cases": 84,
+    "layer0_block_calls": 26
+  }
+}

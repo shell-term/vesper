@@ -1,9 +1,10 @@
-"""Consecutive complete blocks 2/3 with actual HC handoff and atomic sharing."""
+"""Registered complete block pairs with actual HC handoff and atomic sharing."""
 
 from contextlib import ExitStack
 import threading
 
 from .block import validate_block_input
+from .attention_topology import validate_block_pair
 from .connected_reference import native_connected_stages
 from .resources import MemoryBudget, MiB
 from .shared_attention import SharedAttentionFrame
@@ -42,20 +43,21 @@ class BlockStages:
 
 
 class NativeBlockPair:
-    def __init__(self, arrays, hc, projections, norm, compressor, indexer, attention, moe):
-        if any(not isinstance(operators, dict) or set(operators) != set(LAYERS) for operators in (hc, projections, moe)):
-            raise ValueError("Complete pair requires exactly the original layers 2 and 3")
+    def __init__(self, arrays, hc, projections, norm, compressor, indexer, attention, moe, *, layers=LAYERS):
+        self.layers = validate_block_pair(layers)
+        if any(not isinstance(operators, dict) or set(operators) != set(layers) for operators in (hc, projections, moe)):
+            raise ValueError("Complete pair requires exactly its original layer operators")
         self.arrays, self.hc, self.ps, self.norm, self.comp, self.index, self.sparse, self.moe = arrays, hc, projections, norm, compressor, indexer, attention, moe
-        self.attention = SharedAttentionFrame(arrays, projections, norm, compressor, indexer, attention, LAYERS)
+        self.attention = SharedAttentionFrame(arrays, projections, norm, compressor, indexer, attention, layers)
         self.stack, self.lock, self.allocation_lock = ExitStack(), threading.Lock(), threading.RLock()
         self.budget, self.opened, self.primary_peak, self.helper_peak = MemoryBudget(cap=64 * MiB), False, 0, 0
 
     def __enter__(self):
         with self.lock:
             if self.opened: raise RuntimeError("Complete block pair is already open")
-            ordinal = self.ps[2].ordinal
+            ordinal = self.ps[self.layers[0]].ordinal
             if (any(not self.hc[l].opened or self.hc[l].ordinal != ordinal or self.hc[l].layer != l or self.ps[l].layer != l
-                    or self.moe[l].stack is None or self.moe[l].layer != l or self.moe[l].config.cache.primary_device != ordinal for l in LAYERS)):
+                    or self.moe[l].stack is None or self.moe[l].layer != l or self.moe[l].config.cache.primary_device != ordinal for l in self.layers)):
                 raise ValueError("Pair HC, projection and MoE original identities/devices differ")
             try:
                 self.budget.acquire(64 * MiB); self.stack.callback(self.budget.release, 64 * MiB)
@@ -127,9 +129,10 @@ class NativeBlockPair:
                 carry[:] = phases[layer].finish(result)
                 self._headroom()
             def finalize(attention):
-                result = {f"layer{l}": phases[l].stages for l in LAYERS}
-                result.update(attention=attention, handoff_hidden_bf16=phases[3].hidden.copy(),
-                    handoff_pre_mix_fp32=phases[3].stages["incoming_pre_fp32"].copy(), output_bf16=carry[0], next_pre_mix_fp32=carry[1])
+                result = {f"layer{l}": phases[l].stages for l in self.layers}
+                consumer = phases[self.layers[1]]
+                result.update(attention=attention, handoff_hidden_bf16=consumer.hidden.copy(),
+                    handoff_pre_mix_fp32=consumer.stages["incoming_pre_fp32"].copy(), output_bf16=carry[0], next_pre_mix_fp32=carry[1])
                 self._headroom()
                 return result
             return self.attention.step_connected(prepare, finish, start_pos=start_pos, finalize=finalize)

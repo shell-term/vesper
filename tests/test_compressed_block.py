@@ -64,7 +64,8 @@ class CompressedBlockTests(unittest.TestCase):
 
     def test_source_only_frame_does_not_admit_arbitrary_groups_or_consumers(self):
         self.assertEqual(validate_frame_layers((2,)), (2,))
-        for layers in ((3,), (20,), (2, 4), (2, 2), [2], (True,), (2.0,), (np.int32(2),)):
+        self.assertEqual(validate_frame_layers((20,)), (20,))
+        for layers in ((3,), (21,), (24,), (2, 4), (2, 2), [2], (True,), (2.0,), (np.int32(2),), (2.0, 3)):
             with self.assertRaises(ValueError): validate_frame_layers(layers)
 
     def test_layer2_HC_requires_its_own_original_arrays_before_CUDA(self):

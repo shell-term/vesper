@@ -3,6 +3,7 @@ import copy
 import json
 from pathlib import Path
 from types import SimpleNamespace
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -11,6 +12,7 @@ import numpy as np
 from vesper.block_fixture import block_layout, LAYOUT
 from vesper.block_pair import NativeBlockPair, PRIMARY_CAP, HELPER_CAP
 from vesper.block_pair_validation import expected_metadata, validate_goldens
+from vesper.attention_topology import role, validate_block_pair
 from vesper.hc import NativeHC
 from vesper.resources import GiB
 from vesper.shared_attention import SharedAttentionFrame
@@ -34,9 +36,26 @@ class Norm:
 
 
 class Compression:
-    opened, ordinal, layers = True, 0, {2: 2}
+    opened, ordinal = True, 0
+    def __init__(self, layer=2):
+        self.layers, self.norm = {layer: role(layer).ratio}, Norm()
+        self.arrays = {f"layers.{layer}.attn.compressor.norm.weight": np.zeros(512, np.uint16)}
     def project(self, x, layer):
+        if self.layers[layer] == 1: return {"wkv_bf16": np.full((1, 1, 512), layer, np.uint16)}
         return {"wkv_fp32": np.ones((1, 1, 512), np.float32), "wgate_fp32": np.zeros((1, 1, 512), np.float32)}
+    def round_kv(self, x): return {"rounded_bf16": x.copy()}
+
+
+class Indexer:
+    opened, ordinal, layers = True, 0, (20,)
+    def __init__(self): self.query_layers = []
+    def key(self, latent, layer, positions): return {"quant_rounded_bf16": latent[..., :128].copy()}
+    def queries(self, x, qr, layer, pos):
+        self.query_layers.append(layer)
+        return {"quant_rounded_bf16": np.zeros((1, 1, 32, 128), np.uint16), "weights_scaled_bf16": np.zeros((1, 1, 32), np.uint16)}
+    def score(self, q, keys, weights): return {"score_bf16": np.ones((1, 1, keys.shape[1]), np.uint16)}
+    def select(self, score, lengths, offset, **kwargs):
+        return {"indices_i32": np.full((1, 1, 1), offset, np.int32), "candidates_bool": np.ones((1, 1, 1), np.bool_)}
 
 
 class Attention:
@@ -44,11 +63,11 @@ class Attention:
     def __call__(self, *a, **k): return {"output_bf16": np.zeros((1, 1, 64, 512), np.uint16)}
 
 
-def frame():
-    arrays = {f"layers.{l}.attn.{name}.weight": np.zeros(width, np.uint16) for l in (2, 3) for name, width in (("q_norm", 1280), ("kv_norm", 512))}
-    arrays.update({f"layers.{l}.attn.attn_sink": np.zeros(64, np.float32) for l in (2, 3)})
-    return SharedAttentionFrame(arrays, {l: Projection(l) for l in (2, 3)}, Norm(), Compression(),
-        SimpleNamespace(opened=True, ordinal=0, layers=(2,)), Attention(), (2, 3))
+def frame(layers=(2, 3)):
+    arrays = {f"layers.{l}.attn.{name}.weight": np.zeros(width, np.uint16) for l in layers for name, width in (("q_norm", 1280), ("kv_norm", 512))}
+    arrays.update({f"layers.{l}.attn.attn_sink": np.zeros(64, np.float32) for l in layers})
+    index = Indexer() if layers == (20, 21) else SimpleNamespace(opened=True, ordinal=0, layers=(2,))
+    return SharedAttentionFrame(arrays, {l: Projection(l) for l in layers}, Norm(), Compression(layers[0]), index, Attention(), layers)
 
 
 class Device:
@@ -63,18 +82,64 @@ class Device:
         return {"free": 8 * GiB}
 
 
-def ledger_pair():
+def ledger_pair(layers=(2, 3)):
     def op(layer=2): return SimpleNamespace(opened=True, ordinal=0, layer=layer, device=Device())
-    hc, ps = {l: op(l) for l in (2, 3)}, {l: op(l) for l in (2, 3)}
+    hc, ps = {l: op(l) for l in layers}, {l: op(l) for l in layers}
     norm, comp, index, attn = op(), op(), op(), op()
-    comp.layers, index.layers, attn.profile = {2: 2}, (2,), "long_context"
+    comp.layers, index.layers, attn.profile = {layers[0]: role(layers[0]).ratio}, (layers[0],), "long_context"
     comp.norm, index.norm = op(), op()
     moe = {l: SimpleNamespace(layer=l, stack=ExitStack(), config=SimpleNamespace(cache=SimpleNamespace(primary_device=0)),
-        devices={"moe": Device()}, helper_device=Device(1)) for l in (2, 3)}
-    return NativeBlockPair({}, hc, ps, norm, comp, index, attn, moe)
+        devices={"moe": Device()}, helper_device=Device(1)) for l in layers}
+    return NativeBlockPair({}, hc, ps, norm, comp, index, attn, moe, layers=layers)
 
 
 class BlockPairTests(unittest.TestCase):
+    def test_ratio1_real_pipeline_handoff_and_candidate_snapshot_are_atomic(self):
+        def prepare(l):
+            if l == 21: self.assertEqual(carry[0][0, 0, 0], 20)
+            return np.zeros((1, 1, 5120), np.uint16) if l == 20 else carry[0]
+        def finish(l, stages):
+            carry[:] = [stages["wo_b_output_bf16"]]
+        carry = [None]
+        with patch("vesper.resources.physical_memory", return_value={"available": 64 * GiB}), frame((20, 21)) as f:
+            f.step_connected(prepare, finish)
+            self.assertEqual(f.indexer.query_layers, [20])
+            self.assertTrue(f.state["sharing"]["candidates"].all())
+            self.assertEqual(f.state["sharing"]["candidate_owner"], 20)
+            self.assertEqual(f.state["compressors"][20][0].shape, (1, 0, 512))
+            saved = state_digest(f.inspect()); handle = f.snapshot()
+            def fail(l, stages):
+                finish(l, stages)
+                if l == 21: raise OSError("consumer after source candidates")
+            with self.assertRaises(OSError): f.step_connected(prepare, fail)
+            self.assertEqual(state_digest(f.inspect()), saved)
+            def late_failure(stages): raise MemoryError("publication after candidates")
+            with self.assertRaises(MemoryError): f.step_connected(prepare, finish, finalize=late_failure)
+            self.assertEqual(state_digest(f.inspect()), saved)
+            f.step_connected(prepare, finish)
+            f.rollback(handle)
+            self.assertEqual(state_digest(f.inspect()), saved)
+            copy = f.inspect(); copy["state"]["sharing"]["candidates"].fill(False)
+            self.assertEqual(state_digest(f.inspect()), saved)
+
+    def test_ratio1_operator_caps_and_original_layer_identity(self):
+        pair = ledger_pair((20, 21))
+        with patch("vesper.resources.physical_memory", return_value={"available": 64 * GiB}), pair:
+            for device, cap in ((pair.comp.norm.device, PRIMARY_CAP), (pair.moe[21].helper_device, HELPER_CAP)):
+                before = device.calls
+                with self.assertRaises(MemoryError): device.allocate(cap)
+                self.assertEqual(device.calls, before)
+        self.assertEqual(pair.budget.reserved, 0)
+        bad = ledger_pair((20, 21)); bad.hc[21].layer = 3
+        with patch("vesper.resources.physical_memory", return_value={"available": 64 * GiB}):
+            with self.assertRaises(ValueError): bad.__enter__()
+        for l in (20, 21):
+            specs = block_layout(l)
+            arrays = {n: np.zeros(s, np.float32) for n, (d, s) in specs.items() if d == "F32"}
+            self.assertEqual(NativeHC(arrays, layer=l).layer, l)
+        for bad in ((20.0, 21), (2, 21), (21, 20), (24, 25), (20, 21, 24), [20, 21]):
+            with self.assertRaises(ValueError): validate_block_pair(bad)
+
     def test_real_pipeline_requests_consumer_only_after_source_callback(self):
         events, carry = [], [None]
         def prepare(l):
@@ -178,6 +243,56 @@ class BlockPairTests(unittest.TestCase):
                 lambda r: r["negative_controls"].pop()):
             bad = copy.deepcopy(report); change(bad)
             with self.assertRaises(ValueError): validate_goldens(bad)
+
+    def test_complete_ratio1_goldens_include_initial_query_and_candidate_state(self):
+        root = Path(__file__).resolve().parents[1]
+        report = json.loads((root / "results/2026-10-19-ratio1-block-pair/pair.json").read_bytes())
+        self.assertEqual(len(validate_goldens(report)), 36)
+        self.assertEqual([r["meta"] for r in report["pair_cases"]], list(expected_metadata((20, 21))))
+        for row in report["pair_cases"]:
+            self.assertEqual(row["index_query_layers"], [20])
+            names = {report["boundary_names"][b[0]] for b in row["boundaries"]}
+            self.assertIn("state/sharing/candidates/", names)
+            self.assertIn("attention/layer20_index_selection_candidates_bool/", names)
+        for change in (lambda r: r["pair_cases"].pop(),
+                lambda r: r["pair_cases"][0].update(index_query_layers=[]),
+                lambda r: r["pair_cases"][1].update(index_query_layers=[20, 21]),
+                lambda r: r["pair_cases"][0]["boundaries"].pop(),
+                lambda r: r["pair_cases"][0]["handoff"].update(pre_sha256="0" * 64),
+                lambda r: r["plan"]["consumer_gate"].update(layer=3),
+                lambda r: r["plan"]["fixtures"]["attention20"].update(layer=2),
+                lambda r: r["whole_pair_state_controls"][0].update(actual_sha256="0" * 64),
+                lambda r: r["unchanged_Attention_forward_controls"][0].pop(),
+                lambda r: r["faults"][2].update(both_block_states_and_position_unchanged=False),
+                lambda r: r["snapshot_events"][0].update(both_states_restored=False),
+                lambda r: r["negative_controls"].pop(),
+                lambda r: r["memory"]["operator_cleanup"]["projection_21"].update(owned_context_active=True),
+                lambda r: r["memory"].update(minimum_sampled_host_available_bytes=16 * GiB),
+                lambda r: r["memory"]["pair_active_stats"].update(peak_owned_primary_bytes=PRIMARY_CAP + 1)):
+            bad = copy.deepcopy(report); change(bad)
+            with self.assertRaises(ValueError): validate_goldens(bad)
+
+    def test_ratio1_source_and_consumer_plans_refuse_cross_layer_imports(self):
+        from vesper.block_pair_fixture import prepare_consumer_store
+        from vesper.compressed_block_fixture import validate_plan as validate_source_plan
+        root = Path(__file__).resolve().parents[1] / "results/2026-10-19-ratio1-block-pair"
+        source = json.loads((root / "source-expert-plan.json").read_bytes())
+        pair = json.loads((root / "pair.json").read_bytes())["plan"]
+        validate_source_plan(source)
+        self.assertEqual(source["expert_ids"], pair["expert_ids"]["20"])
+        for change in (lambda p: p.update(layer=2), lambda p: p["expert_ids"].pop(),
+                       lambda p: p["gate_fixture"].update(layer=21), lambda p: p["fixtures"]["hc_norm"].update(layer=2)):
+            bad = copy.deepcopy(source); change(bad)
+            with self.assertRaises(ValueError): validate_source_plan(bad)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "plan.json"
+            for change in (lambda p: p["consumer_gate"].update(layer=3),
+                    lambda p: p["fixtures"]["attention20"].update(layer=2),
+                    lambda p: p["expert_ids"]["21"].pop()):
+                bad = copy.deepcopy(pair); change(bad)
+                path.write_bytes(json.dumps(bad).encode())
+                with patch("vesper.block_pair_fixture.fetch_expert_fixture", side_effect=AssertionError("No fetching allowed")):
+                    with self.assertRaises(ValueError): prepare_consumer_store(path, Path(tmp) / "experts", Path(tmp) / "store")
 
 
 if __name__ == "__main__": unittest.main()

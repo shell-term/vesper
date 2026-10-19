@@ -1,4 +1,4 @@
-"""Plan a bounded layer-2 expert union from the connected HC/Attention prefix."""
+"""Plan a bounded registered-source expert union from its HC/Attention prefix."""
 
 from contextlib import ExitStack
 import json
@@ -17,33 +17,33 @@ from .shared_attention import SharedAttentionFrame
 from .storage import build_store, validate_store_limit
 
 
-def plan_block(topology, fixtures, bundle, ordinal=0, *, max_experts=48):
+def plan_block(topology, fixtures, bundle, ordinal=0, *, max_experts=48, layer=2):
     validate_store_limit(max_experts)
     root, budget = Path(fixtures), MemoryBudget(cap=768 * MiB)
     budget.acquire(768 * MiB)
     try:
-        arrays, manifests = load_arrays(topology, fixtures)
+        arrays, manifests = load_arrays(topology, fixtures, layer=layer)
         weight, gate_manifest = load_gate_fixture(root / "gate/native-gate.npz")
         biases, router_manifest = load_router_fixture(root / "router/native-router.npz")
-        if any(m["layer"] != 2 for m in (gate_manifest, router_manifest)): raise ValueError("Block planning requires original layer-2 gate artifacts")
+        if any(m["layer"] != layer for m in (gate_manifest, router_manifest)): raise ValueError("Block planning requires its original gate artifacts")
         cases, selected = [], set()
         with ExitStack() as stack:
-            hc, ops = open_operators(stack, arrays, bundle, ordinal)
+            hc, ops = open_operators(stack, arrays, bundle, ordinal, layer=layer)
             ps, norm, comp, index, attn = ops
             gate = stack.enter_context(GateProjection(weight, ordinal))
             router = stack.enter_context(RouterProbe(biases, ordinal))
-            frame = stack.enter_context(SharedAttentionFrame(arrays, ps, norm, comp, index, attn, (2,)))
+            frame = stack.enter_context(SharedAttentionFrame(arrays, ps, norm, comp, index, attn, (layer,)))
             for image in (False, True):
                 frame.reset()
                 for pos in range(4):
                     hidden, pre = block_inputs(pos)
                     mixes = hc.mixes(hidden, "attn")
                     x = hc.pre(hidden, pre)["output_bf16"]
-                    x = norm.norm(x, arrays["layers.2.attn_norm.weight"])["output_bf16"]
+                    x = norm.norm(x, arrays[f"layers.{layer}.attn_norm.weight"])["output_bf16"]
                     def prefix(stages):
-                        after = hc.post(stages["layer2_wo_b_output_bf16"], hidden, mixes["post_fp32"], mixes["comb_fp32"])["output_bf16"]
+                        after = hc.post(stages[f"layer{layer}_wo_b_output_bf16"], hidden, mixes["post_fp32"], mixes["comb_fp32"])["output_bf16"]
                         ffn = hc.pre(after, mixes["pre_fp32"])["output_bf16"]
-                        ffn = norm.norm(ffn, arrays["layers.2.ffn_norm.weight"])["output_bf16"].reshape(5120)
+                        ffn = norm.norm(ffn, arrays[f"layers.{layer}.ffn_norm.weight"])["output_bf16"].reshape(5120)
                         from .formats import bf16_values
                         logits = gate.project(bf16_values(ffn))
                         decision = router.inspect(logits, image)
@@ -53,9 +53,9 @@ def plan_block(topology, fixtures, bundle, ordinal=0, *, max_experts=48):
                         cases.append({"position": pos, "image_span": image, "hidden_sha256": array_digest(hidden),
                             "incoming_pre_sha256": array_digest(pre), "moe_input_sha256": array_digest(ffn), "logits_sha256": array_digest(logits),
                             "indices": ids, "weight_bits": decision["weights"].view(np.uint32).tolist()})
-                    frame.step({2: x}, start_pos=pos, finalize=prefix)
+                    frame.step({layer: x}, start_pos=pos, finalize=prefix)
             profile = {"HC_cubin_sha256": hc.cubin_sha256, "router_cubin_sha256": router.cubin_sha256, "cublas_version": gate.blas.version}
-        return {"probe": "compressed_block_expert_plan", "status": "pass", "model": MODEL, "revision": REVISION, "layer": 2,
+        return {"probe": "compressed_block_expert_plan", "status": "pass", "model": MODEL, "revision": REVISION, "layer": layer,
             "input_origin": ORIGIN, "fixtures": manifests, "gate_fixture": gate_manifest, "router_fixture": router_manifest,
             "cases": cases, "expert_ids": sorted(selected), "max_experts": max_experts, "selected_weight_bytes": len(selected) * EXPERT_BYTES,
             "maximum_weight_bytes": max_experts * EXPERT_BYTES, "native_profile": profile, "expert_weights_fetched_bytes": 0,
@@ -72,8 +72,13 @@ def load_plan(path):
 
 
 def validate_plan(plan):
+    layer = plan.get("layer")
+    if type(layer) is not int or layer not in (2, 20): raise ValueError("Unregistered source expert plan")
     if (plan.get("probe"), plan.get("status"), plan.get("model"), plan.get("revision"), plan.get("layer"), plan.get("input_origin")) != (
-            "compressed_block_expert_plan", "pass", MODEL, REVISION, 2, ORIGIN): raise ValueError("Block plan source identity differs")
+            "compressed_block_expert_plan", "pass", MODEL, REVISION, layer, ORIGIN): raise ValueError("Block plan source identity differs")
+    manifests = (plan["gate_fixture"], plan["router_fixture"], plan["fixtures"]["attention"], plan["fixtures"]["hc_norm"])
+    if any((m.get("model"), m.get("revision"), m.get("layer")) != (MODEL, REVISION, layer) for m in manifests):
+        raise ValueError("Source expert plan contains cross-layer or unpinned artifacts")
     validate_store_limit(plan["max_experts"])
     cases, union = plan.get("cases", []), set()
     if [(c["image_span"], c["position"]) for c in cases] != [(i, p) for i in (False, True) for p in range(4)]:
@@ -105,12 +110,12 @@ def prepare_block_store(plan_file, expert_directory, store_directory):
             if path.exists():
                 arrays, manifest = load_expert_fixture(path)
                 del arrays
-                if (manifest["layer"], manifest["expert"]) != (2, e): raise ValueError("Cached original block expert identity differs")
+                if (manifest["layer"], manifest["expert"]) != (plan["layer"], e): raise ValueError("Cached original block expert identity differs")
             else:
-                fetch_expert_fixture(folder, layer=2, expert=e)
+                fetch_expert_fixture(folder, layer=plan["layer"], expert=e)
                 fetched += EXPERT_BYTES
             paths.append(path)
         result = build_store(paths, target, max_experts=plan["max_experts"])
-        return {"probe": "prepare_compressed_block_store", "status": "pass", "layer": 2, "expert_ids": plan["expert_ids"],
+        return {"probe": "prepare_compressed_block_store", "status": "pass", "layer": plan["layer"], "expert_ids": plan["expert_ids"],
             "new_weight_bytes_fetched": fetched, "verified_existing_weight_bytes_reused": len(paths) * EXPERT_BYTES - fetched, "store": result}
     finally: budget.release(96 * MiB)

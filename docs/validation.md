@@ -22,7 +22,7 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Native RMS normalization and RoPE | Original learned norm weights, reduction/rounding order, frequency profiles, rotation and projected-input KV/Attention chain | 476 component cases and 56 chain conditions, 3,420 boundary comparisons, zero differences; both frequency profiles cover positions 0 through 131,071; native-only replay passes |
 | Original-weight native window Attention layer | Original query/KV/output projections, grouped BF16 conversion, complete forward output/cache, real inputs and atomic failure recovery | 90 component cases and 309 successful layer calls (304 corpus calls + five retries), 17,355 comparisons, zero differences; four real prefix inputs and two window wraps; independent native-only replay passes; layer-0, one rank, batch 1/2, prefill at most three queries |
 | Native Hyper-Connections and residuals | Original FP32 projection/reduction, Sinkhorn iterations, coefficient handoff and BF16 boundaries | 84 component cases pass; all four changed-arithmetic controls detected; independent native-only replay passes |
-| Full Transformer block | Connected Attention, MoE, Hyper-Connections, residuals and layer-specific Engram/compressed profiles | Uncompressed layer 0 passes 26 calls; compressed layer 2 passes 32 calls; consecutive 2/3 passes 36 pair steps / 18,447 boundaries plus unchanged Block.forward controls; other profiles and Engram pending |
+| Full Transformer block | Connected Attention, MoE, Hyper-Connections, residuals and layer-specific Engram/compressed profiles | Uncompressed layer 0 passes 26 calls; compressed layer 2 passes 32 calls; consecutive 2/3 passes 36 pair steps / 18,447 boundaries and ratio-1 20/21 passes 36 pair steps / 19,152 boundaries, plus unchanged Block.forward controls; other profiles and Engram pending |
 | Original compressor and compressed KV | Original learned FP32/BF16 projections, softmax pooling, partial groups, group-position RoPE, FP4/E4M3 rounding and state publication | 49 component cases and 432 state calls, 8,751 comparisons, zero differences; five refusal/retries and both snapshot profiles pass; independent native-only replay passes; generated inputs and host diagnostic cache only; subsequent indexer probe below |
 | Native indexers and named index sharing | Original key/query/weight projections, FP4/E8M0 rounding, BF16 score boundaries, ordered top-512, candidate blocks, source/consumer ownership and atomic state | Layers 2/20/24 pass 261 component cases and 99 frames, 11,189 comparisons, zero differences; unchanged forward/sharing controls, five refusal/retries, snapshot restoration and native-only replay pass; bounded generated-input/primed-history diagnostic scope; connected compressed-Attention follow-up below |
 | Connected compressed Attention | Complete original layer projections, compressor latents, indexers, concatenated window/compressed KV and output, source sharing and atomic state | Profiles 2/20/24 pass 103 frames / 309 layer calls, 31,841 comparisons, zero differences; unchanged full-forward/cache controls, five refusal/retries, snapshot restoration and native-only replay pass; generated independent layer inputs, context <=64, other profiles/larger contexts/complete blocks pending |
@@ -30,6 +30,7 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Named Attention KV/index ownership roles | All configured KV/index sources, ordinary selected-index consumers, original full-forward controls and transactional state | Sixteen profiles in four independent groups pass 2,224 frames / 684,616 boundaries with zero differences; continuous 260-position streams, explicit seeded histories through 1,028 positions, twenty failure/retries, snapshots and native-only replay; complete compressed blocks/full backbone pending |
 | Complete compressed source block | Layer-specific HC/Attention/MoE, exact actual gate, complete output and transactional source state | Original layer 2 passes 32 calls / 8,793 boundaries / 70,536,278 storage elements with zero differences; 640 unchanged Block/Attention controls, six failure/retries, snapshots and native-only replay pass; four-position generated HC streams, consecutive-block follow-up below, full model pending |
 | Complete consecutive source/consumer blocks | Actual hidden/pre-coefficient handoff, shared compressed KV/selected IDs, both complete MoEs and atomic pair state | Original blocks 2/3 pass 36 pair steps / 72 block calls / 18,447 boundaries with zero differences; 648 Block controls, 720 Attention controls, eight failures, snapshots and native-only replay pass; four-position initial generated HC streams, other complete roles/longer chains/full model pending |
+| Complete ratio-1 source/consumer blocks | Actual hidden/pre-coefficient handoff, source-20 candidate state, original KV/index reuse and atomic pair state | Original blocks 20/21 pass 36 pair steps / 72 block calls / 19,152 boundaries with zero differences; 648 Block controls, 684 Attention controls, eight failures, snapshots, five changed-state controls and native-only replay pass; generated entry, four-position context; independent from 2/3, refreshed-index blocks/full model pending |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
 | Resource policy | All owned memory plus pressure behavior, concurrency with other work | Bounded cache buffers and injected pressure/refusal/recovery pass; full-engine/OS policy pending |
@@ -227,8 +228,8 @@ separate unchanged Block/Attention methods provide eight/twelve controls per
 call. Six failures refuse publication and retry exactly; snapshot replay and a
 process without Torch/TileLang reproduce all goldens. The gate uses four-position
 generated HC streams, 25 actually selected original experts, layer-specific
-weights and bounded host diagnostic state. Complete consecutive-block sharing,
-other profiles, original upstream activations, Engram, model output/quality and
+weights and bounded host diagnostic state. Consecutive-block sharing is covered
+by the follow-ups below; other profiles, original upstream activations, Engram, model output/quality and
 generation speed remain unfinished. Issue #7 and M2 stay open.
 
 The [consecutive-block probe](block-pair-validation.md) now connects complete
@@ -242,3 +243,14 @@ layer-2 HC input remains generated and context is four positions; later blocks
 receive computed inputs. Other complete compressed roles, upstream/full-model
 history, larger context/batching, Engram and model output/quality/speed remain
 separate requirements. Issue #7 and M2 remain open.
+
+The [ratio-1 complete-pair follow-up](ratio1-block-pair-validation.md) covers
+blocks 20/21 with their own original weights and actual inter-block hidden/pre
+handoff. All 36 pair steps / 19,152 boundaries / 160,709,484 storage elements
+match, with 648 unchanged Block controls, 684 Attention controls and 36
+whole-state comparisons. The source candidate mask is controlled from the first
+token. Eight failures, snapshot restore, five altered handoff/KV/index/candidate
+controls and native-only replay pass. Initial input is generated and context is
+four positions. The 2/3 and 20/21 pairs remain independent chains; refreshed-index
+blocks with actual intervening-layer execution, larger complete contexts,
+Engram and full model/output/quality/speed remain unfinished.

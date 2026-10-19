@@ -22,13 +22,14 @@ def main():
     args = p.parse_args()
     raw = read_bounded(args.reference_report, 32 * MiB)
     reference = json.loads(raw); goldens = validate_goldens(reference)
+    layers = tuple(reference["layers"])
     budget = MemoryBudget(cap=FIXTURE_HOST_MIB * MiB); budget.acquire(budget.cap)
     try:
-        arrays, fixtures = load_arrays(args.topology_fixtures, args.source_fixtures, args.consumer_fixtures)
+        arrays, fixtures = load_arrays(args.topology_fixtures, args.source_fixtures, args.consumer_fixtures, layers=layers)
         if fixture_identity(fixtures) != fixture_identity(reference["fixtures"]): raise ValueError("Pair original fixture identities differ")
         with ExitStack() as stack:
-            hc, ops = open_operators(stack, arrays, args.attention_bundle)
-            pair = open_pair(stack, arrays, hc, ops, args.source_fixtures, args.consumer_fixtures, args.source_store, args.consumer_store)
+            hc, ops = open_operators(stack, arrays, args.attention_bundle, layers=layers)
+            pair = open_pair(stack, arrays, hc, ops, args.source_fixtures, args.consumer_fixtures, args.source_store, args.consumer_store, layers=layers)
             native_profiles = profiles(ops)
             hc_profiles = {str(l): {"compiler": h.compiler, "cubin_sha256": h.cubin_sha256, "cublas_version": h.blas.version, "cublas_math_mode": h.blas.math_mode} for l, h in hc.items()}
             if native_profiles != reference["native_profiles"] or hc_profiles != reference["hc_profiles"]: raise ValueError("Pair native compiler/binary identities differ")
@@ -51,7 +52,7 @@ def main():
             and all(not c["device_owned_bytes"] and not c["host_reserved_bytes"] and not c["owned_context_active"] for c in cleaned.values())
             and all(not h.stats()["device_owned_bytes"] and not h.stats()["host_reserved_bytes"] for h in hc.values())
             and all(not any(m.cleanup.values()) for m in pair.moe.values()) and not pair.budget.reserved)
-        result = {"schema_version": 1, "probe": "consecutive_complete_block_recheck", "status": "pass" if passed else "fail", "layers": [2, 3],
+        result = {"schema_version": 1, "probe": "consecutive_complete_block_recheck", "status": "pass" if passed else "fail", "layers": list(layers),
             "reference_report_sha256": hashlib.sha256(raw).hexdigest(), **frameworks, "native_profiles": native_profiles, "hc_profiles": hc_profiles,
             "pair_cases": rows, "faults": faults, "snapshot_events": events,
             "memory": {"operator_cleanup": cleaned, "HC_cleanup": {str(l): h.stats() for l, h in hc.items()},

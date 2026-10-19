@@ -63,7 +63,7 @@ class ConnectedMoE:
 
     def __init__(self, store: Path, gate_fixture: Path, router_fixture: Path, shared_fixture: Path,
                  config: ConnectedConfig | None = None, *, cublas_library=None, layer=0):
-        if type(layer) is not int or layer not in (0, 2, 3):
+        if type(layer) is not int or layer not in (0, 2, 3, 20, 21):
             raise ValueError("Unregistered connected MoE layer")
         self.layer = layer
         self.store_path, self.gate_fixture = Path(store), Path(gate_fixture)

@@ -3,7 +3,7 @@
 import copy
 import numpy as np
 
-from .attention_topology import role, validate_group
+from .attention_topology import role, validate_group, COMPLETE_BLOCK_PAIRS
 from .compressed_attention import NativeCompressedAttention
 from .compression import stage_compression
 from .kv import window_indices
@@ -13,9 +13,11 @@ CAPACITY = 1152
 
 
 def validate_frame_layers(layers):
-    # A source-only frame is used by the complete layer-2 block gate. It has no
-    # fabricated consumer input and does not extend the four sharing corpora.
-    return layers if type(layers) is tuple and layers == (2,) and type(layers[0]) is int else validate_group(layers)
+    # Source-only planners and complete pairs do not extend the four independent
+    # Attention sharing corpora or admit arbitrary incomplete ownership groups.
+    if type(layers) is tuple and all(type(l) is int for l in layers) and layers in ((2,), (20,), *COMPLETE_BLOCK_PAIRS):
+        return layers
+    return validate_group(layers)
 
 
 def initial_state(layers, batch):
@@ -210,13 +212,13 @@ class SharedAttentionFrame(NativeCompressedAttention):
             self.state, self.position = candidate, position
 
     def step_connected(self, input_for_layer, after_layer, *, start_pos=None, finalize=None):
-        """Single-token source-2/consumer-3 blocks, committed together only."""
+        """Registered single-token source/consumer blocks, committed together."""
         with self.lock:
             self._ready()
             pos = self.position if start_pos is None else start_pos
-            if (self.layers != (2, 3) or self.batch != 1 or type(pos) is not int or pos != self.position or not 0 <= pos < CAPACITY
+            if (self.layers not in COMPLETE_BLOCK_PAIRS or self.batch != 1 or type(pos) is not int or pos != self.position or not 0 <= pos < CAPACITY
                     or not callable(input_for_layer) or not callable(after_layer) or (finalize is not None and not callable(finalize))):
-                raise ValueError("Connected blocks require the next source-2/consumer-3 position and callbacks")
+                raise ValueError("Connected blocks require a registered pair's next position and callbacks")
             stages, state = _stage_pipeline(self.arrays, self.projections, self.norm, self.compressor, self.indexer, self.attention,
                 self.layers, self.batch, pos, self.state, 1, input_for_layer, after_layer)
             result = stages if finalize is None else finalize(stages)

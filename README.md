@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Consecutive blocks](docs/block-pair-validation.md) · [Complete compressed block](docs/compressed-block-validation.md) · [Long-context Attention](docs/long-context-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Ratio-1 blocks](docs/ratio1-block-pair-validation.md) · [Consecutive blocks](docs/block-pair-validation.md) · [Complete compressed block](docs/compressed-block-validation.md) · [Long-context Attention](docs/long-context-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 [Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
 
@@ -196,6 +196,17 @@ layer-3 inputs and 52 selected original experts. Other complete roles, longer
 chains, Engram and full-model quality/speed remain unfinished. See the
 [consecutive-block report](docs/block-pair-validation.md).
 
+**Complete ratio-1 blocks 20 and 21** also pass actual hidden/coefficient handoff
+and joint publication, including source-20 candidate state from the first token.
+All 36 pair steps / 72 block calls match **19,152 boundaries / 160,709,484
+storage elements**, with zero differences, plus 648 unchanged block and 684
+Attention controls. Eight failure/retries, snapshots, five changed-input/state
+controls and replay without Torch/TileLang pass. The pair uses 26/24 actually
+selected original experts and four-position generated entry streams. This is
+separate from the 2/3 chain; refreshed-index blocks, longer complete chains and
+the full model remain unfinished. See the
+[ratio-1 complete-pair report](docs/ratio1-block-pair-validation.md).
+
 Vesper uses the released weights; its design does not require retraining.
 Model-wide output and quality verification remain required before that engine
 is ready for use.
@@ -367,11 +378,13 @@ primary-GPU cap during block calls. The paired original comparison adds a
 2,048-MiB reference allowance. These are diagnostic admissions, not RSS or OS
 limits; see the [compressed-block resource scope](docs/compressed-block-validation.md#publication-and-resources).
 
-The consecutive pair admits 4,832 MiB of native host allowances including
+Each complete pair admits 4,832 MiB of native host allowances including
 retained fixtures, plus 3,072 MiB for the optional reference comparison. Combined
-owned buffers during pair calls are capped at 768 MiB primary / 128 MiB helper;
-they peak at 586,739,584 / 75,496,320 bytes. Sampled available RAM stays above
-130 GiB in this run. See the [pair resource scope](docs/block-pair-validation.md#atomic-state-and-bounded-resources)
+owned buffers during pair calls are capped at 768 MiB primary / 128 MiB helper.
+The 2/3 run peaks at 586,739,584 / 75,496,320 bytes and the 20/21 run at
+571,013,000 / 75,496,320 bytes. Sampled available RAM stays above 129 GiB
+in both. See the [pair resource scope](docs/block-pair-validation.md#atomic-state-and-bounded-resources)
+and [ratio-1 measurements](docs/ratio1-block-pair-validation.md#publication-and-resources)
 for exclusions and the distinction between allowances and process RSS.
 
 ## Development

@@ -1,0 +1,3451 @@
+{
+  "schema_version": 1,
+  "probe": "consecutive_complete_block_recheck",
+  "status": "pass",
+  "layers": [
+    20,
+    21
+  ],
+  "reference_report_sha256": "051e099765baa20deaf09e37a1022afb181f35933b0abde3268010ea76e4af85",
+  "torch_installed": false,
+  "tilelang_installed": false,
+  "torch_imported": false,
+  "tilelang_imported": false,
+  "native_profiles": {
+    "projections": {
+      "20": {
+        "compiler": {
+          "nvrtc_version": [
+            12,
+            4
+          ],
+          "architecture": "89",
+          "concatenated_source_sha256": "56ca03fb20f1208b226ddf810f2d508f4b35037e4ecb45b4e91a9c7384397262",
+          "options": [
+            "--gpu-architecture=sm_89",
+            "--std=c++17",
+            "--fmad=false",
+            "--ftz=false",
+            "--include-path=<CUDA>/include"
+          ],
+          "include_path_redacted": true
+        },
+        "cubin_sha256": "1ca16c1fa7fab955f88a246f4851aa8ff96b1178afda1af483647f9feb431332",
+        "device": {
+          "ordinal": 0,
+          "name": "NVIDIA GeForce RTX 4090",
+          "compute_capability": "8.9",
+          "total_bytes": 25756696576
+        },
+        "cublas_version": 120402,
+        "cublas_math_mode": 0,
+        "converted_wo_a_bf16_sha256": "bce6e1d5b2391dc811e17aa2c5b87288669bc8d2949c3a26d8d90a733bb8f78f"
+      },
+      "21": {
+        "compiler": {
+          "nvrtc_version": [
+            12,
+            4
+          ],
+          "architecture": "89",
+          "concatenated_source_sha256": "56ca03fb20f1208b226ddf810f2d508f4b35037e4ecb45b4e91a9c7384397262",
+          "options": [
+            "--gpu-architecture=sm_89",
+            "--std=c++17",
+            "--fmad=false",
+            "--ftz=false",
+            "--include-path=<CUDA>/include"
+          ],
+          "include_path_redacted": true
+        },
+        "cubin_sha256": "1ca16c1fa7fab955f88a246f4851aa8ff96b1178afda1af483647f9feb431332",
+        "device": {
+          "ordinal": 0,
+          "name": "NVIDIA GeForce RTX 4090",
+          "compute_capability": "8.9",
+          "total_bytes": 25756696576
+        },
+        "cublas_version": 120402,
+        "cublas_math_mode": 0,
+        "converted_wo_a_bf16_sha256": "49782d05d167c3236073e6ec6e3bebb7f1f5eb6c8e5d9b4d6b67ec308a3dac15"
+      }
+    },
+    "normalization": {
+      "compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "357dc794add97f0d98a00dc72e10dfb054bdfc911dc4fda6c724c1098c764ff1",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      },
+      "cubin_sha256": "41b9fbd12ea07f2c1bcb8766f1725b730f570e4969de86ebd41ceaf090156607"
+    },
+    "compression": {
+      "compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "4e4eee19934c224a2f4fb8bbf3eaf2c7213c1fb00dc349665a028c57641d898a",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      },
+      "cubin_sha256": "dc315e262350061173bc2f772a3975dd6f6eee5993d057b5453af7545a01ef5c",
+      "cublas_version": 120402,
+      "cublas_math_mode": 0
+    },
+    "indexer": {
+      "compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "aaeade922ba2f4efb56e23f3320d8f45716e3d72aab0cefef908463b7f0d63e5",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      },
+      "cubin_sha256": "411f05580290d098d830bac502f9c6b1c7c98eafc12f65628823a9fdbc3d277f",
+      "cublas_version": 120402,
+      "cublas_math_mode": 0
+    },
+    "compression_normalization": {
+      "compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "357dc794add97f0d98a00dc72e10dfb054bdfc911dc4fda6c724c1098c764ff1",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      },
+      "cubin_sha256": "41b9fbd12ea07f2c1bcb8766f1725b730f570e4969de86ebd41ceaf090156607"
+    },
+    "indexer_normalization": {
+      "compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "357dc794add97f0d98a00dc72e10dfb054bdfc911dc4fda6c724c1098c764ff1",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      },
+      "cubin_sha256": "41b9fbd12ea07f2c1bcb8766f1725b730f570e4969de86ebd41ceaf090156607"
+    },
+    "attention_bundle_manifest_sha256": "b0e50760224c68bb2206bceff1f17d5ef40748e7b0df60b56efe96c7320a98c4"
+  },
+  "hc_profiles": {
+    "20": {
+      "compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "8ce8aa29cc89488ab1238894154554d04a5448d34e8674e0954078d271f4ec13",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      },
+      "cubin_sha256": "ab71eb8a6ceffec265bb6afb2e3774eaf8fb345c86e0be6ab2a501167143ce5f",
+      "cublas_version": 120402,
+      "cublas_math_mode": 0
+    },
+    "21": {
+      "compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "8ce8aa29cc89488ab1238894154554d04a5448d34e8674e0954078d271f4ec13",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      },
+      "cubin_sha256": "ab71eb8a6ceffec265bb6afb2e3774eaf8fb345c86e0be6ab2a501167143ce5f",
+      "cublas_version": 120402,
+      "cublas_math_mode": 0
+    }
+  },
+  "pair_cases": [
+    {
+      "meta": {
+        "id": "pair/repeat0/image0/p0",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "actual_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "expected_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "actual_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            368,
+            75,
+            329,
+            334,
+            5
+          ],
+          "weight_bits": [
+            1049555934,
+            1049118417,
+            1048734684,
+            1047713844,
+            1047378669,
+            1047273418
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            208,
+            348,
+            261,
+            300
+          ],
+          "weight_bits": [
+            1050094269,
+            1048635048,
+            1048203984,
+            1047848224,
+            1047529581,
+            1047567578
+          ],
+          "moe_input_sha256": "ebd67e7a124ea1d8623ca991c2111836a7c3d8f5197287442ab29daf8b145c70",
+          "logits_sha256": "17e26a7d51405e08e7aff17ce72b80e44701a8b2a6532211ffe218dbea8192ba"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "4a16e23ec54d03e61b58848ed870c5c85870253b685426c283c536c94a331b14",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "2eb118daf6e832e522d401f49dfa1de55947cd221cd0456c91b2ea66c65f445c",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "pair/repeat0/image0/p1",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "actual_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "expected_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "actual_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            288,
+            160,
+            252
+          ],
+          "weight_bits": [
+            1051155236,
+            1048308470,
+            1048449060,
+            1047327494,
+            1046922132,
+            1046714372
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            323,
+            164,
+            295,
+            35,
+            241,
+            90
+          ],
+          "weight_bits": [
+            1048915117,
+            1048734724,
+            1048449171,
+            1048699582,
+            1047987351,
+            1048048622
+          ],
+          "moe_input_sha256": "1db41fe5a6ba74d41be4b51760025fca0f408e36f755c76515b31e4c2b0402f7",
+          "logits_sha256": "479eb11cfd7c97af44a62d082539915b2a4dd6b8e6c4f9ddf59bae5c7b5d95fd"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "88726f1e08a1c964c79fa6d8ad83f0e969621b0c7f7b81b2c43c37676fff9fa4",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "3c291c79c337e0e1502b52b09ab678013ea69f7dd1dd2b3b9ffa99f6e956164f",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "pair/repeat0/image0/p2",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 2,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "99a0281d3985f94661322f2bd0a91e6dfc1d8c333ac0ef09373b752bd0ec9bde",
+        "initial_pre_sha256": "1bc7419925e0ee5949ba84dc0df8a34118caa77eef5146b2b8e47510530e05dd"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4620682,
+      "expected_boundary_root_sha256": "000adc6a475ed995663bc482908761c477872c4c61054d0db69f19467604d762",
+      "actual_boundary_root_sha256": "000adc6a475ed995663bc482908761c477872c4c61054d0db69f19467604d762",
+      "expected_layout_sha256": "5c0cb2778b528ff071964272ca357e336cbe27e5bd44a2040f0eedea0eed1b58",
+      "actual_layout_sha256": "5c0cb2778b528ff071964272ca357e336cbe27e5bd44a2040f0eedea0eed1b58",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            147,
+            330,
+            22,
+            111,
+            305,
+            121
+          ],
+          "weight_bits": [
+            1050109014,
+            1048712006,
+            1048227345,
+            1047939484,
+            1047416097,
+            1047383025
+          ],
+          "moe_input_sha256": "f11190ddd33dd71b6b54c0be02fe55d34c7939ddb6a06691ab450c88fef0eeb1",
+          "logits_sha256": "00cab87b0ee9d7786627f708528b88546e5cdb3c207fa6fac543ef07940c29c7"
+        },
+        "21": {
+          "indices": [
+            189,
+            279,
+            3,
+            294,
+            164,
+            90
+          ],
+          "weight_bits": [
+            1049616804,
+            1048695131,
+            1047996090,
+            1048885892,
+            1047869824,
+            1046922428
+          ],
+          "moe_input_sha256": "4eb001a3bb8145186cffa3c3e0856b6e81446827a80272a617ec716a95916875",
+          "logits_sha256": "3cb0434f106038d008db7334a4b785e8894a385c667a13923686b0e9b8094282"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "8c3b509b0cca3b2334bcc46b8328e7a788629dafcdee093762b1079ef9fe03af",
+        "pre_sha256": "524904bab850fe6d68fe0b8bd275750197b217e4f08233c0cf3c51a081f1f067"
+      },
+      "committed_state_sha256": "74c5d5eb45dae8fad64d100855feb5c370221a668e2475fcb90c75776bf01300",
+      "committed_position": 3,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 3
+    },
+    {
+      "meta": {
+        "id": "pair/repeat0/image0/p3",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 3,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "5c93a874b2b9341f86625918ec367ad4b00fcdd0a568453f7c598e4052974879",
+        "initial_pre_sha256": "c7527b3b8e3d46dfd519a85abcdaf6129b55cbe038c30593a9c27abb2467bd4e"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4623478,
+      "expected_boundary_root_sha256": "90714924ae573397efb41d4cffe51173dd1bd978709b45abfd58ab2cf22bb83c",
+      "actual_boundary_root_sha256": "90714924ae573397efb41d4cffe51173dd1bd978709b45abfd58ab2cf22bb83c",
+      "expected_layout_sha256": "3055e6dea41f6b9cd84a1747799168072881165ba8086b52ca7137c4e7d4519f",
+      "actual_layout_sha256": "3055e6dea41f6b9cd84a1747799168072881165ba8086b52ca7137c4e7d4519f",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            111,
+            252,
+            337,
+            192,
+            265,
+            80
+          ],
+          "weight_bits": [
+            1049232577,
+            1048922372,
+            1048637080,
+            1048104444,
+            1047597440,
+            1047898065
+          ],
+          "moe_input_sha256": "47229d3480682ef917830a399aa36eed06f63ad08a5aef2fd1166e13464e55e5",
+          "logits_sha256": "e42c4a121a6dfc6d11e42b9a611ebbfe6a082f1a30daef2a61478958e213928d"
+        },
+        "21": {
+          "indices": [
+            310,
+            235,
+            195,
+            241,
+            69,
+            333
+          ],
+          "weight_bits": [
+            1049121588,
+            1048643776,
+            1048415913,
+            1048175284,
+            1048583750,
+            1047894576
+          ],
+          "moe_input_sha256": "7ed8b4a7b741a5288feb2d2468a3d6d725768d272768fd8783017be1d01fd32f",
+          "logits_sha256": "3b906100e1bfaeb93ca393e68b3bdf07935b7627ae034ff6c4fc38915ec57072"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "7c1c515146f503403a26fee193d1fd72f8cae80ab9e630a35297c226e517103d",
+        "pre_sha256": "5a02a3b07e40571f5a86c8f8a462e765d819a25899905f14e7fbed6a1a84be0c"
+      },
+      "committed_state_sha256": "3c9d937a3141111a20d3e4ebc9a59c90d4c0ef6549a34006bd6edfb9bfe6d0ba",
+      "committed_position": 4,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 4
+    },
+    {
+      "meta": {
+        "id": "pair/repeat0/image1/p0",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "bc224c6841c349b770ebff663c2efa841d05db8143fc7f2956c0f1f575bfa2d0",
+      "actual_boundary_root_sha256": "bc224c6841c349b770ebff663c2efa841d05db8143fc7f2956c0f1f575bfa2d0",
+      "expected_layout_sha256": "abd3ed96f7abb19d04189e2f147bb01b51d2c6b551697cc27c3b0f19951ae104",
+      "actual_layout_sha256": "abd3ed96f7abb19d04189e2f147bb01b51d2c6b551697cc27c3b0f19951ae104",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            244,
+            368,
+            295,
+            75,
+            329
+          ],
+          "weight_bits": [
+            1049261285,
+            1049456309,
+            1048837528,
+            1046504724,
+            1048355727,
+            1047213300
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            348,
+            244,
+            300,
+            208
+          ],
+          "weight_bits": [
+            1049903178,
+            1048718513,
+            1047656842,
+            1047144378,
+            1048213533,
+            1048349860
+          ],
+          "moe_input_sha256": "ff53a1311908418062124f1e4bfbdcb29cb4e46f0a222e8edaaf7d61031f09dd",
+          "logits_sha256": "c885c04c8ef1a4c518460e7b3b5470e073084e433c268bd24947029f7744941e"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "ae827331a1200a140402e877abbfc01f46090e73359b613253846f54ec69f3aa",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "e2f2a1b3d05593e4b5fa6d05adb4311984b107587fc2a4f8658cc25ae23d91d0",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "pair/repeat0/image1/p1",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "f361da470afc710c3a44388de4042a5fa1522c023395abbf328304cc01cab382",
+      "actual_boundary_root_sha256": "f361da470afc710c3a44388de4042a5fa1522c023395abbf328304cc01cab382",
+      "expected_layout_sha256": "6b8e04e222a727a193aac1f6ccddd8d391379dd00d50714df3cdc1f6437c1b17",
+      "actual_layout_sha256": "6b8e04e222a727a193aac1f6ccddd8d391379dd00d50714df3cdc1f6437c1b17",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            148,
+            288,
+            249
+          ],
+          "weight_bits": [
+            1051343681,
+            1048584066,
+            1048655568,
+            1047689134,
+            1047594302,
+            1044733934
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            164,
+            295,
+            90,
+            323,
+            348,
+            35
+          ],
+          "weight_bits": [
+            1049117634,
+            1048627980,
+            1048364462,
+            1049086818,
+            1047521698,
+            1047632973
+          ],
+          "moe_input_sha256": "367220b27c57a27aa53b3114f5125ed5022e8e445bdc9834b6ad0edf0c829b77",
+          "logits_sha256": "318668a569d27ebfc0d1eadafd219a5a56bb2140797c14b5603df16dc1116437"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "295beb038f61c135c20a09155a63bea563cc48be5aee652569b3b0c87feb1ea6",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "c86023df8d29119350927a72ef9c94154c866fddef7f4875fa8c315debcde7ac",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "pair/repeat0/image1/p2",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 2,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "99a0281d3985f94661322f2bd0a91e6dfc1d8c333ac0ef09373b752bd0ec9bde",
+        "initial_pre_sha256": "1bc7419925e0ee5949ba84dc0df8a34118caa77eef5146b2b8e47510530e05dd"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4620682,
+      "expected_boundary_root_sha256": "1862e8130863113621b9592a77553125fcff925bf12922a0c2fa4186152b12d6",
+      "actual_boundary_root_sha256": "1862e8130863113621b9592a77553125fcff925bf12922a0c2fa4186152b12d6",
+      "expected_layout_sha256": "351cd6391bcb06b793489b5feb957870304e4c0b80fa8c37e819991acd5c5f4c",
+      "actual_layout_sha256": "351cd6391bcb06b793489b5feb957870304e4c0b80fa8c37e819991acd5c5f4c",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            147,
+            330,
+            22,
+            111,
+            26,
+            55
+          ],
+          "weight_bits": [
+            1050117338,
+            1048719157,
+            1048241127,
+            1047953026,
+            1047568292,
+            1047172558
+          ],
+          "moe_input_sha256": "f11190ddd33dd71b6b54c0be02fe55d34c7939ddb6a06691ab450c88fef0eeb1",
+          "logits_sha256": "00cab87b0ee9d7786627f708528b88546e5cdb3c207fa6fac543ef07940c29c7"
+        },
+        "21": {
+          "indices": [
+            294,
+            189,
+            90,
+            164,
+            279,
+            3
+          ],
+          "weight_bits": [
+            1049318928,
+            1049380639,
+            1046702163,
+            1047488318,
+            1048672342,
+            1048249696
+          ],
+          "moe_input_sha256": "b340cc7c7ea7d513e9694ad50e5a94b36d4fe7d50a3aef845283b718fdb47a4c",
+          "logits_sha256": "79e67dcc5b4d9d141f18b9ea74289b0d2dc7f5a3898ea3b6a89a5983c5edf557"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "1c8df398dec551665592aba3ab4911204f704bc6407c682c4dea4a58821d9bfb",
+        "pre_sha256": "524904bab850fe6d68fe0b8bd275750197b217e4f08233c0cf3c51a081f1f067"
+      },
+      "committed_state_sha256": "d9aaeefb4a1dc429475518ee0c6320a96869d9b5a9bf712d24aef08c75e024c2",
+      "committed_position": 3,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 3
+    },
+    {
+      "meta": {
+        "id": "pair/repeat0/image1/p3",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 3,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "5c93a874b2b9341f86625918ec367ad4b00fcdd0a568453f7c598e4052974879",
+        "initial_pre_sha256": "c7527b3b8e3d46dfd519a85abcdaf6129b55cbe038c30593a9c27abb2467bd4e"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4623478,
+      "expected_boundary_root_sha256": "887be7385886d23be817412bdd5cf0cf598052a5f90a93766bf1752e62b166a5",
+      "actual_boundary_root_sha256": "887be7385886d23be817412bdd5cf0cf598052a5f90a93766bf1752e62b166a5",
+      "expected_layout_sha256": "1b87031a84da283af407d4679dbe816a0f9e15620c67bfcd177803902d66d3ab",
+      "actual_layout_sha256": "1b87031a84da283af407d4679dbe816a0f9e15620c67bfcd177803902d66d3ab",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            111,
+            252,
+            337,
+            192,
+            80,
+            148
+          ],
+          "weight_bits": [
+            1049276214,
+            1048964512,
+            1048677844,
+            1048183107,
+            1047975734,
+            1047188022
+          ],
+          "moe_input_sha256": "47229d3480682ef917830a399aa36eed06f63ad08a5aef2fd1166e13464e55e5",
+          "logits_sha256": "e42c4a121a6dfc6d11e42b9a611ebbfe6a082f1a30daef2a61478958e213928d"
+        },
+        "21": {
+          "indices": [
+            69,
+            310,
+            116,
+            235,
+            195,
+            293
+          ],
+          "weight_bits": [
+            1048386114,
+            1049351890,
+            1046960403,
+            1048870216,
+            1048362868,
+            1048454400
+          ],
+          "moe_input_sha256": "38b57cd97be7f50349f37328dd060184c71c34a808cf89d7624bf4d42802e476",
+          "logits_sha256": "2b8123784d00a69c19bd35d6fb1e1a8922b8b5e2ebf8b4866b3a702d7ce7cc0c"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "3fb7582f3cfc967e824f1b393c34aff8c88ac808b8d05b0ac2dd51c9deb87fd6",
+        "pre_sha256": "5a02a3b07e40571f5a86c8f8a462e765d819a25899905f14e7fbed6a1a84be0c"
+      },
+      "committed_state_sha256": "2ac266e05a187956cc95596f0c535d05a80afab5f01d03cec9578e0f97bde842",
+      "committed_position": 4,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 4
+    },
+    {
+      "meta": {
+        "id": "pair/repeat1/image0/p0",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "actual_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "expected_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "actual_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            368,
+            75,
+            329,
+            334,
+            5
+          ],
+          "weight_bits": [
+            1049555934,
+            1049118417,
+            1048734684,
+            1047713844,
+            1047378669,
+            1047273418
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            208,
+            348,
+            261,
+            300
+          ],
+          "weight_bits": [
+            1050094269,
+            1048635048,
+            1048203984,
+            1047848224,
+            1047529581,
+            1047567578
+          ],
+          "moe_input_sha256": "ebd67e7a124ea1d8623ca991c2111836a7c3d8f5197287442ab29daf8b145c70",
+          "logits_sha256": "17e26a7d51405e08e7aff17ce72b80e44701a8b2a6532211ffe218dbea8192ba"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "4a16e23ec54d03e61b58848ed870c5c85870253b685426c283c536c94a331b14",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "2eb118daf6e832e522d401f49dfa1de55947cd221cd0456c91b2ea66c65f445c",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "pair/repeat1/image0/p1",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "actual_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "expected_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "actual_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            288,
+            160,
+            252
+          ],
+          "weight_bits": [
+            1051155236,
+            1048308470,
+            1048449060,
+            1047327494,
+            1046922132,
+            1046714372
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            323,
+            164,
+            295,
+            35,
+            241,
+            90
+          ],
+          "weight_bits": [
+            1048915117,
+            1048734724,
+            1048449171,
+            1048699582,
+            1047987351,
+            1048048622
+          ],
+          "moe_input_sha256": "1db41fe5a6ba74d41be4b51760025fca0f408e36f755c76515b31e4c2b0402f7",
+          "logits_sha256": "479eb11cfd7c97af44a62d082539915b2a4dd6b8e6c4f9ddf59bae5c7b5d95fd"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "88726f1e08a1c964c79fa6d8ad83f0e969621b0c7f7b81b2c43c37676fff9fa4",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "3c291c79c337e0e1502b52b09ab678013ea69f7dd1dd2b3b9ffa99f6e956164f",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "pair/repeat1/image0/p2",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 2,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "99a0281d3985f94661322f2bd0a91e6dfc1d8c333ac0ef09373b752bd0ec9bde",
+        "initial_pre_sha256": "1bc7419925e0ee5949ba84dc0df8a34118caa77eef5146b2b8e47510530e05dd"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4620682,
+      "expected_boundary_root_sha256": "000adc6a475ed995663bc482908761c477872c4c61054d0db69f19467604d762",
+      "actual_boundary_root_sha256": "000adc6a475ed995663bc482908761c477872c4c61054d0db69f19467604d762",
+      "expected_layout_sha256": "5c0cb2778b528ff071964272ca357e336cbe27e5bd44a2040f0eedea0eed1b58",
+      "actual_layout_sha256": "5c0cb2778b528ff071964272ca357e336cbe27e5bd44a2040f0eedea0eed1b58",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            147,
+            330,
+            22,
+            111,
+            305,
+            121
+          ],
+          "weight_bits": [
+            1050109014,
+            1048712006,
+            1048227345,
+            1047939484,
+            1047416097,
+            1047383025
+          ],
+          "moe_input_sha256": "f11190ddd33dd71b6b54c0be02fe55d34c7939ddb6a06691ab450c88fef0eeb1",
+          "logits_sha256": "00cab87b0ee9d7786627f708528b88546e5cdb3c207fa6fac543ef07940c29c7"
+        },
+        "21": {
+          "indices": [
+            189,
+            279,
+            3,
+            294,
+            164,
+            90
+          ],
+          "weight_bits": [
+            1049616804,
+            1048695131,
+            1047996090,
+            1048885892,
+            1047869824,
+            1046922428
+          ],
+          "moe_input_sha256": "4eb001a3bb8145186cffa3c3e0856b6e81446827a80272a617ec716a95916875",
+          "logits_sha256": "3cb0434f106038d008db7334a4b785e8894a385c667a13923686b0e9b8094282"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "8c3b509b0cca3b2334bcc46b8328e7a788629dafcdee093762b1079ef9fe03af",
+        "pre_sha256": "524904bab850fe6d68fe0b8bd275750197b217e4f08233c0cf3c51a081f1f067"
+      },
+      "committed_state_sha256": "74c5d5eb45dae8fad64d100855feb5c370221a668e2475fcb90c75776bf01300",
+      "committed_position": 3,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 3
+    },
+    {
+      "meta": {
+        "id": "pair/repeat1/image0/p3",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 3,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "5c93a874b2b9341f86625918ec367ad4b00fcdd0a568453f7c598e4052974879",
+        "initial_pre_sha256": "c7527b3b8e3d46dfd519a85abcdaf6129b55cbe038c30593a9c27abb2467bd4e"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4623478,
+      "expected_boundary_root_sha256": "90714924ae573397efb41d4cffe51173dd1bd978709b45abfd58ab2cf22bb83c",
+      "actual_boundary_root_sha256": "90714924ae573397efb41d4cffe51173dd1bd978709b45abfd58ab2cf22bb83c",
+      "expected_layout_sha256": "3055e6dea41f6b9cd84a1747799168072881165ba8086b52ca7137c4e7d4519f",
+      "actual_layout_sha256": "3055e6dea41f6b9cd84a1747799168072881165ba8086b52ca7137c4e7d4519f",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            111,
+            252,
+            337,
+            192,
+            265,
+            80
+          ],
+          "weight_bits": [
+            1049232577,
+            1048922372,
+            1048637080,
+            1048104444,
+            1047597440,
+            1047898065
+          ],
+          "moe_input_sha256": "47229d3480682ef917830a399aa36eed06f63ad08a5aef2fd1166e13464e55e5",
+          "logits_sha256": "e42c4a121a6dfc6d11e42b9a611ebbfe6a082f1a30daef2a61478958e213928d"
+        },
+        "21": {
+          "indices": [
+            310,
+            235,
+            195,
+            241,
+            69,
+            333
+          ],
+          "weight_bits": [
+            1049121588,
+            1048643776,
+            1048415913,
+            1048175284,
+            1048583750,
+            1047894576
+          ],
+          "moe_input_sha256": "7ed8b4a7b741a5288feb2d2468a3d6d725768d272768fd8783017be1d01fd32f",
+          "logits_sha256": "3b906100e1bfaeb93ca393e68b3bdf07935b7627ae034ff6c4fc38915ec57072"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "7c1c515146f503403a26fee193d1fd72f8cae80ab9e630a35297c226e517103d",
+        "pre_sha256": "5a02a3b07e40571f5a86c8f8a462e765d819a25899905f14e7fbed6a1a84be0c"
+      },
+      "committed_state_sha256": "3c9d937a3141111a20d3e4ebc9a59c90d4c0ef6549a34006bd6edfb9bfe6d0ba",
+      "committed_position": 4,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 4
+    },
+    {
+      "meta": {
+        "id": "pair/repeat1/image1/p0",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "bc224c6841c349b770ebff663c2efa841d05db8143fc7f2956c0f1f575bfa2d0",
+      "actual_boundary_root_sha256": "bc224c6841c349b770ebff663c2efa841d05db8143fc7f2956c0f1f575bfa2d0",
+      "expected_layout_sha256": "abd3ed96f7abb19d04189e2f147bb01b51d2c6b551697cc27c3b0f19951ae104",
+      "actual_layout_sha256": "abd3ed96f7abb19d04189e2f147bb01b51d2c6b551697cc27c3b0f19951ae104",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            244,
+            368,
+            295,
+            75,
+            329
+          ],
+          "weight_bits": [
+            1049261285,
+            1049456309,
+            1048837528,
+            1046504724,
+            1048355727,
+            1047213300
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            348,
+            244,
+            300,
+            208
+          ],
+          "weight_bits": [
+            1049903178,
+            1048718513,
+            1047656842,
+            1047144378,
+            1048213533,
+            1048349860
+          ],
+          "moe_input_sha256": "ff53a1311908418062124f1e4bfbdcb29cb4e46f0a222e8edaaf7d61031f09dd",
+          "logits_sha256": "c885c04c8ef1a4c518460e7b3b5470e073084e433c268bd24947029f7744941e"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "ae827331a1200a140402e877abbfc01f46090e73359b613253846f54ec69f3aa",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "e2f2a1b3d05593e4b5fa6d05adb4311984b107587fc2a4f8658cc25ae23d91d0",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "pair/repeat1/image1/p1",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "f361da470afc710c3a44388de4042a5fa1522c023395abbf328304cc01cab382",
+      "actual_boundary_root_sha256": "f361da470afc710c3a44388de4042a5fa1522c023395abbf328304cc01cab382",
+      "expected_layout_sha256": "6b8e04e222a727a193aac1f6ccddd8d391379dd00d50714df3cdc1f6437c1b17",
+      "actual_layout_sha256": "6b8e04e222a727a193aac1f6ccddd8d391379dd00d50714df3cdc1f6437c1b17",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            148,
+            288,
+            249
+          ],
+          "weight_bits": [
+            1051343681,
+            1048584066,
+            1048655568,
+            1047689134,
+            1047594302,
+            1044733934
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            164,
+            295,
+            90,
+            323,
+            348,
+            35
+          ],
+          "weight_bits": [
+            1049117634,
+            1048627980,
+            1048364462,
+            1049086818,
+            1047521698,
+            1047632973
+          ],
+          "moe_input_sha256": "367220b27c57a27aa53b3114f5125ed5022e8e445bdc9834b6ad0edf0c829b77",
+          "logits_sha256": "318668a569d27ebfc0d1eadafd219a5a56bb2140797c14b5603df16dc1116437"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "295beb038f61c135c20a09155a63bea563cc48be5aee652569b3b0c87feb1ea6",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "c86023df8d29119350927a72ef9c94154c866fddef7f4875fa8c315debcde7ac",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "pair/repeat1/image1/p2",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 2,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "99a0281d3985f94661322f2bd0a91e6dfc1d8c333ac0ef09373b752bd0ec9bde",
+        "initial_pre_sha256": "1bc7419925e0ee5949ba84dc0df8a34118caa77eef5146b2b8e47510530e05dd"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4620682,
+      "expected_boundary_root_sha256": "1862e8130863113621b9592a77553125fcff925bf12922a0c2fa4186152b12d6",
+      "actual_boundary_root_sha256": "1862e8130863113621b9592a77553125fcff925bf12922a0c2fa4186152b12d6",
+      "expected_layout_sha256": "351cd6391bcb06b793489b5feb957870304e4c0b80fa8c37e819991acd5c5f4c",
+      "actual_layout_sha256": "351cd6391bcb06b793489b5feb957870304e4c0b80fa8c37e819991acd5c5f4c",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            147,
+            330,
+            22,
+            111,
+            26,
+            55
+          ],
+          "weight_bits": [
+            1050117338,
+            1048719157,
+            1048241127,
+            1047953026,
+            1047568292,
+            1047172558
+          ],
+          "moe_input_sha256": "f11190ddd33dd71b6b54c0be02fe55d34c7939ddb6a06691ab450c88fef0eeb1",
+          "logits_sha256": "00cab87b0ee9d7786627f708528b88546e5cdb3c207fa6fac543ef07940c29c7"
+        },
+        "21": {
+          "indices": [
+            294,
+            189,
+            90,
+            164,
+            279,
+            3
+          ],
+          "weight_bits": [
+            1049318928,
+            1049380639,
+            1046702163,
+            1047488318,
+            1048672342,
+            1048249696
+          ],
+          "moe_input_sha256": "b340cc7c7ea7d513e9694ad50e5a94b36d4fe7d50a3aef845283b718fdb47a4c",
+          "logits_sha256": "79e67dcc5b4d9d141f18b9ea74289b0d2dc7f5a3898ea3b6a89a5983c5edf557"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "1c8df398dec551665592aba3ab4911204f704bc6407c682c4dea4a58821d9bfb",
+        "pre_sha256": "524904bab850fe6d68fe0b8bd275750197b217e4f08233c0cf3c51a081f1f067"
+      },
+      "committed_state_sha256": "d9aaeefb4a1dc429475518ee0c6320a96869d9b5a9bf712d24aef08c75e024c2",
+      "committed_position": 3,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 3
+    },
+    {
+      "meta": {
+        "id": "pair/repeat1/image1/p3",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 3,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "5c93a874b2b9341f86625918ec367ad4b00fcdd0a568453f7c598e4052974879",
+        "initial_pre_sha256": "c7527b3b8e3d46dfd519a85abcdaf6129b55cbe038c30593a9c27abb2467bd4e"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4623478,
+      "expected_boundary_root_sha256": "887be7385886d23be817412bdd5cf0cf598052a5f90a93766bf1752e62b166a5",
+      "actual_boundary_root_sha256": "887be7385886d23be817412bdd5cf0cf598052a5f90a93766bf1752e62b166a5",
+      "expected_layout_sha256": "1b87031a84da283af407d4679dbe816a0f9e15620c67bfcd177803902d66d3ab",
+      "actual_layout_sha256": "1b87031a84da283af407d4679dbe816a0f9e15620c67bfcd177803902d66d3ab",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            111,
+            252,
+            337,
+            192,
+            80,
+            148
+          ],
+          "weight_bits": [
+            1049276214,
+            1048964512,
+            1048677844,
+            1048183107,
+            1047975734,
+            1047188022
+          ],
+          "moe_input_sha256": "47229d3480682ef917830a399aa36eed06f63ad08a5aef2fd1166e13464e55e5",
+          "logits_sha256": "e42c4a121a6dfc6d11e42b9a611ebbfe6a082f1a30daef2a61478958e213928d"
+        },
+        "21": {
+          "indices": [
+            69,
+            310,
+            116,
+            235,
+            195,
+            293
+          ],
+          "weight_bits": [
+            1048386114,
+            1049351890,
+            1046960403,
+            1048870216,
+            1048362868,
+            1048454400
+          ],
+          "moe_input_sha256": "38b57cd97be7f50349f37328dd060184c71c34a808cf89d7624bf4d42802e476",
+          "logits_sha256": "2b8123784d00a69c19bd35d6fb1e1a8922b8b5e2ebf8b4866b3a702d7ce7cc0c"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "3fb7582f3cfc967e824f1b393c34aff8c88ac808b8d05b0ac2dd51c9deb87fd6",
+        "pre_sha256": "5a02a3b07e40571f5a86c8f8a462e765d819a25899905f14e7fbed6a1a84be0c"
+      },
+      "committed_state_sha256": "2ac266e05a187956cc95596f0c535d05a80afab5f01d03cec9578e0f97bde842",
+      "committed_position": 4,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 4
+    },
+    {
+      "meta": {
+        "id": "fault/host_pressure/warm",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "actual_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "expected_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "actual_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            368,
+            75,
+            329,
+            334,
+            5
+          ],
+          "weight_bits": [
+            1049555934,
+            1049118417,
+            1048734684,
+            1047713844,
+            1047378669,
+            1047273418
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            208,
+            348,
+            261,
+            300
+          ],
+          "weight_bits": [
+            1050094269,
+            1048635048,
+            1048203984,
+            1047848224,
+            1047529581,
+            1047567578
+          ],
+          "moe_input_sha256": "ebd67e7a124ea1d8623ca991c2111836a7c3d8f5197287442ab29daf8b145c70",
+          "logits_sha256": "17e26a7d51405e08e7aff17ce72b80e44701a8b2a6532211ffe218dbea8192ba"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "4a16e23ec54d03e61b58848ed870c5c85870253b685426c283c536c94a331b14",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "2eb118daf6e832e522d401f49dfa1de55947cd221cd0456c91b2ea66c65f445c",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "fault/host_pressure/retry",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "actual_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "expected_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "actual_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            288,
+            160,
+            252
+          ],
+          "weight_bits": [
+            1051155236,
+            1048308470,
+            1048449060,
+            1047327494,
+            1046922132,
+            1046714372
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            323,
+            164,
+            295,
+            35,
+            241,
+            90
+          ],
+          "weight_bits": [
+            1048915117,
+            1048734724,
+            1048449171,
+            1048699582,
+            1047987351,
+            1048048622
+          ],
+          "moe_input_sha256": "1db41fe5a6ba74d41be4b51760025fca0f408e36f755c76515b31e4c2b0402f7",
+          "logits_sha256": "479eb11cfd7c97af44a62d082539915b2a4dd6b8e6c4f9ddf59bae5c7b5d95fd"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "88726f1e08a1c964c79fa6d8ad83f0e969621b0c7f7b81b2c43c37676fff9fa4",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "3c291c79c337e0e1502b52b09ab678013ea69f7dd1dd2b3b9ffa99f6e956164f",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "fault/source20_after_three_experts/warm",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "bc224c6841c349b770ebff663c2efa841d05db8143fc7f2956c0f1f575bfa2d0",
+      "actual_boundary_root_sha256": "bc224c6841c349b770ebff663c2efa841d05db8143fc7f2956c0f1f575bfa2d0",
+      "expected_layout_sha256": "abd3ed96f7abb19d04189e2f147bb01b51d2c6b551697cc27c3b0f19951ae104",
+      "actual_layout_sha256": "abd3ed96f7abb19d04189e2f147bb01b51d2c6b551697cc27c3b0f19951ae104",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            244,
+            368,
+            295,
+            75,
+            329
+          ],
+          "weight_bits": [
+            1049261285,
+            1049456309,
+            1048837528,
+            1046504724,
+            1048355727,
+            1047213300
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            348,
+            244,
+            300,
+            208
+          ],
+          "weight_bits": [
+            1049903178,
+            1048718513,
+            1047656842,
+            1047144378,
+            1048213533,
+            1048349860
+          ],
+          "moe_input_sha256": "ff53a1311908418062124f1e4bfbdcb29cb4e46f0a222e8edaaf7d61031f09dd",
+          "logits_sha256": "c885c04c8ef1a4c518460e7b3b5470e073084e433c268bd24947029f7744941e"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "ae827331a1200a140402e877abbfc01f46090e73359b613253846f54ec69f3aa",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "e2f2a1b3d05593e4b5fa6d05adb4311984b107587fc2a4f8658cc25ae23d91d0",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "fault/source20_after_three_experts/retry",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "f361da470afc710c3a44388de4042a5fa1522c023395abbf328304cc01cab382",
+      "actual_boundary_root_sha256": "f361da470afc710c3a44388de4042a5fa1522c023395abbf328304cc01cab382",
+      "expected_layout_sha256": "6b8e04e222a727a193aac1f6ccddd8d391379dd00d50714df3cdc1f6437c1b17",
+      "actual_layout_sha256": "6b8e04e222a727a193aac1f6ccddd8d391379dd00d50714df3cdc1f6437c1b17",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            148,
+            288,
+            249
+          ],
+          "weight_bits": [
+            1051343681,
+            1048584066,
+            1048655568,
+            1047689134,
+            1047594302,
+            1044733934
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            164,
+            295,
+            90,
+            323,
+            348,
+            35
+          ],
+          "weight_bits": [
+            1049117634,
+            1048627980,
+            1048364462,
+            1049086818,
+            1047521698,
+            1047632973
+          ],
+          "moe_input_sha256": "367220b27c57a27aa53b3114f5125ed5022e8e445bdc9834b6ad0edf0c829b77",
+          "logits_sha256": "318668a569d27ebfc0d1eadafd219a5a56bb2140797c14b5603df16dc1116437"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "295beb038f61c135c20a09155a63bea563cc48be5aee652569b3b0c87feb1ea6",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "c86023df8d29119350927a72ef9c94154c866fddef7f4875fa8c315debcde7ac",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "fault/handoff_to_consumer21/warm",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "actual_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "expected_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "actual_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            368,
+            75,
+            329,
+            334,
+            5
+          ],
+          "weight_bits": [
+            1049555934,
+            1049118417,
+            1048734684,
+            1047713844,
+            1047378669,
+            1047273418
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            208,
+            348,
+            261,
+            300
+          ],
+          "weight_bits": [
+            1050094269,
+            1048635048,
+            1048203984,
+            1047848224,
+            1047529581,
+            1047567578
+          ],
+          "moe_input_sha256": "ebd67e7a124ea1d8623ca991c2111836a7c3d8f5197287442ab29daf8b145c70",
+          "logits_sha256": "17e26a7d51405e08e7aff17ce72b80e44701a8b2a6532211ffe218dbea8192ba"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "4a16e23ec54d03e61b58848ed870c5c85870253b685426c283c536c94a331b14",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "2eb118daf6e832e522d401f49dfa1de55947cd221cd0456c91b2ea66c65f445c",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "fault/handoff_to_consumer21/retry",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "actual_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "expected_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "actual_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            288,
+            160,
+            252
+          ],
+          "weight_bits": [
+            1051155236,
+            1048308470,
+            1048449060,
+            1047327494,
+            1046922132,
+            1046714372
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            323,
+            164,
+            295,
+            35,
+            241,
+            90
+          ],
+          "weight_bits": [
+            1048915117,
+            1048734724,
+            1048449171,
+            1048699582,
+            1047987351,
+            1048048622
+          ],
+          "moe_input_sha256": "1db41fe5a6ba74d41be4b51760025fca0f408e36f755c76515b31e4c2b0402f7",
+          "logits_sha256": "479eb11cfd7c97af44a62d082539915b2a4dd6b8e6c4f9ddf59bae5c7b5d95fd"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "88726f1e08a1c964c79fa6d8ad83f0e969621b0c7f7b81b2c43c37676fff9fa4",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "3c291c79c337e0e1502b52b09ab678013ea69f7dd1dd2b3b9ffa99f6e956164f",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "fault/consumer21_attention_output/warm",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "bc224c6841c349b770ebff663c2efa841d05db8143fc7f2956c0f1f575bfa2d0",
+      "actual_boundary_root_sha256": "bc224c6841c349b770ebff663c2efa841d05db8143fc7f2956c0f1f575bfa2d0",
+      "expected_layout_sha256": "abd3ed96f7abb19d04189e2f147bb01b51d2c6b551697cc27c3b0f19951ae104",
+      "actual_layout_sha256": "abd3ed96f7abb19d04189e2f147bb01b51d2c6b551697cc27c3b0f19951ae104",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            244,
+            368,
+            295,
+            75,
+            329
+          ],
+          "weight_bits": [
+            1049261285,
+            1049456309,
+            1048837528,
+            1046504724,
+            1048355727,
+            1047213300
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            348,
+            244,
+            300,
+            208
+          ],
+          "weight_bits": [
+            1049903178,
+            1048718513,
+            1047656842,
+            1047144378,
+            1048213533,
+            1048349860
+          ],
+          "moe_input_sha256": "ff53a1311908418062124f1e4bfbdcb29cb4e46f0a222e8edaaf7d61031f09dd",
+          "logits_sha256": "c885c04c8ef1a4c518460e7b3b5470e073084e433c268bd24947029f7744941e"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "ae827331a1200a140402e877abbfc01f46090e73359b613253846f54ec69f3aa",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "e2f2a1b3d05593e4b5fa6d05adb4311984b107587fc2a4f8658cc25ae23d91d0",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "fault/consumer21_attention_output/retry",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "f361da470afc710c3a44388de4042a5fa1522c023395abbf328304cc01cab382",
+      "actual_boundary_root_sha256": "f361da470afc710c3a44388de4042a5fa1522c023395abbf328304cc01cab382",
+      "expected_layout_sha256": "6b8e04e222a727a193aac1f6ccddd8d391379dd00d50714df3cdc1f6437c1b17",
+      "actual_layout_sha256": "6b8e04e222a727a193aac1f6ccddd8d391379dd00d50714df3cdc1f6437c1b17",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            148,
+            288,
+            249
+          ],
+          "weight_bits": [
+            1051343681,
+            1048584066,
+            1048655568,
+            1047689134,
+            1047594302,
+            1044733934
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            164,
+            295,
+            90,
+            323,
+            348,
+            35
+          ],
+          "weight_bits": [
+            1049117634,
+            1048627980,
+            1048364462,
+            1049086818,
+            1047521698,
+            1047632973
+          ],
+          "moe_input_sha256": "367220b27c57a27aa53b3114f5125ed5022e8e445bdc9834b6ad0edf0c829b77",
+          "logits_sha256": "318668a569d27ebfc0d1eadafd219a5a56bb2140797c14b5603df16dc1116437"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "295beb038f61c135c20a09155a63bea563cc48be5aee652569b3b0c87feb1ea6",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "c86023df8d29119350927a72ef9c94154c866fddef7f4875fa8c315debcde7ac",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "fault/consumer21_after_three_experts/warm",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "actual_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "expected_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "actual_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            368,
+            75,
+            329,
+            334,
+            5
+          ],
+          "weight_bits": [
+            1049555934,
+            1049118417,
+            1048734684,
+            1047713844,
+            1047378669,
+            1047273418
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            208,
+            348,
+            261,
+            300
+          ],
+          "weight_bits": [
+            1050094269,
+            1048635048,
+            1048203984,
+            1047848224,
+            1047529581,
+            1047567578
+          ],
+          "moe_input_sha256": "ebd67e7a124ea1d8623ca991c2111836a7c3d8f5197287442ab29daf8b145c70",
+          "logits_sha256": "17e26a7d51405e08e7aff17ce72b80e44701a8b2a6532211ffe218dbea8192ba"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "4a16e23ec54d03e61b58848ed870c5c85870253b685426c283c536c94a331b14",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "2eb118daf6e832e522d401f49dfa1de55947cd221cd0456c91b2ea66c65f445c",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "fault/consumer21_after_three_experts/retry",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "actual_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "expected_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "actual_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            288,
+            160,
+            252
+          ],
+          "weight_bits": [
+            1051155236,
+            1048308470,
+            1048449060,
+            1047327494,
+            1046922132,
+            1046714372
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            323,
+            164,
+            295,
+            35,
+            241,
+            90
+          ],
+          "weight_bits": [
+            1048915117,
+            1048734724,
+            1048449171,
+            1048699582,
+            1047987351,
+            1048048622
+          ],
+          "moe_input_sha256": "1db41fe5a6ba74d41be4b51760025fca0f408e36f755c76515b31e4c2b0402f7",
+          "logits_sha256": "479eb11cfd7c97af44a62d082539915b2a4dd6b8e6c4f9ddf59bae5c7b5d95fd"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "88726f1e08a1c964c79fa6d8ad83f0e969621b0c7f7b81b2c43c37676fff9fa4",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "3c291c79c337e0e1502b52b09ab678013ea69f7dd1dd2b3b9ffa99f6e956164f",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "fault/consumer21_final_download/warm",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "bc224c6841c349b770ebff663c2efa841d05db8143fc7f2956c0f1f575bfa2d0",
+      "actual_boundary_root_sha256": "bc224c6841c349b770ebff663c2efa841d05db8143fc7f2956c0f1f575bfa2d0",
+      "expected_layout_sha256": "abd3ed96f7abb19d04189e2f147bb01b51d2c6b551697cc27c3b0f19951ae104",
+      "actual_layout_sha256": "abd3ed96f7abb19d04189e2f147bb01b51d2c6b551697cc27c3b0f19951ae104",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            244,
+            368,
+            295,
+            75,
+            329
+          ],
+          "weight_bits": [
+            1049261285,
+            1049456309,
+            1048837528,
+            1046504724,
+            1048355727,
+            1047213300
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            348,
+            244,
+            300,
+            208
+          ],
+          "weight_bits": [
+            1049903178,
+            1048718513,
+            1047656842,
+            1047144378,
+            1048213533,
+            1048349860
+          ],
+          "moe_input_sha256": "ff53a1311908418062124f1e4bfbdcb29cb4e46f0a222e8edaaf7d61031f09dd",
+          "logits_sha256": "c885c04c8ef1a4c518460e7b3b5470e073084e433c268bd24947029f7744941e"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "ae827331a1200a140402e877abbfc01f46090e73359b613253846f54ec69f3aa",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "e2f2a1b3d05593e4b5fa6d05adb4311984b107587fc2a4f8658cc25ae23d91d0",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "fault/consumer21_final_download/retry",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "f361da470afc710c3a44388de4042a5fa1522c023395abbf328304cc01cab382",
+      "actual_boundary_root_sha256": "f361da470afc710c3a44388de4042a5fa1522c023395abbf328304cc01cab382",
+      "expected_layout_sha256": "6b8e04e222a727a193aac1f6ccddd8d391379dd00d50714df3cdc1f6437c1b17",
+      "actual_layout_sha256": "6b8e04e222a727a193aac1f6ccddd8d391379dd00d50714df3cdc1f6437c1b17",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            148,
+            288,
+            249
+          ],
+          "weight_bits": [
+            1051343681,
+            1048584066,
+            1048655568,
+            1047689134,
+            1047594302,
+            1044733934
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            164,
+            295,
+            90,
+            323,
+            348,
+            35
+          ],
+          "weight_bits": [
+            1049117634,
+            1048627980,
+            1048364462,
+            1049086818,
+            1047521698,
+            1047632973
+          ],
+          "moe_input_sha256": "367220b27c57a27aa53b3114f5125ed5022e8e445bdc9834b6ad0edf0c829b77",
+          "logits_sha256": "318668a569d27ebfc0d1eadafd219a5a56bb2140797c14b5603df16dc1116437"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "295beb038f61c135c20a09155a63bea563cc48be5aee652569b3b0c87feb1ea6",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "c86023df8d29119350927a72ef9c94154c866fddef7f4875fa8c315debcde7ac",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "fault/combined_primary_cap/warm",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "actual_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "expected_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "actual_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            368,
+            75,
+            329,
+            334,
+            5
+          ],
+          "weight_bits": [
+            1049555934,
+            1049118417,
+            1048734684,
+            1047713844,
+            1047378669,
+            1047273418
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            208,
+            348,
+            261,
+            300
+          ],
+          "weight_bits": [
+            1050094269,
+            1048635048,
+            1048203984,
+            1047848224,
+            1047529581,
+            1047567578
+          ],
+          "moe_input_sha256": "ebd67e7a124ea1d8623ca991c2111836a7c3d8f5197287442ab29daf8b145c70",
+          "logits_sha256": "17e26a7d51405e08e7aff17ce72b80e44701a8b2a6532211ffe218dbea8192ba"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "4a16e23ec54d03e61b58848ed870c5c85870253b685426c283c536c94a331b14",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "2eb118daf6e832e522d401f49dfa1de55947cd221cd0456c91b2ea66c65f445c",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "fault/combined_primary_cap/retry",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "actual_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "expected_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "actual_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            288,
+            160,
+            252
+          ],
+          "weight_bits": [
+            1051155236,
+            1048308470,
+            1048449060,
+            1047327494,
+            1046922132,
+            1046714372
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            323,
+            164,
+            295,
+            35,
+            241,
+            90
+          ],
+          "weight_bits": [
+            1048915117,
+            1048734724,
+            1048449171,
+            1048699582,
+            1047987351,
+            1048048622
+          ],
+          "moe_input_sha256": "1db41fe5a6ba74d41be4b51760025fca0f408e36f755c76515b31e4c2b0402f7",
+          "logits_sha256": "479eb11cfd7c97af44a62d082539915b2a4dd6b8e6c4f9ddf59bae5c7b5d95fd"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "88726f1e08a1c964c79fa6d8ad83f0e969621b0c7f7b81b2c43c37676fff9fa4",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "3c291c79c337e0e1502b52b09ab678013ea69f7dd1dd2b3b9ffa99f6e956164f",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "fault/publication_pressure/warm",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "bc224c6841c349b770ebff663c2efa841d05db8143fc7f2956c0f1f575bfa2d0",
+      "actual_boundary_root_sha256": "bc224c6841c349b770ebff663c2efa841d05db8143fc7f2956c0f1f575bfa2d0",
+      "expected_layout_sha256": "abd3ed96f7abb19d04189e2f147bb01b51d2c6b551697cc27c3b0f19951ae104",
+      "actual_layout_sha256": "abd3ed96f7abb19d04189e2f147bb01b51d2c6b551697cc27c3b0f19951ae104",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            244,
+            368,
+            295,
+            75,
+            329
+          ],
+          "weight_bits": [
+            1049261285,
+            1049456309,
+            1048837528,
+            1046504724,
+            1048355727,
+            1047213300
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            348,
+            244,
+            300,
+            208
+          ],
+          "weight_bits": [
+            1049903178,
+            1048718513,
+            1047656842,
+            1047144378,
+            1048213533,
+            1048349860
+          ],
+          "moe_input_sha256": "ff53a1311908418062124f1e4bfbdcb29cb4e46f0a222e8edaaf7d61031f09dd",
+          "logits_sha256": "c885c04c8ef1a4c518460e7b3b5470e073084e433c268bd24947029f7744941e"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "ae827331a1200a140402e877abbfc01f46090e73359b613253846f54ec69f3aa",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "e2f2a1b3d05593e4b5fa6d05adb4311984b107587fc2a4f8658cc25ae23d91d0",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "fault/publication_pressure/retry",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": true,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "f361da470afc710c3a44388de4042a5fa1522c023395abbf328304cc01cab382",
+      "actual_boundary_root_sha256": "f361da470afc710c3a44388de4042a5fa1522c023395abbf328304cc01cab382",
+      "expected_layout_sha256": "6b8e04e222a727a193aac1f6ccddd8d391379dd00d50714df3cdc1f6437c1b17",
+      "actual_layout_sha256": "6b8e04e222a727a193aac1f6ccddd8d391379dd00d50714df3cdc1f6437c1b17",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            148,
+            288,
+            249
+          ],
+          "weight_bits": [
+            1051343681,
+            1048584066,
+            1048655568,
+            1047689134,
+            1047594302,
+            1044733934
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            164,
+            295,
+            90,
+            323,
+            348,
+            35
+          ],
+          "weight_bits": [
+            1049117634,
+            1048627980,
+            1048364462,
+            1049086818,
+            1047521698,
+            1047632973
+          ],
+          "moe_input_sha256": "367220b27c57a27aa53b3114f5125ed5022e8e445bdc9834b6ad0edf0c829b77",
+          "logits_sha256": "318668a569d27ebfc0d1eadafd219a5a56bb2140797c14b5603df16dc1116437"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "295beb038f61c135c20a09155a63bea563cc48be5aee652569b3b0c87feb1ea6",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "c86023df8d29119350927a72ef9c94154c866fddef7f4875fa8c315debcde7ac",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "snapshot/warm",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 0,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "863e50640892d590622400e729cd0a297fa331d5bb045a5795f1b971b643b085",
+        "initial_pre_sha256": "16b18007695831cd3f64014555157528250d28fb66e822a047fd602d1d9df6aa"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4189366,
+      "expected_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "actual_boundary_root_sha256": "4b5b1af7bdfb1a8687af5eff8858f8551b8b6e4e28fcbab135851d6283dc0b4f",
+      "expected_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "actual_layout_sha256": "074b6501830cadde9d0426a65f732708a79b259c76ce87c1053391839192d9c0",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            159,
+            368,
+            75,
+            329,
+            334,
+            5
+          ],
+          "weight_bits": [
+            1049555934,
+            1049118417,
+            1048734684,
+            1047713844,
+            1047378669,
+            1047273418
+          ],
+          "moe_input_sha256": "6e3e6e9e01145abe088265ad6a3bd4b745fc79691117a1e668473650bdf7dfa1",
+          "logits_sha256": "9c7b1ba1bdacf970aba5397601df34377e4df896e290fafedfdeb958aae110dc"
+        },
+        "21": {
+          "indices": [
+            262,
+            273,
+            208,
+            348,
+            261,
+            300
+          ],
+          "weight_bits": [
+            1050094269,
+            1048635048,
+            1048203984,
+            1047848224,
+            1047529581,
+            1047567578
+          ],
+          "moe_input_sha256": "ebd67e7a124ea1d8623ca991c2111836a7c3d8f5197287442ab29daf8b145c70",
+          "logits_sha256": "17e26a7d51405e08e7aff17ce72b80e44701a8b2a6532211ffe218dbea8192ba"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "4a16e23ec54d03e61b58848ed870c5c85870253b685426c283c536c94a331b14",
+        "pre_sha256": "331583534bafd52d0ca8d1a7815cf61a0d2031334af564a95479c26afb3fa8c5"
+      },
+      "committed_state_sha256": "2eb118daf6e832e522d401f49dfa1de55947cd221cd0456c91b2ea66c65f445c",
+      "committed_position": 1,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 1
+    },
+    {
+      "meta": {
+        "id": "snapshot/advance",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "actual_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "expected_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "actual_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            288,
+            160,
+            252
+          ],
+          "weight_bits": [
+            1051155236,
+            1048308470,
+            1048449060,
+            1047327494,
+            1046922132,
+            1046714372
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            323,
+            164,
+            295,
+            35,
+            241,
+            90
+          ],
+          "weight_bits": [
+            1048915117,
+            1048734724,
+            1048449171,
+            1048699582,
+            1047987351,
+            1048048622
+          ],
+          "moe_input_sha256": "1db41fe5a6ba74d41be4b51760025fca0f408e36f755c76515b31e4c2b0402f7",
+          "logits_sha256": "479eb11cfd7c97af44a62d082539915b2a4dd6b8e6c4f9ddf59bae5c7b5d95fd"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "88726f1e08a1c964c79fa6d8ad83f0e969621b0c7f7b81b2c43c37676fff9fa4",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "3c291c79c337e0e1502b52b09ab678013ea69f7dd1dd2b3b9ffa99f6e956164f",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    },
+    {
+      "meta": {
+        "id": "snapshot/advance-again",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 2,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "99a0281d3985f94661322f2bd0a91e6dfc1d8c333ac0ef09373b752bd0ec9bde",
+        "initial_pre_sha256": "1bc7419925e0ee5949ba84dc0df8a34118caa77eef5146b2b8e47510530e05dd"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4620682,
+      "expected_boundary_root_sha256": "000adc6a475ed995663bc482908761c477872c4c61054d0db69f19467604d762",
+      "actual_boundary_root_sha256": "000adc6a475ed995663bc482908761c477872c4c61054d0db69f19467604d762",
+      "expected_layout_sha256": "5c0cb2778b528ff071964272ca357e336cbe27e5bd44a2040f0eedea0eed1b58",
+      "actual_layout_sha256": "5c0cb2778b528ff071964272ca357e336cbe27e5bd44a2040f0eedea0eed1b58",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            147,
+            330,
+            22,
+            111,
+            305,
+            121
+          ],
+          "weight_bits": [
+            1050109014,
+            1048712006,
+            1048227345,
+            1047939484,
+            1047416097,
+            1047383025
+          ],
+          "moe_input_sha256": "f11190ddd33dd71b6b54c0be02fe55d34c7939ddb6a06691ab450c88fef0eeb1",
+          "logits_sha256": "00cab87b0ee9d7786627f708528b88546e5cdb3c207fa6fac543ef07940c29c7"
+        },
+        "21": {
+          "indices": [
+            189,
+            279,
+            3,
+            294,
+            164,
+            90
+          ],
+          "weight_bits": [
+            1049616804,
+            1048695131,
+            1047996090,
+            1048885892,
+            1047869824,
+            1046922428
+          ],
+          "moe_input_sha256": "4eb001a3bb8145186cffa3c3e0856b6e81446827a80272a617ec716a95916875",
+          "logits_sha256": "3cb0434f106038d008db7334a4b785e8894a385c667a13923686b0e9b8094282"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "8c3b509b0cca3b2334bcc46b8328e7a788629dafcdee093762b1079ef9fe03af",
+        "pre_sha256": "524904bab850fe6d68fe0b8bd275750197b217e4f08233c0cf3c51a081f1f067"
+      },
+      "committed_state_sha256": "74c5d5eb45dae8fad64d100855feb5c370221a668e2475fcb90c75776bf01300",
+      "committed_position": 3,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 3
+    },
+    {
+      "meta": {
+        "id": "snapshot/after-rollback",
+        "layers": [
+          20,
+          21
+        ],
+        "position": 1,
+        "sequence": 1,
+        "image_span": false,
+        "origin": "generated_layer20_HC_input_and_actual_layer20_to21_hidden_and_pre_mix_handoff",
+        "initial_hidden_sha256": "b3e87c373a50e601338e7d30d9a9fc04ad9597bb3cb665f5e9bc5cbc4064b14e",
+        "initial_pre_sha256": "046d9f024e55e340a79c5469aac7b0dfb2a21d09751b73eb77947283f7ba0b05"
+      },
+      "status": "pass",
+      "boundary_comparisons": 532,
+      "compared_storage_elements": 4617886,
+      "expected_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "actual_boundary_root_sha256": "0c519b504f7748b560060f8a79fccc7cfb0fb63d277a840f2b63748e5db2d127",
+      "expected_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "actual_layout_sha256": "011cf9d550511cc3ebbf98f93ed488eed881df0dd8952b61b24471a12b6a3d98",
+      "failures": [],
+      "decisions": {
+        "20": {
+          "indices": [
+            55,
+            182,
+            26,
+            288,
+            160,
+            252
+          ],
+          "weight_bits": [
+            1051155236,
+            1048308470,
+            1048449060,
+            1047327494,
+            1046922132,
+            1046714372
+          ],
+          "moe_input_sha256": "fdbbb19d0eefb29a25c1d0afd18a0e7abea9e7a6cfc455e91a96481f8b994d90",
+          "logits_sha256": "069b641e97eb9d96d224f9417c0773a3e16396c5c9bc0f359cb8f55f3b778a0f"
+        },
+        "21": {
+          "indices": [
+            323,
+            164,
+            295,
+            35,
+            241,
+            90
+          ],
+          "weight_bits": [
+            1048915117,
+            1048734724,
+            1048449171,
+            1048699582,
+            1047987351,
+            1048048622
+          ],
+          "moe_input_sha256": "1db41fe5a6ba74d41be4b51760025fca0f408e36f755c76515b31e4c2b0402f7",
+          "logits_sha256": "479eb11cfd7c97af44a62d082539915b2a4dd6b8e6c4f9ddf59bae5c7b5d95fd"
+        }
+      },
+      "handoff": {
+        "hidden_sha256": "88726f1e08a1c964c79fa6d8ad83f0e969621b0c7f7b81b2c43c37676fff9fa4",
+        "pre_sha256": "064a3ca4eecef2519f11578af2c1856e9fe8ac81918af236d34ecc3cd89d9cf4"
+      },
+      "committed_state_sha256": "3c291c79c337e0e1502b52b09ab678013ea69f7dd1dd2b3b9ffa99f6e956164f",
+      "committed_position": 2,
+      "consumer_reused_source_indices": true,
+      "consumer_reused_source_KV": true,
+      "index_query_layers": [
+        20
+      ],
+      "selected_width": 2
+    }
+  ],
+  "faults": [
+    {
+      "name": "host_pressure",
+      "status": "pass",
+      "error_type": "MemoryError",
+      "no_pair_output_returned": true,
+      "both_block_states_and_position_unchanged": true,
+      "temporary_GPU_buffers_released": true,
+      "completed_experts_in_failed_attempt": {
+        "20": 0,
+        "21": 0
+      },
+      "source_block_completed_before_failure": false
+    },
+    {
+      "name": "source20_after_three_experts",
+      "status": "pass",
+      "error_type": "OSError",
+      "no_pair_output_returned": true,
+      "both_block_states_and_position_unchanged": true,
+      "temporary_GPU_buffers_released": true,
+      "completed_experts_in_failed_attempt": {
+        "20": 3,
+        "21": 0
+      },
+      "source_block_completed_before_failure": false
+    },
+    {
+      "name": "handoff_to_consumer21",
+      "status": "pass",
+      "error_type": "OSError",
+      "no_pair_output_returned": true,
+      "both_block_states_and_position_unchanged": true,
+      "temporary_GPU_buffers_released": true,
+      "completed_experts_in_failed_attempt": {
+        "20": 6,
+        "21": 0
+      },
+      "source_block_completed_before_failure": true
+    },
+    {
+      "name": "consumer21_attention_output",
+      "status": "pass",
+      "error_type": "OSError",
+      "no_pair_output_returned": true,
+      "both_block_states_and_position_unchanged": true,
+      "temporary_GPU_buffers_released": true,
+      "completed_experts_in_failed_attempt": {
+        "20": 6,
+        "21": 0
+      },
+      "source_block_completed_before_failure": true
+    },
+    {
+      "name": "consumer21_after_three_experts",
+      "status": "pass",
+      "error_type": "OSError",
+      "no_pair_output_returned": true,
+      "both_block_states_and_position_unchanged": true,
+      "temporary_GPU_buffers_released": true,
+      "completed_experts_in_failed_attempt": {
+        "20": 6,
+        "21": 3
+      },
+      "source_block_completed_before_failure": true
+    },
+    {
+      "name": "consumer21_final_download",
+      "status": "pass",
+      "error_type": "OSError",
+      "no_pair_output_returned": true,
+      "both_block_states_and_position_unchanged": true,
+      "temporary_GPU_buffers_released": true,
+      "completed_experts_in_failed_attempt": {
+        "20": 6,
+        "21": 6
+      },
+      "source_block_completed_before_failure": true
+    },
+    {
+      "name": "combined_primary_cap",
+      "status": "pass",
+      "error_type": "MemoryError",
+      "no_pair_output_returned": true,
+      "both_block_states_and_position_unchanged": true,
+      "temporary_GPU_buffers_released": true,
+      "completed_experts_in_failed_attempt": {
+        "20": 6,
+        "21": 6
+      },
+      "source_block_completed_before_failure": true
+    },
+    {
+      "name": "publication_pressure",
+      "status": "pass",
+      "error_type": "MemoryError",
+      "no_pair_output_returned": true,
+      "both_block_states_and_position_unchanged": true,
+      "temporary_GPU_buffers_released": true,
+      "completed_experts_in_failed_attempt": {
+        "20": 6,
+        "21": 6
+      },
+      "source_block_completed_before_failure": true
+    }
+  ],
+  "snapshot_events": [
+    {
+      "name": "whole_pair_snapshot",
+      "status": "pass",
+      "both_states_restored": true,
+      "all_pair_boundaries_reproduced": true,
+      "diagnostic_copy_isolated": true,
+      "consumed_foreign_expired_handle_refusals": 4
+    }
+  ],
+  "memory": {
+    "operator_cleanup": {
+      "projection_20": {
+        "host_allowance_bytes": 536870912,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 202367744,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "projection_21": {
+        "host_allowance_bytes": 536870912,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 202367744,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "normalization": {
+        "host_allowance_bytes": 100663296,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 147972,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "compression": {
+        "host_allowance_bytes": 134217728,
+        "host_reserved_bytes": 0,
+        "device_owned_bytes": 0,
+        "device_peak_owned_bytes": 13773824,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "indexer": {
+        "host_allowance_bytes": 268435456,
+        "host_reserved_bytes": 0,
+        "device_owned_bytes": 0,
+        "device_peak_owned_bytes": 14270376,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "compression_normalization": {
+        "host_allowance_bytes": 100663296,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 9228,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "indexer_normalization": {
+        "host_allowance_bytes": 100663296,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 25092,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "attention": {
+        "host_allowance_bytes": 134217728,
+        "host_reserved_bytes": 0,
+        "device_peak_owned_bytes": 893456,
+        "device_owned_bytes": 0,
+        "owned_context_active": false,
+        "owned_modules_active": 0,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      }
+    },
+    "HC_cleanup": {
+      "20": {
+        "host_allowance_bytes": 134217728,
+        "host_reserved_bytes": 0,
+        "device_owned_bytes": 0,
+        "device_peak_owned_bytes": 13117736,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      },
+      "21": {
+        "host_allowance_bytes": 134217728,
+        "host_reserved_bytes": 0,
+        "device_owned_bytes": 0,
+        "device_peak_owned_bytes": 13117736,
+        "owned_context_active": false,
+        "reservation_is_RSS_limit": false,
+        "driver_module_memory_excluded": true
+      }
+    },
+    "moe_cleanup": {
+      "20": {
+        "parent_reservation_bytes": 0,
+        "accumulator_reservation_bytes": 0,
+        "cache_reservation_bytes": 0,
+        "primary_explicit_live_bytes": 0,
+        "helper_explicit_live_bytes": 0
+      },
+      "21": {
+        "parent_reservation_bytes": 0,
+        "accumulator_reservation_bytes": 0,
+        "cache_reservation_bytes": 0,
+        "primary_explicit_live_bytes": 0,
+        "helper_explicit_live_bytes": 0
+      }
+    },
+    "pair_cleanup": {
+      "host_allowance_bytes": 67108864,
+      "host_reserved_bytes": 0,
+      "primary_cap_bytes": 805306368,
+      "helper_cap_bytes": 134217728,
+      "peak_owned_primary_bytes": 571013000,
+      "peak_owned_helper_bytes": 75496320,
+      "reservation_is_RSS_limit": false
+    },
+    "pair_active_stats": {
+      "host_allowance_bytes": 67108864,
+      "host_reserved_bytes": 67108864,
+      "primary_cap_bytes": 805306368,
+      "helper_cap_bytes": 134217728,
+      "peak_owned_primary_bytes": 571013000,
+      "peak_owned_helper_bytes": 75496320,
+      "reservation_is_RSS_limit": false
+    },
+    "moe_active_stats": {
+      "20": {
+        "calls": {
+          "calls_started": 43,
+          "calls_completed": 42,
+          "calls_failed": 1
+        },
+        "cache": {
+          "primary_keys": [
+            "20:252",
+            "20:288"
+          ],
+          "helper_keys": [
+            "20:160",
+            "20:182"
+          ],
+          "ram_keys": [
+            "20:26",
+            "20:55"
+          ],
+          "ram_cache_bytes": 37601280,
+          "host_reserved_bytes": 99164416,
+          "host_peak_reserved_bytes": 99164416,
+          "integrity_mode": "gpu-sha256",
+          "counters": {
+            "requests_started": 255,
+            "requests_completed": 255,
+            "requests_failed": 0,
+            "primary_hits": 0,
+            "helper_hits": 5,
+            "ram_hits": 38,
+            "store_read_attempts": 212,
+            "store_reads_completed": 212,
+            "store_bytes_requested": 3985735680,
+            "primary_evictions": 253,
+            "helper_evictions": 246,
+            "ram_capacity_evictions": 206,
+            "ram_pressure_evictions": 0,
+            "ram_admission_refused": 0,
+            "pressure_refusals": 0,
+            "integrity_failures": 0,
+            "primary_h2d_bytes": 4794163200,
+            "helper_h2d_bytes": 4756561920,
+            "primary_d2h_bytes": 4756561920,
+            "helper_d2h_bytes": 4718960640,
+            "primary_audit_readback_bytes": 0,
+            "helper_audit_readback_bytes": 0,
+            "cpu_checks_deferred": 788,
+            "primary_gpu_audit_payload_bytes": 4794163200,
+            "helper_gpu_audit_payload_bytes": 4756561920,
+            "primary_gpu_audit_digest_d2h_bytes": 37454400,
+            "helper_gpu_audit_digest_d2h_bytes": 37160640
+          },
+          "primary_peak_explicit_bytes": 37851048,
+          "helper_peak_explicit_bytes": 37748160,
+          "store_direct_read_calls": 212,
+          "store_direct_read_bytes": 3985735680,
+          "host_cap_bytes": 134217728,
+          "host_available_floor_bytes": 34359738368,
+          "ram_capacity_bytes": 37601280,
+          "expected_digest_table_bytes": 3818880,
+          "integrity_cubin_sha256": {
+            "primary": "8dc39c3dc269c988a4a604d5f15407ec91c5127c2db5b763f60690ff7503355f",
+            "helper": "4a113822d37eeb5a500d96942af5814e181b2d52ea7aef41d3f36dc1fce268ec"
+          },
+          "timing_scope": "Synchronous calls including hashes, audit readbacks and diagnostic copies; no token-rate claim"
+        },
+        "combined_host_reservation_peak_bytes": 272629760,
+        "combined_host_cap_bytes": 335544320,
+        "minimum_observed_host_available_bytes": 141442629632,
+        "host_available_floor_bytes": 34359738368,
+        "component_peak_explicit_device_bytes": {
+          "gate": 16406016,
+          "router": 7760,
+          "shared": 35526888,
+          "accumulator": 40964,
+          "cache_primary": 37851048
+        },
+        "primary_explicit_cap_bytes": 134217728,
+        "cache_config": {
+          "host_cap_bytes": 134217728,
+          "ram_cache_bytes": 37601280,
+          "available_floor": 34359738368,
+          "primary_device": 0,
+          "primary_slots": 2,
+          "helper_device": 1,
+          "helper_slots": 2,
+          "device_cap_bytes": 67108864,
+          "metadata_allowance_bytes": 1048576,
+          "profile": false,
+          "integrity_mode": "gpu-sha256",
+          "max_store_experts": 48
+        },
+        "cublas_version": 120402,
+        "compiled_cubin_sha256": {
+          "router": "e63945048cf3910dde4c2d0f99af16d352f2f67bdf001aa458bfd3e8fce20535",
+          "expert": "e4d5330f1f0f9893463370ba2361f4002b06f7fc496b94490fdbc8ef5ce1ccbf",
+          "shared": "ffa252ef6bf601ef5f290382cad9cd023d6208f5eeb3a940df33c34b4ac390bf",
+          "aggregation": "1548b2f434ca560b26b7d42b35cd82d54d6c264c995e75a04f840711ab895771"
+        }
+      },
+      "21": {
+        "calls": {
+          "calls_started": 40,
+          "calls_completed": 39,
+          "calls_failed": 1
+        },
+        "cache": {
+          "primary_keys": [
+            "21:295",
+            "21:323"
+          ],
+          "helper_keys": [
+            "21:164",
+            "21:241"
+          ],
+          "ram_keys": [
+            "21:35",
+            "21:90"
+          ],
+          "ram_cache_bytes": 37601280,
+          "host_reserved_bytes": 98870656,
+          "host_peak_reserved_bytes": 98870656,
+          "integrity_mode": "gpu-sha256",
+          "counters": {
+            "requests_started": 237,
+            "requests_completed": 237,
+            "requests_failed": 0,
+            "primary_hits": 0,
+            "helper_hits": 3,
+            "ram_hits": 40,
+            "store_read_attempts": 194,
+            "store_reads_completed": 194,
+            "store_bytes_requested": 3647324160,
+            "primary_evictions": 235,
+            "helper_evictions": 230,
+            "ram_capacity_evictions": 188,
+            "ram_pressure_evictions": 0,
+            "ram_admission_refused": 0,
+            "pressure_refusals": 0,
+            "integrity_failures": 0,
+            "primary_h2d_bytes": 4455751680,
+            "helper_h2d_bytes": 4418150400,
+            "primary_d2h_bytes": 4418150400,
+            "helper_d2h_bytes": 4380549120,
+            "primary_audit_readback_bytes": 0,
+            "helper_audit_readback_bytes": 0,
+            "cpu_checks_deferred": 738,
+            "primary_gpu_audit_payload_bytes": 4455751680,
+            "helper_gpu_audit_payload_bytes": 4418150400,
+            "primary_gpu_audit_digest_d2h_bytes": 34810560,
+            "helper_gpu_audit_digest_d2h_bytes": 34516800
+          },
+          "primary_peak_explicit_bytes": 37851048,
+          "helper_peak_explicit_bytes": 37748160,
+          "store_direct_read_calls": 194,
+          "store_direct_read_bytes": 3647324160,
+          "host_cap_bytes": 134217728,
+          "host_available_floor_bytes": 34359738368,
+          "ram_capacity_bytes": 37601280,
+          "expected_digest_table_bytes": 3525120,
+          "integrity_cubin_sha256": {
+            "primary": "8dc39c3dc269c988a4a604d5f15407ec91c5127c2db5b763f60690ff7503355f",
+            "helper": "4a113822d37eeb5a500d96942af5814e181b2d52ea7aef41d3f36dc1fce268ec"
+          },
+          "timing_scope": "Synchronous calls including hashes, audit readbacks and diagnostic copies; no token-rate claim"
+        },
+        "combined_host_reservation_peak_bytes": 272629760,
+        "combined_host_cap_bytes": 335544320,
+        "minimum_observed_host_available_bytes": 141435334656,
+        "host_available_floor_bytes": 34359738368,
+        "component_peak_explicit_device_bytes": {
+          "gate": 16406016,
+          "router": 7760,
+          "shared": 35526888,
+          "accumulator": 40964,
+          "cache_primary": 37851048
+        },
+        "primary_explicit_cap_bytes": 134217728,
+        "cache_config": {
+          "host_cap_bytes": 134217728,
+          "ram_cache_bytes": 37601280,
+          "available_floor": 34359738368,
+          "primary_device": 0,
+          "primary_slots": 2,
+          "helper_device": 1,
+          "helper_slots": 2,
+          "device_cap_bytes": 67108864,
+          "metadata_allowance_bytes": 1048576,
+          "profile": false,
+          "integrity_mode": "gpu-sha256",
+          "max_store_experts": 48
+        },
+        "cublas_version": 120402,
+        "compiled_cubin_sha256": {
+          "router": "e63945048cf3910dde4c2d0f99af16d352f2f67bdf001aa458bfd3e8fce20535",
+          "expert": "e4d5330f1f0f9893463370ba2361f4002b06f7fc496b94490fdbc8ef5ce1ccbf",
+          "shared": "ffa252ef6bf601ef5f290382cad9cd023d6208f5eeb3a940df33c34b4ac390bf",
+          "aggregation": "1548b2f434ca560b26b7d42b35cd82d54d6c264c995e75a04f840711ab895771"
+        }
+      }
+    },
+    "combined_native_host_allowance_bytes": 5066719232,
+    "retained_fixture_host_allowance_bytes": 1073741824,
+    "minimum_sampled_host_available_bytes": 141452275712,
+    "all_frame_reservations_released": true,
+    "reservation_is_RSS_limit": false,
+    "state_storage": "bounded_host_diagnostic_frame"
+  },
+  "weights_fetched_during_recheck_bytes": 0,
+  "scope": "Consecutive complete original blocks 20/21; generated initial layer-20 HC streams, actual hidden/coefficient handoff and source KV/index reuse; no upstream blocks or Engram",
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured"
+}
