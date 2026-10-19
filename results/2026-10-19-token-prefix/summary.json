@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "probe": "connected_token_prefix_component_acceptance",
+  "status": "pass",
+  "scope": {
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "layers": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tokens": [
+      0,
+      2
+    ],
+    "batch": 1,
+    "queries_per_call": 1,
+    "rank": 1,
+    "text_only": true,
+    "head_attached_after_layer": 3,
+    "head_is_diagnostic_only": true,
+    "full_model_execution_run": false,
+    "text_generation_available": false,
+    "full_model_quality": "not_run",
+    "end_to_end_speed": "not_measured",
+    "full_checkpoint_downloaded": false
+  },
+  "original_identity_sha256": "9c982d7b7f04ab3023bfaefb8ddca56b6300a852256ed7cf7590cf465faa5317",
+  "complete_goldens_sha256": "78dc3767fc0438bb8565a811e5921402624dab0cacbbed1772abfecac3b897e5",
+  "original_baseline": {
+    "token_calls": 2,
+    "complete_block_calls": 8,
+    "typed_shaped_boundaries": 2037,
+    "storage_elements": 14697514
+  },
+  "native_replay": {
+    "baseline_boundaries": 2037,
+    "failure_conditions": 9,
+    "retry_boundaries": 9414,
+    "reference_frameworks_absent": true,
+    "outer_KV_ring_checkpoint_batches": [
+      1,
+      2
+    ]
+  },
+  "negative_controls_rejected": [
+    "omit_Engram_before_block1",
+    "use_layer0_weights_for_window1",
+    "reuse_stale_pre_mix_at_block2"
+  ],
+  "resources": {
+    "original": {
+      "host_cap_bytes": 25769803776,
+      "available_floor_bytes": 34359738368,
+      "charged_host_peak_bytes": 9804189696,
+      "device_peak_bytes": {},
+      "minimum_observed_available_bytes": 131551301632,
+      "sampled_process_peaks": {
+        "resident_bytes": 4502880256,
+        "private_commit_bytes": 15885205504
+      },
+      "charged_host_bytes": 0,
+      "pinned_bytes": 0,
+      "device_used_bytes": {},
+      "live_leases": 0,
+      "live_reclaimers": 0,
+      "inflight_operations": 0,
+      "monitor_thread_stopped": true,
+      "reservation_is_RSS_or_OS_limit": false
+    },
+    "native": {
+      "host_cap_bytes": 25769803776,
+      "available_floor_bytes": 34359738368,
+      "charged_host_peak_bytes": 17641281984,
+      "device_peak_bytes": {
+        "0": 3946121968,
+        "1": 150992640
+      },
+      "minimum_observed_available_bytes": 134432514048,
+      "sampled_process_peaks": {
+        "resident_bytes": 3663306752,
+        "private_commit_bytes": 9198108672
+      },
+      "charged_host_bytes": 0,
+      "pinned_bytes": 0,
+      "device_used_bytes": {
+        "0": 0,
+        "1": 0
+      },
+      "live_leases": 0,
+      "live_reclaimers": 0,
+      "inflight_operations": 0,
+      "monitor_thread_stopped": true,
+      "reservation_is_RSS_or_OS_limit": false
+    }
+  },
+  "files": {
+    "original.json": {
+      "bytes": 1527261,
+      "sha256": "93eca73da986b0e01154e7e49edd13035a4896d9d5b57c073bde8bc02e15f65b"
+    },
+    "native.json": {
+      "bytes": 6212962,
+      "sha256": "9493f03f6fc4f0afd037db98958006da363f82d297e13c1dc20d370fefea1415"
+    }
+  },
+  "issue": 10,
+  "issue_complete": false,
+  "milestone_M2_complete": false,
+  "remaining": [
+    "connect_remaining_36_original_blocks",
+    "full_model_boundary_router_logit_sampling_evidence",
+    "deterministic_generation_state_tests_and_reasoning_coding_tool_evaluations"
+  ],
+  "head_after_block3_is_diagnostic_not_full_model_logits": true,
+  "default_host_cap_bytes": 103079215104,
+  "default_available_floor_bytes": 34359738368,
+  "reservation_is_RSS_or_OS_limit": false
+}

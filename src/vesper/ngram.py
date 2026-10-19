@@ -101,7 +101,8 @@ class NgramState:
         with self.lock:
             if not isinstance(step,HashStep) or step.owner is not self.owner or step.generation is not self.generation or step.start!=self.position:
                 raise ValueError("Foreign or stale Engram hash candidate")
-            self.history=step.history.copy(); self.position+=step.compressed.shape[1]; self.generation=object()
+            history=step.history.copy(); position=self.position+step.compressed.shape[1]; generation=object()
+            self.history,self.position,self.generation=history,position,generation
 
     def snapshot(self):
         with self.lock:
@@ -111,8 +112,16 @@ class NgramState:
     def rollback(self, token):
         with self.lock:
             if type(token) is not HashSnapshot or token not in self.handles: raise ValueError("Consumed, foreign or reset-expired Engram snapshot")
-            saved=self.handles.pop(token); self.position=saved["position"]
-            self.history=None if saved["history"] is None else saved["history"].copy(); self.generation=object()
+            saved=self.handles[token]
+            history=None if saved["history"] is None else saved["history"].copy(); generation=object()
+            self.position,self.history,self.generation=saved["position"],history,generation
+            del self.handles[token]
+
+    def discard(self, token):
+        with self.lock:
+            if type(token) is not HashSnapshot or token not in self.handles:
+                raise ValueError("Consumed, foreign or reset-expired Engram snapshot")
+            del self.handles[token]
 
     def state_sha256(self):
         state=self.inspect()

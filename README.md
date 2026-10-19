@@ -35,6 +35,12 @@ matches all probabilities, noise, scores, token IDs and RNG offsets in 90
 conditions; failure/retry, snapshot and framework-free replay pass. The
 [output/sampling report and local streamed-reference design](docs/output-sampling-validation.md)
 retain Issue #10's unfinished whole-model gates.
+The connected original **embedding -> block0 -> Engram1 -> block1 -> block2 ->
+block3** prefix now matches 2,037 typed boundaries / 14,697,514 storage elements.
+Both window rings, shared compressed/index state, token history and RNG restore
+together across nine failed-token/retry conditions. A full-vocabulary head after
+block 3 is diagnostic only; these are not the forty-layer model's logits.
+See [the connected-prefix evidence](docs/token-prefix-validation.md).
 Full-model loading, all-layer boundary/logit/sampling integration, model-wide
 quality and generation performance remain M2/M3 work. See the
 [acceptance evidence and exact scope](docs/block-ops-qualification.md).

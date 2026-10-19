@@ -31,7 +31,7 @@ class LedgerDevice:
 
 
 class WindowContext:
-    def __init__(self,*args):
+    def __init__(self,*args,profile="qualified"):
         self.kv=SimpleNamespace(device=LedgerDevice())
         self.position=0
     def __enter__(self):

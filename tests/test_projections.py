@@ -51,7 +51,7 @@ class FakeKV:
 
 
 class FakeProjections:
-    ordinal, opened, fail_output = 0, True, False
+    ordinal, opened, fail_output, layer = 0, True, False, 0
 
     def fp8(self, name, x):
         if name == "wo_b" and self.fail_output:

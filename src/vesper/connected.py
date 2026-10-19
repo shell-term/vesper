@@ -62,9 +62,9 @@ class ConnectedMoE:
     """
 
     def __init__(self, store: Path, gate_fixture: Path, router_fixture: Path, shared_fixture: Path,
-                 config: ConnectedConfig | None = None, *, cublas_library=None, layer=0):
-        if type(layer) is not int or layer not in (0, 2, 3, 20, 21, 22, 23, 24, 25):
-            raise ValueError("Unregistered connected MoE layer")
+                 config: ConnectedConfig | None = None, *, cublas_library=None, layer=0, profile="qualified"):
+        from .prefix_profile import validate_layer
+        validate_layer(layer, (0, 2, 3, 20, 21, 22, 23, 24, 25), profile)
         self.layer = layer
         self.store_path, self.gate_fixture = Path(store), Path(gate_fixture)
         self.router_fixture, self.shared_fixture = Path(router_fixture), Path(shared_fixture)

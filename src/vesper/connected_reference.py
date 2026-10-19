@@ -49,9 +49,9 @@ def native_connected_stages(result):
 class OfficialConnected:
     """Original gate, experts, shared expert and MoE.forward; six-entry oracle LRU."""
 
-    def __init__(self, gate_fixture, router_fixture, shared_fixture, expert_directory, reference_directory, ordinal=0, *, layer=0):
-        if type(layer) is not int or layer not in (0, 2, 3, 20, 21, 22, 23, 24, 25):
-            raise ValueError("Unregistered connected MoE oracle layer")
+    def __init__(self, gate_fixture, router_fixture, shared_fixture, expert_directory, reference_directory, ordinal=0, *, layer=0, profile="qualified"):
+        from .prefix_profile import validate_layer
+        validate_layer(layer, (0, 2, 3, 20, 21, 22, 23, 24, 25), profile)
         self.layer = layer
         import torch
         self.torch = torch

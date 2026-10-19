@@ -28,10 +28,10 @@ def validate_values(values, width):
     return math.prod(values.shape[:-1])
 
 
-def validate_projection_weights(arrays, layer=0):
+def validate_projection_weights(arrays, layer=0, *, profile="qualified"):
     from .attention_topology import REGISTERED_INPUT_LAYERS
-    if type(layer) is not int or layer not in (0, *REGISTERED_INPUT_LAYERS):
-        raise ValueError("Unsupported original Attention projection layer")
+    from .prefix_profile import validate_layer
+    validate_layer(layer, (0, *REGISTERED_INPUT_LAYERS), profile)
     for name, (rows, width) in {**FP8_LAYOUT, "wo_a": (8192, 4096)}.items():
         for suffix, shape in (("weight", (rows, width)), ("scale", (rows // 32, width // 32))):
             a = arrays.get(f"layers.{layer}.attn.{name}.{suffix}")
@@ -67,8 +67,8 @@ class GroupedBF16(Cublas):
 class NativeProjections:
     """Resident original matrices, serialized calls, scoped temporary allocations."""
 
-    def __init__(self, arrays, ordinal=0, library=None, *, layer=0):
-        validate_projection_weights(arrays, layer)
+    def __init__(self, arrays, ordinal=0, library=None, *, layer=0, profile="qualified"):
+        validate_projection_weights(arrays, layer, profile=profile)
         self.layer = layer
         self.arrays, self.ordinal, self.library = arrays, ordinal, library
         self.stack, self.lock, self.opened = ExitStack(), threading.Lock(), False

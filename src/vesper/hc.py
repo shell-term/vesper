@@ -33,9 +33,9 @@ def coefficients(value, shape):
 
 
 class NativeHC:
-    def __init__(self, arrays, ordinal=0, *, layer=0):
-        if type(layer) is not int or layer not in (0, 2, 3, 20, 21, 22, 23, 24, 25):
-            raise ValueError("Unregistered complete-block HC layer")
+    def __init__(self, arrays, ordinal=0, *, layer=0, profile="qualified"):
+        from .prefix_profile import validate_layer
+        validate_layer(layer, (0, 2, 3, 20, 21, 22, 23, 24, 25), profile)
         self.layer = layer
         self.arrays, self.ordinal, self.opened = arrays, ordinal, False
         self.stack, self.lock, self.budget = ExitStack(), threading.Lock(), MemoryBudget(cap=128 * MiB)

@@ -31,13 +31,14 @@ from .resources import MemoryBudget, MiB
 class BlockOracle:
     def __init__(self, arrays, hc, projection, memory, moe):
         self.arrays,self.hc,self.projection,self.memory,self.moe=arrays,hc,projection,memory,moe
+        self.layer = projection.layer
         self.controls=[]
 
     def reset(self):
         self.projection.reset(1,self.memory)
         self.original_attention=self.projection.stub(1,self.memory)
         block=SimpleNamespace(norm_eps=1e-20,hc_mult=4,hc_sinkhorn_iters=20,hc_eps=1e-6,
-            attn_norm=self.projection.math.modules["layers.0.attn_norm.weight"],ffn_norm=self.projection.math.modules["layers.0.ffn_norm.weight"])
+            attn_norm=self.projection.math.modules[f"layers.{self.layer}.attn_norm.weight"],ffn_norm=self.projection.math.modules[f"layers.{self.layer}.ffn_norm.weight"])
         for part in ("attn","ffn"):
             for suffix in ("fn","scale","base"):
                 setattr(block,"hc_"+part+"_"+suffix,self.hc.weights[part+"_"+suffix])
@@ -54,14 +55,14 @@ class BlockOracle:
         attn_mixes=self.hc.mixes(hidden,"attn")
         add("hc_attn_",attn_mixes)
         x=add("attn_pre_",self.hc.pre(hidden,pre_mix))
-        x=add("attn_norm_",self.projection.math.norm(x,"layers.0.attn_norm.weight"))
-        attention=self.projection.layer(x,position)
+        x=add("attn_norm_",self.projection.math.norm(x,f"layers.{self.layer}.attn_norm.weight"))
+        attention=self.projection.window_step(x,position)
         add("attention_",attention)
         after=add("attn_post_",self.hc.post(attention["wo_b_output_bf16"],hidden,attn_mixes["post_fp32"],attn_mixes["comb_fp32"]))
         ffn_mixes=self.hc.mixes(after,"ffn")
         add("hc_ffn_",ffn_mixes)
         x=add("ffn_pre_",self.hc.pre(after,attn_mixes["pre_fp32"]))
-        x=add("ffn_norm_",self.projection.math.norm(x,"layers.0.ffn_norm.weight"))
+        x=add("ffn_norm_",self.projection.math.norm(x,f"layers.{self.layer}.ffn_norm.weight"))
         moe=self.moe.forward(bf16_values(x.reshape(5120)),image_span)
         add("moe_",moe)
         out=add("ffn_post_",self.hc.post(moe["aggregation.output_bf16"].reshape(1,1,5120),after,ffn_mixes["post_fp32"],ffn_mixes["comb_fp32"]))

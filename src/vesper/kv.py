@@ -56,6 +56,12 @@ class WindowSnapshot:
     position: int
 
 
+@dataclass(frozen=True)
+class WindowCheckpoint:
+    """Opaque outer-token handle; the exact ring bytes stay owned by the KV."""
+    position: int
+
+
 class NativeWindowKV:
     """One sequence batch, two publication buffers and one bounded snapshot slot."""
 
@@ -66,6 +72,8 @@ class NativeWindowKV:
         self.lock, self.opened = threading.Lock(), False
         self.budget, self.stack = MemoryBudget(cap=16 * MiB), ExitStack()
         self.position, self.handle = 0, None
+        self.checkpoint_handle, self.checkpoint_cache = None, None
+        self.checkpoint_peak_bytes = 0
         self.cache_bytes = batch * WINDOW * WIDTH * 2
 
     def __enter__(self):
@@ -157,6 +165,52 @@ class NativeWindowKV:
             self._require_open()
             self._zero(self.buffers[1 - self.active])
             self.active, self.position, self.handle = 1 - self.active, 0, None
+            self.checkpoint_handle, self.checkpoint_cache = None, None
+
+    def checkpoint(self):
+        """Keep one host ring copy while inner Attention snapshot/append runs.
+
+        At most 256 KiB (batch two) is held inside the existing 16-MiB host
+        allowance. No rounding, projection or compression is repeated on restore.
+        """
+        with self.lock:
+            self._require_open()
+            if self.checkpoint_handle is not None or self.handle is not None:
+                raise RuntimeError("Window checkpoint requires an unused outer slot and no pending inner snapshot")
+            cache = self._cache(self.buffers[self.active])
+            cache.flags.writeable = False
+            handle = WindowCheckpoint(self.position)
+            peak = max(self.checkpoint_peak_bytes, cache.nbytes)
+            with self.budget.publication():
+                self.checkpoint_cache, self.checkpoint_handle = cache, handle
+                self.checkpoint_peak_bytes = peak
+            return handle
+
+    def _check_checkpoint(self, handle):
+        if self.checkpoint_handle is None or handle is not self.checkpoint_handle:
+            raise ValueError("Foreign, consumed or expired Window checkpoint")
+
+    def restore(self, handle):
+        with self.lock, self.budget.restoration():
+            self._require_open()
+            self._check_checkpoint(handle)
+            target = self.buffers[1 - self.active]
+            cache = self.checkpoint_cache
+            self.driver.check(self.driver.cuMemcpyHtoD_v2(target, cache.ctypes.data, cache.nbytes))
+            restored = self._cache(target)
+            if not np.array_equal(restored, cache):
+                raise RuntimeError("Window checkpoint transfer changed original ring storage bits")
+            result = {"position": handle.position, "cache_bf16": restored}
+            with self.budget.publication():
+                self.active, self.position, self.handle = 1 - self.active, handle.position, None
+                self.checkpoint_handle, self.checkpoint_cache = None, None
+            return result
+
+    def release_checkpoint(self, handle):
+        with self.lock:
+            self._require_open()
+            self._check_checkpoint(handle)
+            self.checkpoint_handle, self.checkpoint_cache = None, None
 
     def snapshot(self):
         with self.lock:
@@ -189,6 +243,7 @@ class NativeWindowKV:
     def __exit__(self, *_):
         with self.lock:
             self.opened, self.handle = False, None
+            self.checkpoint_handle, self.checkpoint_cache = None, None
             self.stack.close()
 
     def stats(self):
@@ -197,5 +252,7 @@ class NativeWindowKV:
                 "device_peak_owned_bytes": device.peak if device else 0,
                 "device_owned_bytes": sum(device.allocations.values()) if device else 0,
                 "persistent_cache_and_snapshot_bytes": self.cache_bytes * 3,
+                "outer_host_checkpoint_bytes": 0 if self.checkpoint_cache is None else self.checkpoint_cache.nbytes,
+                "outer_host_checkpoint_peak_bytes": self.checkpoint_peak_bytes,
                 "owned_context_active": bool(device.context) if device else False,
                 "reservation_is_RSS_limit": False, "driver_module_memory_excluded": True}

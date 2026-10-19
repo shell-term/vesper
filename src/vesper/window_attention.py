@@ -25,7 +25,9 @@ class NativeWindowAttention:
     Diagnostic arrays cross the host API; this is not a resident speed path.
     """
 
-    def __init__(self, arrays, projections, normalization, attention, batch=1):
+    def __init__(self, arrays, projections, normalization, attention, batch=1, *, profile="qualified"):
+        from .prefix_profile import validate_layer
+        self.layer = validate_layer(projections.layer, (0,), profile)
         self.arrays, self.projections, self.norm, self.attention = arrays, projections, normalization, attention
         self.kv = NativeWindowKV(batch, projections.ordinal)
         self.batch, self.position, self.pending = batch, 0, None
@@ -69,6 +71,25 @@ class NativeWindowAttention:
             self.kv.reset()
             self.pending, self.position = None, 0
 
+    def snapshot(self):
+        with self.lock:
+            self._ready()
+            if self.kv.position != self.position:
+                raise RuntimeError("Window layer and KV positions differ")
+            return self.kv.checkpoint()
+
+    def rollback(self, handle):
+        with self.lock, self.kv.budget.restoration(), self.kv.budget.publication():
+            self._ready(recovering=True)
+            restored = self.kv.restore(handle)
+            self.position, self.pending = restored["position"], None
+            return restored
+
+    def discard(self, handle):
+        with self.lock:
+            self._ready()
+            self.kv.release_checkpoint(handle)
+
     @runtime_operation
     def step(self, values, *, start_pos=None, finalize=None):
         with self.lock:
@@ -85,17 +106,17 @@ class NativeWindowAttention:
                 stages.update((prefix + name, a) for name, a in result.items())
                 return result["output_bf16"]
             q = add("wq_a_", self.projections.fp8("wq_a", values))
-            q = add("q_norm_", self.norm.norm(q, self.arrays["layers.0.attn.q_norm.weight"]))
+            q = add("q_norm_", self.norm.norm(q, self.arrays[f"layers.{self.layer}.attn.q_norm.weight"]))
             q = add("wq_b_", self.projections.fp8("wq_b", q)).reshape(self.batch, sequence, 64, 512)
             q = add("query_rope_", self.norm.rope(q, position))
             kv = add("wkv_", self.projections.fp8("wkv", values))
-            kv = add("kv_norm_", self.norm.norm(kv, self.arrays["layers.0.attn.kv_norm.weight"]))
+            kv = add("kv_norm_", self.norm.norm(kv, self.arrays[f"layers.{self.layer}.attn.kv_norm.weight"]))
             kv = add("kv_rope_", self.norm.rope(kv, position))
             self.pending = self.kv.snapshot()
             try:
                 cached = self.kv.append(kv, start_pos=position)
                 stages.update(("kv_" + name, a) for name, a in cached.items())
-                o = add("attention_", self.attention(q, cached["window_bf16"], self.arrays["layers.0.attn.attn_sink"], cached["indices_i32"], diagnostics=True))
+                o = add("attention_", self.attention(q, cached["window_bf16"], self.arrays[f"layers.{self.layer}.attn.attn_sink"], cached["indices_i32"], diagnostics=True))
                 o = add("inverse_rope_", self.norm.rope(o, position, inverse=True))
                 o = add("wo_a_", self.projections.grouped(o.reshape(self.batch, sequence, 8, 4096)))
                 add("wo_b_", self.projections.fp8("wo_b", o.reshape(self.batch, sequence, 8192)))

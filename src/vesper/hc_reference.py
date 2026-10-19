@@ -92,9 +92,9 @@ def instrument_hc(tree):
 
 
 class HCOracle:
-    def __init__(self, directory, arrays, ordinal=0, *, layer=0):
-        if type(layer) is not int or layer not in (0, 2, 3, 20, 21, 22, 23, 24, 25):
-            raise ValueError("Unregistered complete-block HC oracle layer")
+    def __init__(self, directory, arrays, ordinal=0, *, layer=0, profile="qualified"):
+        from .prefix_profile import validate_layer
+        validate_layer(layer, (0, 2, 3, 20, 21, 22, 23, 24, 25), profile)
         self.layer = layer
         import torch
         import tilelang

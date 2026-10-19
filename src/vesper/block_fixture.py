@@ -13,8 +13,9 @@ from .compressed_attention_fixture import invalid
 from .prefix import STORAGE_DTYPES
 from .resources import MemoryBudget, MiB
 
-def block_layout(layer):
-    if type(layer) is not int or layer not in (2, 3, 20, 21, 22, 23, 24, 25): raise ValueError("Unregistered compressed block fixture layer")
+def block_layout(layer, *, profile="qualified"):
+    from .prefix_profile import validate_layer
+    validate_layer(layer, (2, 3, 20, 21, 22, 23, 24, 25), profile)
     rows = {f"layers.{layer}.hc_{p}_{n}": ("F32", s) for p in ("attn", "ffn")
             for n, s in (("fn", (24, 20480)), ("scale", (3,)), ("base", (24,)))}
     rows.update({f"layers.{layer}.{p}_norm.weight": ("BF16", (5120,)) for p in ("attn", "ffn")})
@@ -25,8 +26,8 @@ LAYOUT = block_layout(2)
 TENSOR_BYTES = sum(int(np.prod(s)) * STORAGE_DTYPES[d].itemsize for d, s in LAYOUT.values())
 
 
-def fetch_block_fixture(directory, *, layer=2):
-    layout = block_layout(layer)
+def fetch_block_fixture(directory, *, layer=2, profile="qualified"):
+    layout = block_layout(layer, profile=profile)
     directory = Path(directory)
     if directory.exists(): raise FileExistsError("Refusing to replace an original block fixture")
     budget = MemoryBudget(cap=32 * MiB)
@@ -62,8 +63,8 @@ def fetch_block_fixture(directory, *, layer=2):
     finally: budget.release(32 * MiB)
 
 
-def load_block_fixture(directory, *, layer=2):
-    layout = block_layout(layer)
+def load_block_fixture(directory, *, layer=2, profile="qualified"):
+    layout = block_layout(layer, profile=profile)
     directory = Path(directory)
     path, meta = directory / "weights.npz", directory / "manifest.json"
     if path.stat().st_size > TENSOR_BYTES + 16384 or meta.stat().st_size > 16384:

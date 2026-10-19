@@ -25,14 +25,14 @@ class NativeBlock:
     are permitted after failed calls; committed model state is restored or blocked.
     """
 
-    def __init__(self, arrays, hc, normalization, projections, sparse_attention, moe, *, layer=0, compressor=None, indexer=None):
-        if type(layer) is not int or layer not in (0, 2):
-            raise ValueError("Unregistered complete Transformer block layer")
-        if (layer == 0 and (compressor is not None or indexer is not None)) or (layer == 2 and (compressor is None or indexer is None)):
+    def __init__(self, arrays, hc, normalization, projections, sparse_attention, moe, *, layer=0, compressor=None, indexer=None, profile="qualified"):
+        from .prefix_profile import validate_layer
+        validate_layer(layer, (0, 2), profile)
+        if (layer < 2 and (compressor is not None or indexer is not None)) or (layer == 2 and (compressor is None or indexer is None)):
             raise ValueError("Block compression/index operators differ from the original layer role")
         self.layer, self.compressor, self.indexer = layer, compressor, indexer
         self.arrays, self.hc, self.norm, self.projections, self.sparse, self.moe = arrays, hc, normalization, projections, sparse_attention, moe
-        self.attention = (NativeWindowAttention(arrays, projections, normalization, sparse_attention) if layer == 0 else
+        self.attention = (NativeWindowAttention(arrays, projections, normalization, sparse_attention, profile=profile) if layer < 2 else
             SharedAttentionFrame(arrays, {layer: projections}, normalization, compressor, indexer, sparse_attention, (layer,)))
         self.stack, self.lock, self.budget = ExitStack(), threading.Lock(), MemoryBudget(cap=32 * MiB)
         self.opened = False
@@ -54,7 +54,7 @@ class NativeBlock:
                 self.stack.callback(self.budget.release, 32 * MiB)
                 self.stack.enter_context(self.attention)
                 self.devices = [op.device for op in (self.hc, self.norm, self.projections, self.sparse)]
-                self.devices += ([self.attention.kv.device] if self.layer == 0 else
+                self.devices += ([self.attention.kv.device] if self.layer < 2 else
                     [self.compressor.device, self.compressor.norm.device, self.indexer.device, self.indexer.norm.device])
                 self.devices += list(self.moe.devices.values())
                 if len({id(d) for d in self.devices}) != len(self.devices):
@@ -104,7 +104,7 @@ class NativeBlock:
         with self.lock:
             if not self.opened:
                 raise RuntimeError("Native block is not open")
-            if self.layer == 0:
+            if self.layer < 2:
                 return self.attention.recover()
             # Host candidate frames never publish partial model state.
             self.attention._ready()
@@ -130,7 +130,7 @@ class NativeBlock:
             x = add("attn_norm_", self.norm.norm(x, self.arrays[f"layers.{self.layer}.attn_norm.weight"]))
             def finish(attention_stages):
                 add("attention_", attention_stages)
-                output_key = "wo_b_output_bf16" if self.layer == 0 else f"layer{self.layer}_wo_b_output_bf16"
+                output_key = "wo_b_output_bf16" if self.layer < 2 else f"layer{self.layer}_wo_b_output_bf16"
                 after = add("attn_post_", self.hc.post(attention_stages[output_key], hidden, attn_mixes["post_fp32"], attn_mixes["comb_fp32"]))
                 ffn_mixes = self.hc.mixes(after, "ffn")
                 add("hc_ffn_", ffn_mixes)
@@ -146,7 +146,7 @@ class NativeBlock:
                 stages["next_pre_mix_fp32"] = ffn_mixes["pre_fp32"]
                 self._headroom()
                 return stages
-            values = x if self.layer == 0 else {self.layer: x}
+            values = x if self.layer < 2 else {self.layer: x}
             return self.attention.step(values, start_pos=start_pos, finalize=finish)
 
     def stats(self):

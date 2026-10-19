@@ -54,6 +54,12 @@ all probability/noise/score/token/RNG boundaries in 90 conditions, with independ
 native replay and failure/state tests. This satisfies the reference-design
 requirement, while all-layer integration, whole-model comparisons, decoding and
 scoped evaluations remain open. Component passes do not close #10 or M2.
+The [connected original 0..3 prefix](token-prefix-validation.md) now includes
+embedding/Engram placement, actual hidden/HC handoffs, both window rings and
+source-2 KV/index reuse. Complete original/native boundaries and nine failed-token
+rollbacks pass under the governor, including diagnostic full-head/RNG state.
+The attached head follows only four blocks; all-forty-layer execution and #10's
+remaining original acceptance checks are still open.
 
 ## Working on an issue
 

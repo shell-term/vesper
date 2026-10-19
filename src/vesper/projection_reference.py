@@ -48,6 +48,8 @@ class ProjectionOracle:
         spec.loader.exec_module(self.kernel)
         self.workarounds = configure_reference_runtime(self.kernel, tilelang.__version__)
         norm_names = NORM_WEIGHTS if layer == 0 else (f"layers.{layer}.attn.q_norm.weight", f"layers.{layer}.attn.kv_norm.weight")
+        if layer == 1:
+            norm_names += ("layers.1.attn_norm.weight", "layers.1.ffn_norm.weight")
         self.math = ReferenceMath(directory, {n: arrays[n] for n in norm_names}, ordinal)
         self.tree = ast.parse((Path(directory) / "model.py").read_bytes())
         self.scope = {"torch": torch, "F": torch.nn.functional, "lru_cache": lru_cache, "world_size": 1, "fp8_block_size": 32,
@@ -126,7 +128,7 @@ class ProjectionOracle:
             projections[name] = lambda x, f=fn, o=obj: f(o, x)
         stub = SimpleNamespace(n_local_heads=64, n_local_groups=8, head_dim=512, rope_head_dim=64, o_lora_rank=1024,
             window_size=128, compress_ratio=0, softmax_scale=512**-.5, attn_sink=self.sink,
-            q_norm=self.math.modules["layers.0.attn.q_norm.weight"], kv_norm=self.math.modules["layers.0.attn.kv_norm.weight"],
+            q_norm=self.math.modules[f"layers.{self.layer}.attn.q_norm.weight"], kv_norm=self.math.modules[f"layers.{self.layer}.attn.kv_norm.weight"],
             freqs_cis=self.math.tables["window"], window_kv_cache=self.torch.zeros(batch, 128, 512, device=f"cuda:{self.ordinal}"),
             wo_a=SimpleNamespace(weight=self.weights["wo_a"]), **projections)
         stub._window_kv = MethodType(self.method("Attention", "_window_kv"), stub)
@@ -137,7 +139,7 @@ class ProjectionOracle:
         self.original = self.stub(batch, memory)
         self.full_forward = self.method("Attention", "forward")
 
-    def layer(self, values, position):
+    def window_step(self, values, position):
         if position != self.position:
             raise ValueError("Reference/native Attention positions differ")
         expected = {}
@@ -145,11 +147,11 @@ class ProjectionOracle:
             expected.update((prefix + n, a) for n, a in result.items())
             return result["output_bf16"]
         q = add("wq_a_", self.fp8("wq_a", values))
-        q = add("q_norm_", self.math.norm(q, "layers.0.attn.q_norm.weight"))
+        q = add("q_norm_", self.math.norm(q, f"layers.{self.layer}.attn.q_norm.weight"))
         q = add("wq_b_", self.fp8("wq_b", q)).reshape(*values.shape[:2], 64, 512)
         q = add("query_rope_", self.math.rope(q, position, "window", False))
         kv = add("wkv_", self.fp8("wkv", values))
-        kv = add("kv_norm_", self.math.norm(kv, "layers.0.attn.kv_norm.weight"))
+        kv = add("kv_norm_", self.math.norm(kv, f"layers.{self.layer}.attn.kv_norm.weight"))
         kv = add("kv_rope_", self.math.rope(kv, position, "window", False))
         diagnostic = self.stub(self.batch, self.memory)
         diagnostic.window_kv_cache.copy_(self.original.window_kv_cache)
@@ -265,7 +267,7 @@ def compare_projections(directory, prefix_fixture, attention_bundle, ordinal=0):
                 def reset():
                     reference.reset(batch, memory)
                 def check(meta, values, actual):
-                    return collect(meta, reference.layer(values, meta["position"]), actual)
+                    return collect(meta, reference.window_step(values, meta["position"]), actual)
                 with NativeWindowAttention(arrays, native, norm, attention, batch) as layer:
                     rows, low = exercise_layer(layer, real_inputs, check, reset)
                     if batch == 1:

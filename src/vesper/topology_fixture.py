@@ -16,8 +16,9 @@ from .projections import FP8_LAYOUT
 from .resources import MemoryBudget, MiB
 
 
-def layout(layer):
-    if type(layer) is not int or layer not in REGISTERED_INPUT_LAYERS: raise ValueError("Unregistered fixture layer")
+def layout(layer, *, profile="qualified"):
+    from .prefix_profile import validate_layer
+    validate_layer(layer, REGISTERED_INPUT_LAYERS, profile)
     rows = {}
     for part, (r, w) in {**FP8_LAYOUT, "wo_a": (8192, 4096)}.items():
         rows[f"layers.{layer}.attn.{part}.weight"] = ("F8_E4M3", (r, w))
@@ -30,8 +31,8 @@ def layout(layer):
     return rows
 
 
-def fetch_layer(directory, layer, *, reuse=None):
-    directory, specs = Path(directory), layout(layer)
+def fetch_layer(directory, layer, *, reuse=None, profile="qualified"):
+    directory, specs = Path(directory), layout(layer, profile=profile)
     if directory.exists(): raise FileExistsError("Refusing to replace an existing original layer fixture")
     reuse = {} if reuse is None else reuse
     budget = MemoryBudget(cap=384 * MiB)
@@ -78,8 +79,8 @@ def fetch_layer(directory, layer, *, reuse=None):
     finally: budget.release(384 * MiB)
 
 
-def load_layer(directory, layer):
-    directory, specs = Path(directory), layout(layer)
+def load_layer(directory, layer, *, profile="qualified"):
+    directory, specs = Path(directory), layout(layer, profile=profile)
     size = sum(int(np.prod(s)) * STORAGE_DTYPES[d].itemsize for d, s in specs.values())
     meta, path = directory / "manifest.json", directory / "weights.npz"
     if meta.stat().st_size > 65536 or path.stat().st_size > size + 65536: raise ValueError("Layer fixture exceeds its bound")
