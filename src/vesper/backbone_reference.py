@@ -35,7 +35,8 @@ from .topology_validation import state_digest
 
 
 class BackboneOracle:
-    def __init__(self, stack, root, arrays, head_arrays, progress=None):
+    def __init__(self, stack, root, arrays, head_arrays, progress=None, *, token_rows=None, rows_root=None,
+            experts_root=None, max_seq_len=4, temperature=.7):
         import torch
         self.torch, self.root, self.progress = torch, Path(root), progress
         directory = self.root / "reference"
@@ -50,10 +51,12 @@ class BackboneOracle:
         self.norm = ReferenceMath(directory, {n: arrays[n] for l in LAYERS
             for n in (f"layers.{l}.attn_norm.weight", f"layers.{l}.ffn_norm.weight")}, 0)
         self.head = OutputOracle(directory, head_arrays)
-        self.hash = original_hash(self.root / "import-source").to("cuda:0")
+        self.hash = original_hash(self.root / "import-source", max_seq_len=max_seq_len).to("cuda:0")
         virtual = stack.enter_context(VirtualTables(0))
-        self.engram = EngramOracle(directory, self.root / "import-source", self.root / "engram-fixture", virtual)
-        self.rows = embeddings(root)
+        self.engram = EngramOracle(directory, self.root / "import-source", self.root / "engram-fixture", virtual, rows_root=rows_root)
+        self.rows = embeddings(root) if token_rows is None else token_rows
+        self.experts_root = self.root / "backbone-experts" if experts_root is None else Path(experts_root)
+        self.temperature = temperature
         raw = virtual.table((129280, 10240), {i: a.tobytes() for i, a in self.rows.items()})
         self.embedding = SimpleNamespace(weight=raw.view(torch.bfloat16), vocab_start_idx=0, vocab_end_idx=129280)
         self.embedding_forward = self.p[0].method("ParallelEmbedding", "forward")
@@ -116,7 +119,7 @@ class BackboneOracle:
             return result
         self.target_layers = tuple(json.loads((directory / "config.json").read_bytes())["dspark_target_layer_ids"])
         self.model = SimpleNamespace(engram_hash=self.hash, embed=embed, hc_mult=4, target_layer_ids=self.target_layers,
-            layers=list(self.blocks.values()), temperature=.7,
+            layers=list(self.blocks.values()), temperature=temperature,
             norm=lambda x: self.head.RMSNorm_forward(SimpleNamespace(weight=self.head.norm, eps=1e-20), x),
             head=lambda x: self.head.ParallelHead_forward(SimpleNamespace(weight=self.head.weight), x))
         self.methods = {"Transformer": self.p[0].methods["Transformer.forward"], "Block": self.p[0].methods["Block.forward"],
@@ -147,7 +150,7 @@ class BackboneOracle:
     def moe(self, layer, x, mask):
         if mask is not None: raise ValueError("This full original-forward corpus is text only")
         self.trace[f"layer{layer}"]["ffn_norm_output_bf16"] = _numpy(x)
-        oracle = OfficialConnected(*moe_files(self.root, self.bindings, layer), self.root / f"backbone-experts/layer{layer}",
+        oracle = OfficialConnected(*moe_files(self.root, self.bindings, layer), self.experts_root / f"layer{layer}",
             self.root / "reference", layer=layer, profile="backbone_probe")
         try:
             validate_moe_manifests(oracle, self.bindings, layer)
@@ -185,8 +188,10 @@ class BackboneOracle:
             "history": _numpy(self.hash.cache[:1, max(0, pos - 3):pos]), "position": pos,
             "rng_offset": torch.cuda.default_generators[0].get_offset()}
 
-    def step(self, ids):
+    def step(self, ids, *, sample=True):
         torch, pos = self.torch, self.position
+        if type(sample) is not bool: raise ValueError("Expected an explicit sampling decision")
+        self.model.temperature = self.temperature if sample else 0.
         self.trace = {}
         before = torch.cuda.get_rng_state()
         selected, logits, hidden = self.forward(self.model, torch.from_numpy(ids.copy()).to("cuda:0"), pos)
@@ -200,10 +205,11 @@ class BackboneOracle:
         if not np.array_equal(result["head"]["logits_fp32"].view(np.uint32), _numpy(logits).view(np.uint32)):
             raise RuntimeError("Unchanged full Transformer logits differ from independent original tail")
         torch.cuda.set_rng_state(before)
-        sampling, start, end = original_sample(torch, self.head.sample, _numpy(logits), .7)
+        sampling, start, end = original_sample(torch, self.head.sample, _numpy(logits), self.model.temperature)
         if not np.array_equal(sampling["ids_i64"], _numpy(selected)) or not torch.equal(torch.cuda.get_rng_state(), after):
             raise RuntimeError("Unchanged Transformer sampler or RNG progression differs")
-        result["sampling"] = {**sampling, "offset_before": start, "offset_after": end}
+        if not sample and start != end: raise RuntimeError("Prompt ingestion consumed original RNG")
+        result["sampling"] = {**(sampling if sample else {}), "offset_before": start, "offset_after": end}
         result["initial_pre_fp32"] = result["layer0"]["incoming_pre_fp32"].copy()
         result["hash_ids_i64"] = _numpy(self.hash(torch.from_numpy(ids.copy()).to("cuda:0"), pos))
         result["compressed_i64"] = _numpy(self.hash.cache[:1, pos:pos + 1])

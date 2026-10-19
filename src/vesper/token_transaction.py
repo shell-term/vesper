@@ -94,8 +94,8 @@ class TokenTransaction:
     def step(self, ids, compute, *, start_pos=None):
         """Compute from one prepared hash candidate, then commit one position.
 
-        ``compute(candidate)`` must finish all layers, final norm/head and the
-        sampler, and build its returned result before returning. No checkpoint
+        ``compute(candidate)`` must finish all layers, final norm/head and any
+        requested sampling, and build its returned result before returning. No checkpoint
         downloads belong in that callback. Serial one-token text calls only.
         """
         with self.lock, self.history.lock:

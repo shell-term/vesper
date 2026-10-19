@@ -160,8 +160,14 @@ python examples/recheck_backbone.py --artifacts artifacts --reference original.j
 
 The preparation command needs existing bounded Engram rows for the specified
 two-token corpus. It does not silently download the full checkpoint. Complete
-natural-language prompt import, a generated continuation loop, deterministic
+general prompt import, longer generated continuations, deterministic
 whole-model decode tests over broader histories, reasoning/coding/tool-use
 evaluation and measured end-to-end speed remain required work under
 [Issue #10](https://github.com/shell-term/vesper/issues/10) and
 [Issue #11](https://github.com/shell-term/vesper/issues/11). M2 remains open.
+
+A subsequent [bounded raw-text continuation](text-generation-validation.md)
+now qualifies actual generated-token feedback for one five-call natural-language
+corpus, with the real final head and complete original/native boundaries. It
+preserves this BOS/PAD evidence. Broader histories, chat/chunk-prefill and scoped
+reasoning/coding/tool-use evaluation remain open under #10.

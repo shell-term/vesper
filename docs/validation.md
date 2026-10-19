@@ -272,3 +272,14 @@ checks and validates all seventeen original/native evidence groups. This closes
 the scoped block-operation gate; original full-model artifacts/Engram, global
 memory governance, all-layer output/logit/sampling comparisons and generation
 work remain under Issues #8/#9/#10 and M2/M3.
+
+The later [bounded natural-language continuation](text-generation-validation.md)
+connects the full forty-layer model to actual sampled-token feedback. One raw
+prompt / five serial calls / three new tokens match the unchanged upstream
+generation loop at 26,250 typed boundaries and 138,434,360 storage elements,
+including 646,400 logits, all 200 ordered router decisions and complete
+sampling/RNG/model state. The independent native replay has no reference
+frameworks and disables Python HTTP. Its sampled resident peak is 8.00 GiB,
+with 122.35 GiB minimum sampled available RAM. This qualifies that fixed serial
+corpus; broader histories, chat/chunk-prefill, reasoning/coding/tool-use quality
+and generation performance remain open. Issue #10 and M2 are not closed.

@@ -71,12 +71,14 @@ class NativeBackbone:
         result["output_bf16"], result["next_pre_mix_fp32"] = carry
         return result
 
-    def _finish(self, result):
+    def _finish(self, result, *, sample=True):
         collapsed = self.hc[39].pre(result["output_bf16"], result["next_pre_mix_fp32"])
         normalized = self.norm.norm(collapsed["output_bf16"], self.norm_weight)
         result["head"] = {**{"pre_" + n: a for n, a in collapsed.items()}, **{"norm_" + n: a for n, a in normalized.items()},
             **self.head.project(normalized["output_bf16"][:, -1].copy())}
-        result["sampling"] = self.transaction.sampler.sample(result["head"]["logits_fp32"], self.temperature)
+        sampler = self.transaction.sampler
+        result["sampling"] = (sampler.sample(result["head"]["logits_fp32"], self.temperature) if sample else
+            {"offset_before": sampler.offset, "offset_after": sampler.offset})
         return result
 
     def _validate_ids(self, ids):
@@ -84,12 +86,13 @@ class NativeBackbone:
                 or int(ids[0, 0]) not in self.embeddings):
             raise ValueError("Expected one explicitly prepared original token embedding")
 
-    def step(self, ids, *, start_pos=None, observe=None):
+    def step(self, ids, *, start_pos=None, observe=None, sample=True):
         self._validate_ids(ids)
+        if type(sample) is not bool: raise ValueError("Expected an explicit sampling decision")
         ids = ids.copy()
         if observe is not None and not callable(observe): raise ValueError("Expected an optional observer")
         def compute(candidate):
-            result = self._finish(self._evaluate(candidate, ids))
+            result = self._finish(self._evaluate(candidate, ids), sample=sample)
             if observe is not None: observe(result)
             return result
         return self.transaction.step(ids, compute, start_pos=start_pos)

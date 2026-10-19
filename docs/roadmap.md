@@ -65,8 +65,15 @@ connects both Engrams and the real head/sampler: two fixed BOS/PAD calls match
 10,504 typed boundaries, all 80 router decisions and 258,560 logits. Four late
 failures restore whole-model state, including actual cancellation, and healthy
 retry reproduces every second-token boundary. These are scoped numerical/state
-results; natural-language generation, broader histories and reasoning/coding/
-tool-use evaluations remain under #10. Its original checks and M2 stay open.
+results. The subsequent [bounded raw-text continuation](text-generation-validation.md)
+executes the original upstream generation loop and a separate native driver:
+five serial calls / three generated tokens match all 26,250 typed boundaries,
+138,434,360 elements, 646,400 logits and 200 router decisions, including full
+sampling/RNG and model state. Both replays are offline. Native sampled resident
+RAM peaks at 8.00 GiB with 122.35 GiB minimum sampled available RAM. This is one
+raw-text corpus with a serialized prompt adapter. Broader histories, chat/chunk
+prefill and reasoning/coding/tool-use evaluations remain under #10. Its original
+checks and M2 stay open until the remaining acceptance requirements pass.
 
 ## Working on an issue
 

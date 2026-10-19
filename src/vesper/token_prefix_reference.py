@@ -34,7 +34,7 @@ from .memory import RuntimeMemory, MemoryPolicy
 from .resources import MemoryBudget, GiB
 
 
-def original_hash(source):
+def original_hash(source, *, max_seq_len=4):
     import torch
     import transformers
     source = Path(source)
@@ -43,7 +43,8 @@ def original_hash(source):
     spec = importlib.util.spec_from_file_location(name, source / "engram.py")
     module = importlib.util.module_from_spec(spec); sys.modules[name] = module; spec.loader.exec_module(module)
     tokenizer = transformers.AutoTokenizer.from_pretrained(str(source), local_files_only=True, trust_remote_code=False)
-    args = SimpleNamespace(**json.loads(read_checked(source, "inference/config.json")), max_batch_size=1, max_seq_len=4)
+    if type(max_seq_len) is not int or not 4 <= max_seq_len <= 1152: raise ValueError("Expected a bounded original hash history")
+    args = SimpleNamespace(**json.loads(read_checked(source, "inference/config.json")), max_batch_size=1, max_seq_len=max_seq_len)
     with torch.device("cpu"):
         layout = module.EngramLayout.from_args(args)
         state = module.NgramHashState(args, layout, tokenizer)

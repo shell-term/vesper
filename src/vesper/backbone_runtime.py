@@ -42,7 +42,7 @@ def validate_moe_manifests(moe, bindings, layer):
         raise ValueError("Original gate/router/shared payload binding differs")
 
 
-def open_backbone(stack, root, arrays, token_rows, moe, head_arrays, *, temperature=.7):
+def open_backbone(stack, root, arrays, token_rows, moe, head_arrays, *, temperature=.7, engram_rows=None):
     root = Path(root)
     hc = {l: stack.enter_context(NativeHC(arrays, layer=l, profile="backbone_probe")) for l in LAYERS}
     ps = {l: stack.enter_context(NativeProjections(arrays, layer=l, profile="backbone_probe")) for l in LAYERS}
@@ -56,7 +56,7 @@ def open_backbone(stack, root, arrays, token_rows, moe, head_arrays, *, temperat
     engrams, engram_manifests = {}, {}
     for l in (1, 14):
         a, manifest = load_controls(root / f"engram-fixture/controls{l}", l)
-        rows = stack.enter_context(EngramRows(root / f"engram-fixture/rows/layer{l}", l))
+        rows = (stack.enter_context(EngramRows(root / f"engram-fixture/rows/layer{l}", l)) if engram_rows is None else engram_rows[l])
         engrams[l] = stack.enter_context(NativeEngram(a, rows))
         engram_manifests[str(l)] = {"controls": manifest, "rows": rows.manifest}
     mapping, map_identity = compressed_token_map(PinnedTokenizer(root / "import-source"))

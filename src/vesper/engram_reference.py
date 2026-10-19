@@ -19,7 +19,7 @@ from .reference_runtime import configure_reference_runtime
 
 
 class EngramOracle:
-    def __init__(self,reference,source,fixtures,virtual,ordinal=0):
+    def __init__(self,reference,source,fixtures,virtual,ordinal=0,*,rows_root=None):
         import torch
         import tilelang
         if torch.get_default_dtype()!=torch.bfloat16:
@@ -47,7 +47,7 @@ class EngramOracle:
                 torch.float8_e8m0fnu if n.endswith('scale') else torch.float8_e4m3fn) for n,a in arrays.items()}
             weights['wkv.weight'].scale=weights['wkv.scale']; self.weights[layer]=weights
             # Original addresses and raw full shapes, with only observed pages backed.
-            with EngramRows(Path(fixtures)/'rows'/f'layer{layer}',layer) as rows:
+            with EngramRows((Path(fixtures)/'rows' if rows_root is None else Path(rows_root))/f'layer{layer}',layer) as rows:
                 self.manifests[str(layer)]['rows']=rows.manifest
                 self.allowed[layer]=set(rows.entries)
                 codes,scales={},{}

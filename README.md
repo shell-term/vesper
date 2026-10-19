@@ -13,7 +13,8 @@ on heterogeneous consumer NVIDIA GPUs.
 
 ## Status
 
-This is a **verification runtime**, not a working text-generation engine. Native
+This is a **verification runtime** with a first qualified, bounded raw-text
+continuation against original generation. Native
 experts now run on the RTX 4090 through SSD, bounded RAM and two GPU cache tiers.
 Issue #7's five original block-operation checks are qualified by seventeen
 sealed original/native evidence groups. Earlier chain tests execute complete
@@ -50,8 +51,15 @@ state; the second-token retry matches every original boundary. Native replay is
 offline and has no reference frameworks installed/imported. Measured resident
 RAM peaks at **7.93 GiB**, with **120.92 GiB minimum sampled system-available RAM**
 under a 64 GiB admission envelope and the unchanged 32 GiB reserve.
-Full-checkpoint registration, natural-language generation, broader whole-model
-histories, quality evaluation and generation performance remain M2/M3 work. See the
+The subsequent [raw-text continuation](docs/text-generation-validation.md)
+feeds actual sampled IDs back into the complete model. The original upstream
+generation loop and independent native driver agree on three new tokens from
+`Once upon a`, all **26,250 typed boundaries / 138,434,360 storage elements**,
+646,400 full FP32 logits, 200 ordered routes and complete RNG/state progression.
+Native sampled resident RAM peaks at **8.00 GiB**, with **122.35 GiB minimum
+sampled available RAM**. This is one five-call serial-ingestion corpus.
+Full-checkpoint registration, arbitrary prompts, broader whole-model histories,
+reasoning/coding/tool-use evaluation and generation performance remain M2/M3 work. See the
 [acceptance evidence and exact scope](docs/block-ops-qualification.md).
 
 Direct comparisons with the pinned official implementation give:
