@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "probe": "issue8_evidence_manifest",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "criteria": [
+    {
+      "id": "tokenizer_hash_mask_address",
+      "criterion": "Preserve tokenizer/compressed-vocabulary mapping, N-gram hashing, masks and row addressing."
+    },
+    {
+      "id": "original_identities_notices",
+      "criterion": "Verify original weight/scale/config/tokenizer identities and third-party notices."
+    },
+    {
+      "id": "bounded_required_rows",
+      "criterion": "Read only required Engram rows with bounded caches/staging; avoid model-wide mapping/page-cache growth."
+    },
+    {
+      "id": "full_import_plan",
+      "criterion": "Plan full artifact import using actual disk capacity and budgets; keep small probes bounded and separate from a full checkpoint download."
+    },
+    {
+      "id": "original_output_state",
+      "criterion": "Compare original Engram output/state across token/history boundaries with complete evidence."
+    }
+  ],
+  "evidence": [
+    {
+      "file": "results/2026-10-19-engram/original.json",
+      "bytes": 4551728,
+      "sha256": "f2cbaf3659532c5a495ce4b37105f7bb0c045cc101c2a6f30ddf65281d97131e"
+    },
+    {
+      "file": "results/2026-10-19-engram/native.json",
+      "bytes": 3012185,
+      "sha256": "ea08543e8305c541690557034bc9c1c2c53e8c066e0c5eadafc54fba1ade25a2"
+    },
+    {
+      "file": "results/2026-10-19-engram/direct-io.json",
+      "bytes": 43276,
+      "sha256": "9b7e7b9695fc908acf8067de62599dde95ee95f55f592e2269cc40a7d8bbe35b"
+    },
+    {
+      "file": "results/2026-10-19-engram/import-plan.json",
+      "bytes": 44225,
+      "sha256": "e0e2022301378c8ceaab9d83116c2574e1d1c2053e4f0d971cc7f999e2811ff1"
+    }
+  ],
+  "notices": [
+    {
+      "file": "LICENSE",
+      "bytes": 1076,
+      "sha256": "2751f432eb40d008914cd46545d888a54a1ba87c8fe6083375b291d0e5ab809d"
+    },
+    {
+      "file": "THIRD_PARTY_NOTICES.md",
+      "bytes": 13611,
+      "sha256": "21ba79abe03ec07fe0c1cb7dd093b65d49334d2fa006c6d0f763c0c399dc66d4"
+    },
+    {
+      "file": "third_party/DeepSeek-LICENSE",
+      "bytes": 1084,
+      "sha256": "f2c6c602815669d292889e5be8c802f2ed950653b77999b1584e8e6aed25d040"
+    },
+    {
+      "file": "third_party/PyTorch-LICENSE",
+      "bytes": 3464,
+      "sha256": "bd018feef8825e88181c84eb7e3aa4eafb8f08a20d9fd6ef948569610c4a3e43"
+    }
+  ]
+}

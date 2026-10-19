@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "probe": "issue8_acceptance_audit",
+  "status": "pass",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "manifest_sha256": "306d2f3342a28cadecc39e20b0ec13812c9b6ef4b9facfbfec32d49ec8c18789",
+  "criteria": [
+    {
+      "id": "tokenizer_hash_mask_address",
+      "criterion": "Preserve tokenizer/compressed-vocabulary mapping, N-gram hashing, masks and row addressing.",
+      "status": "pass"
+    },
+    {
+      "id": "original_identities_notices",
+      "criterion": "Verify original weight/scale/config/tokenizer identities and third-party notices.",
+      "status": "pass"
+    },
+    {
+      "id": "bounded_required_rows",
+      "criterion": "Read only required Engram rows with bounded caches/staging; avoid model-wide mapping/page-cache growth.",
+      "status": "pass"
+    },
+    {
+      "id": "full_import_plan",
+      "criterion": "Plan full artifact import using actual disk capacity and budgets; keep small probes bounded and separate from a full checkpoint download.",
+      "status": "pass"
+    },
+    {
+      "id": "original_output_state",
+      "criterion": "Compare original Engram output/state across token/history boundaries with complete evidence.",
+      "status": "pass"
+    }
+  ],
+  "evidence": [
+    {
+      "file": "results/2026-10-19-engram/original.json",
+      "bytes": 4551728,
+      "sha256": "f2cbaf3659532c5a495ce4b37105f7bb0c045cc101c2a6f30ddf65281d97131e"
+    },
+    {
+      "file": "results/2026-10-19-engram/native.json",
+      "bytes": 3012185,
+      "sha256": "ea08543e8305c541690557034bc9c1c2c53e8c066e0c5eadafc54fba1ade25a2"
+    },
+    {
+      "file": "results/2026-10-19-engram/direct-io.json",
+      "bytes": 43276,
+      "sha256": "9b7e7b9695fc908acf8067de62599dde95ee95f55f592e2269cc40a7d8bbe35b"
+    },
+    {
+      "file": "results/2026-10-19-engram/import-plan.json",
+      "bytes": 44225,
+      "sha256": "e0e2022301378c8ceaab9d83116c2574e1d1c2053e4f0d971cc7f999e2811ff1"
+    }
+  ],
+  "notice_files_verified": 4,
+  "successful_session_cases": 110,
+  "bitwise_boundaries": 6820,
+  "failed_attempts_retried": 10,
+  "full_checkpoint_downloaded": false,
+  "full_shards_registered": 0,
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured",
+  "milestone2_complete": false,
+  "remaining_integration_issues": [
+    9,
+    10
+  ],
+  "host_allowance_bytes": 268435456,
+  "reservation_is_RSS_limit": false
+}

@@ -179,6 +179,27 @@ Topology validation, per-layer fixture management and host frame transactions
 are Vesper runtime/test code. Downloaded weights and reference sources remain
 local artifacts.
 
+## Original tokenizer, artifact import and Engram
+
+The native compressed-vocabulary normalization, prime/XOR N-gram hashing,
+masked-history padding and row layout follow `inference/engram.py` in the pinned
+DeepSeek revision named above. Engram embedding/scales, Wkv, per-HC gating and
+residual formulas follow `ParallelEngramEmbedding.forward` and `Engram.forward`
+in the same pinned `inference/model.py`. The retained
+[DeepSeek MIT license](third_party/DeepSeek-LICENSE) covers these adapted formulas
+and the CUDA implementation. Diagnostic traces are checked against unchanged
+original forward bodies, with full original table shapes and row addresses.
+Downloaded original sources, tokenizer JSON, metadata, tensors and generated
+binaries are not redistributed in this repository or wheel.
+
+Engram reductions and FP32 operation boundaries retain the pinned PyTorch CUDA
+reduction/normalization behavior already attributed above. The complete
+[PyTorch license](third_party/PyTorch-LICENSE) is retained in source and binary
+distributions. The optional Rust `tokenizers` dependency is installed separately
+under its upstream license; Vesper does not vendor its sources or binaries.
+Bounded direct-I/O import/integrity indices, LRU publication, token-history
+transactions and the optional sparse CUDA virtual-memory backing are Vesper code.
+
 ## Runtime dependencies
 
 The native window KV quantizer, ring-slot formulas and index construction follow

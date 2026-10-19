@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Block-operation acceptance](docs/block-ops-qualification.md) · [Six consecutive blocks](docs/refreshed-block-chain-validation.md) · [Long-context Attention](docs/long-context-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Artifacts and Engram](docs/engram-artifacts-validation.md) · [Block-operation acceptance](docs/block-ops-qualification.md) · [Six consecutive blocks](docs/refreshed-block-chain-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 [Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
 
@@ -19,7 +19,12 @@ Issue #7's five original block-operation checks are qualified by seventeen
 sealed original/native evidence groups. The latest gate executes complete
 blocks **20 -> 21 -> 22 -> 23 -> 24 -> 25**, including every actual hidden/HC
 coefficient handoff, source-20 KV/candidates, index refresh at 24 and reuse at 25.
-Full-model artifacts/Engram, memory governance, logits/sampling, model-wide
+Tokenizer and bounded Engram now pass 110 steps / 6,820 exact intermediate
+comparisons, including original CPU/CUDA hashes, required-row direct reads,
+ten failure/retries and independent replay without PyTorch. All 48 original
+artifact identities and actual full-import capacity are planned; the full
+checkpoint is not downloaded. See [Issue #8's evidence](docs/engram-artifacts-validation.md).
+Full-model loading, memory governance, logits/sampling, model-wide
 quality and generation performance remain M2/M3 work. See the
 [acceptance evidence and exact scope](docs/block-ops-qualification.md).
 

@@ -28,6 +28,15 @@ Completing #7 leaves M2 open. Longer complete-chain histories and broader
 execution shapes remain integration requirements, even when their component
 Attention operations already pass.
 
+Issue #8's five original checks are audited separately in
+[the artifacts/Engram report](engram-artifacts-validation.md): complete original
+tokenizer mapping, 42 original CPU/CUDA addressing cases, 110 Engram session
+steps, framework-free replay, bounded direct reads and actual full-import
+capacity. Full-shard registration is implemented but not executed on the entire
+checkpoint; small probes remain separate. Its component caps and combined Engram
+GPU ledger are inputs to #9, not the whole-runtime governor. Completing #8 also
+leaves M2 open for #9 and #10.
+
 ## Working on an issue
 
 1. State the concrete outcome, acceptance checks, resource limits and dependencies.

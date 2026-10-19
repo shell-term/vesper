@@ -204,7 +204,7 @@ class Pinned:
 def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: bool = False,
                   integrity: bool = False, routing: bool = False, shared: bool = False,
                   aggregation: bool = False, kv: bool = False, normalization: bool = False,
-                  projections: bool = False, hc: bool = False, compression: bool = False, indexer: bool = False,
+                  projections: bool = False, hc: bool = False, compression: bool = False, indexer: bool = False, engram: bool = False,
                   compiler_info: dict | None = None) -> bytes:
     """Compile an actual architecture cubin; no host compiler or GPU required."""
     if os.name == "nt":
@@ -240,11 +240,11 @@ def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: b
         source += b"\n" + (Path(__file__).parent / "kernels/shared_probe.cu").read_bytes()
     if aggregation:
         source += b"\n" + (Path(__file__).parent / "kernels/aggregation_probe.cu").read_bytes()
-    if kv or projections:
+    if kv or projections or engram:
         source += b"\n" + (Path(__file__).parent / "kernels/kv_probe.cu").read_bytes()
-    if normalization or hc:
+    if normalization or hc or engram:
         source += b"\n" + (Path(__file__).parent / "kernels/normalization_probe.cu").read_bytes()
-    if projections or indexer:
+    if projections or indexer or engram:
         source += b"\n" + (Path(__file__).parent / "kernels/projection_probe.cu").read_bytes()
     if hc:
         source += b"\n" + (Path(__file__).parent / "kernels/hc_probe.cu").read_bytes()
@@ -252,7 +252,9 @@ def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: b
         source += b"\n" + (Path(__file__).parent / "kernels/compression_probe.cu").read_bytes()
     if indexer:
         source += b"\n" + (Path(__file__).parent / "kernels/indexer_probe.cu").read_bytes()
-    if kv or normalization or projections or hc or compression or indexer:
+    if engram:
+        source += b"\n" + (Path(__file__).parent / "kernels/engram_probe.cu").read_bytes()
+    if kv or normalization or projections or hc or compression or indexer or engram:
         source = source.replace(b"\r\n", b"\n")
     if compiler_info is not None:
         import hashlib
