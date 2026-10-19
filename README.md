@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Complete compressed block](docs/compressed-block-validation.md) · [Long-context Attention](docs/long-context-validation.md) · [Complete layer-0 block](docs/layer0-block-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Consecutive blocks](docs/block-pair-validation.md) · [Complete compressed block](docs/compressed-block-validation.md) · [Long-context Attention](docs/long-context-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 [Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
 
@@ -181,9 +181,20 @@ unchanged `Block.forward` and `Attention.forward` controls match output,
 next-layer coefficients, selected IDs and all caches/partial state. Six
 failure/retries, snapshot restoration and independent replay without
 Torch/TileLang pass. This uses layer 2's own weights, 25 gate-selected experts
-and generated four-position HC streams; consecutive complete-block sharing,
-other profiles, Engram and full-model quality/speed remain unfinished. See the
+and generated four-position HC streams. The consecutive-block follow-up is
+below; other profiles, Engram and full-model quality/speed remain unfinished. See the
 [complete compressed-block report](docs/compressed-block-validation.md).
+
+**Complete consecutive blocks 2 and 3** now pass actual hidden-state/HC
+coefficient handoff, source compressed-KV/index reuse and joint publication.
+All 36 pair steps / 72 block calls match **18,447 boundaries / 133,921,032
+storage elements**, with zero differences. Separate unchanged original blocks
+provide 648 block and 720 Attention controls. Eight failures preserve both
+states and retry exactly; snapshots and replay without Torch/TileLang pass.
+Initial layer-2 inputs are generated four-position streams, with computed
+layer-3 inputs and 52 selected original experts. Other complete roles, longer
+chains, Engram and full-model quality/speed remain unfinished. See the
+[consecutive-block report](docs/block-pair-validation.md).
 
 Vesper uses the released weights; its design does not require retraining.
 Model-wide output and quality verification remain required before that engine
@@ -355,6 +366,13 @@ The complete compressed layer-2 block has separate native allowances of
 primary-GPU cap during block calls. The paired original comparison adds a
 2,048-MiB reference allowance. These are diagnostic admissions, not RSS or OS
 limits; see the [compressed-block resource scope](docs/compressed-block-validation.md#publication-and-resources).
+
+The consecutive pair admits 4,832 MiB of native host allowances including
+retained fixtures, plus 3,072 MiB for the optional reference comparison. Combined
+owned buffers during pair calls are capped at 768 MiB primary / 128 MiB helper;
+they peak at 586,739,584 / 75,496,320 bytes. Sampled available RAM stays above
+130 GiB in this run. See the [pair resource scope](docs/block-pair-validation.md#atomic-state-and-bounded-resources)
+for exclusions and the distinction between allowances and process RSS.
 
 ## Development
 

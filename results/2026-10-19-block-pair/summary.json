@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "probe": "consecutive_complete_block_summary",
+  "status": "pass",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "layers": [
+    2,
+    3
+  ],
+  "successful_pair_steps": 36,
+  "complete_block_calls": 72,
+  "boundary_comparisons": 18447,
+  "compared_storage_elements": 133921032,
+  "mismatches": 0,
+  "unchanged_Block_forward_controls": 648,
+  "unchanged_Attention_forward_controls": 720,
+  "whole_pair_state_controls": 36,
+  "failure_retries": 8,
+  "snapshot_restorations": 1,
+  "consumed_foreign_expired_handle_refusals": 4,
+  "detected_negative_controls": [
+    "replace_transferred_pre_with_initial_pre",
+    "bypass_source_block_hidden_output",
+    "replace_shared_KV_with_consumer_window",
+    "drop_reused_source_selected_indices"
+  ],
+  "reports": [
+    {
+      "file": "pair.json",
+      "sha256": "733a67b86d404d220c02ec755637e4d9ceea094872a2839f7e7d498fe52b1f67",
+      "bytes": 3505371
+    },
+    {
+      "file": "native-only-recheck.json",
+      "sha256": "02429363ae14a7ab459b1d5d02a828cf716df3f838c48ecf51c9a1235ec3bce8",
+      "bytes": 117943
+    }
+  ],
+  "source_fixture_compiler_identity_sha256": "b2f05dbfd0af5d35d214c2f17127ef2e64013d9366e858d3b216788e1946370a",
+  "complete_goldens_sha256": "b7f0e88990485560c5261f27df8f71017f5ced1fdf02e1b0134f90520af195b4",
+  "original_tensors": 380,
+  "original_weight_bytes": 1333937328,
+  "original_selected_experts_per_layer": {
+    "2": 25,
+    "3": 27
+  },
+  "verified_existing_original_weight_bytes_reused": 783007960,
+  "new_consumer_control_gate_router_shared_bytes": 43312088,
+  "new_consumer_selected_expert_bytes": 507617280,
+  "maximum_weight_HTTP_range_bytes": 8388608,
+  "weight_bytes_fetched_during_comparison_or_recheck": 0,
+  "precision": "Original weights/scales, HC, reduction/rounding, trained router and ordered accumulation; no retraining or additional lossy quantization",
+  "native_CUDA_binary_identities_unchanged": 10,
+  "sparse_Attention_bundle_kernels_unchanged": 6,
+  "framework_free_recheck": {
+    "torch_installed": false,
+    "tilelang_installed": false,
+    "torch_imported": false,
+    "tilelang_imported": false
+  },
+  "memory": {
+    "combined_native_host_allowance_bytes": 5066719232,
+    "additional_reference_host_allowance_bytes": 3221225472,
+    "retained_fixture_host_allowance_bytes": 1073741824,
+    "host_available_floor_bytes": 34359738368,
+    "paired_minimum_sampled_host_available_bytes": 139634098176,
+    "native_minimum_sampled_host_available_bytes": 143206768640,
+    "combined_primary_cap_bytes": 805306368,
+    "combined_helper_cap_bytes": 134217728,
+    "paired_peak_owned_primary_bytes": 586739584,
+    "paired_peak_owned_helper_bytes": 75496320,
+    "native_peak_owned_primary_bytes": 586739584,
+    "native_peak_owned_helper_bytes": 75496320,
+    "all_native_owned_buffers_context_retains_and_frame_reservations_released": true,
+    "reservation_is_RSS_or_OS_limit": false,
+    "state_storage": "bounded_host_diagnostic_candidate",
+    "full_engine_96GiB_governor": "not_implemented"
+  },
+  "local_CPU_tests": {
+    "count": 209,
+    "status": "pass",
+    "GPU_comparisons_are_local_not_CPU_CI": true
+  },
+  "package": {
+    "status": "pass",
+    "retained_license_files": 4,
+    "weights_or_generated_binaries_packaged": false
+  },
+  "native_regressions": {
+    "status": "pass",
+    "Attention_sharing_groups": 4,
+    "Attention_profiles": 16,
+    "Attention_frames": 2224,
+    "Attention_layer_calls": 8896,
+    "standalone_layer2_block_calls": 32,
+    "layer0_HC_cases": 84,
+    "layer0_block_calls": 26
+  },
+  "resolved_integration_failure": {
+    "error": "CUDA_ERROR_NO_BINARY_FOR_GPU (209)",
+    "stage": "before_first_original_native_comparison",
+    "cause": "helper-reserve inspection left the storage GPU selected",
+    "resolution": "check helper reserves first and finish on the compute GPU; CPU context-order regression and all paired/recheck cases pass",
+    "model_arithmetic_changed": false
+  },
+  "scope": "Consecutive complete original blocks 2/3; generated initial layer-2 HC streams, actual hidden/coefficient handoff and source KV/index reuse; no upstream blocks or Engram",
+  "maximum_unprimed_continuous_context": 4,
+  "untouched_full_Attention_kernel": "blocked_by_shared_memory_limit",
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured",
+  "issue7_acceptance_complete": false,
+  "M2_complete": false,
+  "next_gate": "Other complete compressed source/consumer roles including ratio-1 and refreshed-index roles, with original hidden/pre-mix handoff and atomic state"
+}

@@ -73,6 +73,13 @@ def validate_seed(state, layers, batch, position):
 
 def stage_group(arrays, projections, norm, compressor, indexer, attention, layers, batch, pos, source, xs):
     sequence = validate_frame(xs, layers, batch, pos)
+    return _stage_pipeline(arrays, projections, norm, compressor, indexer, attention, layers, batch, pos,
+                           source, sequence, lambda layer: xs[layer])
+
+
+def _stage_pipeline(arrays, projections, norm, compressor, indexer, attention, layers, batch, pos, source,
+                    sequence, input_for_layer, after_layer=None):
+    """One unpublished sharing candidate; later input may depend on a full block."""
     state, stages = copy.deepcopy(source), {}
     shared = {}
     def add(prefix, values):
@@ -80,11 +87,14 @@ def stage_group(arrays, projections, norm, compressor, indexer, attention, layer
         return values.get("output_bf16")
     for l in layers:
         r, p, prefix = role(l), projections[l], f"layer{l}_"
-        qr = add(prefix + "wq_a_", p.fp8("wq_a", xs[l]))
+        x = input_for_layer(l)
+        validate_values(x, 5120)
+        if x.shape != (batch, sequence, 5120): raise ValueError("Connected Attention input shape differs")
+        qr = add(prefix + "wq_a_", p.fp8("wq_a", x))
         qr = add(prefix + "q_norm_", norm.norm(qr, arrays[f"layers.{l}.attn.q_norm.weight"]))
         q = add(prefix + "wq_b_", p.fp8("wq_b", qr)).reshape(batch, sequence, 64, 512)
         q = add(prefix + "query_rope_", norm.rope(q, pos, "compressed-yarn"))
-        kv = add(prefix + "wkv_", p.fp8("wkv", xs[l]))
+        kv = add(prefix + "wkv_", p.fp8("wkv", x))
         kv = add(prefix + "kv_norm_", norm.norm(kv, arrays[f"layers.{l}.attn.kv_norm.weight"]))
         kv = add(prefix + "kv_rope_", norm.rope(kv, pos, "compressed-yarn"))
         rounded = p.round_window(kv)
@@ -98,7 +108,7 @@ def stage_group(arrays, projections, norm, compressor, indexer, attention, layer
         stages[prefix + "window_indices_i32"] = window_idx
         n, latent = (pos + sequence) // r.ratio, None
         if r.owns_kv:
-            cs, state["compressors"][l] = stage_compression(compressor, l, batch, pos, source["compressors"][l], xs[l], max_position=CAPACITY)
+            cs, state["compressors"][l] = stage_compression(compressor, l, batch, pos, source["compressors"][l], x, max_position=CAPACITY)
             add(prefix + "compressor_", cs)
             if cs["latent_pre_rope_bf16"].shape[1]: latent = cs["latent_pre_rope_bf16"]
             if n and latent is not None:
@@ -117,7 +127,7 @@ def stage_group(arrays, projections, norm, compressor, indexer, attention, layer
                 if shared.get("key_owner") != r.kv_owner: raise ValueError("Wrong or missing shared index-key owner")
                 keys = state["index_keys"][r.kv_owner][:, :n].copy(order="C")
                 stages[prefix + "index_keys_bf16"] = keys.copy()
-                query = indexer.queries(xs[l], qr, l, pos)
+                query = indexer.queries(x, qr, l, pos)
                 add(prefix + "index_query_", query)
                 score = indexer.score(query["quant_rounded_bf16"], keys, query["weights_scaled_bf16"])
                 add(prefix + "index_score_", score)
@@ -141,6 +151,8 @@ def stage_group(arrays, projections, norm, compressor, indexer, attention, layer
         o = add(prefix + "inverse_rope_", norm.rope(o, pos, "compressed-yarn", inverse=True))
         o = add(prefix + "wo_a_", p.grouped(o.reshape(batch, sequence, 8, 4096)))
         add(prefix + "wo_b_", p.fp8("wo_b", o.reshape(batch, sequence, 8192)))
+        if after_layer is not None:
+            after_layer(l, {n.removeprefix(prefix): a for n, a in stages.items() if n.startswith(prefix)})
     for l, value in state["index_keys"].items(): stages[f"owner{l}_index_cache_bf16"] = value.copy()
     shared["position"], shared["sequence"] = pos, sequence
     state["sharing"] = shared
@@ -196,3 +208,18 @@ class SharedAttentionFrame(NativeCompressedAttention):
             candidate = copy.deepcopy(state)
             self.budget.acquire(0)
             self.state, self.position = candidate, position
+
+    def step_connected(self, input_for_layer, after_layer, *, start_pos=None, finalize=None):
+        """Single-token source-2/consumer-3 blocks, committed together only."""
+        with self.lock:
+            self._ready()
+            pos = self.position if start_pos is None else start_pos
+            if (self.layers != (2, 3) or self.batch != 1 or type(pos) is not int or pos != self.position or not 0 <= pos < CAPACITY
+                    or not callable(input_for_layer) or not callable(after_layer) or (finalize is not None and not callable(finalize))):
+                raise ValueError("Connected blocks require the next source-2/consumer-3 position and callbacks")
+            stages, state = _stage_pipeline(self.arrays, self.projections, self.norm, self.compressor, self.indexer, self.attention,
+                self.layers, self.batch, pos, self.state, 1, input_for_layer, after_layer)
+            result = stages if finalize is None else finalize(stages)
+            self.budget.acquire(0)
+            self.state, self.position = state, pos + 1
+            return result

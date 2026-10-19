@@ -34,7 +34,7 @@ def coefficients(value, shape):
 
 class NativeHC:
     def __init__(self, arrays, ordinal=0, *, layer=0):
-        if type(layer) is not int or layer not in (0, 2):
+        if type(layer) is not int or layer not in (0, 2, 3):
             raise ValueError("Unregistered complete-block HC layer")
         self.layer = layer
         self.arrays, self.ordinal, self.opened = arrays, ordinal, False
