@@ -47,6 +47,14 @@ measurements and complete cleanup are recorded. This is a resource-scale gate;
 all-forty-layer numerical/logit/sampling integration remains Issue #10 and M2
 stays open until that required work passes.
 
+Issue #10 now has qualified output/sampling components and a concrete local
+streamed-reference design; see the [complete report](output-sampling-validation.md).
+The full original FP32 head matches 4,654,080 logits; stochastic sampling matches
+all probability/noise/score/token/RNG boundaries in 90 conditions, with independent
+native replay and failure/state tests. This satisfies the reference-design
+requirement, while all-layer integration, whole-model comparisons, decoding and
+scoped evaluations remain open. Component passes do not close #10 or M2.
+
 ## Working on an issue
 
 1. State the concrete outcome, acceptance checks, resource limits and dependencies.

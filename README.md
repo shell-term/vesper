@@ -29,7 +29,13 @@ threads, retaining the 96 GiB host cap and 32 GiB physical reserve. All 15,360
 original expert identities pass an actual bounded synthetic-resource traversal;
 Engram and the six-block chain preserve original bits under the same policy.
 See [Issue #9's measurements and exact scope](docs/memory-policy-validation.md).
-Full-model loading, all-layer logits/sampling, model-wide
+The original output tail now passes 24 conditions / 4,654,080 full-vocabulary
+FP32 logits, plus 48 connected sampling calls. Original stochastic sampling
+matches all probabilities, noise, scores, token IDs and RNG offsets in 90
+conditions; failure/retry, snapshot and framework-free replay pass. The
+[output/sampling report and local streamed-reference design](docs/output-sampling-validation.md)
+retain Issue #10's unfinished whole-model gates.
+Full-model loading, all-layer boundary/logit/sampling integration, model-wide
 quality and generation performance remain M2/M3 work. See the
 [acceptance evidence and exact scope](docs/block-ops-qualification.md).
 

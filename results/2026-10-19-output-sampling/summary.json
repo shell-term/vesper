@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "probe": "issue10_output_sampling_component_summary",
+  "status": "pass",
+  "issue10_complete": false,
+  "output_conditions": 24,
+  "head_boundaries": 312,
+  "full_FP32_logit_elements": 4654080,
+  "connected_sampling_calls": 48,
+  "connected_sampling_boundaries": 144,
+  "independent_sampling_cases": 90,
+  "independent_sampling_boundaries": 378,
+  "fault_retry_modes": 4,
+  "negative_controls": [
+    {
+      "check": "replace_original_FP32_head_with_BF16_GEMM",
+      "status": "fail",
+      "elements": 129280,
+      "mismatches": 129272,
+      "dtype": "float32",
+      "expected_sha256": "36af8f5b76b760020b96842e10e4af583e1902cdb92a4afa26b008aad9ea3bc0",
+      "actual_sha256": "6991fd56266a0b9c92ba4eda70c90efd8dd0e0ae902e6b15687e1b9d1c7267cf"
+    },
+    {
+      "check": "replace_original_fast_log_with_logf",
+      "status": "fail",
+      "elements": 129280,
+      "mismatches": 109666,
+      "dtype": "float32",
+      "expected_sha256": "016b7b400aca49a98c35c82408d3cd7663caaf31dc8c6bf6f28ac7a842e563aa",
+      "actual_sha256": "76d80f1ae1343fc0f9b838c8da0413e4b8842fb33a5d29b17e5f14cbad6b8f76",
+      "candidate_compiler": {
+        "nvrtc_version": [
+          12,
+          4
+        ],
+        "architecture": "89",
+        "concatenated_source_sha256": "c7405bc5836fc898b2e2eba280007518ffd0b32e8db0aabbe86bbcbcaa36695e",
+        "options": [
+          "--gpu-architecture=sm_89",
+          "--std=c++17",
+          "--fmad=false",
+          "--ftz=false",
+          "--include-path=<CUDA>/include"
+        ],
+        "include_path_redacted": true
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "file": "output-original.json",
+      "bytes": 293908,
+      "sha256": "8be683fe5cfbe441a1787f30dbf242e98bb9b7d12664cc7dcd5ca60750fe8a3e"
+    },
+    {
+      "file": "output-native.json",
+      "bytes": 240659,
+      "sha256": "692d2653cf4fbf3eb1bbf14ab41f012e256988b6b93dab6c7f53586f754602ad"
+    },
+    {
+      "file": "sampling-original.json",
+      "bytes": 242636,
+      "sha256": "8eb4abb66cc1b05bfa3a2ea8eb3dc1c9add5863b69eb138fc453483917121ba2"
+    },
+    {
+      "file": "sampling-native.json",
+      "bytes": 212931,
+      "sha256": "f7ac916d4c6007133654459003f5b00005090c3648b9a20a0b7d0c58fff80709"
+    },
+    {
+      "file": "reference-plan.json",
+      "bytes": 363292,
+      "sha256": "cd12a223c367695dbc5fceb9a12b8f60d697bbe817f2f7580b80acb9e8e2c72e"
+    }
+  ],
+  "full_model_execution_run": false,
+  "full_model_quality": "not_run",
+  "text_generation_available": false,
+  "end_to_end_speed": "not_measured",
+  "original_issue10_acceptance_completed": [
+    "Design a reference comparison that does not assume the full checkpoint fits in this PC's RAM or silently incur remote-compute costs."
+  ],
+  "remaining_original_issue10_acceptance": [
+    "Integrate #6, #7, #8 and #9.",
+    "Compare per-layer boundaries, router sets/weights, logits and target sampling behavior.",
+    "Run deterministic decode/state tests and scoped reasoning/coding/tool-use evaluations; report limitations and failures.",
+    "Publish actual model-level evidence before claiming original-model fidelity or working generation."
+  ]
+}

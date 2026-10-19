@@ -224,7 +224,7 @@ class Pinned:
 def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: bool = False,
                   integrity: bool = False, routing: bool = False, shared: bool = False,
                   aggregation: bool = False, kv: bool = False, normalization: bool = False,
-                  projections: bool = False, hc: bool = False, compression: bool = False, indexer: bool = False, engram: bool = False,
+                  projections: bool = False, hc: bool = False, compression: bool = False, indexer: bool = False, engram: bool = False, sampling: bool = False,
                   compiler_info: dict | None = None) -> bytes:
     """Compile an actual architecture cubin; no host compiler or GPU required."""
     if os.name == "nt":
@@ -274,7 +274,9 @@ def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: b
         source += b"\n" + (Path(__file__).parent / "kernels/indexer_probe.cu").read_bytes()
     if engram:
         source += b"\n" + (Path(__file__).parent / "kernels/engram_probe.cu").read_bytes()
-    if kv or normalization or projections or hc or compression or indexer or engram:
+    if sampling:
+        source += b"\n" + (Path(__file__).parent / "kernels/sampling_probe.cu").read_bytes()
+    if kv or normalization or projections or hc or compression or indexer or engram or sampling:
         source = source.replace(b"\r\n", b"\n")
     if compiler_info is not None:
         import hashlib
