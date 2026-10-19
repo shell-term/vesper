@@ -141,6 +141,9 @@ class CompressedBlockTests(unittest.TestCase):
                 lambda r: r["negative_controls"].pop(),
                 lambda r: r["snapshot_events"][0].update(consumed_handle_refusals=0),
                 lambda r: r["memory"]["HC_cleanup"].update(host_reserved_bytes=1),
+                lambda r: r["memory"].update(minimum_sampled_host_available_bytes=16 * GiB),
+                lambda r: r["attention_reference_qualification"]["memory"].update(minimum_sampled_host_available_bytes=16 * GiB),
+                lambda r: r["memory"]["block_active_stats"].update(peak_owned_primary_device_bytes=513 * MiB),
                 lambda r: r["faults"][0].update(completed_experts_before_failure=6),
                 lambda r: r["native_profiles"]["indexer"].update(cubin_sha256="0" * 64)):
             bad = copy.deepcopy(report); change(bad)

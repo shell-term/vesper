@@ -10,7 +10,7 @@ from .attention_validation import array_digest
 from .block_validation import block_stage_names
 from .formats import bf16_bits
 from .long_context_validation import compact_comparison, replay_comparison
-from .resources import MiB, physical_memory
+from .resources import GiB, MiB, physical_memory
 from .topology_validation import boundary_names as attention_names, flatten, state_digest, owned_clean
 
 FAULTS = ("host_pressure", "index_key_download", "MoE_after_three_experts", "final_residual_download",
@@ -238,6 +238,9 @@ def validate_goldens(report):
         raise ValueError("Unqualified complete-block original/compiler/fixture identity")
     if not QUALIFIED_COVERAGE or coverage(report) != QUALIFIED_COVERAGE: raise ValueError("Incomplete compressed-block corpus/shape/state coverage")
     validate_qualification(report["attention_reference_qualification"])
+    observed = report["attention_reference_qualification"]["memory"].get("minimum_sampled_host_available_bytes")
+    if type(observed) is not int or observed < 32 * GiB:
+        raise ValueError("Original Attention qualification did not retain the host-memory reserve")
     if report["boundary_names"] != registry(report["plan"]): raise ValueError("Compressed block boundary registry differs")
     rows = report.get("block_cases", [])
     if [r["meta"] for r in rows] != list(expected_metadata()): raise ValueError("Complete block corpus differs")
@@ -280,6 +283,14 @@ def validate_goldens(report):
     if [n["check"] for n in negatives] != ["use_FFN_own_pre_for_current_FFN", "omit_compressed_KV_in_block_Attention"] or any(n.get("status") != "fail" or n.get("mismatches", 0) <= 0 for n in negatives):
         raise ValueError("Complete block negative controls differ")
     memory = report["memory"]
+    if (type(memory.get("minimum_sampled_host_available_bytes")) is not int
+            or memory["minimum_sampled_host_available_bytes"] < 32 * GiB
+            or memory.get("combined_native_host_allowance_bytes") != 3584 * MiB
+            or memory.get("retained_fixture_host_allowance_bytes") != 768 * MiB
+            or memory.get("additional_reference_host_allowance_bytes") != 2048 * MiB
+            or memory["block_active_stats"].get("primary_device_cap_bytes") != 512 * MiB
+            or not 0 < memory["block_active_stats"].get("peak_owned_primary_device_bytes", 0) <= 512 * MiB):
+        raise ValueError("Complete block memory admission, observation or GPU-cap evidence differs")
     if (memory.get("all_frame_reservations_released") is not True or any(c["device_owned_bytes"] or c["host_reserved_bytes"] or c["owned_context_active"]
             for c in memory["operator_cleanup"].values()) or any(memory["moe_cleanup"].values())
             or memory["block_cleanup"]["host_reserved_bytes"] or memory["HC_cleanup"]["device_owned_bytes"] or memory["HC_cleanup"]["host_reserved_bytes"]):
