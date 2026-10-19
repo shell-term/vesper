@@ -54,7 +54,7 @@ def bf16_activation(activation):
 
 
 class ConnectedMoE:
-    """Serial layer-0 BF16 calls. Missing experts fail before any expert I/O.
+    """Serial registered-layer BF16 calls. Missing experts fail before expert I/O.
 
     Gate decisions depend only on the original input, weights and trained bias.
     Failed attempts return no output; a retry starts a new zeroed accumulator.
@@ -62,7 +62,10 @@ class ConnectedMoE:
     """
 
     def __init__(self, store: Path, gate_fixture: Path, router_fixture: Path, shared_fixture: Path,
-                 config: ConnectedConfig | None = None, *, cublas_library=None):
+                 config: ConnectedConfig | None = None, *, cublas_library=None, layer=0):
+        if type(layer) is not int or layer not in (0, 2):
+            raise ValueError("Unregistered connected MoE layer")
+        self.layer = layer
         self.store_path, self.gate_fixture = Path(store), Path(gate_fixture)
         self.router_fixture, self.shared_fixture = Path(router_fixture), Path(shared_fixture)
         self.config, self.cublas_library = config or ConnectedConfig(), cublas_library
@@ -84,15 +87,15 @@ class ConnectedMoE:
             weight, self.gate_manifest = load_gate_fixture(self.gate_fixture)
             biases, self.router_manifest = load_router_fixture(self.router_fixture)
             shared, self.shared_manifest = load_shared_fixture(self.shared_fixture)
-            if any(m["layer"] != 0 for m in (self.gate_manifest, self.router_manifest, self.shared_manifest)):
-                raise ValueError("This connected probe requires layer-0 artifacts")
+            if any(m["layer"] != self.layer for m in (self.gate_manifest, self.router_manifest, self.shared_manifest)):
+                raise ValueError("Connected gate, router and shared artifacts must match the selected layer")
             ordinal = c.cache.primary_device
             self.gate = self.stack.enter_context(GateProjection(weight, ordinal, self.cublas_library, host_budget=self.budget))
             self.router = self.stack.enter_context(RouterProbe(biases, ordinal))
             self.shared = self.stack.enter_context(ResidentSharedExpert(shared, ordinal))
             self.accumulator = self.stack.enter_context(MoEAccumulator(ordinal, max_tokens=1))
             self.experts = self.stack.enter_context(TieredExpertRuntime(self.store_path, c.cache))
-            if any(entry["provenance"]["layer"] != 0 for entry in self.experts.store.entries.values()):
+            if any(entry["provenance"]["layer"] != self.layer for entry in self.experts.store.entries.values()):
                 raise ValueError("Connected store contains artifacts from another layer")
             self.devices = {"gate": self.gate.device, "router": self.router.device,
                             "shared": self.shared.device, "accumulator": self.accumulator.device,
@@ -142,7 +145,7 @@ class ConnectedMoE:
                 weights, indices = routing["weights"], routing["indices"]
                 selected = participation(indices.reshape(1, 6), max_tokens=1)
                 attempt.update(indices=indices.tolist(), weight_bits=weights.view(np.uint32).tolist())
-                missing = [expert for expert in selected if expert_key(0, expert) not in self.experts.store.entries]
+                missing = [expert for expert in selected if expert_key(self.layer, expert) not in self.experts.store.entries]
                 if missing:
                     raise KeyError(f"Selected original experts absent from this bounded store: {missing}")
                 self.accumulator.begin(indices.reshape(1, 6))
@@ -150,7 +153,7 @@ class ConnectedMoE:
                 for expert in selected:
                     attempt["stage"] = f"expert:{expert}"
                     rank = int(np.flatnonzero(indices == expert)[0])
-                    result = self.experts.forward(expert_key(0, expert), x, float(weights[rank]))
+                    result = self.experts.forward(expert_key(self.layer, expert), x, float(weights[rank]))
                     outputs[expert] = result
                     events.append(dict(self.experts.last_event))
                     stages[f"after_expert_{expert}_fp32"] = self.accumulator.add(expert, result["w2"].reshape(1, 5120))

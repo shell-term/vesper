@@ -41,9 +41,9 @@ class WindowContext:
 
 
 def ledger_block():
-    operators=[SimpleNamespace(device=LedgerDevice(),ordinal=0,opened=True) for _ in range(4)]
+    operators=[SimpleNamespace(device=LedgerDevice(),ordinal=0,opened=True,layer=0) for _ in range(4)]
     hc,norm,projection,sparse=operators
-    moe=SimpleNamespace(stack=ExitStack(),config=SimpleNamespace(cache=SimpleNamespace(primary_device=0)),devices={"moe":LedgerDevice()})
+    moe=SimpleNamespace(stack=ExitStack(),config=SimpleNamespace(cache=SimpleNamespace(primary_device=0)),devices={"moe":LedgerDevice()},layer=0)
     with patch("vesper.block.NativeWindowAttention",WindowContext):
         return NativeBlock({},hc,norm,projection,sparse,moe)
 

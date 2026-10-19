@@ -7,7 +7,7 @@ GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
 
-[日本語](README.ja.md) · [Long-context Attention](docs/long-context-validation.md) · [Complete layer-0 block](docs/layer0-block-validation.md) · [Compressed Attention](docs/compressed-attention-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
+[日本語](README.ja.md) · [Complete compressed block](docs/compressed-block-validation.md) · [Long-context Attention](docs/long-context-validation.md) · [Complete layer-0 block](docs/layer0-block-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
 [Roadmap](docs/roadmap.md) · [Issues](https://github.com/shell-term/vesper/issues) · [Milestones](https://github.com/shell-term/vesper/milestones)
 
@@ -174,6 +174,17 @@ streams and explicit synthetic histories through 1,028 positions, rather than
 complete compressed Transformer blocks. See the
 [sharing topology report](docs/attention-topology-validation.md).
 
+A **complete original layer-2 Transformer block** now connects compressed
+Attention, HC and the tiered MoE. All 32 single-token calls match **8,793
+boundaries / 70,536,278 storage elements**, with zero differences. Separate
+unchanged `Block.forward` and `Attention.forward` controls match output,
+next-layer coefficients, selected IDs and all caches/partial state. Six
+failure/retries, snapshot restoration and independent replay without
+Torch/TileLang pass. This uses layer 2's own weights, 25 gate-selected experts
+and generated four-position HC streams; consecutive complete-block sharing,
+other profiles, Engram and full-model quality/speed remain unfinished. See the
+[complete compressed-block report](docs/compressed-block-validation.md).
+
 Vesper uses the released weights; its design does not require retraining.
 Model-wide output and quality verification remain required before that engine
 is ready for use.
@@ -338,6 +349,12 @@ The complete layer-0 block probe has separate combined native host allowances of
 Its measured peak is 272,182,716 bytes. Contexts/modules, optional oracle memory,
 process RSS and component initialization are outside that combined GPU figure;
 see the [block resource scope](docs/layer0-block-validation.md#state-publication-and-memory).
+
+The complete compressed layer-2 block has separate native allowances of
+3,584 MiB, including retained fixtures, and the same combined 512-MiB owned
+primary-GPU cap during block calls. The paired original comparison adds a
+2,048-MiB reference allowance. These are diagnostic admissions, not RSS or OS
+limits; see the [compressed-block resource scope](docs/compressed-block-validation.md#publication-and-resources).
 
 ## Development
 

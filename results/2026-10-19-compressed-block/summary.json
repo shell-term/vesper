@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "probe": "complete_compressed_source_block_summary",
+  "status": "pass",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "layer": 2,
+  "successful_block_calls": 32,
+  "boundary_comparisons": 8793,
+  "compared_storage_elements": 70536278,
+  "mismatches": 0,
+  "unchanged_Block_forward_controls": 256,
+  "unchanged_Attention_forward_controls": 384,
+  "whole_committed_state_controls": 32,
+  "failure_retries": 6,
+  "snapshot_restorations": 1,
+  "consumed_handle_refusals": 2,
+  "detected_negative_controls": [
+    "use_FFN_own_pre_for_current_FFN",
+    "omit_compressed_KV_in_block_Attention"
+  ],
+  "reports": [
+    {
+      "file": "block.json",
+      "sha256": "f978e72caeec4e9454cca3bd2cf01548ddcde850c6ad8b25b14331777289095f",
+      "bytes": 1952503
+    },
+    {
+      "file": "native-only-recheck.json",
+      "sha256": "1fc2b00136787b7f183bbcf4c16b2a416c9f196e3ffb72d7f86fe96a46600641",
+      "bytes": 60961
+    }
+  ],
+  "source_fixture_compiler_identity_sha256": "d971ac25aac2d85b366d4bc7f8eeda842cc5b2f8263ac9b6da913639f85dcd0a",
+  "corpus_layout_and_golden_coverage_sha256": "f167c9544d6feeaaa738bb4c9e6fdb98f11e97288dd4d1f0298f10979eabe0b4",
+  "precision": "Original checkpoint weights/scales, original HC and rounding/reduction, exact ordered gate/accumulation; no retraining or additional lossy quantization",
+  "original_tensors": 188,
+  "original_tensor_bytes": 656264920,
+  "reused_Attention_compressor_indexer_bytes": 142936832,
+  "new_control_gate_router_shared_bytes": 43312088,
+  "selected_original_experts": 25,
+  "selected_original_expert_bytes": 470016000,
+  "maximum_weight_HTTP_range_bytes": 8388608,
+  "weight_bytes_fetched_during_comparison_or_replay": 0,
+  "framework_free_replay": {
+    "torch_installed": false,
+    "torch_imported": false,
+    "tilelang_installed": false,
+    "tilelang_imported": false
+  },
+  "native_CUDA_binary_identities_unchanged": 10,
+  "sparse_Attention_bundle_kernels_unchanged": 6,
+  "memory": {
+    "combined_native_host_allowance_bytes": 3758096384,
+    "additional_reference_host_allowance_bytes": 2147483648,
+    "retained_fixture_host_allowance_bytes": 805306368,
+    "host_available_floor_bytes": 34359738368,
+    "paired_minimum_sampled_host_available_bytes": 108531728384,
+    "native_minimum_sampled_host_available_bytes": 110588157952,
+    "combined_owned_primary_GPU_cap_bytes": 536870912,
+    "paired_peak_owned_primary_GPU_bytes": 315674308,
+    "native_peak_owned_primary_GPU_bytes": 315674308,
+    "all_owned_native_buffers_and_context_retains_released": true,
+    "reservation_is_process_RSS_or_OS_limit": false,
+    "committed_state_storage": "bounded_host_diagnostic_frame",
+    "full_engine_96GiB_governor": "not_implemented"
+  },
+  "local_CPU_tests": {
+    "count": 202,
+    "status": "pass",
+    "GPU_comparison_is_local_not_CPU_CI": true
+  },
+  "package_check": {
+    "status": "pass",
+    "retained_license_files": 4,
+    "weights_or_generated_binaries_packaged": false
+  },
+  "native_regressions": {
+    "layer0_HC_cases": 84,
+    "layer0_complete_block_calls": 26,
+    "source2_consumer3_Attention_frames": 556,
+    "status": "pass"
+  },
+  "scope": "Complete original layer-2 single-token block; four-position generated HC streams, text/image-span routing, exact offloaded experts; no upstream blocks or Engram",
+  "maximum_unprimed_continuous_context": 4,
+  "untouched_full_Attention_kernel": "blocked_by_shared_memory_limit",
+  "full_model_quality": "not_run",
+  "end_to_end_speed": "not_measured",
+  "next_gate": "Consecutive complete source/consumer blocks with actual hidden/pre-mix handoff and atomic shared state",
+  "issue7_acceptance_complete": false,
+  "M2_complete": false
+}

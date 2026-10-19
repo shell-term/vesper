@@ -12,8 +12,14 @@ from .projections import validate_values
 CAPACITY = 1152
 
 
+def validate_frame_layers(layers):
+    # A source-only frame is used by the complete layer-2 block gate. It has no
+    # fabricated consumer input and does not extend the four sharing corpora.
+    return layers if type(layers) is tuple and layers == (2,) and type(layers[0]) is int else validate_group(layers)
+
+
 def initial_state(layers, batch):
-    validate_group(layers)
+    validate_frame_layers(layers)
     owners = [l for l in layers if role(l).owns_kv]
     return {"windows": {l: np.zeros((batch, 128, 512), np.uint16) for l in layers},
         "compressors": {l: (np.zeros((batch, 2 if role(l).ratio == 2 else 0, 512), np.float32),
@@ -23,7 +29,7 @@ def initial_state(layers, batch):
 
 
 def validate_frame(xs, layers, batch, position):
-    validate_group(layers)
+    validate_frame_layers(layers)
     if (type(position) is not int or not 0 <= position < CAPACITY or not isinstance(xs, dict) or set(xs) != set(layers)):
         raise ValueError("Invalid exact sharing-frame position/owners")
     shape = None
@@ -143,7 +149,7 @@ def stage_group(arrays, projections, norm, compressor, indexer, attention, layer
 
 class SharedAttentionFrame(NativeCompressedAttention):
     def __init__(self, arrays, projections, norm, compressor, indexer, attention, layers, batch=1):
-        self.layers = validate_group(layers)
+        self.layers = validate_frame_layers(layers)
         super().__init__(arrays, projections, norm, compressor, indexer, attention, batch, profile="long_context", capacity=CAPACITY)
 
     def __enter__(self):

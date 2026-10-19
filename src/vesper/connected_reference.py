@@ -49,7 +49,10 @@ def native_connected_stages(result):
 class OfficialConnected:
     """Original gate, experts, shared expert and MoE.forward; six-entry oracle LRU."""
 
-    def __init__(self, gate_fixture, router_fixture, shared_fixture, expert_directory, reference_directory, ordinal=0):
+    def __init__(self, gate_fixture, router_fixture, shared_fixture, expert_directory, reference_directory, ordinal=0, *, layer=0):
+        if type(layer) is not int or layer not in (0, 2):
+            raise ValueError("Unregistered connected MoE oracle layer")
+        self.layer = layer
         import torch
         self.torch = torch
         if (torch.version.git_version != ROUTER_TORCH_REVISION or torch.get_float32_matmul_precision() != "highest"
@@ -62,6 +65,8 @@ class OfficialConnected:
         weight, self.gate_manifest = load_gate_fixture(gate_fixture)
         biases, self.router_manifest = load_router_fixture(router_fixture)
         shared, self.shared_manifest = load_shared_fixture(shared_fixture)
+        if any(m["layer"] != layer for m in (self.gate_manifest, self.router_manifest, self.shared_manifest)):
+            raise ValueError("Original MoE oracle artifact layers differ")
         self.gate = OfficialGate(weight, biases, self.directory, ordinal)
         self.shared = OfficialExpert(shared, self.shared_manifest, self.directory, ordinal,
                                      weight_dtype=torch.float8_e4m3fn)
@@ -75,9 +80,9 @@ class OfficialConnected:
         if len(self.experts) == 6:
             self.experts.popitem(last=False)
         arrays, manifest = load_expert_fixture(self.expert_directory / f"expert-{expert:03d}/native-expert.npz")
-        if manifest["layer"] != 0 or manifest["expert"] != expert:
+        if manifest["layer"] != self.layer or manifest["expert"] != expert:
             raise ValueError("Oracle expert identity differs from the actual gate selection")
-        self.provenance[expert_key(0, expert)] = manifest
+        self.provenance[expert_key(self.layer, expert)] = manifest
         self.experts[expert] = OfficialExpert(arrays, manifest, self.directory, self.ordinal)
         return self.experts[expert]
 

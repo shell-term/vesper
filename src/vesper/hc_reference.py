@@ -92,7 +92,10 @@ def instrument_hc(tree):
 
 
 class HCOracle:
-    def __init__(self, directory, arrays, ordinal=0):
+    def __init__(self, directory, arrays, ordinal=0, *, layer=0):
+        if type(layer) is not int or layer not in (0, 2):
+            raise ValueError("Unregistered complete-block HC oracle layer")
+        self.layer = layer
         import torch
         import tilelang
         from tilelang.contrib.nvrtc import get_nvrtc_version
@@ -144,7 +147,7 @@ class HCOracle:
             self.methods[name] = hashlib.sha256(ast.dump(node).encode()).hexdigest()
             exec(compile(ast.Module(body=[node], type_ignores=[]), "<pinned-HC-method>", "exec"), scope)
             self.functions[name] = scope[name]
-        self.weights = {p + "_" + s: torch.from_numpy(arrays[f"layers.0.hc_{p}_{s}"]).to(f"cuda:{ordinal}")
+        self.weights = {p + "_" + s: torch.from_numpy(arrays[f"layers.{layer}.hc_{p}_{s}"]).to(f"cuda:{ordinal}")
                         for p in ("attn", "ffn") for s in ("fn", "scale", "base")}
         self.controls = []
 

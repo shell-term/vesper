@@ -33,12 +33,15 @@ def coefficients(value, shape):
 
 
 class NativeHC:
-    def __init__(self, arrays, ordinal=0):
+    def __init__(self, arrays, ordinal=0, *, layer=0):
+        if type(layer) is not int or layer not in (0, 2):
+            raise ValueError("Unregistered complete-block HC layer")
+        self.layer = layer
         self.arrays, self.ordinal, self.opened = arrays, ordinal, False
         self.stack, self.lock, self.budget = ExitStack(), threading.Lock(), MemoryBudget(cap=128 * MiB)
         for part in ("attn", "ffn"):
             for suffix, shape in (("fn", (24, 20480)), ("scale", (3,)), ("base", (24,))):
-                coefficients(arrays.get(f"layers.0.hc_{part}_{suffix}"), shape)
+                coefficients(arrays.get(f"layers.{layer}.hc_{part}_{suffix}"), shape)
 
     def _allocate(self, stack, size):
         pointer = self.device.allocate(size)
@@ -75,7 +78,7 @@ class NativeHC:
                 if self.blas.version != 120402 or self.blas.math_mode != 0:
                     raise ValueError("Unregistered HC cuBLAS profile")
                 self.blas.workspace(self._allocate(self.stack, GATE_BLAS_WORKSPACE), GATE_BLAS_WORKSPACE)
-                self.weights = {p + "_" + s: self._upload(self.stack, self.arrays[f"layers.0.hc_{p}_{s}"])
+                self.weights = {p + "_" + s: self._upload(self.stack, self.arrays[f"layers.{self.layer}.hc_{p}_{s}"])
                                 for p in ("attn", "ffn") for s in ("fn", "scale", "base")}
                 self.resident_bytes = sum(self.device.allocations.values())
                 self.opened = True

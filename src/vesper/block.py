@@ -1,4 +1,4 @@
-"""A bounded original layer-0 Transformer block, single rank and single token."""
+"""Bounded original layer-0/2 Transformer blocks, single rank and single token."""
 
 from contextlib import ExitStack
 import threading
@@ -6,13 +6,14 @@ import threading
 from .connected_reference import native_connected_stages
 from .hc import coefficients, hidden_shape
 from .resources import MemoryBudget, MiB
+from .shared_attention import SharedAttentionFrame
 from .window_attention import NativeWindowAttention
 
 
 def validate_block_input(hidden, pre_mix, image_span):
     hidden_shape(hidden)
     if hidden.shape != (1, 1, 4, 5120) or type(image_span) is not bool:
-        raise ValueError("Native layer-0 block currently supports one BF16 token and an explicit image-span flag")
+        raise ValueError("Native block currently supports one BF16 token and an explicit image-span flag")
     coefficients(pre_mix, (1, 1, 4))
 
 
@@ -23,9 +24,15 @@ class NativeBlock:
     are permitted after failed calls; committed model state is restored or blocked.
     """
 
-    def __init__(self, arrays, hc, normalization, projections, sparse_attention, moe):
+    def __init__(self, arrays, hc, normalization, projections, sparse_attention, moe, *, layer=0, compressor=None, indexer=None):
+        if type(layer) is not int or layer not in (0, 2):
+            raise ValueError("Unregistered complete Transformer block layer")
+        if (layer == 0 and (compressor is not None or indexer is not None)) or (layer == 2 and (compressor is None or indexer is None)):
+            raise ValueError("Block compression/index operators differ from the original layer role")
+        self.layer, self.compressor, self.indexer = layer, compressor, indexer
         self.arrays, self.hc, self.norm, self.projections, self.sparse, self.moe = arrays, hc, normalization, projections, sparse_attention, moe
-        self.attention = NativeWindowAttention(arrays, projections, normalization, sparse_attention)
+        self.attention = (NativeWindowAttention(arrays, projections, normalization, sparse_attention) if layer == 0 else
+            SharedAttentionFrame(arrays, {layer: projections}, normalization, compressor, indexer, sparse_attention, (layer,)))
         self.stack, self.lock, self.budget = ExitStack(), threading.Lock(), MemoryBudget(cap=32 * MiB)
         self.opened = False
         self.owned_device_peak = 0
@@ -39,12 +46,16 @@ class NativeBlock:
                 raise ValueError("Block operators must be open on the same qualified device")
             if self.moe.config.cache.primary_device != self.projections.ordinal:
                 raise ValueError("MoE and Attention compute devices differ")
+            if any(getattr(op, "layer", None) != self.layer for op in (self.hc, self.projections, self.moe)):
+                raise ValueError("Block HC, projection and MoE layer identities differ")
             try:
                 self.budget.acquire(32 * MiB)
                 self.stack.callback(self.budget.release, 32 * MiB)
                 self.stack.enter_context(self.attention)
                 self.devices = [op.device for op in (self.hc, self.norm, self.projections, self.sparse)]
-                self.devices += [self.attention.kv.device, *self.moe.devices.values()]
+                self.devices += ([self.attention.kv.device] if self.layer == 0 else
+                    [self.compressor.device, self.compressor.norm.device, self.indexer.device, self.indexer.norm.device])
+                self.devices += list(self.moe.devices.values())
                 if len({id(d) for d in self.devices}) != len(self.devices):
                     raise ValueError("Block device ledgers must have distinct ownership")
                 for device in self.devices:
@@ -92,7 +103,11 @@ class NativeBlock:
         with self.lock:
             if not self.opened:
                 raise RuntimeError("Native block is not open")
-            return self.attention.recover()
+            if self.layer == 0:
+                return self.attention.recover()
+            # Host candidate frames never publish partial model state.
+            self.attention._ready()
+            return self.attention.inspect()
 
     def step(self, hidden, pre_mix, image_span=False, *, start_pos=None):
         with self.lock:
@@ -110,16 +125,17 @@ class NativeBlock:
             attn_mixes = self.hc.mixes(hidden, "attn")
             add("hc_attn_", attn_mixes)
             x = add("attn_pre_", self.hc.pre(hidden, pre_mix))
-            x = add("attn_norm_", self.norm.norm(x, self.arrays["layers.0.attn_norm.weight"]))
+            x = add("attn_norm_", self.norm.norm(x, self.arrays[f"layers.{self.layer}.attn_norm.weight"]))
             def finish(attention_stages):
                 add("attention_", attention_stages)
-                after = add("attn_post_", self.hc.post(attention_stages["wo_b_output_bf16"], hidden, attn_mixes["post_fp32"], attn_mixes["comb_fp32"]))
+                output_key = "wo_b_output_bf16" if self.layer == 0 else f"layer{self.layer}_wo_b_output_bf16"
+                after = add("attn_post_", self.hc.post(attention_stages[output_key], hidden, attn_mixes["post_fp32"], attn_mixes["comb_fp32"]))
                 ffn_mixes = self.hc.mixes(after, "ffn")
                 add("hc_ffn_", ffn_mixes)
                 # The current FFN uses the preceding Attention pre coefficients.
                 # Its own ffn_pre is returned for the next block's Attention.
                 x = add("ffn_pre_", self.hc.pre(after, attn_mixes["pre_fp32"]))
-                x = add("ffn_norm_", self.norm.norm(x, self.arrays["layers.0.ffn_norm.weight"]))
+                x = add("ffn_norm_", self.norm.norm(x, self.arrays[f"layers.{self.layer}.ffn_norm.weight"]))
                 self._headroom()
                 result = self.moe.forward(x.reshape(5120), image_span)
                 add("moe_", native_connected_stages(result))
@@ -128,7 +144,8 @@ class NativeBlock:
                 stages["next_pre_mix_fp32"] = ffn_mixes["pre_fp32"]
                 self._headroom()
                 return stages
-            return self.attention.step(x, start_pos=start_pos, finalize=finish)
+            values = x if self.layer == 0 else {self.layer: x}
+            return self.attention.step(values, start_pos=start_pos, finalize=finish)
 
     def stats(self):
         return {"host_allowance_bytes": self.budget.peak, "host_reserved_bytes": self.budget.reserved,
