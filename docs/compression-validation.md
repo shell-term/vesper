@@ -7,8 +7,10 @@ original FP4 rounding and bounded compressed-KV publication pass exact reference
 comparisons. This follows the [uncompressed layer-0 block](layer0-block-validation.md).
 It does not qualify a complete compressed Attention layer. The subsequent
 [indexer probe](indexer-validation.md) qualifies bounded index arithmetic and
-named key/candidate/index handoffs separately; their integration and compressed-KV
-source sharing remain unfinished. Issue #7 and M2 stay open.
+named key/candidate/index handoffs separately. The later
+[connected probe](compressed-attention-validation.md) joins profiles 2/20/24
+and compressed-KV sharing 20-to-24 at context <=64. Other profiles and larger
+contexts remain unfinished. Issue #7 and M2 stay open.
 
 ## Results
 
@@ -166,6 +168,7 @@ atomic reset failure and incomplete/tampered source, coverage or golden records.
 
 The [indexer follow-up](indexer-validation.md) now covers index-key/query
 computation, sparse/candidate selection and named indexer source handoffs.
-Next: connect these to compressed Attention and its compressed-KV source
-sharing. Engram, other block profiles, full-model logits/sampling, quality and
-generation speed remain unfinished.
+The [connected compressed-Attention probe](compressed-attention-validation.md)
+now joins profiles 2/20/24 and compressed-KV source sharing 20-to-24 at context
+<=64. Larger-context connected selection, other complete-block profiles,
+Engram, full-model logits/sampling, quality and generation speed remain unfinished.

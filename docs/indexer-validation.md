@@ -7,10 +7,10 @@ elements**, with zero differences. An independent process with neither Torch nor
 TileLang installed reproduces every recorded boundary hash.
 
 This qualifies index arithmetic and the named source/consumer relationships.
-The compressor, indexer and sparse Attention operation still require connection
-and a complete compressed-Attention comparison. Compressed-KV source sharing,
-other layer profiles, Engram, full-model quality and generation speed remain
-unfinished. Issue #7 and M2 stay open. No retraining or new lossy quantization is
+The subsequent [connected compressed-Attention probe](compressed-attention-validation.md)
+now joins profiles 2/20/24 and compressed-KV sharing 20-to-24 at context <=64.
+Larger-context integration, other layer profiles, Engram, full-model quality
+and generation speed remain unfinished. Issue #7 and M2 stay open. No retraining or new lossy quantization is
 part of this implementation: the fixtures retain the released weights/scales.
 
 ## Original data and execution profile
@@ -200,8 +200,10 @@ identities reproduce unchanged, alongside the newly pinned indexer binary.
 - [Independent native-only replay](../results/2026-10-18-indexer/native-only-recheck.json)
 - [Summary, raw-file hashes and resource observations](../results/2026-10-18-indexer/summary.json)
 
-Next: connect original compressor latents and indexers to window/compressed
-Attention, implement compressed-KV source sharing and qualify complete
-compressed-Attention output/cache state. Other indexer sources (8/14/28/32/36),
-larger contexts/batching, distributed execution, Engram and full-model
-logits/sampling/quality/performance remain separate gates.
+The [connected follow-up](compressed-attention-validation.md) now qualifies
+complete Attention output/cache state for profiles 2/20/24, including
+compressed-KV/key/candidate sharing 20-to-24, in a generated-input context <=64.
+Next: larger-context connected comparisons, other indexer sources
+(8/14/28/32/36) and complete-block integration. Larger batching, distributed
+execution, Engram and full-model logits/sampling/quality/performance remain
+separate gates.

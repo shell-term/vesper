@@ -28,10 +28,12 @@ def validate_values(values, width):
     return math.prod(values.shape[:-1])
 
 
-def validate_projection_weights(arrays):
+def validate_projection_weights(arrays, layer=0):
+    if type(layer) is not int or layer not in (0, 2, 20, 24):
+        raise ValueError("Unsupported original Attention projection layer")
     for name, (rows, width) in {**FP8_LAYOUT, "wo_a": (8192, 4096)}.items():
         for suffix, shape in (("weight", (rows, width)), ("scale", (rows // 32, width // 32))):
-            a = arrays.get(f"layers.0.attn.{name}.{suffix}")
+            a = arrays.get(f"layers.{layer}.attn.{name}.{suffix}")
             if (not isinstance(a, np.ndarray) or a.dtype != np.uint8 or a.shape != shape or not a.flags.c_contiguous):
                 raise ValueError("Expected original finite block-32 Attention weights/scales")
             if np.any((a & 127) == 127) if suffix == "weight" else np.any(a == 255):
@@ -64,8 +66,9 @@ class GroupedBF16(Cublas):
 class NativeProjections:
     """Resident original matrices, serialized calls, scoped temporary allocations."""
 
-    def __init__(self, arrays, ordinal=0, library=None):
-        validate_projection_weights(arrays)
+    def __init__(self, arrays, ordinal=0, library=None, *, layer=0):
+        validate_projection_weights(arrays, layer)
+        self.layer = layer
         self.arrays, self.ordinal, self.library = arrays, ordinal, library
         self.stack, self.lock, self.opened = ExitStack(), threading.Lock(), False
         self.budget = MemoryBudget(cap=512 * MiB)
@@ -81,6 +84,7 @@ class NativeProjections:
         return pointer
 
     def __enter__(self):
+        layer = self.layer
         with self.lock:
             if self.opened:
                 raise RuntimeError("Projection runtime is already open")
@@ -104,11 +108,11 @@ class NativeProjections:
                     raise ValueError("Unregistered grouped BF16 cuBLAS profile; qualification required")
                 workspace = self._allocate(self.stack, GATE_BLAS_WORKSPACE)
                 self.blas.workspace(workspace, GATE_BLAS_WORKSPACE)
-                self.weights = {f"{n}.{s}": self._upload(self.stack, self.arrays[f"layers.0.attn.{n}.{s}"])
+                self.weights = {f"{n}.{s}": self._upload(self.stack, self.arrays[f"layers.{layer}.attn.{n}.{s}"])
                                 for n in FP8_LAYOUT for s in ("weight", "scale")}
                 self.wo_a = self._allocate(self.stack, 8192 * 4096 * 2)
                 with ExitStack() as temporary:
-                    w, s = [self._upload(temporary, self.arrays[f"layers.0.attn.wo_a.{n}"]) for n in ("weight", "scale")]
+                    w, s = [self._upload(temporary, self.arrays[f"layers.{layer}.attn.wo_a.{n}"]) for n in ("weight", "scale")]
                     self.device.launch(self.module, "projection_dequant_wo_a", [C.c_uint64(p) for p in (w, s, self.wo_a)] + [C.c_int(8192 * 4096)], 8192 * 4096)
                 converted = self.device.download(self.wo_a, (8192, 4096), np.uint16)
                 if np.any((converted & 0x7F80) == 0x7F80):
@@ -164,6 +168,22 @@ class NativeProjections:
                 return {"rounded_bf16": self.device.download(rounded, values.shape, np.uint16),
                         "input_fp8": self.device.download(q, values.shape, np.uint8),
                         "scale_e8m0": self.device.download(s, (*values.shape[:-1], 128), np.uint8), "output_bf16": result}
+
+    def round_window(self, values):
+        """Original per-32 post-RoPE FP8 rounding, without publishing a cache."""
+        with self.lock:
+            self._ready()
+            validate_values(values, 512)
+            if values.ndim != 3 or values.shape[0] not in (1, 2):
+                raise ValueError("Expected bounded window KV rows")
+            with ExitStack() as stack:
+                x = self._upload(stack, values)
+                rounded, codes, scales = [self._allocate(stack, n) for n in (values.nbytes, values.size, values.size // 32)]
+                self.device.launch(self.module, "kv_round32", [C.c_uint64(p) for p in (x, rounded, codes, scales)]
+                                   + [C.c_int(values.size // 32)], values.size)
+                return {"rounded_bf16": self.device.download(rounded, values.shape, np.uint16),
+                        "codes_fp8": self.device.download(codes, values.shape, np.uint8),
+                        "scales_e8m0": self.device.download(scales, (*values.shape[:2], 16), np.uint8)}
 
     def stats(self):
         device = getattr(self, "device", None)

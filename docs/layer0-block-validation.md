@@ -181,8 +181,10 @@ admission and guard cleanup, finalizer rollback and tampered/incomplete evidence
 The [compression follow-up](compression-validation.md) now qualifies original
 compressed-KV construction/rounding with bounded diagnostic state. The
 [indexer follow-up](indexer-validation.md) separately qualifies bounded index
-selection and named key/candidate/index handoffs. Complete compressed Attention
-and compressed-KV source sharing remain next.
+selection and named key/candidate/index handoffs. The later
+[connected compressed-Attention probe](compressed-attention-validation.md)
+qualifies profiles 2/20/24 and compressed-KV sharing 20-to-24 at context <=64;
+larger contexts and their full-block integration remain next.
 Other block profiles, larger prefill/batching, Engram, full-model
 logits/sampling, full-engine memory governance and workload performance remain
 open gates.

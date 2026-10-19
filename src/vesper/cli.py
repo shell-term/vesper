@@ -14,9 +14,16 @@ def main(argv=None) -> int:
                  "trace-reduction", "fetch-expert-fixture", "compare-expert", "build-store", "validate-cache",
                  "bench-cache", "validate-integrity", "fetch-router-fixture", "compare-router", "fetch-gate-fixture", "compare-gate",
                  "fetch-shared-fixture", "compare-shared", "compare-aggregation", "compare-original-accumulation",
-                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization", "compare-projections", "compare-block", "fetch-compression-fixture", "compare-compression", "fetch-indexer-fixture", "compare-indexer"):
+                 "plan-connected", "prepare-connected-store", "compare-connected", "prefix-preflight", "fetch-prefix-fixture", "capture-prefix", "compare-attention-storage", "compare-attention-memory", "compare-native-attention", "compare-window-kv", "compare-normalization", "compare-projections", "compare-block", "fetch-compression-fixture", "compare-compression", "fetch-indexer-fixture", "compare-indexer", "fetch-compressed-attention-fixture", "compare-compressed-attention"):
         command = sub.add_parser(name)
         command.add_argument("--output", type=Path)
+        if name == "fetch-compressed-attention-fixture":
+            command.add_argument("--directory", type=Path, default=Path("artifacts/compressed-attention-fixture"))
+        if name == "compare-compressed-attention":
+            for flag in ("fixture", "compression-fixture", "indexer-fixture", "attention-bundle"):
+                command.add_argument("--" + flag, type=Path, required=True)
+            command.add_argument("--reference-directory", type=Path, default=Path("artifacts/reference"))
+            command.add_argument("--device", type=int, default=0)
         if name == "fetch-indexer-fixture":
             command.add_argument("--directory", type=Path, default=Path("artifacts/indexer-fixture"))
         if name == "compare-indexer":
@@ -199,6 +206,12 @@ def main(argv=None) -> int:
         elif args.command == "compare-projections":
             from .projection_reference import compare_projections
             result = compare_projections(args.reference_directory, args.prefix_fixture, args.attention_bundle, args.device)
+        elif args.command == "fetch-compressed-attention-fixture":
+            from .compressed_attention_fixture import fetch_compressed_attention_fixture
+            result = fetch_compressed_attention_fixture(args.directory)
+        elif args.command == "compare-compressed-attention":
+            from .compressed_attention_reference import compare_compressed_attention
+            result = compare_compressed_attention(args.reference_directory, args.fixture, args.compression_fixture, args.indexer_fixture, args.attention_bundle, args.device)
         elif args.command == "fetch-indexer-fixture":
             from .indexer_fixture import fetch_indexer_fixture
             result = fetch_indexer_fixture(args.directory)

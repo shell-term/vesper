@@ -31,7 +31,8 @@ from .window_attention import NativeWindowAttention
 
 
 class ProjectionOracle:
-    def __init__(self, directory, arrays, ordinal):
+    def __init__(self, directory, arrays, ordinal, *, layer=0):
+        self.layer = layer
         import torch
         import tilelang
         if (str(torch.backends.cuda.preferred_blas_library()) != "_BlasBackend.Cublas"
@@ -46,7 +47,8 @@ class ProjectionOracle:
         self.kernel = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.kernel)
         self.workarounds = configure_reference_runtime(self.kernel, tilelang.__version__)
-        self.math = ReferenceMath(directory, {n: arrays[n] for n in NORM_WEIGHTS}, ordinal)
+        norm_names = NORM_WEIGHTS if layer == 0 else (f"layers.{layer}.attn.q_norm.weight", f"layers.{layer}.attn.kv_norm.weight")
+        self.math = ReferenceMath(directory, {n: arrays[n] for n in norm_names}, ordinal)
         self.tree = ast.parse((Path(directory) / "model.py").read_bytes())
         self.scope = {"torch": torch, "F": torch.nn.functional, "lru_cache": lru_cache, "world_size": 1, "fp8_block_size": 32,
                       "scale_fmt": "ue8m0", "scale_dtype": torch.float8_e8m0fnu, "act_quant": self.kernel.act_quant,
@@ -59,20 +61,20 @@ class ProjectionOracle:
             exec(compile(ast.Module(body=[node], type_ignores=[]), "<pinned-projection-model>", "exec"), self.scope)
         self.weights = {}
         for name in (*FP8_LAYOUT, "wo_a"):
-            w = torch.from_numpy(arrays[f"layers.0.attn.{name}.weight"]).to(f"cuda:{ordinal}").view(torch.float8_e4m3fn)
-            s = torch.from_numpy(arrays[f"layers.0.attn.{name}.scale"]).to(f"cuda:{ordinal}").view(torch.float8_e8m0fnu)
+            w = torch.from_numpy(arrays[f"layers.{layer}.attn.{name}.weight"]).to(f"cuda:{ordinal}").view(torch.float8_e4m3fn)
+            s = torch.from_numpy(arrays[f"layers.{layer}.attn.{name}.scale"]).to(f"cuda:{ordinal}").view(torch.float8_e8m0fnu)
             w.scale = s
             self.weights[name] = w
-        state = {"layers.0.attn.wo_a.weight": self.weights["wo_a"], "layers.0.attn.wo_a.scale": self.weights["wo_a"].scale}
+        state = {f"layers.{layer}.attn.wo_a.weight": self.weights["wo_a"], f"layers.{layer}.attn.wo_a.scale": self.weights["wo_a"].scale}
         conversion = ast.parse((Path(directory) / "convert.py").read_bytes())
         node = next(n for n in ast.walk(conversion) if isinstance(n, ast.If) and isinstance(n.test, ast.Call)
                     and ast.unparse(n.test) == "name.endswith('wo_a.weight')")
         self.methods["wo_a_conversion"] = hashlib.sha256(ast.dump(node).encode()).hexdigest()
-        local = {"torch": torch, "state_dicts": [state], "i": 0, "name": "layers.0.attn.wo_a.weight"}
+        local = {"torch": torch, "state_dicts": [state], "i": 0, "name": f"layers.{layer}.attn.wo_a.weight"}
         exec(compile(ast.Module(body=node.body, type_ignores=[]), "<pinned-wo-a-conversion>", "exec"), local)
-        self.weights["wo_a"] = state["layers.0.attn.wo_a.weight"]
+        self.weights["wo_a"] = state[f"layers.{layer}.attn.wo_a.weight"]
         self.converted_sha256 = hashlib.sha256(_numpy(self.weights["wo_a"]).tobytes()).hexdigest()
-        self.sink = torch.from_numpy(arrays["layers.0.attn.attn_sink"]).to(f"cuda:{ordinal}")
+        self.sink = torch.from_numpy(arrays[f"layers.{layer}.attn.attn_sink"]).to(f"cuda:{ordinal}")
         self.fp32_kernels, self.fp8_controls, self.layer_controls = {}, 0, []
 
     def method(self, cls, name):
@@ -107,6 +109,13 @@ class ProjectionOracle:
         output = torch.einsum("bsgd,grd->bsgr", rounded, self.weights["wo_a"].view(8, 1024, 4096))
         return {"input_fp8": _numpy(q.view(torch.uint8)), "scale_e8m0": _numpy(s.view(torch.uint8)),
                 "rounded_bf16": _numpy(rounded), "output_bf16": _numpy(output)}
+
+    def round_window(self, values):
+        x = self.math.tensor(values)
+        q, s = self.kernel.act_quant(x, 32, "ue8m0", self.torch.float8_e8m0fnu)
+        rounded = self.kernel.act_quant(x.clone(), 32, "ue8m0", self.torch.float8_e8m0fnu, True)
+        return {"rounded_bf16": _numpy(rounded), "codes_fp8": _numpy(q.view(self.torch.uint8)),
+                "scales_e8m0": _numpy(s.view(self.torch.uint8))}
 
     def stub(self, batch, memory):
         self.scope["sparse_attn"] = memory

@@ -24,7 +24,8 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 | Native Hyper-Connections and residuals | Original FP32 projection/reduction, Sinkhorn iterations, coefficient handoff and BF16 boundaries | 84 component cases pass; all four changed-arithmetic controls detected; independent native-only replay passes |
 | Full Transformer block | Connected Attention, MoE, Hyper-Connections, residuals and layer-specific Engram/compressed profiles | Uncompressed layer 0 passes 26 single-token calls / 225 boundaries each plus unchanged Block.forward hidden/next-coefficient/KV controls; other profiles and Engram pending |
 | Original compressor and compressed KV | Original learned FP32/BF16 projections, softmax pooling, partial groups, group-position RoPE, FP4/E4M3 rounding and state publication | 49 component cases and 432 state calls, 8,751 comparisons, zero differences; five refusal/retries and both snapshot profiles pass; independent native-only replay passes; generated inputs and host diagnostic cache only; subsequent indexer probe below |
-| Native indexers and named index sharing | Original key/query/weight projections, FP4/E8M0 rounding, BF16 score boundaries, ordered top-512, candidate blocks, source/consumer ownership and atomic state | Layers 2/20/24 pass 261 component cases and 99 frames, 11,189 comparisons, zero differences; unchanged forward/sharing controls, five refusal/retries, snapshot restoration and native-only replay pass; bounded generated-input/primed-history diagnostic scope, complete compressed Attention/KV sharing pending |
+| Native indexers and named index sharing | Original key/query/weight projections, FP4/E8M0 rounding, BF16 score boundaries, ordered top-512, candidate blocks, source/consumer ownership and atomic state | Layers 2/20/24 pass 261 component cases and 99 frames, 11,189 comparisons, zero differences; unchanged forward/sharing controls, five refusal/retries, snapshot restoration and native-only replay pass; bounded generated-input/primed-history diagnostic scope; connected compressed-Attention follow-up below |
+| Connected compressed Attention | Complete original layer projections, compressor latents, indexers, concatenated window/compressed KV and output, source sharing and atomic state | Profiles 2/20/24 pass 103 frames / 309 layer calls, 31,841 comparisons, zero differences; unchanged full-forward/cache controls, five refusal/retries, snapshot restoration and native-only replay pass; generated independent layer inputs, context <=64, other profiles/larger contexts/complete blocks pending |
 | Full model | Router sets/weights, attention/indexing/KV, logits and sampling | Not implemented |
 | Workloads | Reproducible reasoning, coding and tool-use evaluations | Not run |
 | Resource policy | All owned memory plus pressure behavior, concurrency with other work | Bounded cache buffers and injected pressure/refusal/recovery pass; full-engine/OS policy pending |
@@ -200,5 +201,17 @@ preserve both key owners and sharing state. The 261 components and 99 frames
 match every checked bit in paired and native-only processes. This is generated
 input with explicit diagnostic long-history priming, at most 16,392 index
 positions and the pinned single-block CUDA top-k profile. It does not yet
-connect compressors through complete compressed Attention, compressed-KV
-sharing, every layer/context/distributed profile or full-model quality/speed.
+connect compressors through complete compressed Attention or compressed-KV
+sharing; that later subset is described below. Every layer/context/distributed
+profile and full-model quality/speed remain separate requirements.
+
+The [connected compressed-Attention probe](compressed-attention-validation.md)
+joins original profiles 2/20/24 through final output, including source-20 KV,
+index-key and candidate handoffs to 24. Each frame also matches 28 controls from
+separately executed unchanged full Attention methods and their real sharing
+globals. All 103 frames and 31,841 native/oracle boundaries match, including
+failure/retry, whole-frame snapshot restoration and native-only replay. The
+64-token bound means larger-context window wraps and actual top-512/candidate
+pruning still require connection tests. Other profiles, complete Transformer
+blocks and full-model quality remain unfinished. State is bounded host
+diagnostic storage, with no generation-throughput claim.

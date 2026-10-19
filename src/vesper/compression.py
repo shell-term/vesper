@@ -99,6 +99,7 @@ class NativeCompression:
                         # The original ratio-2 module loads these BF16 bytes into FP32 parameters.
                         self.weights[layer, part] = self._upload(self.stack, bf16_values(a) if layer == 2 else a)
                 self.norm = self.stack.enter_context(NativeNormRoPE(self.ordinal))
+                self.resident_bytes = sum(self.device.allocations.values())
                 self.opened = True
                 return self
             except BaseException:
@@ -239,46 +240,8 @@ class NativeCompressedKV:
             pos = self.position if start_pos is None else start_pos
             validate_compression_input(values, self.batch, pos, self.position)
             sequence = values.shape[1]
-            stages = self.runtime.project(values, self.layer)
-            kv_state, score_state, cache = self.kv_state.copy(), self.score_state.copy(), self.cache.copy()
-            if self.ratio == 2:
-                kv, scores = stages["wkv_fp32"], stages["wgate_fp32"]
-                if pos == 0:
-                    cutoff = sequence - sequence % 2
-                    if sequence % 2:
-                        kv_state[:, 0], score_state[:, 0] = kv[:, -1], scores[:, -1]
-                    pairs = [np.ascontiguousarray(a[:, :cutoff]).reshape(self.batch, cutoff // 2, 2, 512) for a in (kv, scores)]
-                else:
-                    kv_state[:, pos % 2], score_state[:, pos % 2] = kv[:, 0], scores[:, 0]
-                    pairs = [np.ascontiguousarray(a[:, None]) for a in (kv_state, score_state)] if (pos + 1) % 2 == 0 else None
-                emits = (sequence >= 2) if pos == 0 else (pos + 1) % 2 == 0
-                if emits:
-                    stages.update(("pool_" + name, a) for name, a in self.runtime.pool(*pairs).items())
-                    pooled = stages["pool_pooled_bf16"]
-                else:
-                    pooled = None
-            else:
-                pooled = stages["wkv_bf16"]
-            if pooled is not None:
-                name = f"layers.{self.layer}.attn.compressor.norm.weight"
-                normalized = self.runtime.norm.norm(pooled, self.runtime.arrays[name])
-                stages.update(("norm_" + n, a) for n, a in normalized.items())
-                latent = normalized["output_bf16"]
-                stages["latent_pre_rope_bf16"] = latent.copy()
-                positions = (np.arange(latent.shape[1], dtype=np.int32) * self.ratio if pos == 0
-                             else np.array([pos + 1 - self.ratio], np.int32))
-                rotated = self.runtime.norm.rope(latent, int(positions[0]), "compressed-yarn", positions=positions)
-                stages.update(("rope_" + n, a) for n, a in rotated.items())
-                rounded = self.runtime.round_kv(rotated["output_bf16"])
-                stages.update(("quant_" + n, a) for n, a in rounded.items())
-                start = pos // self.ratio
-                cache[:, start:start + latent.shape[1]] = rounded["rounded_bf16"]
-                stages["latent_positions_i32"] = positions
-            else:
-                stages["latent_pre_rope_bf16"] = np.empty((self.batch, 0, 512), np.uint16)
-                stages["latent_positions_i32"] = np.empty((0,), np.int32)
-            stages.update(kv_state_fp32=kv_state.copy(), score_state_fp32=score_state.copy(),
-                          cache_bf16=cache.copy(), visible_bf16=cache[:, :(pos + sequence) // self.ratio].copy(order="C"))
+            stages, (kv_state, score_state, cache) = stage_compression(
+                self.runtime, self.layer, self.batch, pos, (self.kv_state, self.score_state, self.cache), values)
             self.budget.acquire(0)
             # No publication until all arithmetic, diagnostic downloads and copies succeed.
             self.kv_state, self.score_state, self.cache, self.position = kv_state, score_state, cache, pos + sequence
@@ -325,3 +288,50 @@ class NativeCompressedKV:
             self.opened, self.handle, self.saved = False, None, None
             self.kv_state = self.score_state = self.cache = None
             self.budget.release(16 * MiB)
+
+
+def stage_compression(runtime, layer, batch, pos, source, values):
+    """Return original compressor/cache work without changing committed state."""
+    validate_compression_input(values, batch, pos, pos)
+    ratio, sequence = LAYERS[layer], values.shape[1]
+    stages = runtime.project(values, layer)
+    kv_state, score_state, cache = (a.copy() for a in source)
+    if ratio == 2:
+        kv, scores = stages["wkv_fp32"], stages["wgate_fp32"]
+        if pos == 0:
+            cutoff = sequence - sequence % 2
+            if sequence % 2:
+                kv_state[:, 0], score_state[:, 0] = kv[:, -1], scores[:, -1]
+            pairs = [np.ascontiguousarray(a[:, :cutoff]).reshape(batch, cutoff // 2, 2, 512) for a in (kv, scores)]
+        else:
+            kv_state[:, pos % 2], score_state[:, pos % 2] = kv[:, 0], scores[:, 0]
+            pairs = [np.ascontiguousarray(a[:, None]) for a in (kv_state, score_state)] if (pos + 1) % 2 == 0 else None
+        emits = (sequence >= 2) if pos == 0 else (pos + 1) % 2 == 0
+        if emits:
+            stages.update(("pool_" + name, a) for name, a in runtime.pool(*pairs).items())
+            pooled = stages["pool_pooled_bf16"]
+        else:
+            pooled = None
+    else:
+        pooled = stages["wkv_bf16"]
+    if pooled is not None:
+        name = f"layers.{layer}.attn.compressor.norm.weight"
+        normalized = runtime.norm.norm(pooled, runtime.arrays[name])
+        stages.update(("norm_" + n, a) for n, a in normalized.items())
+        latent = normalized["output_bf16"]
+        stages["latent_pre_rope_bf16"] = latent.copy()
+        positions = (np.arange(latent.shape[1], dtype=np.int32) * ratio if pos == 0
+                     else np.array([pos + 1 - ratio], np.int32))
+        rotated = runtime.norm.rope(latent, int(positions[0]), "compressed-yarn", positions=positions)
+        stages.update(("rope_" + n, a) for n, a in rotated.items())
+        rounded = runtime.round_kv(rotated["output_bf16"])
+        stages.update(("quant_" + n, a) for n, a in rounded.items())
+        start = pos // ratio
+        cache[:, start:start + latent.shape[1]] = rounded["rounded_bf16"]
+        stages["latent_positions_i32"] = positions
+    else:
+        stages["latent_pre_rope_bf16"] = np.empty((batch, 0, 512), np.uint16)
+        stages["latent_positions_i32"] = np.empty((0,), np.int32)
+    stages.update(kv_state_fp32=kv_state.copy(), score_state_fp32=score_state.copy(),
+                  cache_bf16=cache.copy(), visible_bf16=cache[:, :(pos + sequence) // ratio].copy(order="C"))
+    return stages, (kv_state, score_state, cache)

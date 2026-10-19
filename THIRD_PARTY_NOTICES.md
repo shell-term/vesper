@@ -155,6 +155,18 @@ The complete [PyTorch license](third_party/PyTorch-LICENSE) remains included in
 source and binary distributions. Diagnostic key-cache transactions, snapshot
 ownership and admission guards are Vesper runtime code.
 
+## Connected compressed Attention
+
+The connected profiles compose original `Attention.forward`, `_window_kv`,
+`_compress_kv`, `Compressor.forward` and `Indexer.forward` formulas with the
+previously described native operators and retained DeepSeek/PyTorch licenses.
+The optional full-forward controls execute unchanged method ASTs and explicitly
+use the qualified official-arithmetic PTX memory adapter. The native sparse
+Attention binary and its existing qualification/license receipt are unchanged.
+Downloaded source, model weights and generated binaries remain local artifacts.
+Whole-frame host publication, snapshot ownership and finalizer failure handling
+are Vesper runtime code; no additional tensor-framework code is redistributed.
+
 ## Runtime dependencies
 
 The native window KV quantizer, ring-slot formulas and index construction follow
