@@ -9,6 +9,7 @@ import numpy as np
 
 from vesper.kv import NativeWindowKV, WindowSnapshot, validate_kv_input, window_indices
 from vesper.kv_validation import kv_inputs, validate_goldens
+from vesper.resources import GiB
 
 
 class WindowKVTests(unittest.TestCase):
@@ -55,7 +56,8 @@ class WindowKVTests(unittest.TestCase):
     def test_snapshot_identity_and_failed_publication_do_not_change_active_state(self):
         native = NativeWindowKV()
         native.position, native.active, native.buffers = 129, 0, [1, 2, 3]
-        with patch.object(native, "_require_open"), patch.object(native, "_copy") as transfer:
+        with patch('vesper.resources.physical_memory',return_value={'available':64*GiB}), \
+                patch.object(native, "_require_open"), patch.object(native, "_copy") as transfer:
             transfer.side_effect = OSError("copy failed")
             with self.assertRaises(OSError):
                 native.snapshot()
@@ -78,6 +80,15 @@ class WindowKVTests(unittest.TestCase):
             self.assertIsNone(native.handle)
             with self.assertRaises(ValueError):
                 native.rollback(handle)
+
+    def test_snapshot_refuses_publication_until_the_physical_reserve_returns(self):
+        native=NativeWindowKV(); native.position,native.active,native.buffers=129,0,[1,2,3]
+        with patch.object(native,'_require_open'),patch.object(native,'_copy'):
+            with patch('vesper.resources.physical_memory',return_value={'available':16*GiB}):
+                with self.assertRaises(MemoryError): native.snapshot()
+            self.assertIsNone(native.handle); self.assertEqual((native.position,native.active),(129,0))
+            with patch('vesper.resources.physical_memory',return_value={'available':64*GiB}):
+                self.assertEqual(native.snapshot().position,129)
 
     def test_closed_operations_and_failed_entry_keep_allowance_zero(self):
         native = NativeWindowKV()
