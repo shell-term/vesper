@@ -1,10 +1,12 @@
 import copy
 import json
 from pathlib import Path
+import tempfile
 import unittest
 from unittest.mock import patch
 
-from vesper.engram_qualification import ROOT,CRITERIA,qualify,validate_manifest,validate_native,validate_storage
+from vesper.engram_qualification import ROOT,CRITERIA,qualify,validate_manifest,validate_native,validate_storage,verify_notice
+from vesper.model_artifacts import digest
 from vesper.resources import GiB
 
 
@@ -29,6 +31,17 @@ class EngramQualificationTests(unittest.TestCase):
                 lambda m:m['criteria'][0].update(criterion='a weaker check'),lambda m:m['evidence'][0].update(sha256='0'*64)):
             changed=copy.deepcopy(self.manifest); mutate(changed)
             with self.assertRaises(ValueError): validate_manifest(changed)
+
+    def test_git_license_line_endings_are_portable_but_body_changes_fail(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            text=b'Copyright original author\nPermission text remains exact.\n'; file=Path(tmp)/'LICENSE'
+            entry={'file':'LICENSE','bytes':len(text),'sha256':digest(text),'line_endings':'LF'}
+            for raw in (text,text.replace(b'\n',b'\r\n')):
+                file.write_bytes(raw); verify_notice(tmp,entry)
+            for raw in (text.replace(b'original',b'changed!'),text.replace(b'\n',b'\r'),text+b' '):
+                file.write_bytes(raw)
+                with self.assertRaises(ValueError): verify_notice(tmp,entry)
+            with self.assertRaises(ValueError): verify_notice(tmp,{**entry,'file':'../LICENSE'})
 
     def test_native_replay_refuses_changed_boundaries_frameworks_or_history(self):
         validate_native(self.native,self.original,self.raw)

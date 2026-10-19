@@ -186,7 +186,10 @@ all originals must already exist. It streams substantial data and is deliberatel
 separate from preparation/comparison probes.
 
 The acceptance manifest pins all complete reports and the four attribution/
-license files. Its validator rejects missing/substituted cases, boundaries,
+license files. License text uses LF for hashing so Git's CRLF/LF checkout
+conversion is portable; every other byte remains checked. Released model,
+source-artifact and numerical identities always hash their raw original bytes.
+Its validator rejects missing/substituted cases, boundaries,
 failure evidence, native compiler identity, framework independence and original
 acceptance wording. CPU CI tests those refusals without model downloads or GPUs.
 See [third-party notices](../THIRD_PARTY_NOTICES.md) for adapted original

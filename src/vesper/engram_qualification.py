@@ -10,7 +10,7 @@ from .resources import MemoryBudget,MiB,GiB
 
 ROOT='results/2026-10-19-engram'
 EVIDENCE=('original.json','native.json','direct-io.json','import-plan.json')
-QUALIFIED_MANIFEST_SHA256='306d2f3342a28cadecc39e20b0ec13812c9b6ef4b9facfbfec32d49ec8c18789'
+QUALIFIED_MANIFEST_SHA256='73336890f0007c693becc969a8b33abd0a1e099353cd7ef928b28049f6852363'
 CRITERIA=(
     ('tokenizer_hash_mask_address','Preserve tokenizer/compressed-vocabulary mapping, N-gram hashing, masks and row addressing.'),
     ('original_identities_notices','Verify original weight/scale/config/tokenizer identities and third-party notices.'),
@@ -76,6 +76,19 @@ def validate_manifest(m):
         raise ValueError('Incomplete or substituted original Issue #8 acceptance manifest')
 
 
+def verify_notice(root,entry):
+    """Git checkouts may translate CRLF; preserve every other license byte.
+
+    This text-only rule never applies to model/source artifact identities or
+    original numerical goldens, which continue to use their raw released bytes.
+    """
+    root=Path(root).resolve(); path=(root/entry['file']).resolve()
+    if not path.is_relative_to(root) or not 0<path.stat().st_size<=MiB or entry.get('line_endings')!='LF':
+        raise ValueError('Original attribution/license path, size or text policy differs')
+    raw=path.read_bytes().replace(b'\r\n',b'\n')
+    if len(raw)!=entry['bytes'] or digest(raw)!=entry['sha256']: raise ValueError('Original attribution/license evidence differs')
+
+
 def qualify(root,manifest_path):
     root=Path(root).resolve(); path=Path(manifest_path)
     if path.stat().st_size>65536: raise ValueError('Excessive Issue #8 acceptance manifest')
@@ -90,10 +103,7 @@ def qualify(root,manifest_path):
             raw.append(data); reports.append(json.loads(data))
         original,native,io,plans=reports
         validate_goldens(original); validate_native(native,original,raw[0]); validate_storage(io,plans)
-        for e in m['notices']:
-            p=(root/e['file']).resolve()
-            if not p.is_relative_to(root) or p.stat().st_size!=e['bytes'] or digest(p.read_bytes())!=e['sha256']:
-                raise ValueError('Original attribution/license evidence differs')
+        for e in m['notices']: verify_notice(root,e)
         return {'schema_version':1,'probe':'issue8_acceptance_audit','status':'pass','model':MODEL,'revision':REVISION,
             'manifest_sha256':canonical(m),'criteria':[{'id':n,'criterion':c,'status':'pass'} for n,c in CRITERIA],
             'evidence':m['evidence'],'notice_files_verified':len(m['notices']),'successful_session_cases':110,'bitwise_boundaries':6820,
