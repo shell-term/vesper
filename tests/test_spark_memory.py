@@ -1,5 +1,6 @@
 """UMA CPU/GPU admission shares one ceiling and preserves rollback/retry."""
 import unittest
+from unittest.mock import patch
 
 from vesper.memory import MemoryPolicy, RuntimeMemory
 from vesper.resources import GiB, MiB, MemoryBudget
@@ -7,6 +8,13 @@ from vesper.spark_backbone_runtime import spark_memory_policy, SPARK_ASSET_CAP
 
 
 class SparkMemoryTests(unittest.TestCase):
+    def setUp(self):
+        # Both the injected runtime observer and component MemoryBudget must
+        # see the same synthetic machine. CI hosts need no actual 32 GiB RAM.
+        physical = patch('vesper.resources.physical_memory', return_value={'available':48 * GiB})
+        physical.start()
+        self.addCleanup(physical.stop)
+
     def runtime(self, **overrides):
         config=dict(host_cap_bytes=GiB, pinned_cap_bytes=128*MiB,
                     device_caps={0:GiB}, unified_device_memory=True)
