@@ -32,10 +32,19 @@ index manifests, capped plan/report metadata, scratch and progress allowance
 sum to less than that. Co-located run/bank storage retains the earlier 8 GiB
 preparation admission. Each independent capture separately admits its sealed
 actual call count times the 4 MiB per-call maximum, plus 64 MiB for its report
-and 4 MiB for its context. Plans/reports and row metadata refuse their bounds
-before publication. These checks preserve the **64 GiB available-disk floor**;
-they are cooperative admissions, not OS quotas. The task and output budget do
-not change when storage moves.
+and 4 MiB for its context. The original framework capture additionally admits
+**8 GiB of startup headroom**: its framework/compiler/driver activity is not
+bounded by the record census. A reference attempt was interrupted during its
+first token when system-volume free space fell below 64 GiB after admission.
+The small explicitly directed build cache did not explain that decrease; the
+responsible system allocation has not been established.
+
+Preparation and both capture runners now check the **64 GiB available-disk
+floor** at every progress checkpoint, failing the owned run before publishing
+that checkpoint if space has fallen. Plans/reports and row metadata also refuse
+their bounds before publication. These are cooperative admissions/checkpoints,
+not OS quotas or protection against another application's intervening writes.
+The task and output budget do not change when storage moves.
 
 The [source resolver](../src/vesper/source_roots.py) rejects unregistered roots,
 foreign markers, overlapping roots, changed configuration, traversal and linked

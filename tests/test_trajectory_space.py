@@ -6,7 +6,7 @@ from unittest.mock import patch
 from vesper.generation_assets import checked_cache
 from vesper.resources import GiB,MiB
 from vesper.source_roots import SourceRoots
-from vesper.trajectory_space import preparation_file_bounds,preparation_admission,capture_admission
+from vesper.trajectory_space import preparation_file_bounds,preparation_admission,capture_admission,disk_checked_progress
 from test_source_roots import mounted
 
 
@@ -34,6 +34,25 @@ class TrajectorySpaceTests(unittest.TestCase):
             self.assertEqual(capture_admission(plan),(count*4+68)*MiB)
         for count,actual in ((0,0),(513,513),(190,189),(True,1)):
             with self.assertRaises(ValueError):capture_admission({'completion':{'calls':count},'calls':[{}]*actual})
+
+    def test_reference_runtime_startup_is_admitted_separately_from_record_bytes(self):
+        plan={'completion':{'calls':104},'calls':[{}]*104}
+        self.assertEqual(capture_admission(plan,reference=True),8*GiB+484*MiB)
+        self.assertEqual(capture_admission(plan,reference=False),484*MiB)
+        with self.assertRaises(ValueError):capture_admission(plan,reference='reference')
+
+    def test_disk_consumed_after_admission_stops_before_the_next_progress_publication(self):
+        from collections import namedtuple
+        Usage=namedtuple('Usage','total used free');written=[]
+        progress=disk_checked_progress(Path('.'),written.append)
+        with patch('vesper.generation_assets.shutil.disk_usage',side_effect=[
+                Usage(128*GiB,0,64*GiB+MiB),Usage(128*GiB,0,64*GiB-1),Usage(128*GiB,0,64*GiB+MiB)]):
+            progress({'original_layer':0,'position':0})
+            with self.assertRaisesRegex(OSError,'64 GiB disk reserve'):
+                progress({'original_layer':1,'position':0})
+            self.assertEqual(written,[{'original_layer':0,'position':0}])
+            progress({'original_layer':2,'position':0})
+        self.assertEqual(written,[{'original_layer':0,'position':0},{'original_layer':2,'position':0}])
 
     def test_oversized_original_cache_sidecar_fails_before_either_file_is_written(self):
         with tempfile.TemporaryDirectory() as tmp:

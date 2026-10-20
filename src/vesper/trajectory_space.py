@@ -7,6 +7,7 @@ free-space floor stays in reserve_disk; weight imports admit their own SSD space
 from pathlib import Path
 
 from .backbone import LAYERS
+from .generation_assets import reserve_disk
 from .indexed_store import MAX_INDEX_BYTES
 from .resources import GiB, MiB
 from .sequence import MAX_CALLS, MAX_EMBEDDINGS, MAX_ROWS
@@ -14,6 +15,7 @@ from .source_roots import roots
 
 REPORT_BYTES = 64 * MiB
 CASE_BYTES = 4 * MiB
+REFERENCE_STARTUP_BYTES = 8 * GiB
 
 
 def preparation_file_bounds():
@@ -38,8 +40,24 @@ def preparation_admission(root):
     return 8*GiB
 
 
-def capture_admission(plan):
+def capture_admission(plan,*,reference=False):
+    if type(reference) is not bool:raise ValueError('Expected an explicit reference-runtime admission choice')
     count=plan['completion']['calls']
     if (type(count) is not int or not 1<=count<=MAX_CALLS or type(plan['calls']) is not list
             or len(plan['calls'])!=count):raise ValueError('Unbounded or incomplete sealed call census')
-    return count*CASE_BYTES+REPORT_BYTES+4*MiB
+    records=count*CASE_BYTES+REPORT_BYTES+4*MiB
+    # Reference framework/compiler/driver startup is not bounded by the JSON
+    # record census. Retain separate headroom even with external expert banks.
+    return records+(REFERENCE_STARTUP_BYTES if reference else 0)
+
+
+def disk_checked_progress(run,writer):
+    """Fail the owned capture at its next checkpoint if free space falls.
+
+    Other applications can consume disk after initial admission. This remains a
+    cooperative checkpoint check, not a filesystem quota or global guarantee.
+    """
+    def progress(value):
+        reserve_disk(run,0)
+        writer(value)
+    return progress

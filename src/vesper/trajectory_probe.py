@@ -13,7 +13,7 @@ from .trajectory_evidence import read,validate_original,validate_native,load_pla
 from .trajectory_workspace import run_path,migrate_input,own_evidence
 from .model_artifacts import digest
 from .source_roots import source_scope
-from .trajectory_space import capture_admission,REPORT_BYTES
+from .trajectory_space import capture_admission,disk_checked_progress,REPORT_BYTES
 from .generation_assets import reserve_disk
 
 
@@ -32,6 +32,7 @@ def main():
     reference_run=own_evidence(a.artifacts,a.reference_run or run)
     reference=own_evidence(a.artifacts,a.reference or reference_run/'original.json')
     def progress(value):print(json.dumps(value),flush=True)
+    if a.operation in ('prepare','reference','native'):progress=disk_checked_progress(run,progress)
     if a.operation=='migrate-input':progress(migrate_input(a.artifacts,a.run));return
     if a.operation=='check':
         original,raw=read(reference);native,_=read(run/'native.json');validate_native(native,run,original,raw,reference_run)
@@ -44,7 +45,7 @@ def main():
         with source_scope(a.artifacts) as storage:
             admission=None
             if a.operation!='prepare':
-                admission=capture_admission(load_plan(a.artifacts,run));reserve_disk(run,admission)
+                admission=capture_admission(load_plan(a.artifacts,run),reference=a.operation=='reference');reserve_disk(run,admission)
             if a.operation=='reference':
                 if a.nvrtc_bin is not None:
                     if os.name!='nt':p.error('Explicit NVRTC DLL preload is Windows-only')
