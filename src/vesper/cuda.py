@@ -24,6 +24,24 @@ def _bind(lib, name, args):
     return function
 
 
+def load_toolkit_library(name):
+    """Resolve installed Linux CUDA layouts, including ARM64 SBSA toolkits.
+
+    Try the system loader first. Additional candidates stay inside CUDA_HOME;
+    no framework wheel directory or downloaded binary is searched implicitly.
+    """
+    if os.name == 'nt' or name not in ('nvrtc', 'cublas'):
+        raise ValueError('Expected a supported Linux CUDA toolkit library')
+    root=Path(os.environ.get('CUDA_HOME','/usr/local/cuda'))
+    candidates=[ctypes.util.find_library(name) or f'lib{name}.so']
+    candidates.extend(str(root/part/f'lib{name}.so') for part in
+        ('lib64','targets/sbsa-linux/lib','targets/aarch64-linux/lib','targets/x86_64-linux/lib'))
+    for path in dict.fromkeys(candidates):
+        try: return C.CDLL(path)
+        except OSError: pass
+    raise RuntimeError(f'Installed CUDA {name} library was not found in the system loader or toolkit layouts')
+
+
 class Driver:
     @observe_external('driver_initialization')
     def __init__(self):
@@ -238,7 +256,7 @@ def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: b
     else:
         root = Path(os.environ.get("CUDA_HOME", "/usr/local/cuda"))
         dll_directory = None
-        lib = C.CDLL(ctypes.util.find_library("nvrtc") or str(root / "lib64/libnvrtc.so"))
+        lib = load_toolkit_library('nvrtc')
     pointer, size = C.c_void_p, C.c_size_t
     create = _bind(lib, "nvrtcCreateProgram", [C.POINTER(pointer), C.c_char_p, C.c_char_p, C.c_int, pointer, pointer])
     compile_ = _bind(lib, "nvrtcCompileProgram", [pointer, C.c_int, C.POINTER(C.c_char_p)])

@@ -12,6 +12,7 @@ This report is scoped platform evidence; model integration/quality remain open.
 
 - [Management isolation #13](https://github.com/shell-term/vesper/issues/13).
 - [Bounded platform baseline #14](https://github.com/shell-term/vesper/issues/14).
+- [S1 native model integration #16](https://github.com/shell-term/vesper/issues/16).
 - [Spark issues](https://github.com/shell-term/vesper/issues?q=is%3Aissue+label%3Aplatform%3Adgx-spark).
 - [S0: Management and platform](https://github.com/shell-term/vesper/milestone/5).
 - [S1: Native model integration](https://github.com/shell-term/vesper/milestone/6).
@@ -20,6 +21,7 @@ This report is scoped platform evidence; model integration/quality remain open.
 
 These are task links, not pass claims. Read current state using
 `python -m vesper.workspace read-progress --issue 13` or `--issue 14`.
+Use `--issue 16` for S1 implementation and validation progress.
 Registry changes are required before additional task IDs become valid. Shared
 model source may be inspected, but PC progress/results do not qualify Spark.
 
@@ -31,3 +33,13 @@ never add reported VRAM to host RAM. Context/compiler overhead is separate from
 explicit buffer caps. Store sanitized results under `results/dgx-spark/`, private
 data under `artifacts/dgx-spark/`. Initial profile: original native weights;
 lossy requantization and approximate routing are not adopted.
+
+S1 integrates the original expert and Engram storage with all 40 model blocks,
+the real vocabulary head and generated-token feedback. Component tests and
+prepared route replays are useful intermediate evidence, but do not complete S1.
+The S1 SSD acquisition is separate from the small S0 probe: up to the pinned
+510.30 GB checkpoint may be acquired and verified without loading it into RAM.
+Keep the existing services running and budget CPU, GPU and pinned allocations
+against the same physical pool, including dense-weight staging and scratch.
+Spark Attention and head candidates require their own toolchain and numerical
+qualification; PC binary receipts cannot be reused as Spark qualification.

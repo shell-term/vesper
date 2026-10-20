@@ -82,6 +82,7 @@ class MemoryPolicy:
     device_caps:dict=field(default_factory=lambda:{0:20*GiB,1:10*GiB})
     device_free_floor_bytes:int=2*GiB
     monitor_interval_seconds:float=.25
+    unified_device_memory:bool=False
 
     def __post_init__(self):
         if (type(self.host_cap_bytes) is not int or not 0<self.host_cap_bytes<=96*GiB
@@ -89,6 +90,7 @@ class MemoryPolicy:
                 or type(self.pinned_cap_bytes) is not int or not 0<self.pinned_cap_bytes<=self.host_cap_bytes
                 or type(self.device_free_floor_bytes) is not int or self.device_free_floor_bytes<GiB
                 or not .05<=self.monitor_interval_seconds<=5
+                or type(self.unified_device_memory) is not bool
                 or not isinstance(self.device_caps,dict) or not self.device_caps
                 or any(type(k) is not int or k<0 or type(v) is not int or v<=0 for k,v in self.device_caps.items())):
             raise ValueError('Invalid explicit runtime memory policy')
@@ -123,6 +125,7 @@ class RuntimeMemory:
         self.leases={}; self.budgets={}; self.reclaimers=OrderedDict(); self.devices={}; self.sequence=0
         self.host=0; self.host_peak=0; self.explicit_host=0; self.explicit_peak=0; self.pinned=0; self.pinned_peak=0
         self.device_used={}; self.device_peaks={}; self.refusals=0; self.reclaims=0; self.reclaimed_bytes=0; self.inflight=0
+        self.unified_device_leases={}
         self.minimum_available=None; self.samples=deque(maxlen=128); self.external=deque(maxlen=64)
         self._reclaiming=False; self.last_process_sample=0; self.baseline=None
         self.control_lease=None
@@ -298,15 +301,27 @@ class RuntimeMemory:
 
     def reserve_device(self,ordinal,size):
         with self.lock:
+            if type(size) is not int or size<=0: raise ValueError('Invalid runtime device byte count')
             self._ready(); self._recover(0,'admission')
             if ordinal not in self.config.device_caps or self.device_used.get(ordinal,0)+size>self.config.device_caps[ordinal]:
                 self.refusals+=1; raise MemoryError('Combined runtime device allocation cap')
+            if self.config.unified_device_memory:
+                # GB10 device allocations consume the same physical pool as
+                # host, pinned, retained state and scratch. Never add VRAM.
+                lease=self.reserve(size,'weights',f'unified_device_{ordinal}')
+                self.unified_device_leases.setdefault(ordinal,[]).append(lease)
             self.device_used[ordinal]=self.device_used.get(ordinal,0)+size
             self.device_peaks[ordinal]=max(self.device_peaks.get(ordinal,0),self.device_used[ordinal])
 
     def release_device(self,ordinal,size):
         with self.lock:
-            if not 0<=size<=self.device_used.get(ordinal,0): raise ValueError('Foreign runtime device release')
+            if type(size) is not int or not 0<size<=self.device_used.get(ordinal,0): raise ValueError('Foreign runtime device release')
+            if self.config.unified_device_memory:
+                rows=self.unified_device_leases.get(ordinal,[])
+                lease=next((row for row in rows if row.size==size),None)
+                if lease is None: raise ValueError('Unified device release must match an owned allocation')
+                lease.release(); rows.remove(lease)
+                if not rows: self.unified_device_leases.pop(ordinal,None)
             self.device_used[ordinal]-=size
 
     def sample(self,label):
@@ -325,6 +340,7 @@ class RuntimeMemory:
             for l in self.leases.values():
                 by_category[l.category]+=l.size; kinds[l.kind]=kinds.get(l.kind,0)+l.size; owners[l.owner]=owners.get(l.owner,0)+l.size
             return {'host_cap_bytes':self.config.host_cap_bytes,'available_floor_bytes':self.config.available_floor_bytes,
+                'unified_device_memory':self.config.unified_device_memory,
                 'charged_host_bytes':self.host,'charged_host_peak_bytes':self.host_peak,'explicit_host_bytes':self.explicit_host,
                 'explicit_host_peak_bytes':self.explicit_peak,'pinned_bytes':self.pinned,'pinned_peak_bytes':self.pinned_peak,
                 'pinned_cap_bytes':self.config.pinned_cap_bytes,'categories':by_category,'accounting_kinds':kinds,'owners':owners,
