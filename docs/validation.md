@@ -4,7 +4,8 @@ These gates describe evidence, not a list of interchangeable accuracy scores.
 
 | Gate | Evidence required | Current evidence |
 | --- | --- | --- |
-| V4.1 text-message input/output | Unchanged upstream encoder/parser and original AutoTokenizer against independent native text adapter/Rust tokenizer | 30 encodings, 11 parses, 13 rejections and 2,336 token IDs match; [complete CPU evidence](message-format-validation.md); three complete quality-task prompts exceed the historical eight-call fixture; model quality remains unevaluated |
+| V4.1 text-message input/output | Unchanged upstream encoder/parser and original AutoTokenizer against independent native text adapter/Rust tokenizer | 30 encodings, 11 parses, 13 rejections and 2,336 token IDs match; [complete CPU evidence](message-format-validation.md); this format gate does not run model inference |
+| Whole-model chat Python-expression task | Complete declared prompt, original/native forty-layer math and state through EOS, actual completion score and whole-token recovery | [Actual coding trajectory](trajectory-validation.md): 30 input tokens, 34 calls, 178,423 typed boundaries / 962,450,386 elements, 4,395,520 logits and 1,360 ordered routes exact; `xs[-1]` and EOS, three expression cases pass; one actual late failure restores state/RNG and retries; one task only, other reasoning/tool tasks and speed remain open |
 | Indexed immutable expert sources | Actual selected original expert reads across files with unchanged full-model arithmetic, routes, sampling and state | [Indexed replay](sequence-storage-validation.md): 786 original experts, 1,200 reads / 321 opens or switches and zero copied expert payload bytes; all 26,250 typed boundaries / 646,400 FP32 logits match the existing five-call original generation; longer model trajectory not run |
 | Process-local compiled-image reuse | Same architecture/source/toolchain outputs, bounded immutable cache and complete model comparison | [Compilation reuse](trajectory-validation.md): existing five-call generation retains 26,250 boundaries / 646,400 logits with 1,476 hits; fourteen actual cubins reproduced exactly by the faster-checking compiler-only path; model quality and matched end-to-end speed not inferred |
 | Longer input and paged original-address Engram | Original tokenizer/hash, full-address embedding and unchanged Engram arithmetic against independent native execution | [63-position component gate](sequence-storage-validation.md): 49 embedding rows, 1,496 rows per Engram layer, 3,906 typed boundaries / 30,247,560 elements match; synthetic hidden inputs, real row-corruption refusal/retry, 248 MiB physical row peak under 512 MiB cap; whole-model generation/quality not run |
@@ -287,3 +288,18 @@ frameworks and disables Python HTTP. Its sampled resident peak is 8.00 GiB,
 with 122.35 GiB minimum sampled available RAM. This qualifies that fixed serial
 corpus; broader histories, chat/chunk-prefill, reasoning/coding/tool-use quality
 and generation performance remain open. Issue #10 and M2 are not closed.
+
+The subsequent [complete Python-expression task](trajectory-validation.md)
+uses the unchanged original 30-token chat prompt and reaches `xs[-1]` plus EOS
+in 34 successful original/native calls. All 178,423 typed boundaries / 962,450,386 storage
+elements, 4,395,520 FP32 logits, 1,360 ordered routes and complete feedback,
+model state and RNG match. The actual expression passes all three declared
+inputs. An injected failure after the final prompt's logits/sampling restores
+complete state/RNG; its healthy retry matches the original. Native performs
+8,400 exact expert reads including that extra attempt; both executions remain
+offline and clean up their owned allocations. Sampled native resident RAM peaks
+at 7.98 GiB with 87.46 GiB minimum sampled available RAM. The
+[file-bound corpus](../results/pc-heterogeneous/2026-10-20-coding-trajectory/summary.json)
+retains all raw per-call records and the three actual execution-context receipts.
+One small expression task does not establish general coding, reasoning or
+tool-use quality, chunk-prefill equivalence or a generation rate. #10/M2 stay open.

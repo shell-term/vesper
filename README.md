@@ -63,16 +63,16 @@ generation loop and independent native driver agree on three new tokens from
 Native sampled resident RAM peaks at **8.00 GiB**, with **122.35 GiB minimum
 sampled available RAM**. This is one five-call serial-ingestion corpus.
 Full-checkpoint registration, arbitrary prompts, broader whole-model histories,
-reasoning/coding/tool-use evaluation and generation performance remain M2/M3 work. See the
+reasoning, broader coding and tool-use evaluation, and generation performance remain M2/M3 work. See the
 [acceptance evidence and exact scope](docs/block-ops-qualification.md).
 
 The [V4.1 text-message format gate](docs/message-format-validation.md) now
 matches 30 encodings, 11 response parses, 13 rejection cases and 2,336 original
 input token IDs. This CPU comparison includes complete reasoning/coding/tool
 task prompts. Their inputs exceed the historical eight-call execution fixture;
-all three model evaluations are explicitly **not run**. The text adapter and
-deterministic scorers are implemented, while longer original-route execution
-and its numerical/state comparison remain open under #10.
+that CPU gate does not run model inference. The text adapter and deterministic
+scorers are implemented. The subsequent complete coding-task comparison is
+described below; reasoning and tool-use model evaluations remain open under #10.
 
 The subsequent [longer-input/storage gate](docs/sequence-storage-validation.md)
 adds an explicit 512-call admission profile and indexes existing original expert
@@ -80,15 +80,22 @@ files without copying their payloads. Actual indexed forty-layer replay retains
 all 26,250 original boundaries. Separately, 63 input positions through both
 Engrams match 3,906 boundaries / 30,247,560 elements; original-address paging
 peaks at 248 MiB of physical row backing. These Engram hidden inputs are
-synthetic. Whole-model execution of the longer quality requests remains open.
+synthetic. This component gate does not establish longer whole-model quality.
 
 The [longer trajectory runner](docs/trajectory-validation.md) now prepares actual
 routes through immutable expert objects without retaining duplicate NPZ copies
 or rebuilding growing payload unions. Per-call evidence is streamed to bounded
 files. Optional process-local compilation reuse retains every original boundary
-in the existing short generation and reproduces fourteen exact cubins. The first
-complete coding-task trajectory is being prepared; its original/native quality
-comparison is pending.
+in the existing short generation and reproduces fourteen exact cubins.
+The complete declared Python-expression task now passes **34 successful
+original/native calls**, all **178,423 typed boundaries / 962,450,386 elements**, **4,395,520
+FP32 logits** and **1,360 ordered routes**, including feedback and whole-model
+state. Both executions reach `xs[-1]` and EOS; all three declared expression
+cases pass. An actual failed token restores state/RNG and retries exactly.
+Native sampled resident RAM peaks at **7.98 GiB**, with **87.46 GiB minimum
+sampled available RAM**. This is one expression task; broader coding,
+reasoning/tool-use, chunk prefill and generation speed remain open. See the
+[file-bound results](results/pc-heterogeneous/2026-10-20-coding-trajectory/summary.json).
 
 Direct comparisons with the pinned official implementation give:
 

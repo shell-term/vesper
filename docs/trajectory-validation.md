@@ -1,10 +1,12 @@
 # Longer whole-model trajectory validation
 
-The first target is the complete, previously declared Python-expression task.
-Its original chat-format prompt has 30 tokens and requests at most 32 new
-tokens. It is not shortened to fit the earlier eight-call fixture. Independent
-original/native execution and actual completion scoring are pending; no new
-whole-model quality result is claimed by this implementation page.
+The complete, previously declared Python-expression task passes independent
+original/native execution and actual completion scoring. Its unchanged
+chat-format prompt has **30 tokens** and requests at most 32 new tokens.
+Both executions produce **`xs[-1]` and EOS in 34 successful model calls**, with all
+**178,423 typed boundaries / 962,450,386 storage elements** matching exactly.
+This qualifies one small expression task; broader coding, reasoning, tool-use,
+chunk prefill and end-to-end performance remain open.
 
 This is the **pc-heterogeneous** track. Select the
 [PC workspace](../platforms/pc-heterogeneous/README.md) and pass
@@ -16,6 +18,57 @@ dirty digest and run ID. Shared code does not transfer qualification to Spark.
 The preceding [longer-input/storage gate](sequence-storage-validation.md)
 qualifies indexed short generation and a separate synthetic-hidden Engram
 comparison. Those results alone do not qualify this longer whole-model task.
+
+## Complete coding-task evidence
+
+The [file-bound summary](../results/pc-heterogeneous/2026-10-20-coding-trajectory/summary.json)
+binds the [original capture](../results/pc-heterogeneous/2026-10-20-coding-trajectory/original.json),
+[native capture](../results/pc-heterogeneous/2026-10-20-coding-trajectory/native.json),
+all per-call files, forty index receipts, input plan and preparation records.
+The summary's context records evidence publication. The three separate
+execution receipts retain the actual preparation/reference/native source
+contexts; publication does not retrospectively change an execution identity.
+
+| Observed check | Result |
+| --- | --- |
+| Complete original chat prompt | 30 original token IDs; unchanged declared request |
+| Successful single-query calls | 34 through all forty layers and both Engrams |
+| Exact typed boundaries / storage elements | 178,423 / 962,450,386 |
+| Complete FP32 logits / ordered top-six routes | 4,395,520 / 1,360 |
+| Distinct selected original experts | 3,067 |
+| Selected IDs including EOS | `[38753, 26913, 19, 63, 1]` |
+| Actual decoded completion | `xs[-1]` |
+| Declared expression cases | `[2, 5, 9] -> 9`, `[7] -> 7`, `[-3, 0] -> 0`: all pass |
+| Failed whole-token attempt | One after final logits/sampling at position 29; complete state/RNG restored; healthy retry matches |
+| Actual native expert reads | 8,400 / 157,925,376,000 bytes, including the failed attempt |
+| Native compiled-image cache | 9,876 hits / 14 misses; all fourteen images match the preceding qualified set |
+| Reference/native HTTP calls and fetched weight payloads | Zero in both independent executions |
+
+Each original/native call independently records every typed math boundary,
+ordered route, complete model-state digest and sampling RNG offset. Native
+execution supplies its own encoded prompt, route choices, sampled IDs and
+feedback. The same answer alone is not the comparison criterion.
+
+The reference retains the previously qualified integer-only Query memory
+adapter described in [the official-arithmetic memory gate](attention-memory-validation.md).
+Its floating-point/control instructions are retained. This is not an
+untouched-full-kernel claim. Original-address embedding paging retains
+`F.embedding`, original row offsets and BF16/FP8 views.
+
+The first preparation attempt, started before platform isolation, failed on a
+checkpoint connection reset before producing a complete plan or qualified
+capture. Completed immutable expert objects and 1,243,541 bytes of unfinished
+input caches were reused explicitly; copied rows are revalidated by original
+address and SHA-256. The new PC preparation imported 433 additional experts
+(8,140,677,120 payload bytes), with zero expert payload copies between banks.
+The reader now retries transient transport failures at most four times, with
+1/2/4-second backoff. Certificate, range and payload-validation failures still
+refuse immediately. New imports leave no persistent NPZ copies.
+
+The [published-evidence tests](../tests/test_coding_trajectory_published.py)
+recheck all file bindings and both complete captures. They also refuse a
+rehashed altered original completion and a corrupted failed-token recovery
+record even when successful math is unchanged.
 
 ## Bounded preparation and offline execution
 
@@ -141,6 +194,23 @@ Report actual sampled RSS/private commit, available RAM, GPU ownership and
 cleanup separately from admission counters. The default full-engine cap remains
 96 GiB. No OS memory quota or full-checkpoint download is implied.
 
+Actual observations from this task are separate from those admission caps:
+
+| Sampled observation | Original reference | Independent native |
+| --- | --- | --- |
+| Resident process peak | 9.37 GiB | 7.98 GiB |
+| Private process commit peak | 23.34 GiB | 19.95 GiB |
+| Minimum system-available RAM | 93.68 GiB | 87.46 GiB |
+| Host admission cap / system-available floor | 32 / 32 GiB | 64 / 32 GiB |
+| Charged host bytes after close | 0 | 0 |
+
+The original's five paged tables peak at **194 MiB of physical backing** under
+their shared 512 MiB cap. All 6,141 mapped pages are evicted; physical and
+virtual reservations are zero after close. Framework tensor allocation returns
+to its zero-byte baseline. Both policies close with no leases, reclaimers,
+in-flight operations or monitor errors. These are sampled observations and
+owned-allocation checks, not an OS quota or a measured generation rate.
+
 ## Reproduction
 
 Existing pinned controls, tokenizer and earlier immutable stores are required.
@@ -155,6 +225,7 @@ python -m vesper.trajectory_probe reference --run coding-new
 # Inspect and pin a new original capture before independent native recheck.
 python -m vesper.trajectory_probe native --run coding-new
 python -m vesper.trajectory_probe check --run coding-new
+python -m unittest discover -s tests -p test_coding_trajectory_published.py -v
 python -m unittest discover -s tests -v
 ```
 

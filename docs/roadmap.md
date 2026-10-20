@@ -85,25 +85,30 @@ The [V4.1 message format gate](message-format-validation.md) now qualifies
 unchanged original CPU encoder/tokenizer. Three complete quality tasks are
 prepared with deterministic scorers. Their prompts contain 63/30/293 tokens;
 their maximum requested single-query trajectories are 190/61/388 calls, beyond
-the historical eight-call fixture. These evaluations did not run. Longer bounded
-expert/Engram/embedding stores and reference/native trajectories remain #10
-work; formatting/scorer tests do not close its model-quality requirement.
+the historical eight-call fixture. Those evaluations did not run at the format
+gate. The subsequent coding trajectory is described below; formatting/scorer
+tests do not close the remaining model-quality requirements.
 
 The [longer-input/storage follow-up](sequence-storage-validation.md) now admits
 512 calls explicitly and indexes existing expert payloads without copying them.
 Indexed all-forty-layer replay preserves all 26,250 short-generation boundaries.
 A separate 63-position original/native Engram comparison passes 3,906 boundaries
 on synthetic hidden inputs, with 248 MiB peak original-address physical row
-backing. Larger whole-model route preparation, actual generated trajectories
-and reasoning/coding/tool scores remain open; #10 and M2 remain open.
+backing. Those synthetic-hidden results do not establish whole-model task
+quality; the subsequent actual coding trajectory is described below.
 
 The [trajectory runner](trajectory-validation.md) implements bounded immutable
 expert-object imports, original-address input-embedding paging and per-call
 evidence files. Compilation reuse passes the existing complete short generation
 and a separate fourteen-image exact-binary recheck; this is no throughput claim.
-The first actual coding-task preparation is in progress. Its independent
-original/native whole-model comparison and score remain pending; the other two
-declared tasks remain not run. Neither #10 nor M2 is complete.
+The complete declared Python-expression task now passes 34 successful original/native
+calls with all 178,423 typed boundaries, 962,450,386 storage elements, 4,395,520
+FP32 logits and 1,360 ordered routes exact. Both executions produce `xs[-1]`
+and EOS; the three declared expression cases pass. An actual late failed token
+restores complete state/RNG and retries exactly. Native sampled resident RAM
+peaks at 7.98 GiB with 87.46 GiB minimum sampled system-available RAM. This is
+one expression task; reasoning/tool-use tasks, broader coding, chunk prefill
+and end-to-end performance remain open. Neither #10 nor M2 is complete.
 
 ## Working on an issue
 
