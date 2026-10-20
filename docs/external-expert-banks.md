@@ -31,7 +31,7 @@ mounts. A process lease prevents cooperating PC captures and migration from
 running concurrently. The original/native comparison remains offline; missing
 original experts cannot trigger a network fallback.
 
-## Copy, verify, activate, retire
+## Copy, verify and activate
 
 The [migration tool](../src/vesper/bank_migration.py) first inventories only the
 closed, single-expert objects in the PC's v1 bank. It never moves unrelated
@@ -39,10 +39,12 @@ files or the legacy shared fixtures. The saved private plan binds every relative
 object, original manifest hash, payload hash and byte count.
 
 Execution copies into a dedicated owned directory, independently reads and
-verifies every target file, then activates the logical mapping. Only after that
-does it verify both copies again and remove each exact original file. It never
-recursively deletes a source tree or replaces a different destination file.
-An interruption after activation can resume retirement without recopying data;
+verifies every target file, then activates the logical mapping. The default
+retains every original source file and verifies both copies again. Source
+retirement requires the explicit `--retire-verified-source` option; only then
+does the tool remove each exact verified original file. It never recursively
+deletes a source tree or replaces a different destination file.
+An interruption after activation can resume without recopying data;
 the existing indexes remain readable throughout that resumed phase. Unexpected
 source contents, altered copies or a different ownership journal refuse.
 
@@ -61,10 +63,12 @@ The plan contains private absolute paths and belongs under ignored PC artifacts.
 ```powershell
 $ssdDirectory = Read-Host "Absolute new directory on the SSD"
 python -m vesper.bank_migration plan --ssd-directory $ssdDirectory --plan artifacts/pc-heterogeneous/management/bank-migration-plan.json
-python -m vesper.bank_migration execute --plan artifacts/pc-heterogeneous/management/bank-migration-plan.json --receipt artifacts/pc-heterogeneous/management/bank-migration-receipt.json
+python -m vesper.bank_migration execute --retain-source --plan artifacts/pc-heterogeneous/management/bank-migration-plan.json --receipt artifacts/pc-heterogeneous/management/bank-migration-receipt.json
 ```
 
-Review the plan before executing. To resume an interrupted execution, use the
+Review the plan before executing. Source retention leaves the original volume's
+disk use unchanged. Retire verified source copies only when that cleanup is
+explicitly intended and authorized. To resume an interrupted execution, use the
 same plan and a fresh receipt filename. Do not replace the plan or manually
 change active roots during a capture. Failed preparation can reuse only verified
 input caches and completed immutable objects; start model/hash/RNG state afresh.

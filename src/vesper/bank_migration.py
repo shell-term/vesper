@@ -1,7 +1,8 @@
 """Verified PC expert-bank relocation with resumable copy/activate/retire phases.
 
-Plans are private: they contain physical paths. Returned receipts are public-safe
-file-copy evidence, never model-quality evidence. All old index bytes stay valid.
+Plans are private: they contain physical paths. Copy/activation retains original
+files by default; verified retirement is an explicit option. Returned receipts
+are file-copy evidence, never model-quality evidence. Old indexes stay valid.
 """
 
 import argparse
@@ -168,7 +169,8 @@ def _copy(source,target,count,sha):
     return copied
 
 
-def execute(root,plan,progress=None):
+def execute(root,plan,progress=None,*,retire_source=False):
+    if type(retire_source) is not bool:raise ValueError('Source retirement requires an explicit boolean option')
     root=Path(root).resolve(strict=True);target=_validate_plan(root,plan);started=time.perf_counter()
     source=_plain(root/BANKS[0]);entries=plan['entries'];copied=retired=0
     physical={name:target/Path(name).name for name in BANKS}
@@ -226,20 +228,23 @@ def execute(root,plan,progress=None):
                     if not old.resolve(strict=True).is_relative_to(source):raise ValueError('Retirement escaped its original bank')
                     _verify(old,e[prefix+'_bytes'],e[prefix+'_sha256'])
                     _verify(physical[BANKS[0]]/e['directory']/filename,e[prefix+'_bytes'],e[prefix+'_sha256'])
-                    old.unlink();retired+=e[prefix+'_bytes']
-            for directory in (source/e['directory'],(source/e['directory']).parent):
-                try:directory.rmdir()
-                except OSError:pass # leave any still-owned or unknown contents intact
-            if progress:progress({'stage':'retired','objects':i+1,'total_objects':len(entries)})
+                    if retire_source:old.unlink();retired+=e[prefix+'_bytes']
+            if retire_source:
+                for directory in (source/e['directory'],(source/e['directory']).parent):
+                    try:directory.rmdir()
+                    except OSError:pass # leave any still-owned or unknown contents intact
+            if progress:progress({'stage':'retired' if retire_source else 'retained','objects':i+1,'total_objects':len(entries)})
         selected.check_unchanged()
         _remaining_files(source,entries)
-        if any((source/e['directory']/name).exists() for e in entries for name in ('manifest.json','experts.bin')):
+        remaining_sources=sum((source/e['directory']/name).exists() for e in entries for name in ('manifest.json','experts.bin'))
+        if retire_source and remaining_sources:
             raise ValueError('Original bank files reappeared during retirement')
         return {'schema_version':1,'probe':'verified_original_expert_bank_relocation','status':'pass',
             'plan_sha256':plan['plan_sha256'],'model':MODEL,'revision':REVISION,'platform':'pc-heterogeneous','profile':'native',
             'objects':len(entries),'files':entries,'original_packed_payload_bytes':plan['original_packed_payload_bytes'],
             'all_files_verified_bytes':plan['total_file_bytes'],'copied_file_bytes_this_process':copied,
             'retired_source_file_bytes_this_process':retired,'source_storage':selected.public(),
+            'source_retirement_requested':retire_source,'original_source_files_remaining':remaining_sources,
             'original_index_bytes_changed':0,'weight_bytes_converted':0,'model_execution_run':False,'quality_scored':False,
             'elapsed_seconds':time.perf_counter()-started}
 
@@ -248,11 +253,16 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('operation',choices=('plan','execute'))
     p.add_argument('--artifacts',type=Path,default=Path('artifacts'));p.add_argument('--ssd-directory',type=Path)
     p.add_argument('--plan',type=Path,required=True);p.add_argument('--receipt',type=Path)
+    retention=p.add_mutually_exclusive_group()
+    retention.add_argument('--retain-source',dest='retire_source',action='store_false')
+    retention.add_argument('--retire-verified-source',dest='retire_source',action='store_true')
+    p.set_defaults(retire_source=False)
     a=p.parse_args()
     from .trajectory_workspace import select,own_evidence
     w=select(a.artifacts);w.check_runtime_module(__file__,'src/vesper/bank_migration.py')
     path=own_evidence(a.artifacts,a.plan)
     if a.operation=='plan':
+        if a.retire_source:p.error('Source retirement is an execution-only option')
         if a.ssd_directory is None:p.error('--ssd-directory is required to plan')
         report=make_plan(a.artifacts,a.ssd_directory);path.parent.mkdir(parents=True,exist_ok=True)
         with path.open('xb') as stream:stream.write(_bytes(report))
@@ -265,11 +275,13 @@ def main():
         if receipt.exists():raise FileExistsError('Refusing to replace a completed migration receipt')
         plan=_read(path,4*MiB)[0]
         context=w.context('pc-bank-migration-'+plan['plan_sha256'][:16])
-        report=execute(a.artifacts,plan,lambda v:print(json.dumps(v),flush=True))
+        report=execute(a.artifacts,plan,lambda v:print(json.dumps(v),flush=True),retire_source=a.retire_source)
         report=w.stamp_result(report,initial_context=context)
         receipt.parent.mkdir(parents=True,exist_ok=True)
         with receipt.open('xb') as stream:stream.write(_bytes(report))
-        print(json.dumps({'status':'pass','objects':report['objects'],'model_execution_run':False}),flush=True)
+        print(json.dumps({'status':'pass','objects':report['objects'],'model_execution_run':False,
+            'source_retirement_requested':report['source_retirement_requested'],
+            'retired_source_file_bytes_this_process':report['retired_source_file_bytes_this_process']}),flush=True)
 
 
 if __name__=='__main__':main()

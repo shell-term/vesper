@@ -45,7 +45,7 @@ class BankMigrationTests(unittest.TestCase):
             for i in range(count):source.read_into(f'0:{i}',target);self.assertFalse(target.any())
         self.assertEqual(budget.reserved,0)
 
-    def test_copy_verify_activate_retire_preserves_old_index_and_all_exact_bytes(self):
+    def test_copy_verify_activate_retains_originals_by_default_and_preserves_old_index(self):
         with tempfile.TemporaryDirectory() as tmp:
             root,target,sources=self.setup(Path(tmp));index=(root/'index/manifest.json').read_bytes()
             plan=make_plan(root,target)
@@ -53,9 +53,10 @@ class BankMigrationTests(unittest.TestCase):
             result=execute(root,plan)
             self.assertEqual(result['original_packed_payload_bytes'],EXPERT_BYTES)
             self.assertEqual(result['all_files_verified_bytes'],plan['total_file_bytes'])
-            self.assertEqual(result['retired_source_file_bytes_this_process'],plan['total_file_bytes'])
+            self.assertEqual(result['retired_source_file_bytes_this_process'],0)
+            self.assertFalse(result['source_retirement_requested']);self.assertEqual(result['original_source_files_remaining'],2)
             self.assertEqual(result['weight_bytes_converted'],0);self.assertFalse(result['model_execution_run'])
-            self.assertFalse(sources[0].exists());self.assertEqual((root/'index/manifest.json').read_bytes(),index)
+            self.assertTrue(sources[0].exists());self.assertEqual((root/'index/manifest.json').read_bytes(),index)
             self.assertEqual(SourceRoots(root).active_bank,BANKS[1]);self.read_index(root,1)
             self.assertNotIn(str(target),json.dumps(result))
 
@@ -64,10 +65,10 @@ class BankMigrationTests(unittest.TestCase):
             root,target,sources=self.setup(Path(tmp),2);plan=make_plan(root,target)
             def interrupt(value):
                 if value['stage']=='retired' and value['objects']==1:raise RuntimeError('synthetic operator interruption')
-            with self.assertRaisesRegex(RuntimeError,'operator interruption'):execute(root,plan,interrupt)
+            with self.assertRaisesRegex(RuntimeError,'operator interruption'):execute(root,plan,interrupt,retire_source=True)
             self.assertFalse(sources[0].exists());self.assertTrue(sources[1].exists());self.assertTrue((root/CONFIG).exists())
             self.read_index(root,2)
-            result=execute(root,plan);self.assertEqual(result['copied_file_bytes_this_process'],0)
+            result=execute(root,plan,retire_source=True);self.assertEqual(result['copied_file_bytes_this_process'],0)
             self.assertFalse(sources[1].exists());self.read_index(root,2)
 
     def test_corrupted_copy_is_rejected_before_activation_or_source_retirement(self):
@@ -94,6 +95,7 @@ class BankMigrationTests(unittest.TestCase):
     def test_capacity_invalid_plan_and_unowned_destination_refuse_without_mutation(self):
         with tempfile.TemporaryDirectory() as tmp:
             root,target,sources=self.setup(Path(tmp));plan=make_plan(root,target)
+            with self.assertRaisesRegex(ValueError,'explicit boolean'):execute(root,plan,retire_source='false')
             with patch('vesper.bank_migration.shutil.disk_usage',return_value=SimpleNamespace(free=128*GiB)):
                 with self.assertRaisesRegex(OSError,'reserve'):execute(root,plan)
             self.assertFalse(target.exists());self.assertTrue(sources[0].exists())
