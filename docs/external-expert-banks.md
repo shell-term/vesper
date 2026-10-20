@@ -84,6 +84,16 @@ publication. The earlier failed GPU preparation has no completed execution
 receipt and is not retrospectively stamped as a successful run. Reasoning
 quality remains open until a fresh complete original/native comparison passes.
 
+The [later retirement evidence](../results/pc-heterogeneous/2026-10-20-expert-bank-retirement/summary.json)
+records a separately authorized cleanup at source `cd0407c`. It rechecks the
+same 3,375 copied objects and immediately verifies both copies before removing
+each original source file: **6,750 files / 63,467,411,542 bytes** retired, zero
+original source files left, zero new copies and zero weight bytes converted.
+The mounted v1/v2 census remains **3,375 / 552 objects**, and logical root/index
+identities are unchanged. The earlier retained-copy receipt remains intact at
+its original execution context. This cleanup is CPU file evidence; the
+interrupted first-token reference attempt remains unscored and must restart.
+
 ## Reproduction
 
 Select the [PC workspace](../platforms/pc-heterogeneous/README.md), stop its own
