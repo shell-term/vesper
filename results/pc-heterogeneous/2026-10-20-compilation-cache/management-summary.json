@@ -1,0 +1,51 @@
+{
+  "context_explanation": "The workspace context describes this validation/curation operation, not the earlier unbound GPU execution.",
+  "hardware_scope": {
+    "compute": "RTX 4090",
+    "helper": "RTX 3080 Ti byte storage/audits only"
+  },
+  "historical_reports": {
+    "results/2026-10-20-compilation-cache/compiler.json": {
+      "bytes": 85849,
+      "sha256": "bf54109fd317bf67a396dc3a404eac287ef6a02d62dd0772a065d63e796ed2e8"
+    },
+    "results/2026-10-20-compilation-cache/native.json": {
+      "bytes": 13425398,
+      "sha256": "d4b5bf10261c3dfa24c4cc9e5309236018d2097bb5e61381bdcbba3039bceb33"
+    },
+    "results/2026-10-20-compilation-cache/summary.json": {
+      "bytes": 1210,
+      "sha256": "80900ef86e1045da7692a70b978987a8a18c2f9234025ad55696a4d2b2f7403d"
+    }
+  },
+  "legacy_GPU_captures_retroactively_bound": false,
+  "new_GPU_execution_performed": false,
+  "original_legacy_paths_preserved": true,
+  "probe": "PC_legacy_compilation_evidence_curation",
+  "result_kind": "metadata_curation_of_pre_isolation_PC_evidence",
+  "schema_version": 1,
+  "scope": {
+    "Spark_runtime_qualification": false,
+    "compiled_images_reproduced_exactly": 14,
+    "complete_FP32_logits": 646400,
+    "longer_coding_quality_evaluation": "pending",
+    "matched_end_to_end_performance_comparison": false,
+    "original_model_calls": 5,
+    "typed_boundaries": 26250
+  },
+  "status": "pass",
+  "workspace_context": {
+    "binding_id": "d8ba9a395cbd47b69ba549fa5d13ed14",
+    "created_at": "2026-10-20T03:26:06.618391+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "fcc9ac807103b19a159bee5b162530af4ec125ad",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "pc-heterogeneous",
+    "profile": "native",
+    "registry_sha256": "62c940bcbae1587ad43f67a2080aa08597abb92071de8844a6eea1810215427e",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "pc-cache-preisolation-curation-20261020-r01",
+    "schema_version": 1
+  }
+}
