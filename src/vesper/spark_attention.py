@@ -31,6 +31,7 @@ def load_candidate(directory):
     expected={'schema_version':1,'kind':'vesper_spark_attention_candidate',
         'model':MODEL,'revision':REVISION,'compute_capability':'12.1',
         'execution_target':'spark-sm121-candidate','qualification':'unqualified_candidate',
+        'execution_backend':'nvrtc','compile_target':{'kind':'cuda','arch':'sm_121'},
         'minimum_driver_api':13000,'nvrtc_version':[13,0],'tilelang_version':'0.1.12',
         'kernel_source_sha256':REFERENCE_HASHES['kernel.py'],
         'original_kernel_parity_qualified':False}
@@ -116,6 +117,13 @@ def build_candidate(workspace,relative,*,ordinal=0):
             for heads,dimension,diagnostics in CANDIDATES:
                 budget.acquire(0)
                 factory,audit=load_variant(raw,directory/'variants','register-query',diagnostics)
+                # TileLang's ARM64 default is TVM FFI. Select the backend and
+                # target explicitly rather than relying on process environment.
+                jit=getattr(factory,'__wrapped__',None)
+                if jit is None or not hasattr(jit,'execution_backend') or not hasattr(jit,'target'):
+                    raise ValueError('Expected the pinned configurable TileLang JIT factory')
+                jit.execution_backend='nvrtc'
+                jit.target={'kind':'cuda','arch':'sm_121'}
                 kernel=factory(heads,dimension,dimension**-.5)
                 source=kernel.get_kernel_source()
                 host=_host_source(kernel)
@@ -143,6 +151,7 @@ def build_candidate(workspace,relative,*,ordinal=0):
         (directory/'DeepSeek-LICENSE').write_bytes(read_bounded(directory/'LICENSE',64*1024))
         manifest={'schema_version':1,'kind':'vesper_spark_attention_candidate','model':MODEL,'revision':REVISION,
             'compute_capability':'12.1','execution_target':target.name,'qualification':'unqualified_candidate',
+            'execution_backend':'nvrtc','compile_target':{'kind':'cuda','arch':'sm_121'},
             'minimum_driver_api':13000,'nvrtc_version':[13,0],'tilelang_version':'0.1.12',
             'kernel_source_sha256':REFERENCE_HASHES['kernel.py'],'original_kernel_parity_qualified':False,
             'device':observed,'measured_optin_shared_bytes':limit.value,'profiles':profiles}

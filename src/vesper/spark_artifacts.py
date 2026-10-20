@@ -49,6 +49,8 @@ def _scope(workspace, *paths):
     context = workspace.context()
     if context["platform"] != "dgx-spark" or context["profile"] != "native":
         raise ValueError("Original acquisition requires a dgx-spark/native workspace")
+    if context.get("model") != MODEL or context.get("revision") != REVISION:
+        raise ValueError("Original acquisition requires the pinned original model and revision")
     workspace.check_runtime_module(__file__, "src/vesper/spark_artifacts.py")
     from . import workspace as workspace_module
     workspace.check_runtime_module(workspace_module.__file__, "src/vesper/workspace.py")

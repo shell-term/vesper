@@ -24,7 +24,7 @@ class Workspace:
         self.check_runtime_module = Mock()
 
     def context(self):
-        return {"platform": "dgx-spark", "profile": "native"}
+        return {"platform": "dgx-spark", "profile": "native", "model": assets.MODEL, "revision": assets.REVISION}
 
     def stamp_result(self, payload, *, initial_context=None):
         return {**payload, "workspace_context": initial_context or self.context()}
@@ -93,6 +93,18 @@ class AcquisitionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             assets.download_originals(self.metadata, self.originals, quota_bytes=GiB, opener=opener, workspace=self.ws)
         opener.assert_not_called()
+
+    def test_foreign_model_or_revision_refuses_before_inventory_or_network(self):
+        for change in ({"model": "another/public-model"}, {"revision": "0" * 40}):
+            with self.subTest(change=change):
+                context = {**self.ws.context(), **change}
+                opener = Mock()
+                with patch.object(self.ws, "context", return_value=context), patch.object(assets, "shard_inventory") as inventory:
+                    with self.assertRaisesRegex(ValueError, "pinned original model and revision"):
+                        assets.download_originals(self.metadata, self.originals, quota_bytes=GiB,
+                            execute=True, workspace=self.ws, opener=opener)
+                    inventory.assert_not_called()
+                    opener.assert_not_called()
 
     def test_readonly_plan_checks_quota_namespace_and_disk(self):
         with self.assertRaises(ValueError):

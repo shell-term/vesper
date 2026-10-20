@@ -70,6 +70,7 @@ class SparkAttentionTests(unittest.TestCase):
             "model": spark.MODEL, "revision": spark.REVISION, "compute_capability": "12.1",
             "execution_target": "spark-sm121-candidate", "qualification": "unqualified_candidate",
             "minimum_driver_api": 13000, "nvrtc_version": [13, 0], "tilelang_version": "0.1.12",
+            "execution_backend": "nvrtc", "compile_target": {"kind": "cuda", "arch": "sm_121"},
             "kernel_source_sha256": self.hashes["kernel.py"], "original_kernel_parity_qualified": False,
             "profiles": profiles}
         self.save(manifest)
@@ -95,6 +96,7 @@ class SparkAttentionTests(unittest.TestCase):
         for field, value in (("model", "foreign/model"), ("revision", "0" * 40),
                 ("compute_capability", "8.9"), ("nvrtc_version", [13, 4]),
                 ("tilelang_version", "0.1.13"), ("execution_target", "pc-sm89"),
+                ("execution_backend", "tvm_ffi"), ("compile_target", {"kind": "cuda", "arch": "sm_89"}),
                 ("original_kernel_parity_qualified", True), ("qualification", "qualified")):
             with self.subTest(field=field):
                 self.save({**self.manifest, field: value})
@@ -157,7 +159,7 @@ class SparkAttentionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "ELF CUDA"):
             spark.load_candidate(self.directory)
 
-    def builder_context(self, *, argument_mismatch=False, binary_mismatch=False):
+    def builder_context(self, *, argument_mismatch=False, binary_mismatch=False, configurable=True):
         stack = ExitStack()
         self.addCleanup(stack.close)
         root = Path(self.temp.name)
@@ -200,12 +202,16 @@ class SparkAttentionTests(unittest.TestCase):
         cached.write_bytes(binary)
         def load_variant(raw, directory, storage, diagnostics):
             def factory(heads, dimension, scale):
+                self.assertEqual(factory.__wrapped__.execution_backend, "nvrtc")
+                self.assertEqual(factory.__wrapped__.target, {"kind": "cuda", "arch": "sm_121"})
                 args = spark.argument_names(diagnostics)
                 if argument_mismatch:
                     args = list(reversed(args))
                 source = "void " + spark.FUNCTION + "(" + ", ".join("int " + arg for arg in args) + ") {}"
                 return SimpleNamespace(get_kernel_source=lambda: source,
                     adapter=SimpleNamespace(lib_generator=SimpleNamespace(compile_flags=[], libpath=cached)))
+            if configurable:
+                factory.__wrapped__ = SimpleNamespace(execution_backend="tvm_ffi", target=None)
             return factory, self.variant(raw, storage, diagnostics)[1]
         stack.enter_context(patch("vesper.attention_storage.load_variant", side_effect=load_variant))
         stack.enter_context(patch("vesper.attention_storage_reference._host_source", return_value="def call():\n    cuFuncSetAttribute(0, 8, 43008)\n"))
@@ -233,6 +239,13 @@ class SparkAttentionTests(unittest.TestCase):
         with patch("vesper.attention_storage_reference._host_source", return_value="def call():\n    cuFuncSetAttribute(0, 8, 150000)\n"):
             with self.assertRaisesRegex(ValueError, "shared-memory capacity"):
                 spark.build_candidate(workspace, "new-build")
+        nvrtc.compile_cuda.assert_not_called()
+        self.assertFalse((Path(self.temp.name) / "new-build/manifest.json").exists())
+
+    def test_builder_nonconfigurable_backend_refused_before_compile(self):
+        workspace, nvrtc = self.builder_context(configurable=False)
+        with self.assertRaisesRegex(ValueError, "configurable TileLang"):
+            spark.build_candidate(workspace, "new-build")
         nvrtc.compile_cuda.assert_not_called()
         self.assertFalse((Path(self.temp.name) / "new-build/manifest.json").exists())
 
