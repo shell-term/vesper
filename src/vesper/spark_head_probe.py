@@ -41,7 +41,7 @@ from .model_artifacts import load_catalog, shard_inventory, CATALOG_SHA256, SHAR
 from .output_assets import VOCAB, WIDTH, TENSOR_SHA256
 from .resources import MemoryBudget, MiB, GiB
 from .spark_artifacts import _scope, _regular_below, _metadata_paths
-from .spark_output import SparkOutputCandidate, validate_rows
+from .spark_output import SparkOutputCandidate, validate_rows, HEAD_DEVICE_CAP
 from .spark_probe import Driver, Unsupported, host_memory, require_capacity, validate_device
 
 SCHEMA = "vesper.spark-head-probe.v1"
@@ -437,7 +437,8 @@ def collect(mode, workspace, *, run_id, metadata="s1/head-component/metadata", o
         "execution_process_instance": PROCESS_INSTANCE, "separate_process_mode": True,
         "full_checkpoint_available_or_registered": False, "network_payload_bytes": 0,
         "head_storage_dtype": "BF16", "head_compute_dtype": "float32", "full_vocabulary": VOCAB,
-        "native_block_rows": ROWS, "native_device_cap_bytes": 64 * MiB,
+        "native_block_rows": ROWS, "native_device_cap_bytes": HEAD_DEVICE_CAP,
+        "native_head_retained_on_device": True,
         "reference_admission_bytes": REFERENCE_ADMISSION, "diagnostic_cap_bytes": DIAGNOSTIC_CAP,
         "physical_available_floor_bytes": 32 * GiB, "framework_and_context_memory_not_hard_capped": True,
         "memory_observations": [], "owned_resources_closed": False, "memory_runtime_closed": False}
@@ -453,9 +454,9 @@ def collect(mode, workspace, *, run_id, metadata="s1/head-component/metadata", o
         if platform.system() != "Linux" or platform.machine().lower() not in ("aarch64", "arm64"):
             raise Unsupported("Head component execution requires Linux AArch64")
         admission = REFERENCE_ADMISSION if mode == "reference" else NATIVE_ADMISSION
-        check(admission)
+        check(admission + (HEAD_DEVICE_CAP if mode == "native" else 0))
         with RuntimeMemory(MemoryPolicy(host_cap_bytes=8 * GiB, pinned_cap_bytes=128 * MiB,
-                device_caps={0:128 * MiB}, unified_device_memory=True)) as policy:
+                device_caps={0:HEAD_DEVICE_CAP}, unified_device_memory=True)) as policy:
             budget = MemoryBudget(cap=admission + DIAGNOSTIC_CAP, owner="spark_head_phase")
             budget.acquire(admission)
             budget.acquire(DIAGNOSTIC_CAP, category="diagnostics")
@@ -593,10 +594,12 @@ def compare_runs(workspace, native_result, reference_result, *, metadata="s1/hea
             or reference["blas"].get("preferred_backend") != "Cublas"):
         raise ValueError("Reference framework or actual Torch BLAS handle profile differs")
     before, after = native.get("native_before_close", {}), native.get("native_after_close", {})
-    if (any(before.get(k) != v for k, v in {"calls": len(case_identity()), "rows_read": len(case_identity()) * VOCAB,
-            "block_rows": ROWS, "full_vocabulary_rows": VOCAB, "head_compute_dtype": "float32", "TF32_enabled": False}.items())
+    if (any(before.get(k) != v for k, v in {"calls": len(case_identity()), "rows_read": VOCAB,
+            "block_rows": ROWS, "full_vocabulary_rows": VOCAB, "head_compute_dtype": "float32", "TF32_enabled": False,
+            "retained_head": True, "head_device_bytes": VOCAB * WIDTH * 4, "device_cap_bytes": HEAD_DEVICE_CAP}.items())
             or after.get("device_owned_bytes") != 0 or after.get("host_reserved_bytes") != 0
-            or type(before.get("device_peak_owned_bytes")) is not int or not 0 < before["device_peak_owned_bytes"] <= 64 * MiB
+            or type(before.get("device_peak_owned_bytes")) is not int
+            or not VOCAB * WIDTH * 4 <= before["device_peak_owned_bytes"] <= HEAD_DEVICE_CAP
             or native.get("native_torch_imported") is not False):
         raise ValueError("Native head full-vocabulary coverage or resource cleanup receipt differs")
     a, expected = _load(workspace, native), _load(workspace, reference)

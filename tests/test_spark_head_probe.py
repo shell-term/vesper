@@ -68,25 +68,29 @@ class Native:
     def __enter__(self):
         if current_policy() is None:
             raise AssertionError("shared memory policy must already exist")
+        self.weight = bf16_values(self.rows(0, probe.VOCAB))
+        self.opened = True
         return self
 
     def project(self, x):
-        raw = self.rows(0, probe.VOCAB)
-        weight = bf16_values(raw)
         promoted = bf16_values(x)
-        logits = np.ascontiguousarray(promoted @ weight.T, dtype=np.float32)
+        logits = np.ascontiguousarray(promoted @ self.weight.T, dtype=np.float32)
         self.calls += 1
         return {"promoted_fp32": promoted, "logits_fp32": logits,
                 "greedy_ids_i64": np.argmax(logits, axis=-1).astype(np.int64)}
 
     def stats(self):
-        return {"device_owned_bytes": 0, "host_reserved_bytes": 0, "device_peak_owned_bytes": MiB,
-                "calls": self.calls, "rows_read": self.calls * probe.VOCAB, "block_rows": probe.ROWS,
+        return {"device_owned_bytes": probe.VOCAB * probe.WIDTH * 4 if self.opened else 0,
+                "host_reserved_bytes": 0, "device_peak_owned_bytes": MiB,
+                "calls": self.calls, "rows_read": probe.VOCAB, "block_rows": probe.ROWS,
                 "full_vocabulary_rows": probe.VOCAB, "head_compute_dtype": "float32", "TF32_enabled": False,
+                "retained_head": self.opened, "head_device_bytes": probe.VOCAB * probe.WIDTH * 4,
+                "device_cap_bytes": probe.HEAD_DEVICE_CAP,
                 "qualification": "synthetic orchestration seam only"}
 
     def __exit__(self, *_):
-        pass
+        self.opened = False
+        self.weight = None
 
 
 class Reference(Native):
@@ -108,7 +112,7 @@ class Reference(Native):
         return self.project(x[:, -1].copy())
 
     def close(self):
-        pass
+        self.__exit__()
 
 
 class HeadProbeTests(unittest.TestCase):
@@ -312,6 +316,19 @@ class HeadProbeTests(unittest.TestCase):
         self.assertEqual(result["status"], "fail")
         self.assertFalse(result["original_kernel_parity_qualified"])
         self.assertTrue(any(c.get("mismatches") == 1 for c in result["checks"]))
+
+    def test_retained_full_head_receipt_requires_complete_rows_and_bounded_device_memory(self):
+        (_, native), _ = self.executions()
+        original = json.loads(self.ws.result_path("native.json").read_text())
+        for changed in ({"rows_read": 8 * probe.VOCAB}, {"retained_head": False},
+                        {"head_device_bytes": probe.VOCAB * probe.WIDTH * 2},
+                        {"device_cap_bytes": 64 * MiB},
+                        {"device_peak_owned_bytes": probe.HEAD_DEVICE_CAP + 1}):
+            with self.subTest(changed=changed):
+                report = {**original, "native_before_close": {**original["native_before_close"], **changed}}
+                self.ws.result_path("native.json").write_text(json.dumps(report), encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, "resource cleanup"):
+                    probe.compare_runs(self.ws, "native.json", "reference.json")
 
     def test_compare_refuses_same_process_foreign_source_or_cleanup_failure(self):
         (_, native), (_, reference) = self.executions()

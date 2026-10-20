@@ -255,7 +255,7 @@ class CompositionTests(unittest.TestCase):
     def test_default_spark_policy_has_one_shared_ceiling_and_system_floor(self):
         policy = runtime.spark_memory_policy()
         self.assertTrue(policy.unified_device_memory)
-        self.assertEqual(policy.device_caps, {0:2 * runtime.GiB})
+        self.assertEqual(policy.device_caps, {0:5 * runtime.GiB})
         self.assertEqual(policy.host_cap_bytes, 8 * runtime.GiB)
         self.assertEqual(policy.available_floor_bytes, 32 * runtime.GiB)
 

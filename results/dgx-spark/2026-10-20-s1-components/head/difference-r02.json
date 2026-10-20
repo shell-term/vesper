@@ -1,0 +1,137 @@
+{
+  "cases": [
+    {
+      "case": "c00_logits_fp32",
+      "maximum_absolute_error": 0.0,
+      "mean_absolute_error": 0.0,
+      "same_argmax": true,
+      "shape": [
+        1,
+        129280
+      ],
+      "unequal_bits": 0
+    },
+    {
+      "case": "c01_logits_fp32",
+      "maximum_absolute_error": 1.52587890625e-05,
+      "mean_absolute_error": 5.4337600670238535e-08,
+      "same_argmax": true,
+      "shape": [
+        1,
+        129280
+      ],
+      "unequal_bits": 2538
+    },
+    {
+      "case": "c02_logits_fp32",
+      "maximum_absolute_error": 1.1444091796875e-05,
+      "mean_absolute_error": 1.4105117833702872e-06,
+      "same_argmax": true,
+      "shape": [
+        1,
+        129280
+      ],
+      "unequal_bits": 103829
+    },
+    {
+      "case": "c03_logits_fp32",
+      "maximum_absolute_error": 1.1444091796875e-05,
+      "mean_absolute_error": 1.3905079426741837e-06,
+      "same_argmax": true,
+      "shape": [
+        1,
+        129280
+      ],
+      "unequal_bits": 103603
+    },
+    {
+      "case": "c04_logits_fp32",
+      "maximum_absolute_error": 0.0,
+      "mean_absolute_error": 0.0,
+      "same_argmax": true,
+      "shape": [
+        2,
+        129280
+      ],
+      "unequal_bits": 0
+    },
+    {
+      "case": "c05_logits_fp32",
+      "maximum_absolute_error": 0.0,
+      "mean_absolute_error": 0.0,
+      "same_argmax": true,
+      "shape": [
+        2,
+        129280
+      ],
+      "unequal_bits": 0
+    },
+    {
+      "case": "c06_logits_fp32",
+      "maximum_absolute_error": 0.0,
+      "mean_absolute_error": 0.0,
+      "same_argmax": true,
+      "shape": [
+        2,
+        129280
+      ],
+      "unequal_bits": 0
+    },
+    {
+      "case": "c07_logits_fp32",
+      "maximum_absolute_error": 0.0,
+      "mean_absolute_error": 0.0,
+      "same_argmax": true,
+      "shape": [
+        2,
+        129280
+      ],
+      "unequal_bits": 0
+    }
+  ],
+  "execution_result_sha256": {
+    "native": "da2968dd54a7968fdc6d621a3509358690cec6fcb025724b79923dfc4c5c5fa5",
+    "reference": "bc60ed4812e29b8a171bdfdfbab6f304394b44ac856436a67323d581826911b2"
+  },
+  "full_model_quality_qualified": false,
+  "general_performance_claim": false,
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "native_wall_seconds": [
+    42.64382247510366,
+    42.447981969919056,
+    42.44283334701322,
+    42.572260254994035,
+    42.53784592309967,
+    42.41760528809391,
+    42.28392076701857,
+    42.37089884490706
+  ],
+  "probe": "saved_head_shape_difference",
+  "reference_wall_seconds": [
+    0.18547635292634368,
+    0.020214382093399763,
+    0.018098707078024745,
+    0.019332531839609146,
+    0.02963566198013723,
+    0.01913319295272231,
+    0.017406580969691277,
+    0.016026249155402184
+  ],
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "scope": "CPU comparison of existing component arrays only; no new model execution",
+  "status": "diagnosed",
+  "workspace_context": {
+    "binding_id": "8480a267191e4fafab923ad834fd976c",
+    "created_at": "2026-10-20T04:24:45.622780+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "334ffd035daf8eecd523b1e3a5b9ca8c535d4bcf",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "cb94348f9dbcccb8aca04b379b3cc2637e3c5ca2385236d2078336469a9a7baf",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "s1-head-difference-r02",
+    "schema_version": 1
+  }
+}

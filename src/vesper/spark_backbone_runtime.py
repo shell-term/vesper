@@ -285,7 +285,7 @@ class SparkBackboneCandidate(NativeBackbone):
 def spark_memory_policy():
     """Enter RuntimeMemory with this policy before opening SparkModelAssets."""
     return MemoryPolicy(host_cap_bytes=8 * GiB, pinned_cap_bytes=128 * MiB,
-                        device_caps={0:2 * GiB}, unified_device_memory=True)
+                        device_caps={0:5 * GiB}, unified_device_memory=True)
 
 
 def open_spark_backbone(stack, assets, attention_bundle, *, temperature=.7, seed=2026):

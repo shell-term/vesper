@@ -96,7 +96,19 @@ and the PC receipt cannot replace this gate.
   bounded original BF16 rows. Its separate-process component probe authenticates
   the complete released head shard and the original tensor hash, then compares
   all 129,280 logits against the unchanged official `ParallelHead.forward`.
-  That probe is implemented; same-device numerical execution remains pending.
+  After fixing the library-version assumption, the first streamed-GEMM
+  comparison passed all eight greedy IDs and every batch-two logit, but three
+  batch-one logit arrays differed in FP32 storage. The largest absolute
+  difference was `1.52587890625e-5`. The
+  [complete failed comparison](../results/dgx-spark/2026-10-20-s1-components/head/compare-r02.json)
+  and [saved-array diagnosis](../results/dgx-spark/2026-10-20-s1-components/head/difference-r02.json)
+  remain visible; no tolerance was relaxed.
+  The replacement candidate builds the 2,647,654,400-byte FP32 head once on
+  device using 512-row host chunks, then uses the original full `M=129280`
+  SGEMM shape. Forward execution rereads no head rows. The component ceiling
+  is 3 GiB, within the full backbone's 5 GiB device ceiling, which in turn is
+  inside the 8 GiB shared host/device pool; the physical 32 GiB reserve still
+  applies. Its fresh numerical comparison is pending.
   Its first native attempt stopped before computation because the initial
   Spark candidate incorrectly assumed cuBLAS followed NVRTC's 13.0 version.
   Separate actual observations found cuBLAS version `130101`, math mode `0`,
@@ -126,5 +138,9 @@ and the PC receipt cannot replace this gate.
   or foreign evidence refuses execution before the first model forward.
 
 CPU/mock tests check bounds, failure/refusal, cleanup, corruption rejection and
-control flow. They do not qualify GB10 arithmetic. Current acceptance and pending
-gates belong to #16; component evidence alone cannot close S1.
+control flow. At `334ffd035daf8eecd523b1e3a5b9ca8c535d4bcf`, all four
+[CI environments](https://github.com/shell-term/vesper/actions/runs/39368126974)
+passed 675 tests: Ubuntu/Windows with Python 3.11/3.13, with one environment
+dependent skip on Linux. These tests do not qualify GB10 arithmetic. Current
+acceptance and pending gates belong to #16; component evidence alone cannot
+close S1.
