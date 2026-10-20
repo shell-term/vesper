@@ -62,7 +62,7 @@ class Native:
     """Small CPU arithmetic seam for orchestration tests, not the candidate."""
     def __init__(self, rows, *, block_rows):
         self.rows, self.block_rows = rows, block_rows
-        self.blas_provenance = {"version": 130001, "math_mode": 0, "TF32_enabled": False}
+        self.blas_provenance = {"version": 130101, "math_mode": 0, "TF32_enabled": False}
         self.calls = 0
 
     def __enter__(self):

@@ -89,6 +89,11 @@ self-consistency and the PC receipt cannot replace it.
   the complete released head shard and the original tensor hash, then compares
   all 129,280 logits against the unchanged official `ParallelHead.forward`.
   That probe is implemented; same-device numerical execution remains pending.
+  Its first native attempt stopped before computation because the initial
+  Spark candidate incorrectly assumed cuBLAS followed NVRTC's 13.0 version.
+  Separate actual observations found cuBLAS version `130101`, math mode `0`,
+  in both environments. The candidate now pins that exact observed version;
+  it does not widen an unmeasured version range or change FP32/TF32 policy.
 - An opt-in unified-memory policy charges device allocations to the same host
   ceiling as CPU, pinned and retained state. Discrete-GPU accounting keeps its
   existing default behavior. The physical available floor is not a VRAM floor.
@@ -107,6 +112,10 @@ self-consistency and the PC receipt cannot replace it.
   prepares small local dense derivatives, then requires a complete EOS response
   and owned-resource cleanup. Its code and CPU control-flow tests do not count
   as successful full-model text generation.
+  Before generation, current source-bound Attention oracle/native receipts
+  must match the immutable bundle, its actually loaded binaries, the observed
+  device/driver and both window/sharing Attention bindings. Missing, changed
+  or foreign evidence refuses execution before the first model forward.
 
 CPU/mock tests check bounds, failure/refusal, cleanup, corruption rejection and
 control flow. They do not qualify GB10 arithmetic. Current acceptance and pending

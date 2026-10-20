@@ -173,17 +173,27 @@ class ExecutionTargetTests(TestCase):
         with self.assertRaises(ValueError):
             compile_execution_kernel(lambda *_a, **_k: b"", compiler_info={}, pc_cubin_sha256=BINARY_HASH)
 
-    def test_blas_keeps_pc_version_and_fp32_math_strict_and_spark_unqualified(self):
-        pc, spark = resolve_execution_target(), resolve_execution_target(SPARK_TARGET)
+    def test_blas_keeps_pc_version_and_fp32_math_strict(self):
+        pc = resolve_execution_target()
         self.assertEqual(pc.validate_blas(120402, 0)["version"], 120402)
-        with self.assertRaises(ValueError): pc.validate_blas(130000, 0)
-        for version, mode in ((120402, 0), (130100, 0), (130000, 1), (True, 0)):
+        for version, mode in ((130101, 0), (130000, 0), (120402, 1), (120402, False), (True, 0)):
+            with self.subTest(version=version, mode=mode), self.assertRaises(ValueError):
+                pc.validate_blas(version, mode)
+
+    def test_spark_blas_pins_observed_library_independently_of_nvrtc(self):
+        spark = resolve_execution_target(SPARK_TARGET)
+        for version, mode in ((120402, 0), (130000, 0), (130001, 0), (130100, 0),
+                              (130102, 0), (130199, 0), (130200, 0), (140000, 0),
+                              (130101, 1), (130101, 2), (130101, False),
+                              (130101.0, 0), (True, 0)):
             with self.subTest(version=version, mode=mode), self.assertRaises(ValueError):
                 spark.validate_blas(version, mode)
-        result = spark.validate_blas(130001, 0)
-        self.assertEqual(result["version"], 130001)
+        result = spark.validate_blas(130101, 0)
+        self.assertEqual(result["version"], 130101)
+        self.assertEqual(result["math_mode"], 0)
         self.assertFalse(result["TF32_enabled"])
         self.assertEqual(result["qualification"], "unqualified_candidate")
+        self.assertFalse(spark.describe()["qualification_receipt_issued"])
 
     def test_sampling_policy_preserves_pc_and_records_actual_spark_geometry(self):
         pc, spark = resolve_execution_target(), resolve_execution_target(SPARK_TARGET)

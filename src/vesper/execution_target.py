@@ -109,7 +109,11 @@ class ExecutionTarget:
     def validate_blas(self, version, math_mode):
         if type(version) is not int or type(math_mode) is not int or math_mode != 0:
             raise ValueError("Native execution requires the original default FP32 cuBLAS math mode")
-        if (not self.is_candidate and version != 120402) or (self.is_candidate and not 130000 <= version < 130100):
+        # cuBLAS reports its own library version, independently of NVRTC.
+        # Pin the actual Spark observation rather than assuming a CUDA 13.0
+        # compiler also implies an unmeasured cuBLAS 13.0.x release.
+        expected_version = 130101 if self.is_candidate else 120402
+        if version != expected_version:
             raise ValueError("Native execution cuBLAS version differs from the selected target")
         return {"version": version, "math_mode": math_mode, "TF32_enabled": False,
                 "qualification": "unqualified_candidate" if self.is_candidate else "existing_pinned_component_profile"}

@@ -33,6 +33,7 @@ from .spark_attention import load_candidate
 from .spark_backbone_runtime import open_spark_backbone, spark_memory_policy, TARGET
 from .spark_probe import Driver, Unsupported, host_memory, require_capacity
 from .spark_tensor_views import SparkModelAssets
+from .spark_attention_validation import check_receipt
 from .tokenizer import PinnedTokenizer, TOKENIZERS_VERSION
 
 SCHEMA = "vesper.spark-text-probe.v1"
@@ -232,12 +233,39 @@ def _finish_completion(report, session, tokenizer):
             report["parsed_completion"] and report["parsed_completion"]["content"].strip() == "4")
 
 
+def _check_inventory_receipt(inventory, proof):
+    """Compare the public inventory view with the qualified Driver view."""
+    device = {"ordinal": inventory["ordinal"], "name": inventory["name"],
+        "compute_capability": ".".join(map(str, inventory["compute_capability"])),
+        "total_bytes": inventory["reported_cuda_total_bytes"]}
+    if (inventory["device_count"] != 1 or device != proof["observed_device"]
+            or inventory["driver_api_version"] != proof["driver_api_version"]):
+        raise ValueError("Observed generation hardware or driver differs from the Attention receipt")
+
+
+def _check_engine_receipt(engine, proof):
+    """Bind every sparse Attention consumer before any model forward call."""
+    attention = engine.sharing.attention
+    inventory = attention.driver.inventory()
+    if (engine.windows[0].attention is not attention or engine.windows[1].attention is not attention
+            or attention.manifest_sha256 != proof["bundle_manifest_sha256"]
+            or attention.device_info != proof["observed_device"]
+            or inventory["devices"] != [proof["observed_device"]]
+            or inventory["driver_api_version"] != proof["driver_api_version"]):
+        raise ValueError("Opened generation Attention differs from the qualified bundle or runtime")
+
+
 def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="s1/originals",
             integrity="s1/original-integrity", bundle="s1/attention-candidate", fixtures="s1/moe-original",
+            attention_reference_result="s1/attention/reference-r02.json",
+            attention_receipt_result="s1/attention/native-validation-r01.json",
             prompt=DEFAULT_PROMPT, max_new_tokens=64, temperature=0., seed=2026):
     """Return an unstamped report after resource cleanup; the CLI writes it."""
     initial = _guard(workspace, run_id)
     _validate(mode, prompt, max_new_tokens, temperature, seed)
+    if mode == "generate" and any(not isinstance(value, str) or not value for value in
+                                   (attention_reference_result, attention_receipt_result)):
+        raise ValueError("Generation requires both current Attention reference and native validation results")
     paths = {name: workspace.artifact_path(value) for name, value in
              (("metadata", metadata), ("originals", originals), ("integrity", integrity), ("bundle", bundle), ("fixtures", fixtures))}
     messages = [{"role": "user", "content": prompt}]
@@ -256,7 +284,8 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
         "limits": {"shared_host_cap_bytes": 8 * GiB, "physical_available_floor_bytes": 32 * GiB,
             "probe_host_admission_bytes": HOST_ADMISSION, "step_diagnostic_admission_bytes": STEP_DIAGNOSTIC_ADMISSION,
             "report_limit_bytes": REPORT_LIMIT, "reservation_is_RSS_or_OS_limit": False},
-        "memory_observations": [], "steps": [], "owned_resources_closed": False, "memory_runtime_closed": False}
+        "memory_observations": [], "steps": [], "owned_resources_closed": False, "memory_runtime_closed": False,
+        "attention_qualification": None}
     memory, admission = None, None
     engine = assets = tokenizer = session = result = None
     stage, started = "platform", time.perf_counter()
@@ -274,6 +303,19 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
         report["observed_platform"] = {"system": "Linux", "architecture": platform.machine().lower(),
                                       "single_physical_pool": True}
         check(HOST_ADMISSION)
+        if mode == "generate":
+            # Authenticate both current source-bound reports and the immutable
+            # bundle before assets, CUDA inventory, or any model operator opens.
+            stage = "attention_qualification"
+            proof = check_receipt(workspace, paths["bundle"], attention_reference_result, attention_receipt_result)
+            report["artifact_inputs"].update(attention_reference_result=attention_reference_result,
+                                            attention_receipt_result=attention_receipt_result)
+            report["attention_qualification"] = {"status": proof["status"], "scope": proof["scope"],
+                "bundle_manifest_sha256": proof["bundle_manifest_sha256"],
+                "reference_result_sha256": proof["reference_result_sha256"],
+                "native_receipt_result_sha256": proof["receipt_result_sha256"],
+                "case_count": len(proof["cases"]), "fault_count": len(proof["faults"]),
+                "full_model_quality_qualified": False}
         stage = "memory_runtime"
         memory = RuntimeMemory(spark_memory_policy())
         with memory:
@@ -294,6 +336,8 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                         for layer in range(40):
                             assets.moe_paths(layer)
                         manifest, binaries, manifest_sha = load_candidate(paths["bundle"])
+                        if manifest_sha != proof["bundle_manifest_sha256"]:
+                            raise ValueError("Attention bundle changed after receipt validation")
                         report["attention_bundle"] = {"manifest_sha256": manifest_sha,
                             "qualification": manifest["qualification"], "compute_capability": manifest["compute_capability"],
                             "nvrtc_version": manifest["nvrtc_version"],
@@ -302,6 +346,7 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                         del manifest, binaries
                         stage = "hardware_inventory"
                         report["observed_hardware"] = Driver().inventory()
+                        _check_inventory_receipt(report["observed_hardware"], proof)
                         check()
                         stage = "tokenizer"
                         tokenizer = PinnedTokenizer(paths["metadata"])
@@ -314,6 +359,8 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                         report["tokenizer"] = {"version": TOKENIZERS_VERSION, "vocabulary": len(tokenizer)}
                         stage = "model_open"
                         engine = open_spark_backbone(stack, assets, paths["bundle"], temperature=float(temperature), seed=seed)
+                        stage = "model_attention_qualification"
+                        _check_engine_receipt(engine, proof)
                         session = TextGeneration(tokenizer, engine.step, request)
                         report["tokenizer"]["compressed_identity"] = engine.tokenizer_identity
                         stage = "generation"
@@ -395,6 +442,8 @@ def main(argv=None):
     parser.add_argument("--integrity", default="s1/original-integrity")
     parser.add_argument("--bundle", default="s1/attention-candidate")
     parser.add_argument("--fixtures", default="s1/moe-original")
+    parser.add_argument("--attention-reference-result", default="s1/attention/reference-r02.json")
+    parser.add_argument("--attention-receipt-result", default="s1/attention/native-validation-r01.json")
     parser.add_argument("--prompt", default=DEFAULT_PROMPT)
     parser.add_argument("--max-new-tokens", type=int, default=64)
     parser.add_argument("--temperature", type=float, default=0.)
@@ -407,7 +456,8 @@ def main(argv=None):
     if workspace.result_path(relative).exists():
         raise FileExistsError("Refusing to overwrite Spark text evidence")
     report = collect(args.mode, workspace, run_id=args.run_id, metadata=args.metadata, originals=args.originals,
-        integrity=args.integrity, bundle=args.bundle, fixtures=args.fixtures, prompt=args.prompt,
+        integrity=args.integrity, bundle=args.bundle, fixtures=args.fixtures,
+        attention_reference_result=args.attention_reference_result, attention_receipt_result=args.attention_receipt_result, prompt=args.prompt,
         max_new_tokens=args.max_new_tokens, temperature=args.temperature, seed=args.seed)
     path = workspace.write_result(relative, report, run_id=args.run_id, initial_context=initial)
     print(json.dumps({"mode": args.mode, "status": report["status"], "functional_acceptance": report["functional_acceptance"],

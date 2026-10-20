@@ -69,7 +69,7 @@ class Driver:
 
 
 class Blas:
-    version, math_mode, handle = 130000, 0, 1
+    version, math_mode, handle = 130101, 0, 1
 
     def __init__(self, driver):
         self.driver, self.calls, self.closed = driver, [], False

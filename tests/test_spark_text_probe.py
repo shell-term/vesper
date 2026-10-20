@@ -2,6 +2,7 @@
 
 from contextlib import redirect_stdout
 import gc
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -57,6 +58,14 @@ class Workspace:
             json.dump(value, stream, ensure_ascii=False)
         self.writes.append(value)
         return path
+
+    def check_result(self, relative):
+        raw = self.result_path(relative).read_bytes()
+        value = json.loads(raw)
+        context = value.get("workspace_context", {})
+        if self.changed or context != self.context(context.get("run_id")):
+            raise ValueError("source identity changed")
+        return {"result_sha256": hashlib.sha256(raw).hexdigest()}
 
 
 class Tokenizer:
@@ -133,10 +142,18 @@ class Engine:
     wrong_route = False
     close_failure = False
     change_source = False
+    attention_mutation = None
     instances = []
     def __init__(self, assets, bundle, temperature, seed):
         self.assets, self.bundle, self.temperature, self.seed = assets, bundle, temperature, seed
         self.operator_pool = SimpleNamespace(moe_factory=lambda layer: MoE(layer))
+        device = {"ordinal": 0, "name": "NVIDIA GB10", "compute_capability": "12.1", "total_bytes": 128 * GiB}
+        attention = SimpleNamespace(manifest_sha256="c" * 64, device_info=device,
+            driver=SimpleNamespace(inventory=lambda: {"driver_api_version": 13000, "devices": [device], "peers": []}))
+        self.sharing = SimpleNamespace(attention=attention)
+        self.windows = {layer: SimpleNamespace(attention=attention) for layer in (0, 1)}
+        if type(self).attention_mutation is not None:
+            type(self).attention_mutation(self)
         self.tokenizer_identity = {"compressed_map_sha256": "b" * 64}
         self.calls, self.sampled, self.inputs = 0, 0, []
         self.budget = MemoryBudget(cap=32 * MiB, owner="test_engine")
@@ -188,12 +205,21 @@ class TextProbeTests(unittest.TestCase):
         Assets.events, Assets.failure, Assets.missing_moe, Engine.instances = [], None, False, []
         Engine.selections, Engine.fail_at, Engine.wrong_route = (4, 1), None, False
         Engine.close_failure, Engine.change_source = False, False
+        Engine.attention_mutation = None
         Tokenizer.prompt_ids = (10, 11, 12)
-        self.inventory = Mock(return_value={"device_count": 1, "name": "NVIDIA GB10", "compute_capability": [12, 1],
-            "cuda_capacity_added_to_physical_ram": False})
+        self.inventory = Mock(return_value={"device_count": 1, "ordinal": 0, "name": "NVIDIA GB10", "compute_capability": [12, 1],
+            "driver_api_version": 13000, "reported_cuda_total_bytes": 128 * GiB, "cuda_capacity_added_to_physical_ram": False})
+        self.real_attention_check = probe.check_receipt
+        self.attention_check = Mock(return_value={"status": "pass", "scope": "synthetic component gate only",
+            "bundle_manifest_sha256": "c" * 64, "reference_result_sha256": "d" * 64,
+            "receipt_result_sha256": "e" * 64,
+            "observed_device": {"ordinal": 0, "name": "NVIDIA GB10", "compute_capability": "12.1", "total_bytes": 128 * GiB},
+            "driver_api_version": 13000,
+            "cases": [None] * 36, "faults": [None] * 2})
         def open_engine(stack, assets, bundle, *, temperature, seed):
             return stack.enter_context(Engine(assets, bundle, temperature, seed))
         patches = [patch.object(probe, "SparkModelAssets", Assets), patch.object(probe, "PinnedTokenizer", Tokenizer),
+            patch.object(probe, "check_receipt", self.attention_check),
             patch.object(probe, "load_candidate", return_value=({"qualification": "unqualified_candidate",
                 "compute_capability": "12.1", "nvrtc_version": [13, 0], "profiles": []}, {}, "c" * 64)),
             patch.object(probe, "open_spark_backbone", side_effect=open_engine),
@@ -224,6 +250,10 @@ class TextProbeTests(unittest.TestCase):
         self.assertTrue(report["functional_acceptance"])
         self.assertFalse(report["full_model_quality_qualified"])
         self.assertFalse(report["original_kernel_parity_qualified"])
+        self.assertEqual(report["attention_qualification"]["case_count"], 36)
+        self.assertEqual(report["attention_qualification"]["fault_count"], 2)
+        self.attention_check.assert_called_once_with(self.ws, self.ws.artifact_path("s1/attention-candidate"),
+            "s1/attention/reference-r02.json", "s1/attention/native-validation-r01.json")
         request, completed = report["request"], report["completion"]
         self.assertEqual(request["messages"], [{"role": "user", "content": probe.DEFAULT_PROMPT}])
         self.assertTrue(request["serialized_chat"].startswith(BOS))
@@ -260,6 +290,114 @@ class TextProbeTests(unittest.TestCase):
         self.assertEqual(report["completion"]["selected_ids_including_eos"], [4, 4])
         self.assertEqual(Engine.instances[0].temperature, .7)
         self.assertEqual(Engine.instances[0].seed, 27)
+
+    def test_unpassed_attention_reference_blocks_assets_and_cuda(self):
+        from vesper import spark_attention_validation as bridge
+        reference, receipt = "s1/attention/reference-r02.json", "s1/attention/native-validation-r01.json"
+        self.ws.write_result(reference, {"status": "fail"}, run_id="ref")
+        self.ws.write_result(receipt, {"bundle": "s1/attention-candidate", "reference_result": reference}, run_id="native")
+        self.attention_check.side_effect = self.real_attention_check
+        with patch.object(bridge, "load_candidate", return_value=({}, {}, "c" * 64)):
+            report = self.generate()
+        self.assertEqual(report["status"], "failed")
+        self.assertEqual(report["failure_stage"], "attention_qualification")
+        self.assertFalse(report["functional_acceptance"])
+        self.assertIsNone(report["attention_qualification"])
+        self.assertEqual(Assets.events, [])
+        self.inventory.assert_not_called()
+        probe.open_spark_backbone.assert_not_called()
+
+    def test_foreign_source_in_either_attention_result_blocks_cuda(self):
+        reference, receipt = "s1/attention/reference-r02.json", "s1/attention/native-validation-r01.json"
+        self.ws.write_result(reference, {}, run_id="ref")
+        self.ws.write_result(receipt, {"bundle": "s1/attention-candidate", "reference_result": reference}, run_id="native")
+        self.attention_check.side_effect = self.real_attention_check
+        originals = {path: self.ws.result_path(path).read_bytes() for path in (reference, receipt)}
+        for path in (reference, receipt):
+            for target, raw in originals.items():
+                self.ws.result_path(target).write_bytes(raw)
+            value = json.loads(originals[path])
+            value["workspace_context"]["git_head"] = "f" * 40
+            self.ws.result_path(path).write_text(json.dumps(value), encoding="utf-8")
+            report = self.generate()
+            self.assertEqual(report["failure_stage"], "attention_qualification")
+            self.assertFalse(report["functional_acceptance"])
+        self.assertEqual(Assets.events, [])
+        self.inventory.assert_not_called()
+        probe.open_spark_backbone.assert_not_called()
+
+    def test_changed_attention_bundle_rejected_by_receipt_loader_before_cuda(self):
+        from vesper import spark_attention_validation as bridge
+        reference, receipt = "s1/attention/reference-r02.json", "s1/attention/native-validation-r01.json"
+        self.ws.write_result(reference, {}, run_id="ref")
+        self.ws.write_result(receipt, {"bundle": "s1/attention-candidate", "reference_result": reference}, run_id="native")
+        self.attention_check.side_effect = self.real_attention_check
+        with patch.object(bridge, "load_candidate", side_effect=ValueError("Attention CUBIN hash differs")) as loader:
+            report = self.generate()
+        loader.assert_called_once_with(self.ws.artifact_path("s1/attention-candidate"))
+        self.assertEqual(report["failure_stage"], "attention_qualification")
+        self.assertFalse(report["functional_acceptance"])
+        self.assertEqual(Assets.events, [])
+        self.inventory.assert_not_called()
+
+    def test_prepare_needs_no_attention_receipt_and_missing_gate_is_not_optional(self):
+        report = probe.collect("prepare", self.ws, run_id="prepare", attention_reference_result=None,
+                               attention_receipt_result=None)
+        self.assertEqual(report["status"], "local_moe_prepared")
+        self.assertIsNone(report["attention_qualification"])
+        self.attention_check.assert_not_called()
+        self.inventory.assert_not_called()
+        for argument in ("attention_reference_result", "attention_receipt_result"):
+            with self.assertRaises(ValueError):
+                self.generate(**{argument: None})
+
+    def test_bundle_replaced_after_receipt_validation_cannot_open_cuda(self):
+        original = probe.load_candidate.return_value
+        with patch.object(probe, "load_candidate", return_value=(*original[:2], "f" * 64)):
+            report = self.generate()
+        self.assertEqual(report["status"], "failed")
+        self.assertEqual(report["failure_stage"], "prepared_local_assets")
+        self.inventory.assert_not_called()
+        probe.open_spark_backbone.assert_not_called()
+        self.assertFalse(report["functional_acceptance"])
+
+    def test_inventory_hardware_or_driver_change_cannot_open_model(self):
+        original = self.inventory.return_value.copy()
+        for key, value in (("ordinal", 1), ("name", "Foreign GB10"), ("compute_capability", [12, 0]),
+                           ("reported_cuda_total_bytes", 127 * GiB), ("driver_api_version", 13010), ("device_count", 2)):
+            with self.subTest(key=key):
+                self.inventory.return_value = {**original, key: value}
+                report = self.generate()
+                self.assertEqual(report["failure_stage"], "hardware_inventory")
+                self.assertFalse(report["functional_acceptance"])
+        probe.open_spark_backbone.assert_not_called()
+
+    def test_actual_attention_bundle_device_driver_and_consumers_bound_before_forward(self):
+        def bundle(engine):
+            engine.sharing.attention.manifest_sha256 = "f" * 64
+        def device(engine):
+            engine.sharing.attention.device_info = {**engine.sharing.attention.device_info, "name": "Other GB10"}
+        def driver(engine):
+            attention = engine.sharing.attention
+            attention.driver = SimpleNamespace(inventory=lambda: {"driver_api_version": 13010, "devices": [attention.device_info]})
+        def enumerated_device(engine):
+            attention = engine.sharing.attention
+            attention.driver = SimpleNamespace(inventory=lambda: {"driver_api_version": 13000,
+                "devices": [{**attention.device_info, "ordinal": 1}]})
+        def window0(engine):
+            engine.windows[0].attention = SimpleNamespace()
+        def window1(engine):
+            engine.windows[1].attention = SimpleNamespace()
+        for mutation in (bundle, device, driver, enumerated_device, window0, window1):
+            with self.subTest(mutation=mutation.__name__):
+                Engine.attention_mutation = mutation
+                report = self.generate()
+                self.assertEqual(report["status"], "failed")
+                self.assertEqual(report["failure_stage"], "model_attention_qualification")
+                self.assertEqual(Engine.instances[-1].calls, 0)
+                self.assertFalse(report["functional_acceptance"])
+                self.assertTrue(report["owned_resources_closed"])
+                self.assertTrue(report["memory_runtime_closed"])
 
     def test_empty_eos_and_unexpected_reasoning_fail_plain_response_contract(self):
         for sequence in ((1,), (6, 1)):
