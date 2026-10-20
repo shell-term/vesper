@@ -23,12 +23,13 @@ from .sequence import MAX_CALLS, MAX_ROWS
 from .sequence_assets import request
 from .tokenizer import PinnedTokenizer
 from .trajectory_evidence import load_plan, load_tokens, plan_identity, expert_plan, scope, identity, write_case
+from .trajectory_workspace import bank_path,bank_sources,own_evidence
 
 
 def capture_original(root,run,progress=None):
     import torch
     import json
-    root,run=Path(root),Path(run);plan=load_plan(root,run);case,req=request(plan['case']['id'])
+    root,run=Path(root),Path(run);own_evidence(root,run);plan=load_plan(root,run);case,req=request(plan['case']['id'])
     previous=torch.get_default_dtype();torch.set_default_dtype(torch.bfloat16)
     try:
         with RuntimeMemory(MemoryPolicy(host_cap_bytes=32*GiB)) as policy:
@@ -41,7 +42,7 @@ def capture_original(root,run,progress=None):
                 head_arrays,head_manifest=load_output(root/'output-fixture');stack.callback(arrays.clear);stack.callback(head_arrays.clear)
                 if bindings['bindings_sha256']!=plan['bindings_sha256'] or head_manifest!=plan['output_fixture']:
                     raise ValueError('Original whole-model control/output preparation differs')
-                bank=stack.enter_context(ExpertBank(root,root/'expert-bank-v1',existing_sources(root)))
+                bank=stack.enter_context(ExpertBank(root,bank_path(root),bank_sources(root)))
                 tokens=load_tokens(root,run,plan)
                 oracle=BackboneOracle(stack,root,arrays,head_arrays,progress,token_rows=tokens,rows_root=run/'rows',
                     max_seq_len=MAX_CALLS,max_rows=MAX_ROWS,paged_rows=True,expert_loader=bank.arrays)

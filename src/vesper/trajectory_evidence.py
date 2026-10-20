@@ -55,9 +55,10 @@ def scope(case_id):
         'speculative_MTP_run':False,'vision_run':False,'original_auxiliary_main_hidden_comparison_run':False}
 
 
-def load_plan(root,run):
+def load_plan(root,run,*,allow_legacy=False):
     root,run=Path(root),Path(run)
-    if not run.resolve().is_relative_to((root/'trajectories').resolve()):raise ValueError('Unanchored trajectory plan')
+    allowed=[root/'pc-heterogeneous/trajectories']+([root/'trajectories'] if allow_legacy else [])
+    if not any(run.resolve().is_relative_to(p.resolve()) for p in allowed):raise ValueError('Unanchored or foreign-platform trajectory plan')
     plan,_=read(run/'plan.json');case,req=request(plan['case']['id'])
     if (plan.get('probe'),plan.get('status'),plan.get('model'),plan.get('revision'),plan.get('scope'),plan.get('case'),
             plan.get('request'),plan.get('layers'),plan.get('temperature'),plan.get('seed'),plan.get('quality_scored'),

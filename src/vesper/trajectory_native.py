@@ -25,12 +25,14 @@ from .sequence_assets import request
 from .tokenizer import PinnedTokenizer
 from .topology_validation import state_digest
 from .trajectory_evidence import load_plan,load_tokens,plan_identity,scope,expert_plan,load_case,write_case,validate_original
+from .trajectory_workspace import own_evidence
 
 
 class InjectedWholeTokenFailure(RuntimeError):pass
 
 
 def run_native(root,run,original,original_raw,reference_run,progress=None):
+    own_evidence(root,run);own_evidence(root,reference_run)
     validate_original(original,reference_run)
     frameworks={n:{'installed':importlib.util.find_spec(n) is not None,'imported':n in sys.modules} for n in ('torch','tilelang','transformers','sympy')}
     if any(any(v.values()) for v in frameworks.values()):raise ValueError('Expected an independent framework-free native environment')

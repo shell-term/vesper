@@ -30,6 +30,7 @@ from .router import RouterProbe, load_router_fixture
 from .sequence import MAX_EMBEDDINGS, MAX_ROWS, scope
 from .sequence_assets import request
 from .tokenizer import PinnedTokenizer
+from .trajectory_workspace import select,bank_path,bank_sources
 
 
 class PlanningMoE(PreparedMoE):
@@ -61,7 +62,8 @@ class PlanningMoE(PreparedMoE):
 
 def prepare(root,run,*,case_id='coding-python-expression',progress=None):
     root,run=Path(root),Path(run)
-    if not run.resolve().is_relative_to((root/'trajectories').resolve()):raise ValueError('Expected an anchored whole-model trajectory run')
+    workspace=select(root)
+    if not run.resolve().is_relative_to((root/'pc-heterogeneous/trajectories').resolve()):raise ValueError('Expected a bound PC whole-model trajectory run')
     run.mkdir(parents=True,exist_ok=True)
     if (run/'plan.json').exists():raise FileExistsError('Refusing to replace a complete whole-model preparation')
     reserve_disk(run,8*GiB)
@@ -74,7 +76,7 @@ def prepare(root,run,*,case_id='coding-python-expression',progress=None):
         stack.callback(row_budget.release,row_budget.cap)
         cache=stack.enter_context(CompilationCache())
         reader=stack.enter_context(CatalogReader(root/'import-source'))
-        bank=stack.enter_context(ExpertBank(root,root/'expert-bank-v1',existing_sources(root)))
+        bank=stack.enter_context(ExpertBank(root,bank_path(root),bank_sources(root)))
         transfers=stack.enter_context(ThreadPoolExecutor(max_workers=8))
         tokenizer=PinnedTokenizer(root/'import-source');prompt=req.encode(tokenizer)
         assets=GenerationAssets(root,run,reader,max_embeddings=MAX_EMBEDDINGS,max_rows=MAX_ROWS)

@@ -6,6 +6,13 @@ tokens. It is not shortened to fit the earlier eight-call fixture. Independent
 original/native execution and actual completion scoring are pending; no new
 whole-model quality result is claimed by this implementation page.
 
+This is the **pc-heterogeneous** track. Select the
+[PC workspace](../platforms/pc-heterogeneous/README.md) and pass
+`python -m vesper.workspace check` first. New private runs and public results
+use `artifacts/pc-heterogeneous/` and `results/pc-heterogeneous/`. Execution
+receipts bind the raw report hash to the actual platform/model, source commit,
+dirty digest and run ID. Shared code does not transfer qualification to Spark.
+
 The preceding [longer-input/storage gate](sequence-storage-validation.md)
 qualifies indexed short generation and a separate synthetic-hidden Engram
 comparison. Those results alone do not qualify this longer whole-model task.
@@ -100,6 +107,14 @@ and final close, while checking only the immutable binary and source/binary
 stamps on hits. These executions are correctness evidence, not a matched
 comparison of TTFT, decode throughput or end-to-end cache performance.
 
+That short cache gate completed before workspace isolation was introduced;
+its historical result path and original unbound captures are retained. They
+are not retrospectively stamped as newly bound GPU executions. A PC task can
+explicitly import a completed legacy input snapshot with `migrate-input`:
+only embeddings, selected rows and index metadata are copied, with zero expert
+payload copies and an unchanged logical plan identity. New original/native
+execution then uses the PC namespace and fresh execution-context receipts.
+
 ## Streaming evidence and state recovery
 
 [Evidence files](../src/vesper/trajectory_evidence.py) retain all typed/shaped
@@ -133,6 +148,7 @@ Use a fresh run name; complete plans, call records and captures are not replaced
 The optional original reference environment is separate from native execution.
 
 ```powershell
+python -m vesper.workspace check
 python -m vesper.trajectory_probe prepare --run coding-new --case coding-python-expression
 # Qualified original environment; configure its original NVRTC runtime.
 python -m vesper.trajectory_probe reference --run coding-new
