@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "probe": "compilation_cache_file_bound_summary",
+  "status": "pass",
+  "files": {
+    "native.json": {
+      "bytes": 13425398,
+      "sha256": "d4b5bf10261c3dfa24c4cc9e5309236018d2097bb5e61381bdcbba3039bceb33"
+    },
+    "compiler.json": {
+      "bytes": 85849,
+      "sha256": "bf54109fd317bf67a396dc3a404eac287ef6a02d62dd0772a065d63e796ed2e8"
+    }
+  },
+  "original_reference_file": "../2026-10-19-generation/original.json",
+  "original_reference_sha256": "fbf019e095660e57e05c3bf97ca44607b9ab096b62e9e11e93c743708764457f",
+  "model_calls": 5,
+  "typed_boundaries": 26250,
+  "complete_FP32_logits": 646400,
+  "actual_original_routes": 200,
+  "distinct_compiled_images": 14,
+  "compiled_image_set_sha256": "677c1c6d72ab5d38ac0bfcff04d1457232921e15cb8cc5310eefe0c265c82f5a",
+  "scope": "exact_image_reuse_and_short_generation; no matched TTFT or token-rate comparison",
+  "initial_compile_only_profile_inventory_error": {
+    "status": "rejected",
+    "qualified_capture_produced": false,
+    "GPU_execution_performed": false,
+    "cause": "Probe list requested an Ampere expert profile instead of the runtime Ampere integrity profile; corrected against actual source hashes"
+  }
+}

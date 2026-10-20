@@ -12,6 +12,7 @@ import numpy as np
 
 from .resources import GiB, MiB, MemoryBudget
 from .memory import current_policy,observe_external
+from .compile_cache import cached_compilation
 
 
 class CudaError(RuntimeError):
@@ -220,6 +221,7 @@ class Pinned:
             self.budget.release(self.size,category='pinned')
 
 
+@cached_compilation
 @observe_external('native_compiler')
 def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: bool = False,
                   integrity: bool = False, routing: bool = False, shared: bool = False,

@@ -36,7 +36,7 @@ from .topology_validation import state_digest
 
 class BackboneOracle:
     def __init__(self, stack, root, arrays, head_arrays, progress=None, *, token_rows=None, rows_root=None,
-            experts_root=None, max_seq_len=4, temperature=.7):
+            experts_root=None, max_seq_len=4, temperature=.7, max_rows=1024, paged_rows=False, expert_loader=None):
         import torch
         self.torch, self.root, self.progress = torch, Path(root), progress
         directory = self.root / "reference"
@@ -52,12 +52,15 @@ class BackboneOracle:
             for n in (f"layers.{l}.attn_norm.weight", f"layers.{l}.ffn_norm.weight")}, 0)
         self.head = OutputOracle(directory, head_arrays)
         self.hash = original_hash(self.root / "import-source", max_seq_len=max_seq_len).to("cuda:0")
-        virtual = stack.enter_context(VirtualTables(0))
-        self.engram = EngramOracle(directory, self.root / "import-source", self.root / "engram-fixture", virtual, rows_root=rows_root)
+        if paged_rows:
+            from .paged_tables import PagedVirtualTables
+        virtual = stack.enter_context((PagedVirtualTables if paged_rows else VirtualTables)(0,max_rows=max_rows))
+        self.engram = EngramOracle(directory, self.root / "import-source", self.root / "engram-fixture", virtual, rows_root=rows_root,max_rows=max_rows,paged_rows=paged_rows)
         self.rows = embeddings(root) if token_rows is None else token_rows
         self.experts_root = self.root / "backbone-experts" if experts_root is None else Path(experts_root)
         self.temperature = temperature
-        raw = virtual.table((129280, 10240), {i: a.tobytes() for i, a in self.rows.items()})
+        self.expert_loader = expert_loader
+        raw = (virtual.paged_table if paged_rows else virtual.table)((129280, 10240), {i: a.tobytes() for i, a in self.rows.items()})
         self.embedding = SimpleNamespace(weight=raw.view(torch.bfloat16), vocab_start_idx=0, vocab_end_idx=129280)
         self.embedding_forward = self.p[0].method("ParallelEmbedding", "forward")
         self.p[0].scope["sample"] = self.head.sample
@@ -114,6 +117,7 @@ class BackboneOracle:
         def embed(ids):
             if any(int(i) not in self.rows for i in _numpy(ids).reshape(-1)):
                 raise ValueError("Refuse unbacked original embedding rows before GPU access")
+            if paged_rows:virtual.activate(self.embedding.weight,_numpy(ids))
             result = self.embedding_forward(self.embedding, ids)
             self.trace["embedding_bf16"] = _numpy(result.unsqueeze(2).repeat(1, 1, 4, 1))
             return result
@@ -151,7 +155,7 @@ class BackboneOracle:
         if mask is not None: raise ValueError("This full original-forward corpus is text only")
         self.trace[f"layer{layer}"]["ffn_norm_output_bf16"] = _numpy(x)
         oracle = OfficialConnected(*moe_files(self.root, self.bindings, layer), self.experts_root / f"layer{layer}",
-            self.root / "reference", layer=layer, profile="backbone_probe")
+            self.root / "reference", layer=layer, profile="backbone_probe", expert_loader=self.expert_loader)
         try:
             validate_moe_manifests(oracle, self.bindings, layer)
             stages = oracle.forward(bf16_values(_numpy(x).reshape(5120)), False)

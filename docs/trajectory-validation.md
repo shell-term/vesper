@@ -1,0 +1,147 @@
+# Longer whole-model trajectory validation
+
+The first target is the complete, previously declared Python-expression task.
+Its original chat-format prompt has 30 tokens and requests at most 32 new
+tokens. It is not shortened to fit the earlier eight-call fixture. Independent
+original/native execution and actual completion scoring are pending; no new
+whole-model quality result is claimed by this implementation page.
+
+The preceding [longer-input/storage gate](sequence-storage-validation.md)
+qualifies indexed short generation and a separate synthetic-hidden Engram
+comparison. Those results alone do not qualify this longer whole-model task.
+
+## Bounded preparation and offline execution
+
+[Preparation](../src/vesper/trajectory_prepare.py) stages actual original
+embeddings, both Engrams, all forty blocks and the final original head/sampler.
+It resolves the actual unmodified top-six route between stages. This phase may
+fetch missing original payloads; it is not independent reference evidence or
+an offline model-quality result.
+
+Complete task prompts, their token-ID lists and scoring cases are pinned to the
+preceding independent original CPU [message-format gate](message-format-validation.md).
+Both whole-model executions must retain those complete inputs; a shorter prompt,
+lower reasoning effort or altered tool schema cannot silently qualify.
+
+The [expert bank](../src/vesper/expert_bank.py) reuses existing immutable packed
+sources. Each new expert is checked by the existing six-tensor importer,
+packed once and published by a directory rename. A temporary NPZ belongs to
+one TemporaryDirectory and is removed after packing; no growing union of
+expert payloads is recopied. Prepared indexes contain only metadata.
+
+New packed payloads have a separate **64 GiB storage cap**, with a **64 GiB
+disk-free reserve** and bounded transient imports. This storage cap is not a RAM
+allocation. At most four expert imports share eight payload-transfer workers.
+Failed imports retain no published token; completed immutable objects can be
+reused when preparing a fresh run. Raw model bytes remain ignored artifacts.
+
+The subsequent [original execution](../src/vesper/trajectory_reference.py)
+uses unchanged upstream `generate`, `Transformer.forward`, `Block.forward`,
+gate, expert, Engram and sampling arithmetic. An offline loader supplies the
+same original tensor bytes from the bank, checking payload and per-tensor
+SHA-256 plus provenance. The original gate chooses its own experts. No native
+planned route or sampled ID supplies an original execution decision.
+
+The original prompt chunk is serialized by the already documented adapter;
+this qualifies the single-query path rather than chunk prefill. Intermediate
+prompt calls do not consume sampling RNG. NgramHash admits 512 input positions;
+the upstream generation adapter separately provides 513 token-array slots,
+including the output beyond the final admitted input position.
+
+[Native replay](../src/vesper/trajectory_native.py) independently encodes the
+request, computes every route and feeds its own sampled IDs back. It has no
+reference frameworks installed/imported and no HTTP fallback. Original
+provenance is an integrity guard, never a substitute for routing or math.
+
+## Original-address row transport
+
+Both Engrams retain the [paged original-address transport](sequence-storage-validation.md).
+The full input-embedding view now uses the same bounded mechanism, including
+rows that straddle two physical pages. Original virtual shapes, BF16/FP8 views,
+row offsets and `F.embedding` remain unchanged. At most 24 logical rows per
+table are active. All five paged tables share the **512 MiB physical backing
+cap** and the device-free reserve; virtual reservation is reported separately.
+
+The historical reference profile and its original eager-table default are
+unchanged. Missing logical rows are rejected even when a neighboring row's
+physical page is already mapped. No zero row or lossy row remapping exists.
+
+## Scoped compilation reuse
+
+The optional [compilation cache](../src/vesper/compile_cache.py) holds immutable
+NVRTC cubin bytes in one process. It caches no CUDA module, context, pointer,
+model weight or mutable launch handle. The default compiler remains uncached.
+Architecture, compiler arguments and the sealed compiler/source inputs bind
+each entry. Every hit checks the immutable binary's digest and source/binary
+stamps. Misses and final close check every sealed input by content, including
+all toolkit headers; changing a compiler input rejects the scope. A completed
+capture is written only after that final check succeeds.
+
+There are at most 32 entries / 32 MiB of cubin payload, covered by a 96 MiB
+conservative host admission. Binary checksums and the actual compiler metadata
+are reportable; local toolkit paths and cubins are not committed. Cache hits
+alone do not establish exact model outputs or any measured token rate.
+
+The [complete cached short replay](../results/2026-10-20-compilation-cache/native.json)
+passes all 26,250 original typed boundaries / 646,400 FP32 logits from the
+existing five-call corpus, with 1,476 cache hits and fourteen actual compiled
+variants. The [faster-checking compiler-only follow-up](../results/2026-10-20-compilation-cache/compiler.json)
+reproduces every one of those fourteen cubins byte-for-byte. Its CPU compilation
+check does not run the GPU model. The
+[file-bound summary](../results/2026-10-20-compilation-cache/summary.json)
+also records a rejected initial probe-list mistake: the Ampere entry requested
+the expert variant instead of the actual integrity variant. No qualified
+capture came from that mistaken compile-only inventory. The helper GPU still
+stores/audits bytes; no Ampere model arithmetic is qualified here.
+
+The first cache checker walked the toolkit inventory on every hit; its full
+replay includes that overhead. The follow-up validates all headers on misses
+and final close, while checking only the immutable binary and source/binary
+stamps on hits. These executions are correctness evidence, not a matched
+comparison of TTFT, decode throughput or end-to-end cache performance.
+
+## Streaming evidence and state recovery
+
+[Evidence files](../src/vesper/trajectory_evidence.py) retain all typed/shaped
+math hashes and whole-token state for every original/native call. Each call is
+a separate file, bounded to 4 MiB and bound by its byte count and SHA-256. The
+manifest binds the ordered complete file list, original source/method identities,
+weights/index provenance, decoded sampled IDs and deterministic task score.
+This avoids keeping the growing corpus's intermediate fingerprints in RAM.
+
+Discovery does not self-qualify by recalculating checksums. The independent
+original identity and complete goldens must be pinned after inspection.
+Validation rejects missing/changed calls, early termination, substituted
+feedback IDs, changed RNG progression and omitted typed boundaries.
+
+Native replay also injects an actual failure after the last prompt call's final
+logits and sampling. The token transaction must restore the complete model,
+hash history and RNG; the healthy retry must match the original call. A failed
+call produces no continuation ID. This is additional work, distinct from
+successful call counts and from CPU capacity tests.
+
+The conservative native/preparation admission cap is **64 GiB**, the original
+reference cap **32 GiB**, and the system-available floor remains **32 GiB**.
+Report actual sampled RSS/private commit, available RAM, GPU ownership and
+cleanup separately from admission counters. The default full-engine cap remains
+96 GiB. No OS memory quota or full-checkpoint download is implied.
+
+## Reproduction
+
+Existing pinned controls, tokenizer and earlier immutable stores are required.
+Use a fresh run name; complete plans, call records and captures are not replaced.
+The optional original reference environment is separate from native execution.
+
+```powershell
+python -m vesper.trajectory_probe prepare --run coding-new --case coding-python-expression
+# Qualified original environment; configure its original NVRTC runtime.
+python -m vesper.trajectory_probe reference --run coding-new
+# Inspect and pin a new original capture before independent native recheck.
+python -m vesper.trajectory_probe native --run coding-new
+python -m vesper.trajectory_probe check --run coding-new
+python -m unittest discover -s tests -v
+```
+
+One expression task cannot establish general coding, reasoning or tool-use
+quality. The two other declared tasks, broader inputs and end-to-end performance
+remain separate work. Issue #10 and M2 remain open.

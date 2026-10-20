@@ -49,10 +49,12 @@ def native_connected_stages(result):
 class OfficialConnected:
     """Original gate, experts, shared expert and MoE.forward; six-entry oracle LRU."""
 
-    def __init__(self, gate_fixture, router_fixture, shared_fixture, expert_directory, reference_directory, ordinal=0, *, layer=0, profile="qualified"):
+    def __init__(self, gate_fixture, router_fixture, shared_fixture, expert_directory, reference_directory, ordinal=0, *, layer=0, profile="qualified", expert_loader=None):
         from .prefix_profile import validate_layer
         validate_layer(layer, (0, 2, 3, 20, 21, 22, 23, 24, 25), profile)
         self.layer = layer
+        if expert_loader is not None and not callable(expert_loader): raise ValueError('Expected an explicit offline original expert loader')
+        self.expert_loader = expert_loader
         import torch
         self.torch = torch
         if (torch.version.git_version != ROUTER_TORCH_REVISION or torch.get_float32_matmul_precision() != "highest"
@@ -79,7 +81,8 @@ class OfficialConnected:
             return self.experts[expert]
         if len(self.experts) == 6:
             self.experts.popitem(last=False)
-        arrays, manifest = load_expert_fixture(self.expert_directory / f"expert-{expert:03d}/native-expert.npz")
+        arrays, manifest = (load_expert_fixture(self.expert_directory / f"expert-{expert:03d}/native-expert.npz") if self.expert_loader is None
+            else self.expert_loader(self.layer, expert))
         if manifest["layer"] != self.layer or manifest["expert"] != expert:
             raise ValueError("Oracle expert identity differs from the actual gate selection")
         self.provenance[expert_key(self.layer, expert)] = manifest

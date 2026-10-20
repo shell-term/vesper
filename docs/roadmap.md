@@ -92,6 +92,14 @@ on synthetic hidden inputs, with 248 MiB peak original-address physical row
 backing. Larger whole-model route preparation, actual generated trajectories
 and reasoning/coding/tool scores remain open; #10 and M2 remain open.
 
+The [trajectory runner](trajectory-validation.md) implements bounded immutable
+expert-object imports, original-address input-embedding paging and per-call
+evidence files. Compilation reuse passes the existing complete short generation
+and a separate fourteen-image exact-binary recheck; this is no throughput claim.
+The first actual coding-task preparation is in progress. Its independent
+original/native whole-model comparison and score remain pending; the other two
+declared tasks remain not run. Neither #10 nor M2 is complete.
+
 ## Working on an issue
 
 1. State the concrete outcome, acceptance checks, resource limits and dependencies.

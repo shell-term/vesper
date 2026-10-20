@@ -57,6 +57,14 @@ class PagedTableTests(unittest.TestCase):
         v.deactivate(tensor);self.assertEqual(v.physical,0);self.assertEqual(state['active_rows'],set())
         v.stack.close()
 
+    def test_full_input_embedding_row_crossing_two_pages_keeps_exact_address_and_bytes(self):
+        v,state,tensor=self.table();state['shape']=(129280,10240)
+        state['rows']={204:bytes(range(256))*40}
+        v.activate(tensor,np.array([[204]],np.int64))
+        self.assertEqual(set(state['pages']),{0,1});self.assertEqual(v.physical,4*MiB)
+        self.assertEqual(v.driver.events,[('copy',state['base']+204*10240,state['rows'][204])])
+        v.stack.close();self.assertEqual(v.physical,0)
+
     def test_cap_refusal_happens_before_old_residency_changes(self):
         v,state,tensor=self.table();v.activate(tensor,np.array([0,8192],np.int64));old=dict(state['pages']);events=len(v.driver.events)
         v.cap=MiB

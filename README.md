@@ -78,6 +78,14 @@ Engrams match 3,906 boundaries / 30,247,560 elements; original-address paging
 peaks at 248 MiB of physical row backing. These Engram hidden inputs are
 synthetic. Whole-model execution of the longer quality requests remains open.
 
+The [longer trajectory runner](docs/trajectory-validation.md) now prepares actual
+routes through immutable expert objects without retaining duplicate NPZ copies
+or rebuilding growing payload unions. Per-call evidence is streamed to bounded
+files. Optional process-local compilation reuse retains every original boundary
+in the existing short generation and reproduces fourteen exact cubins. The first
+complete coding-task trajectory is being prepared; its original/native quality
+comparison is pending.
+
 Direct comparisons with the pinned official implementation give:
 
 | Candidate | Scope | Result |

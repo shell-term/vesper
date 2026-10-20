@@ -24,7 +24,7 @@ class PagedVirtualTables(VirtualTables):
 
     def paged_table(self,shape,rows):
         import torch
-        if (shape not in ((384006168,256),(384006168,8),(384016682,256),(384016682,8))
+        if (shape not in ((384006168,256),(384006168,8),(384016682,256),(384016682,8),(129280,10240))
                 or not 1<=len(rows)<=self.max_rows or any(type(i) is not int or not 0<=i<shape[0] or type(raw) is not bytes or len(raw)!=shape[1] for i,raw in rows.items())):
             raise ValueError("Expected bounded original-address paged rows")
         self.device.current();size=((int(np.prod(shape))+self.page-1)//self.page)*self.page

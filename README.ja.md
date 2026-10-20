@@ -22,6 +22,11 @@ Vesper単独のRAM実測最大は約8.00GiB、空きRAMの最小観測値は約1
 こちらの隠れ状態は人工入力です。512回までの要求を受け付ける枠は実装しましたが、長い入力を全層に通す生成と品質評価は残っています。
 [検証結果・メモリ実測・残る作業](docs/sequence-storage-validation.md)を公開しています。
 
+長い入力向けに、追加した重みを一度だけ保存する準備経路と、1トークンずつ検証結果を保存する仕組みを実装しています。
+コンパイル結果の再利用でも従来の短文生成は全箇所が一致し、14種類のバイナリも一致しました。
+現在はコード課題の全層実行を準備中で、その回答と元実装の照合は未完了です。
+[長い実行の準備・照合方法](docs/trajectory-validation.md)に範囲を記録しています。
+
 進捗は[Issues](https://github.com/shell-term/vesper/issues)と[Milestones](https://github.com/shell-term/vesper/milestones)で管理します。
 「実装済み」と「公式との一致を検証済み」を区別し、合格条件と測定データを各Issueに残します。
 [開発の節目と運用方針](docs/roadmap.md)も公開しています。
