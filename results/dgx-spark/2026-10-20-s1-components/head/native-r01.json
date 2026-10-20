@@ -1,0 +1,1814 @@
+{
+  "case_identity": [
+    {
+      "batch": 1,
+      "dtype": "<u2",
+      "input_sha256": "84ff92691f909a05b224e1c56abb4864f01b4f8e3c854e4bb4c7baf1d3f6d652",
+      "pattern": "zero",
+      "seed": null,
+      "shape": [
+        1,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 1,
+      "dtype": "<u2",
+      "input_sha256": "3a997bb1bdb0bc18454993bc32d3b99afe130373ca8f3fbf066b308bbe1df71e",
+      "pattern": "pattern",
+      "seed": null,
+      "shape": [
+        1,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 1,
+      "dtype": "<u2",
+      "input_sha256": "f0a06b4e9f068f5d7b6f035634eba112ce80ceba013c0813513f02dfa9be2a0d",
+      "pattern": "random",
+      "seed": 17,
+      "shape": [
+        1,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 1,
+      "dtype": "<u2",
+      "input_sha256": "451bcf50a9b05655379ccffab4c9896219b9cf8a1c9d1cd6d4f68d124dd40f17",
+      "pattern": "random",
+      "seed": 2026,
+      "shape": [
+        1,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 2,
+      "dtype": "<u2",
+      "input_sha256": "cc61635da46b2c9974335ea37e0b5fd660a5c8a42a89b271fa7ec2ac4b8b26f6",
+      "pattern": "zero",
+      "seed": null,
+      "shape": [
+        2,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 2,
+      "dtype": "<u2",
+      "input_sha256": "74ecf9d87f13172e665c83113550137c263658e710a7d6d22dfe8f9e65d97cfd",
+      "pattern": "pattern",
+      "seed": null,
+      "shape": [
+        2,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 2,
+      "dtype": "<u2",
+      "input_sha256": "5d604d1338b3381338835dd592561ef73d7a786f058af0a181bab5ac2cf0a47b",
+      "pattern": "random",
+      "seed": 17,
+      "shape": [
+        2,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 2,
+      "dtype": "<u2",
+      "input_sha256": "9d2f3671d5ec5a66123923e98f55d62a906fcd6e2d62cdb8e3dabf1ced207ec5",
+      "pattern": "random",
+      "seed": 2026,
+      "shape": [
+        2,
+        1,
+        5120
+      ]
+    }
+  ],
+  "cases": [],
+  "component": {
+    "catalog_sha256": "f2595189d8a80ca4e1245a3cbfbaa32920ee1a8daee71376f81c3ac8f4d7e4b9",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "receipt": {
+      "block_bytes": 65536,
+      "blocks": 20201,
+      "bytes": 1323837624,
+      "file": "model-00043-of-00048.safetensors",
+      "index_bytes": 647168,
+      "index_file": "model-00043-of-00048.safetensors.sha256",
+      "index_sha256": "9ba964c4bae922917d90d4234aae1b239b7aad099e7df38d8022b940e92a3d20",
+      "sha256": "4ae12b941c3facf8616ce62dd45bc6868076c2aeb82106f98123ea6c5bb64182"
+    },
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "tensor": {
+      "bytes": 1323827200,
+      "dtype": "BF16",
+      "name": "head.weight",
+      "shape": [
+        129280,
+        5120
+      ],
+      "shard": "model-00043-of-00048.safetensors",
+      "shard_byte_offset": 184
+    },
+    "tensor_sha256": "12f45f83b1a1cd9f440f48f2d5a8b7b38b0a71fc9b35b7f9b7de7c4d81673508"
+  },
+  "diagnostic_cap_bytes": 67108864,
+  "execution_process_instance": "20e9b6af99ae4d4cbce50beec610fd19",
+  "failure_type": "ValueError",
+  "framework_and_context_memory_not_hard_capped": true,
+  "full_checkpoint_available_or_registered": false,
+  "full_model_quality_qualified": false,
+  "full_vocabulary": 129280,
+  "general_performance_claim": false,
+  "head_compute_dtype": "float32",
+  "head_storage_dtype": "BF16",
+  "memory_after_owned_close": {
+    "accounting": "explicit buffers plus conservative existing component admissions; overlapping admissions may overestimate payload bytes",
+    "accounting_kinds": {
+      "control_admission": 67108864
+    },
+    "available_floor_bytes": 34359738368,
+    "cancelled": false,
+    "categories": {
+      "activations": 0,
+      "admission": 0,
+      "cache": 0,
+      "diagnostics": 0,
+      "engram": 0,
+      "integrity": 0,
+      "kv": 0,
+      "metadata": 67108864,
+      "pinned": 0,
+      "scratch": 0,
+      "weights": 0
+    },
+    "charged_host_bytes": 67108864,
+    "charged_host_peak_bytes": 939524096,
+    "control_metadata_admission_bytes": 67108864,
+    "device_caps": {
+      "0": 134217728
+    },
+    "device_peak_bytes": {},
+    "device_used_bytes": {},
+    "explicit_host_bytes": 0,
+    "explicit_host_peak_bytes": 0,
+    "external_phase_counts": {
+      "driver_context_initialization": 1,
+      "driver_initialization": 1
+    },
+    "external_phase_samples": [
+      {
+        "after": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        },
+        "before": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        },
+        "delta_is_exact_component_attribution": false,
+        "owned_payload_charged_separately": true,
+        "phase": "driver_initialization"
+      },
+      {
+        "after": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 152944640,
+          "resident_bytes": 170299392,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14831951872
+        },
+        "before": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        },
+        "delta_is_exact_component_attribution": false,
+        "owned_payload_charged_separately": true,
+        "phase": "driver_context_initialization"
+      }
+    ],
+    "host_cap_bytes": 8589934592,
+    "inflight_operations": 0,
+    "live_leases": 1,
+    "live_reclaimers": 0,
+    "maximum_live_allocation_records": 16384,
+    "maximum_reclaimers": 512,
+    "minimum_observed_available_bytes": 45833732096,
+    "monitor_checks": 59,
+    "monitor_error": null,
+    "monitor_interval_seconds": 0.25,
+    "monitor_pressure_refusals": 0,
+    "monitor_thread_stopped": false,
+    "owners": {
+      "memory_policy_control": 67108864
+    },
+    "pinned_bytes": 0,
+    "pinned_cap_bytes": 134217728,
+    "pinned_peak_bytes": 0,
+    "process_baseline": {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 43139072,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 25919488,
+      "resident_bytes": 43139072,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 929644544
+    },
+    "reclaim_events": 0,
+    "reclaimed_charge_bytes": 0,
+    "refusals": 0,
+    "reservation_is_RSS_or_OS_limit": false,
+    "sampled_process_peaks": {
+      "private_resident_bytes": 152944640,
+      "resident_bytes": 170299392
+    },
+    "samples": [
+      {
+        "available_bytes": 46119325696,
+        "charged_host_bytes": 67108864,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "runtime_entry",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 43139072,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 25919488,
+          "resident_bytes": 43139072,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 929644544
+        }
+      },
+      {
+        "available_bytes": 46035779584,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73220096,
+          "resident_bytes": 90574848,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46033895424,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73224192,
+          "resident_bytes": 90578944,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46020743168,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73224192,
+          "resident_bytes": 90578944,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46023348224,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73224192,
+          "resident_bytes": 90578944,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46029545472,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73228288,
+          "resident_bytes": 90583040,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46042517504,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73228288,
+          "resident_bytes": 90583040,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46033436672,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73228288,
+          "resident_bytes": 90583040,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46034628608,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73228288,
+          "resident_bytes": 90583040,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46049382400,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73228288,
+          "resident_bytes": 90583040,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46044172288,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73232384,
+          "resident_bytes": 90587136,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46054752256,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73232384,
+          "resident_bytes": 90587136,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46049632256,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73232384,
+          "resident_bytes": 90587136,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46054297600,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73232384,
+          "resident_bytes": 90587136,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46059196416,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73232384,
+          "resident_bytes": 90587136,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46054748160,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73232384,
+          "resident_bytes": 90587136,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46055018496,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46075125760,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46067187712,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46064873472,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46067671040,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46060101632,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46069825536,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46067859456,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46074286080,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46064979968,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46070116352,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46063591424,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46053130240,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46063026176,
+        "charged_host_bytes": 478427968,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "driver_initialization_entry",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46063026176,
+        "charged_host_bytes": 478427968,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "driver_initialization_exit",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46063026176,
+        "charged_host_bytes": 478427968,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "driver_context_initialization_entry",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 45933789184,
+        "charged_host_bytes": 478427968,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "driver_context_initialization_exit",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 152944640,
+          "resident_bytes": 170299392,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14831951872
+        }
+      }
+    ],
+    "unified_device_memory": true
+  },
+  "memory_after_runtime_close": {
+    "accounting": "explicit buffers plus conservative existing component admissions; overlapping admissions may overestimate payload bytes",
+    "accounting_kinds": {},
+    "available_floor_bytes": 34359738368,
+    "cancelled": false,
+    "categories": {
+      "activations": 0,
+      "admission": 0,
+      "cache": 0,
+      "diagnostics": 0,
+      "engram": 0,
+      "integrity": 0,
+      "kv": 0,
+      "metadata": 0,
+      "pinned": 0,
+      "scratch": 0,
+      "weights": 0
+    },
+    "charged_host_bytes": 0,
+    "charged_host_peak_bytes": 939524096,
+    "control_metadata_admission_bytes": 67108864,
+    "device_caps": {
+      "0": 134217728
+    },
+    "device_peak_bytes": {},
+    "device_used_bytes": {},
+    "explicit_host_bytes": 0,
+    "explicit_host_peak_bytes": 0,
+    "external_phase_counts": {
+      "driver_context_initialization": 1,
+      "driver_initialization": 1
+    },
+    "external_phase_samples": [
+      {
+        "after": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        },
+        "before": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        },
+        "delta_is_exact_component_attribution": false,
+        "owned_payload_charged_separately": true,
+        "phase": "driver_initialization"
+      },
+      {
+        "after": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 152944640,
+          "resident_bytes": 170299392,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14831951872
+        },
+        "before": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        },
+        "delta_is_exact_component_attribution": false,
+        "owned_payload_charged_separately": true,
+        "phase": "driver_context_initialization"
+      }
+    ],
+    "host_cap_bytes": 8589934592,
+    "inflight_operations": 0,
+    "live_leases": 0,
+    "live_reclaimers": 0,
+    "maximum_live_allocation_records": 16384,
+    "maximum_reclaimers": 512,
+    "minimum_observed_available_bytes": 45833732096,
+    "monitor_checks": 59,
+    "monitor_error": null,
+    "monitor_interval_seconds": 0.25,
+    "monitor_pressure_refusals": 0,
+    "monitor_thread_stopped": true,
+    "owners": {},
+    "pinned_bytes": 0,
+    "pinned_cap_bytes": 134217728,
+    "pinned_peak_bytes": 0,
+    "process_baseline": {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 43139072,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 25919488,
+      "resident_bytes": 43139072,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 929644544
+    },
+    "reclaim_events": 0,
+    "reclaimed_charge_bytes": 0,
+    "refusals": 0,
+    "reservation_is_RSS_or_OS_limit": false,
+    "sampled_process_peaks": {
+      "private_resident_bytes": 152944640,
+      "resident_bytes": 170299392
+    },
+    "samples": [
+      {
+        "available_bytes": 46119325696,
+        "charged_host_bytes": 67108864,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "runtime_entry",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 43139072,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 25919488,
+          "resident_bytes": 43139072,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 929644544
+        }
+      },
+      {
+        "available_bytes": 46035779584,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73220096,
+          "resident_bytes": 90574848,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46033895424,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73224192,
+          "resident_bytes": 90578944,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46020743168,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73224192,
+          "resident_bytes": 90578944,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46023348224,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73224192,
+          "resident_bytes": 90578944,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46029545472,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73228288,
+          "resident_bytes": 90583040,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46042517504,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73228288,
+          "resident_bytes": 90583040,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46033436672,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73228288,
+          "resident_bytes": 90583040,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46034628608,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73228288,
+          "resident_bytes": 90583040,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46049382400,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73228288,
+          "resident_bytes": 90583040,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46044172288,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73232384,
+          "resident_bytes": 90587136,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46054752256,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73232384,
+          "resident_bytes": 90587136,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46049632256,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73232384,
+          "resident_bytes": 90587136,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46054297600,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73232384,
+          "resident_bytes": 90587136,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46059196416,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73232384,
+          "resident_bytes": 90587136,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46054748160,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73232384,
+          "resident_bytes": 90587136,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46055018496,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46075125760,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46067187712,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46064873472,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46067671040,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46060101632,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46069825536,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46067859456,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46074286080,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46064979968,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46070116352,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46063591424,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46053130240,
+        "charged_host_bytes": 411319104,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46063026176,
+        "charged_host_bytes": 478427968,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "driver_initialization_entry",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46063026176,
+        "charged_host_bytes": 478427968,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "driver_initialization_exit",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 46063026176,
+        "charged_host_bytes": 478427968,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "driver_context_initialization_entry",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 73236480,
+          "resident_bytes": 90591232,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14196936704
+        }
+      },
+      {
+        "available_bytes": 45933789184,
+        "charged_host_bytes": 478427968,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "driver_context_initialization_exit",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 185921536,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 152944640,
+          "resident_bytes": 170299392,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14831951872
+        }
+      }
+    ],
+    "unified_device_memory": true
+  },
+  "memory_observations": [
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 46119325696,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45829218304,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    }
+  ],
+  "memory_runtime_closed": true,
+  "mode": "native",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "native_block_rows": 512,
+  "native_device_cap_bytes": 67108864,
+  "network_payload_bytes": 0,
+  "observed_hardware": {
+    "attributes": {
+      "concurrent_managed_access": 1,
+      "host_page_tables": 1,
+      "integrated": 1,
+      "managed_memory": 1,
+      "pageable_memory_access": 1,
+      "unified_addressing": 1
+    },
+    "compute_capability": [
+      12,
+      1
+    ],
+    "cuda_capacity_added_to_physical_ram": false,
+    "device_count": 1,
+    "driver_api_version": 13000,
+    "library": {
+      "absolute_path_redacted": true,
+      "basename": "libcuda.so.580.178.04",
+      "elf_architecture": "aarch64",
+      "file_bytes": 96460560,
+      "kind": "driver",
+      "layout": "system_aarch64"
+    },
+    "name": "NVIDIA GB10",
+    "ordinal": 0,
+    "reported_cuda_total_bytes": 130661142528
+  },
+  "original_kernel_parity_qualified": false,
+  "owned_resources_closed": true,
+  "physical_available_floor_bytes": 34359738368,
+  "process_after_cleanup": {
+    "locked_bytes": 0,
+    "measurement": "proc status/smaps_rollup",
+    "peak_resident_bytes": 329310208,
+    "platform": "Linux",
+    "private_commit_bytes": null,
+    "private_hugetlb_bytes": 0,
+    "private_resident_bytes": 305487872,
+    "resident_bytes": 322969600,
+    "resident_measurement": "smaps_rollup",
+    "virtual_bytes": 15615111168
+  },
+  "reason": "Head component could not complete; no parity or model-quality claim",
+  "reference_admission_bytes": 6442450944,
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "schema": "vesper.spark-head-probe.v1",
+  "scope": "original BF16 full-vocabulary head lifted exactly to FP32; generated BF16 hidden inputs",
+  "separate_process_mode": true,
+  "status": "unsupported",
+  "workspace_context": {
+    "binding_id": "8480a267191e4fafab923ad834fd976c",
+    "created_at": "2026-10-20T04:03:33.132190+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "d1c1a0d19afa98e4aeca7fd49a914647d0975935",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "cb94348f9dbcccb8aca04b379b3cc2637e3c5ca2385236d2078336469a9a7baf",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "s1-head-native-r01",
+    "schema_version": 1
+  }
+}

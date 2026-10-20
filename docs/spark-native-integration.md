@@ -72,9 +72,17 @@ memory was 45,253,332,992 bytes, above the reserve. The full untouched kernel
 remains blocked by its shared-memory requirement. The
 [complete oracle report](../results/dgx-spark/2026-10-20-s1-components/attention/reference-r01.json)
 and [byte-preserving archive hash](../results/dgx-spark/2026-10-20-s1-components/attention/oracle-transport-r01.json)
-qualify this reference adapter and corpus. A fresh native Driver comparison
-against those original-computation boundaries is a separate gate; plain/trace
-self-consistency and the PC receipt cannot replace it.
+qualify this reference adapter and corpus. At
+`334ffd035daf8eecd523b1e3a5b9ca8c535d4bcf`, a new reference process and the
+native Driver comparison both passed all 36 cases: final BF16 storage and all
+five FP32 boundaries match the original-computation hashes exactly. Both
+pressure/refusal/healthy-retry cases use the same golden boundaries. Native
+cleanup reports zero owned device bytes, zero modules and no active owned
+context. The immutable candidate bundle remains separately identified; its
+external [native parity receipt](../results/dgx-spark/2026-10-20-s1-components/attention/native-validation-r01.json)
+and [fresh reference](../results/dgx-spark/2026-10-20-s1-components/attention/reference-r02.json)
+are source- and binary-bound component evidence. Plain/trace self-consistency
+and the PC receipt cannot replace this gate.
 
 - A new explicit `spark-sm121-candidate` target compiles the shared arithmetic
   on Spark and records the actual source, compiler, options and binary. Existing
