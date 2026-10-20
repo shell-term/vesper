@@ -1,5 +1,10 @@
 # Vesper（ヴェスパー）
 
+**機種別の入口：** [PC版](platforms/pc-heterogeneous/README.md)・
+[DGX Spark版](platforms/dgx-spark/README.md)。進捗・結果は機種別に管理します。
+以下の既存報告はPC版の検証記録で、Spark版の合格を示しません。
+[作業場所と参照先の分離](platforms/README.md)を先に確認してください。
+
 元のモデルの精度を保ち、GPU・RAM・SSDを組み合わせて大きなMoEモデルを動かすためのプロジェクトです。
 最初の対象はDeepSeek-V4.1-Flash-1017、RTX 4090＋RTX 3080 Tiです。
 

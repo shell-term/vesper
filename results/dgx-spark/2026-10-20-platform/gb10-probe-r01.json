@@ -1,0 +1,147 @@
+{
+  "compiler": {
+    "architecture": "sm_121",
+    "library": {
+      "absolute_path_redacted": true,
+      "basename": "libnvrtc.so.13.0.88",
+      "elf_architecture": "aarch64",
+      "file_bytes": 99505944,
+      "kind": "nvrtc",
+      "layout": "targets/sbsa-linux/lib"
+    },
+    "nvrtc_version": [
+      13,
+      0
+    ],
+    "options": [
+      "--gpu-architecture=sm_121",
+      "--std=c++17",
+      "--fmad=false"
+    ],
+    "source_sha256": "5bc57eda007faa91ad4367192d8ffb025931f38107f8f92e6648b2fc3dea5d9b"
+  },
+  "failure_type": "Unsupported",
+  "full_model_quality_qualified": false,
+  "general_performance_claim": false,
+  "integer_roundtrip": {
+    "cleanup": {
+      "errors": [],
+      "gpu_reset_or_other_workload_stop": false,
+      "owned_resources_release_calls_succeeded": true,
+      "previous_context_restore_requested": true
+    },
+    "device_peak_explicit_bytes": 0,
+    "driver_context_module_memory_not_in_explicit_caps": true,
+    "pinned_peak_explicit_bytes": 0
+  },
+  "limits": {
+    "device_buffer_cap_bytes": 8388608,
+    "floor_enforcement": "admission_and_stage_observation_not_OS_reservation",
+    "physical_available_floor_bytes": 34359738368,
+    "pinned_buffer_cap_bytes": 8388608,
+    "requested_buffer_bytes_each": 1048576
+  },
+  "memory_observations": [
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45913399296,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45911834624,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45907116032,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45896859648,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45896859648,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45683462144,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    }
+  ],
+  "mode": "probe",
+  "model_checkpoint_access": false,
+  "model_kernel_parity_qualified": false,
+  "observed_hardware": {
+    "cuda": {
+      "attributes": {
+        "concurrent_managed_access": 1,
+        "host_page_tables": 1,
+        "integrated": 1,
+        "managed_memory": 1,
+        "pageable_memory_access": 1,
+        "unified_addressing": 1
+      },
+      "compute_capability": [
+        12,
+        1
+      ],
+      "cuda_capacity_added_to_physical_ram": false,
+      "device_count": 1,
+      "driver_api_version": 13000,
+      "library": {
+        "absolute_path_redacted": true,
+        "basename": "libcuda.so.580.178.04",
+        "elf_architecture": "aarch64",
+        "file_bytes": 96460560,
+        "kind": "driver",
+        "layout": "system_aarch64"
+      },
+      "name": "NVIDIA GB10",
+      "ordinal": 0,
+      "reported_cuda_total_bytes": 130661142528
+    },
+    "machine": "aarch64",
+    "system": "Linux"
+  },
+  "reason": "CUDA's shared-pool free-memory observation is below reserve",
+  "schema": "vesper.spark-probe.v1",
+  "scope": "GB10 inventory and bounded integer CUDA round trip only",
+  "status": "unsupported",
+  "workspace_context": {
+    "binding_id": "df2922831aef4b5d828c087ad3734377",
+    "created_at": "2026-10-20T02:40:46.263063+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "0e329db4e398f16e634f521017ab56d46cc99f80",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "62c940bcbae1587ad43f67a2080aa08597abb92071de8844a6eea1810215427e",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "gb10-probe-r01",
+    "schema_version": 1
+  }
+}

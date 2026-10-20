@@ -1,5 +1,8 @@
 # Vesper development rules
 
+- Before platform-specific work, select `platforms/README.md` and the explicit PC/Spark entry. Use separate checkouts and local bindings; run `python -m vesper.workspace check` before guarded progress, results or Spark probes. Do not silently rebind a mismatch or infer current progress from an unfiltered repository-wide search. Migrate a legacy PC checkout only in its own active task.
+- Shared model code does not transfer qualification. Use the registry allowlist for progress reads/update packets and retain hardware/profile/source identity in results. Helper checks are workflow checks, not OS-level read isolation.
+
 - Preserve the released model's weights, scales, activation quantization, KV rounding, routing and sampling semantics. A faster approximation is not a successful optimization for this project.
 - The model's trained router correction bias is required. Additional cache-dependent routing bias, expert pruning and lossy requantization are prohibited.
 - Report format checks, specification checks, official-kernel parity, and full-model quality as separate results. Passing one does not prove the others.
