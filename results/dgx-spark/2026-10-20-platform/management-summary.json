@@ -1,0 +1,51 @@
+{
+  "final_spark_targeted": {
+    "failed": 0,
+    "tests": 25
+  },
+  "final_workspace_targeted": {
+    "failed": 0,
+    "passed": 32,
+    "skip_scope": "local Windows real symlink/junction creation permissions; reparse attributes also tested",
+    "skipped": 2,
+    "tests": 34
+  },
+  "independent_review": "original findings fixed and re-reviewed; no remaining blocker within stated helper/S0 scope",
+  "initial_full_suite": {
+    "failed": 0,
+    "skipped": 1,
+    "tests": 399
+  },
+  "limitations": [
+    "Helper checks are not an OS sandbox",
+    "Current result checker validates current bound source, not historical archives",
+    "Archives retain their original remote context and are not restamped as Windows runs",
+    "No DeepSeek checkpoint download or model inference performed"
+  ],
+  "live_guard_checks": {
+    "foreign_pc_checkout": "refused_before_progress",
+    "foreign_result_root": "refused",
+    "own_spark_issue_13": "allowed",
+    "path_traversal": "refused",
+    "pc_issue_10": "refused_before_body"
+  },
+  "pc_management_snapshot": {
+    "changes_other_than_added_platform_label": [],
+    "issues": 12
+  },
+  "scope": "management tooling on Windows plus separate bounded Spark platform smoke; no model qualification",
+  "workspace_context": {
+    "binding_id": "592f8028fdb94064beab65c92b01aa45",
+    "created_at": "2026-10-20T02:44:28.571047+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "521a841439f3915cdfe016e932ccd3c1aa85d91d",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "62c940bcbae1587ad43f67a2080aa08597abb92071de8844a6eea1810215427e",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "management-summary-r01",
+    "schema_version": 1
+  }
+}

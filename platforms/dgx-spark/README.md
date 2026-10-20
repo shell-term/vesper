@@ -5,6 +5,9 @@ Read [workspace rules](../README.md). Use a separate checkout on a
 `feature/dgx-spark-` branch and bind `--platform dgx-spark --profile native`.
 Do not infer Spark progress from the PC roadmap.
 
+Evidence: [S0 management and bounded hardware report](../../docs/spark-platform-validation.md).
+This report is scoped platform evidence; model integration/quality remain open.
+
 ## Progress entry
 
 - [Management isolation #13](https://github.com/shell-term/vesper/issues/13).
