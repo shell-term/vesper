@@ -27,6 +27,8 @@ class WorkspaceTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name) / "spark"
         self.root.mkdir()
+        # Windows TEMP may use an 8.3 alias; compare the same real path as the guard.
+        self.root = self.root.resolve(strict=True)
         git(self.root, "init", "--initial-branch=feature/dgx-spark-isolation")
         git(self.root, "config", "user.email", "test@example.invalid")
         git(self.root, "config", "user.name", "Test")
