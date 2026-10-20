@@ -64,13 +64,19 @@ asm volatile(
 
 
 def virtualize_ptx(ptx, profile):
+    return _virtualize_ptx_for(ptx, profile, CODEGEN_PROFILES, version="9.4", target="sm_89")
+
+
+def _virtualize_ptx_for(ptx, profile, profiles, *, version, target):
+    """Common integer transport transform, after the caller's platform pins."""
     if (not isinstance(ptx, str) or len(ptx) > 2 * 1024**2
-            or profile.get("original_generated_cuda_sha256") not in CODEGEN_PROFILES):
+            or profile.get("original_generated_cuda_sha256") not in profiles):
         raise ValueError("Unqualified or excessive Attention PTX")
-    h, d, diagnostics, required = CODEGEN_PROFILES[profile["original_generated_cuda_sha256"]]
+    h, d, diagnostics, required = profiles[profile["original_generated_cuda_sha256"]]
     if (profile["heads"], profile["dimension"], profile["diagnostics"], profile["original_shared_bytes"]) != (h, d, diagnostics, required):
         raise ValueError("PTX profile metadata differs from pinned CUDA")
-    if ".version 9.4" not in ptx or ".target sm_89" not in ptx or "%vesper" in ptx:
+    if (re.findall(r"(?m)^\.version ([\d.]+)\s*$", ptx) != [version]
+            or re.findall(r"(?m)^\.target ([\w]+)\s*$", ptx) != [target] or "%vesper" in ptx):
         raise ValueError("Unqualified PTX version, target, or register namespace")
     entry = re.search(rf"\.visible \.entry {FUNCTION}\((.*?)\n\)", ptx, re.S)
     if entry is None or ptx.count(".entry ") != 1:

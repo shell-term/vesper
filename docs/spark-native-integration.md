@@ -38,6 +38,35 @@ full-model answer quality. No full checkpoint was downloaded for this probe.
 
 ## Integration candidates
 
+The following generated diagnostic corpora passed in separate native/reference
+GB10 processes at `4de28456167aafe1440145f362883ab9140e629c`:
+
+| Component | Cases | Stage/output checks | Result |
+| --- | ---: | ---: | --- |
+| RMS / both RoPE profiles | 14 | 74 | Exact match |
+| Window KV quantization / wrap | 12 | 72 | Exact match |
+| Full-vocabulary sampling / RNG offsets | 10 | 52 | Exact match |
+
+[Full component records and hashes](../results/dgx-spark/2026-10-20-s1-components/transport.json)
+include the initial failures. The first RoPE run matched final BF16 outputs but
+differed in four imaginary FP32 intermediate arrays. A causal GPU comparison
+identified the original SM121 complex-multiply FMA order. The Spark source
+profile now matches that order; PC source bytes stay unchanged. The sampler's
+first native build failed on a missing CUDA 13 CCCL include; adding that include
+for SM121 sampling alone fixed compilation. All cases were regenerated under
+the fixed source. These are component checks with generated coefficients or
+logits, not learned full-model quality measurements.
+
+Fresh Spark Attention binaries also passed 36 plain/diagnostic consistency and
+two pressure-refusal/healthy-retry cases. Cleanup left no owned buffers, modules
+or active context; neither Torch nor TileLang was imported in native execution.
+That result is not the independent original Attention numerical gate. The full
+original shared-memory kernel requests 141,312 bytes, above this GB10's measured
+101,376-byte limit. A separately pinned Spark reference adapter preserves its
+floating-point/control instructions while changing integer Query storage. It
+must pass fresh data-movement, negative-control and intermediate comparisons;
+the PC adapter and receipt are not substitutes.
+
 - A new explicit `spark-sm121-candidate` target compiles the shared arithmetic
   on Spark and records the actual source, compiler, options and binary. Existing
   PC target checks remain the default. A candidate never issues a qualification

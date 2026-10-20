@@ -1,0 +1,257 @@
+{
+  "bundle_manifest": {
+    "compile_target": {
+      "arch": "sm_121",
+      "kind": "cuda"
+    },
+    "compute_capability": "12.1",
+    "device": {
+      "compute_capability": "12.1",
+      "driver_api_version": 13000,
+      "name": "NVIDIA GB10",
+      "ordinal": 0,
+      "total_bytes": 130661142528
+    },
+    "execution_backend": "nvrtc",
+    "execution_target": "spark-sm121-candidate",
+    "kernel_source_sha256": "1236c3507019ed176f5dba5e04bcea58867cf654818c6cf138ed4845398c2455",
+    "kind": "vesper_spark_attention_candidate",
+    "measured_optin_shared_bytes": 101376,
+    "minimum_driver_api": 13000,
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "nvrtc_version": [
+      13,
+      0
+    ],
+    "original_kernel_parity_qualified": false,
+    "profiles": [
+      {
+        "argument_names": [
+          "attn_sink",
+          "kv",
+          "o",
+          "q",
+          "topk_idxs",
+          "b",
+          "m",
+          "n",
+          "topk"
+        ],
+        "binary_reproduction": true,
+        "cubin_sha256": "6b356143262a62e8cd11cdf14e0b086cc933455070e7a69e95caded07b4aa02e",
+        "diagnostics": false,
+        "dimension": 256,
+        "dynamic_shared_bytes": 43008,
+        "file": "h64-d256-plain.cubin",
+        "function": "sparse_attn_kernel__kernel",
+        "generated_cuda_sha256": "9382acc78c350ddb8fa8497d69d864673502c30b0936f7122a4866a7dcfa18f5",
+        "generated_host_sha256": "e0e22e0b389d279f59d7e7069467ca999da8231b312d4546c715e6eccda4ad69",
+        "heads": 64,
+        "storage_transformation": {
+          "diagnostic_stores": false,
+          "generated_python_sha256": "b6249fa9ffafac83343323a135c641862b8811c145a9fcd62309f578e16fb9bb",
+          "head_partition_changed": false,
+          "original_function_ast_sha256": "69727cdc13ea83fd3170449f62c93cd38ad14fe2f49891536e98614ee895d6f0",
+          "query_storage_only_ast_check": "pass",
+          "storage": "register-query"
+        }
+      },
+      {
+        "argument_names": [
+          "attn_sink",
+          "kv",
+          "o",
+          "output_fp32",
+          "probability_fp32",
+          "q",
+          "qk_fp32",
+          "softmax_state_fp32",
+          "topk_idxs",
+          "value_accumulator_fp32",
+          "b",
+          "m",
+          "n",
+          "topk"
+        ],
+        "binary_reproduction": true,
+        "cubin_sha256": "a2f1c02a0d1f78df1b7ba869d74d777d30be76b50f34fd8c9bc8c2a00c040845",
+        "diagnostics": true,
+        "dimension": 256,
+        "dynamic_shared_bytes": 43008,
+        "file": "h64-d256-trace.cubin",
+        "function": "sparse_attn_kernel__kernel",
+        "generated_cuda_sha256": "c713c2fcc9450f89d121d6d9fbf6cf20d1d54c4a8a3c23d3769758c5890775ed",
+        "generated_host_sha256": "845dc85af9dc1d51fb2cbbdbe6383adcd2da197fda18f1d1996e329595749d3c",
+        "heads": 64,
+        "storage_transformation": {
+          "diagnostic_stores": true,
+          "generated_python_sha256": "78453ce3a085d3dfac91c7782b7226a61c6dae1e855d6ff12967ef701a27dedc",
+          "head_partition_changed": false,
+          "original_function_ast_sha256": "69727cdc13ea83fd3170449f62c93cd38ad14fe2f49891536e98614ee895d6f0",
+          "query_storage_only_ast_check": "pass",
+          "storage": "register-query"
+        }
+      },
+      {
+        "argument_names": [
+          "attn_sink",
+          "kv",
+          "o",
+          "q",
+          "topk_idxs",
+          "b",
+          "m",
+          "n",
+          "topk"
+        ],
+        "binary_reproduction": true,
+        "cubin_sha256": "b457c7b4817183d034ad11ff53036bf00483c14eb52d327b322fd00bec2c6bd6",
+        "diagnostics": false,
+        "dimension": 512,
+        "dynamic_shared_bytes": 69632,
+        "file": "h16-d512-plain.cubin",
+        "function": "sparse_attn_kernel__kernel",
+        "generated_cuda_sha256": "407eb0d0799e7e7cb289b4413c9f4d672cdf69a894ca1cae555949fb811d5fa7",
+        "generated_host_sha256": "32a01f90456e03c11fe98a3eab650b52e923e04d9cc7370933e0bdcac5fa4fe6",
+        "heads": 16,
+        "storage_transformation": {
+          "diagnostic_stores": false,
+          "generated_python_sha256": "b6249fa9ffafac83343323a135c641862b8811c145a9fcd62309f578e16fb9bb",
+          "head_partition_changed": false,
+          "original_function_ast_sha256": "69727cdc13ea83fd3170449f62c93cd38ad14fe2f49891536e98614ee895d6f0",
+          "query_storage_only_ast_check": "pass",
+          "storage": "register-query"
+        }
+      },
+      {
+        "argument_names": [
+          "attn_sink",
+          "kv",
+          "o",
+          "output_fp32",
+          "probability_fp32",
+          "q",
+          "qk_fp32",
+          "softmax_state_fp32",
+          "topk_idxs",
+          "value_accumulator_fp32",
+          "b",
+          "m",
+          "n",
+          "topk"
+        ],
+        "binary_reproduction": true,
+        "cubin_sha256": "e5132b7755104b97300516d8dcbf2b01ab55a7f3f66407a6ab68f1de1e3fae79",
+        "diagnostics": true,
+        "dimension": 512,
+        "dynamic_shared_bytes": 69632,
+        "file": "h16-d512-trace.cubin",
+        "function": "sparse_attn_kernel__kernel",
+        "generated_cuda_sha256": "169b1b5fb67b8d0e76ee4b44af5bac562aa68c062ff7e4372df46c70aa3aa4fa",
+        "generated_host_sha256": "f5dd18135e5928c8d17f8883c5c06075adc048d71b500483b6868e32fdf95abe",
+        "heads": 16,
+        "storage_transformation": {
+          "diagnostic_stores": true,
+          "generated_python_sha256": "78453ce3a085d3dfac91c7782b7226a61c6dae1e855d6ff12967ef701a27dedc",
+          "head_partition_changed": false,
+          "original_function_ast_sha256": "69727cdc13ea83fd3170449f62c93cd38ad14fe2f49891536e98614ee895d6f0",
+          "query_storage_only_ast_check": "pass",
+          "storage": "register-query"
+        }
+      },
+      {
+        "argument_names": [
+          "attn_sink",
+          "kv",
+          "o",
+          "q",
+          "topk_idxs",
+          "b",
+          "m",
+          "n",
+          "topk"
+        ],
+        "binary_reproduction": true,
+        "cubin_sha256": "36b30dea65f0811d6f914668278b30468e544cb34ca33d37d17e9c3ce3c2f8f9",
+        "diagnostics": false,
+        "dimension": 512,
+        "dynamic_shared_bytes": 75776,
+        "file": "h64-d512-plain.cubin",
+        "function": "sparse_attn_kernel__kernel",
+        "generated_cuda_sha256": "cac2c574ef414fb81a49fdb3602a22dd4e11e44d1018845ad52dae456ace6ee6",
+        "generated_host_sha256": "f6af6518e48a83d8f1b5ca19e375d9d807be6f65afe32612ba07c60042e82833",
+        "heads": 64,
+        "storage_transformation": {
+          "diagnostic_stores": false,
+          "generated_python_sha256": "b6249fa9ffafac83343323a135c641862b8811c145a9fcd62309f578e16fb9bb",
+          "head_partition_changed": false,
+          "original_function_ast_sha256": "69727cdc13ea83fd3170449f62c93cd38ad14fe2f49891536e98614ee895d6f0",
+          "query_storage_only_ast_check": "pass",
+          "storage": "register-query"
+        }
+      },
+      {
+        "argument_names": [
+          "attn_sink",
+          "kv",
+          "o",
+          "output_fp32",
+          "probability_fp32",
+          "q",
+          "qk_fp32",
+          "softmax_state_fp32",
+          "topk_idxs",
+          "value_accumulator_fp32",
+          "b",
+          "m",
+          "n",
+          "topk"
+        ],
+        "binary_reproduction": true,
+        "cubin_sha256": "419ff7b86f17420853bb2c5ba10750dcd060adede0d6a7853f1586ca09ac48a2",
+        "diagnostics": true,
+        "dimension": 512,
+        "dynamic_shared_bytes": 75776,
+        "file": "h64-d512-trace.cubin",
+        "function": "sparse_attn_kernel__kernel",
+        "generated_cuda_sha256": "8defc11c491c5891a359e0941bd2bcf4f99514632c543592508957d5dc24f0e1",
+        "generated_host_sha256": "c3cc5b996d0536957e2fb4b8002cf7c58adb60c9ab0b9099aeb746a60af314a8",
+        "heads": 64,
+        "storage_transformation": {
+          "diagnostic_stores": true,
+          "generated_python_sha256": "78453ce3a085d3dfac91c7782b7226a61c6dae1e855d6ff12967ef701a27dedc",
+          "head_partition_changed": false,
+          "original_function_ast_sha256": "69727cdc13ea83fd3170449f62c93cd38ad14fe2f49891536e98614ee895d6f0",
+          "query_storage_only_ast_check": "pass",
+          "storage": "register-query"
+        }
+      }
+    ],
+    "qualification": "unqualified_candidate",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "schema_version": 1,
+    "tilelang_version": "0.1.12"
+  },
+  "full_model_quality_qualified": false,
+  "original_kernel_parity_qualified": false,
+  "physical_memory_after_build": {
+    "available": 45314637824,
+    "total": 130661142528
+  },
+  "probe": "spark_attention_candidate_build",
+  "status": "candidate_build_pass",
+  "workspace_context": {
+    "binding_id": "8480a267191e4fafab923ad834fd976c",
+    "created_at": "2026-10-20T03:33:27.120640+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "19ebfdf37a0db6dfa8f38f13398a4881ebe0621f",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "cb94348f9dbcccb8aca04b379b3cc2637e3c5ca2385236d2078336469a9a7baf",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "s1-attention-build-r02",
+    "schema_version": 1
+  }
+}

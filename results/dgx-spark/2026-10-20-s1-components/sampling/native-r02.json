@@ -1,0 +1,780 @@
+{
+  "case_identity": [
+    {
+      "batch": 1,
+      "input_dtype": "<f4",
+      "input_sha256": "6c9f0d98cf37000cade942eb7f01dfebfa50da0f5e078082655513cd940df091",
+      "input_shape": [
+        1,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "flat",
+      "seed": 0,
+      "temperature": 0.0
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<f4",
+      "input_sha256": "6c9f0d98cf37000cade942eb7f01dfebfa50da0f5e078082655513cd940df091",
+      "input_shape": [
+        1,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "flat",
+      "seed": 0,
+      "temperature": 1.0
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<f4",
+      "input_sha256": "150502f65adf70a3df4451057e60769fb6954aed917292146d1fe5e8a9862a35",
+      "input_shape": [
+        1,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "banded",
+      "seed": 0,
+      "temperature": 0.7
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<f4",
+      "input_sha256": "150502f65adf70a3df4451057e60769fb6954aed917292146d1fe5e8a9862a35",
+      "input_shape": [
+        1,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "banded",
+      "seed": 0,
+      "temperature": 1e-06
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<f4",
+      "input_sha256": "d571dc75f4648444e2bfca95c58f747dab3a9afc03472f3ca9c5a7f5ae6d2ce6",
+      "input_shape": [
+        1,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "large",
+      "seed": 0,
+      "temperature": 2.0
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<f4",
+      "input_sha256": "82b08f74b64f69a4e1c99733f40bdc29ae83950733b2c0479139b62854892bb1",
+      "input_shape": [
+        2,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "flat",
+      "seed": 2026,
+      "temperature": 0.0
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<f4",
+      "input_sha256": "82b08f74b64f69a4e1c99733f40bdc29ae83950733b2c0479139b62854892bb1",
+      "input_shape": [
+        2,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "flat",
+      "seed": 2026,
+      "temperature": 1.0
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<f4",
+      "input_sha256": "52bcb3e15bf5674b0002f9a5fffa84e59d078e82578704b647407e763c7ecdab",
+      "input_shape": [
+        2,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "banded",
+      "seed": 2026,
+      "temperature": 0.7
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<f4",
+      "input_sha256": "52bcb3e15bf5674b0002f9a5fffa84e59d078e82578704b647407e763c7ecdab",
+      "input_shape": [
+        2,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "banded",
+      "seed": 2026,
+      "temperature": 1e-06
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<f4",
+      "input_sha256": "488a5948a858aafc1195b5b24854c9442441b03342b54f02b2508d88f1a05d1c",
+      "input_shape": [
+        2,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "large",
+      "seed": 2026,
+      "temperature": 2.0
+    }
+  ],
+  "cases": [
+    {
+      "id": 0,
+      "wall_seconds_including_diagnostics": 0.00023040198720991611
+    },
+    {
+      "id": 1,
+      "wall_seconds_including_diagnostics": 0.001322335097938776
+    },
+    {
+      "id": 2,
+      "wall_seconds_including_diagnostics": 0.0010463318321853876
+    },
+    {
+      "id": 3,
+      "wall_seconds_including_diagnostics": 0.0010437241289764643
+    },
+    {
+      "id": 4,
+      "wall_seconds_including_diagnostics": 0.0009901870507746935
+    },
+    {
+      "id": 5,
+      "wall_seconds_including_diagnostics": 0.00017513800412416458
+    },
+    {
+      "id": 6,
+      "wall_seconds_including_diagnostics": 0.002231416990980506
+    },
+    {
+      "id": 7,
+      "wall_seconds_including_diagnostics": 0.0016388818621635437
+    },
+    {
+      "id": 8,
+      "wall_seconds_including_diagnostics": 0.0017855078913271427
+    },
+    {
+      "id": 9,
+      "wall_seconds_including_diagnostics": 0.00175585993565619
+    }
+  ],
+  "diagnostics": {
+    "array_bytes": 24822040,
+    "artifact": "s1/operators/sampling/s1-sampling-native-r02/diagnostics.npz",
+    "file_bytes": 24835878,
+    "sha256": "456e5c445d2f1de2a5a346d5b7343ad9e2771ee4021feae27312c1aa3d4d7380"
+  },
+  "exclusions": [
+    "learned coefficient provenance",
+    "HC",
+    "attention integration",
+    "compressed/shared KV",
+    "rollback/fault recovery",
+    "all model layers",
+    "model forward",
+    "full-model quality",
+    "generation speed"
+  ],
+  "execution_process_instance": "2bf85e38dea248dbb3b5eaa5228c12eb",
+  "full_model_quality_qualified": false,
+  "general_performance_claim": false,
+  "initialization_wall_seconds": 0.9453556078951806,
+  "limits": {
+    "diagnostic_cap_bytes": 67108864,
+    "floor_enforcement": "stage observation, not an OS reservation",
+    "framework_and_context_memory_not_hard_capped": true,
+    "native_explicit_device_cap_bytes": 67108864,
+    "native_phase_admission_bytes": 268435456,
+    "physical_available_floor_bytes": 34359738368,
+    "reference_phase_admission_bytes": 3221225472
+  },
+  "math": {
+    "BLAS": "not used by this corpus",
+    "comparison": "exact diagnostic storage/FP32 bits",
+    "native_fmad": false,
+    "native_ftz": false
+  },
+  "memory_observations": [
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 46194778112,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45798785024,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45798404096,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45798404096,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45797425152,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45797126144,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45796741120,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45796741120,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45796237312,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45795901440,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45795393536,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45795393536,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45795393536,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45795012608,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45795012608,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45795229696,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45795233792,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45799096320,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45799096320,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45798916096,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45798748160,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 46024847360,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    }
+  ],
+  "mode": "native",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "native_phases_after_close": [
+    {
+      "calls": 10,
+      "device_owned_bytes": 0,
+      "device_peak_owned_bytes": 5171200,
+      "execution": {
+        "compiler": {
+          "architecture": "121",
+          "concatenated_source_sha256": "cb5f201efd8bea887151a8b7f78cd6d928bb530fe8236c4b4cbf4db12e3abd7f",
+          "include_path_redacted": true,
+          "nvrtc_version": [
+            13,
+            0
+          ],
+          "options": [
+            "--gpu-architecture=sm_121",
+            "--std=c++17",
+            "--fmad=false",
+            "--ftz=false",
+            "--include-path=<CUDA>/include",
+            "--include-path=<CUDA>/include/cccl"
+          ]
+        },
+        "cubin_sha256": "0b14f5fabf4f39ccbd9defda01f2d7739612fc31c3c1a4a34a4a2ec7331bc84a",
+        "device": {
+          "compute_capability": "12.1",
+          "driver_api_version": 13000,
+          "name": "NVIDIA GB10",
+          "ordinal": 0,
+          "total_bytes": 130661142528
+        },
+        "execution_target": "spark-sm121-candidate",
+        "kernel_flags": [
+          "sampling"
+        ],
+        "qualification": "unqualified_candidate",
+        "qualification_receipt_issued": false,
+        "sampling_policy": {
+          "multiprocessors": 48,
+          "policy_source": "observed_cuda_device",
+          "qualification": "unqualified_candidate",
+          "threads_per_sm": 1536
+        },
+        "source_rounding_adaptations": [],
+        "spark_reference_qualification": "not_run",
+        "target_selection_changes_model_arithmetic": false
+      },
+      "host_reserved_bytes": 0,
+      "opened": false
+    }
+  ],
+  "observed_hardware": {
+    "attributes": {
+      "concurrent_managed_access": 1,
+      "host_page_tables": 1,
+      "integrated": 1,
+      "managed_memory": 1,
+      "pageable_memory_access": 1,
+      "unified_addressing": 1
+    },
+    "compute_capability": [
+      12,
+      1
+    ],
+    "cuda_capacity_added_to_physical_ram": false,
+    "device_count": 1,
+    "driver_api_version": 13000,
+    "library": {
+      "absolute_path_redacted": true,
+      "basename": "libcuda.so.580.178.04",
+      "elf_architecture": "aarch64",
+      "file_bytes": 96460560,
+      "kind": "driver",
+      "layout": "system_aarch64"
+    },
+    "name": "NVIDIA GB10",
+    "ordinal": 0,
+    "reported_cuda_total_bytes": 130661142528
+  },
+  "operator": "sampling",
+  "original_kernel_parity_qualified": false,
+  "owned_native_resources_closed": true,
+  "preflight_compiler": {
+    "architecture": "sm_121",
+    "library": {
+      "absolute_path_redacted": true,
+      "basename": "libnvrtc.so.13.0.88",
+      "elf_architecture": "aarch64",
+      "file_bytes": 99505944,
+      "kind": "nvrtc",
+      "layout": "targets/sbsa-linux/lib"
+    },
+    "nvrtc_version": [
+      13,
+      0
+    ],
+    "options": [
+      "--gpu-architecture=sm_121",
+      "--std=c++17",
+      "--fmad=false"
+    ],
+    "source_sha256": "5bc57eda007faa91ad4367192d8ffb025931f38107f8f92e6648b2fc3dea5d9b"
+  },
+  "process_memory_observations": [
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 46518272,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 22515712,
+      "resident_bytes": 39165952,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 922951680
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324108288,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307388416,
+      "resident_bytes": 324108288,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324173824,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307453952,
+      "resident_bytes": 324173824,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324173824,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307453952,
+      "resident_bytes": 324173824,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324435968,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307716096,
+      "resident_bytes": 324435968,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324435968,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307716096,
+      "resident_bytes": 324435968,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324435968,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307716096,
+      "resident_bytes": 324435968,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324435968,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307716096,
+      "resident_bytes": 324435968,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324435968,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307716096,
+      "resident_bytes": 324435968,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324435968,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307716096,
+      "resident_bytes": 324435968,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324435968,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307716096,
+      "resident_bytes": 324435968,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324435968,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307716096,
+      "resident_bytes": 324435968,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324501504,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307781632,
+      "resident_bytes": 324501504,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324501504,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307781632,
+      "resident_bytes": 324501504,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324501504,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307781632,
+      "resident_bytes": 324501504,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324501504,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307781632,
+      "resident_bytes": 324501504,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324501504,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307781632,
+      "resident_bytes": 324501504,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324501504,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307781632,
+      "resident_bytes": 324501504,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324501504,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307781632,
+      "resident_bytes": 324501504,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324501504,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307781632,
+      "resident_bytes": 324501504,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 324501504,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 307781632,
+      "resident_bytes": 324501504,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14949122048
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 323833856,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 238698496,
+      "resident_bytes": 255483904,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14389047296
+    }
+  ],
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "schema": "vesper.spark-operator-probe.v1",
+  "scope": "Generated finite complete 129280-token logits; original greedy/stochastic sampling and Philox offsets",
+  "separate_process_mode": true,
+  "status": "native_execution_pass",
+  "workspace_context": {
+    "binding_id": "8480a267191e4fafab923ad834fd976c",
+    "created_at": "2026-10-20T03:43:13.554108+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "4de28456167aafe1440145f362883ab9140e629c",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "cb94348f9dbcccb8aca04b379b3cc2637e3c5ca2385236d2078336469a9a7baf",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "s1-sampling-native-r02",
+    "schema_version": 1
+  }
+}
