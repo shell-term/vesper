@@ -26,6 +26,7 @@ from .tokenizer import PinnedTokenizer
 from .topology_validation import state_digest
 from .trajectory_evidence import load_plan,load_tokens,plan_identity,scope,expert_plan,load_case,write_case,validate_original
 from .trajectory_workspace import own_evidence
+from .source_roots import roots
 
 
 class InjectedWholeTokenFailure(RuntimeError):pass
@@ -79,6 +80,7 @@ def run_native(root,run,original,original_raw,reference_run,progress=None):
             if progress:progress({'native_token':meta,'boundaries':len(captured['boundaries']),'status':'pass'})
         decoded=tokenizer.decode(list(session.generated));score=score_completion(case,decoded,stop_reason=session.stop_reason)
         report={'schema_version':1,'probe':'native_whole_model_trajectory_recheck','status':'pass','scope':scope(case['id']),
+            'source_storage':roots(root).public(),
             'reference_report_sha256':digest(original_raw),'original_identity_sha256':original['identity_sha256'],
             'complete_goldens_sha256':original['complete_goldens_sha256'],'plan_sha256':plan_identity(plan),'expert_plan':expert_plan(plan),
             'case_files':cases,'completion':session.summary(),'decoded_selected_ids':decoded,'quality_score':score,'fault':fault,

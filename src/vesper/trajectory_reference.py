@@ -24,6 +24,7 @@ from .sequence_assets import request
 from .tokenizer import PinnedTokenizer
 from .trajectory_evidence import load_plan, load_tokens, plan_identity, expert_plan, scope, identity, write_case
 from .trajectory_workspace import bank_path,bank_sources,own_evidence
+from .source_roots import roots
 
 
 def capture_original(root,run,progress=None):
@@ -86,6 +87,7 @@ def capture_original(root,run,progress=None):
                     'stop_reason':'eos' if selected[-1]==req.eos_id else 'max_new_tokens'}
                 decoded=tokenizer.decode(selected);score=score_completion(case,decoded,stop_reason=completion['stop_reason'])
                 report={'schema_version':1,'probe':'original_whole_model_trajectory_goldens','status':'pass','scope':scope(case['id']),
+                    'source_storage':roots(root).public(),
                     'plan_sha256':plan_identity(plan),'bindings_sha256':bindings['bindings_sha256'],'output_fixture':head_manifest,
                     'expert_plan':expert_plan(plan),'expert_provenance':oracle.expert_provenance,'assets':plan['assets'],'tokenizer':plan['tokenizer'],
                     'case_files':cases,'completion':completion,'decoded_selected_ids':decoded,'quality_score':score,

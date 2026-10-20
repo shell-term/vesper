@@ -23,13 +23,15 @@ from .indexed_store import build_index
 from .model_artifacts import digest
 from .resources import GiB, MiB, MemoryBudget
 from .storage import NativeStore, build_store, tensor_layout
+from .source_roots import roots
 
 
 class ExpertBank:
     """One anchored source inventory, with a 64 GiB new packed-payload cap."""
     def __init__(self, root, directory, sources=(), *, new_payload_cap=64*GiB):
         self.root = Path(root).resolve(strict=True); self.directory = Path(directory).resolve()
-        if not self.directory.is_relative_to(self.root) or type(new_payload_cap) is not int or not EXPERT_BYTES <= new_payload_cap <= 64*GiB:
+        self.roots = roots(self.root); self.roots.relative(self.directory, strict=False)
+        if type(new_payload_cap) is not int or not EXPERT_BYTES <= new_payload_cap <= 64*GiB:
             raise ValueError('Expected an anchored expert bank and bounded import cap')
         self.cap = new_payload_cap; self.sources = tuple(sources); self.entries = {}; self.receipts = {}
         self.new_bytes = self.pending_bytes = self.fetched_bytes = self.imports = 0
@@ -40,7 +42,8 @@ class ExpertBank:
         self.budget = MemoryBudget(cap=256*MiB, owner='original_expert_bank_inventory'); self.budget.acquire(self.budget.cap, category='metadata')
         try:
             self.directory.mkdir(parents=True, exist_ok=True)
-            paths = list(self.sources) + sorted(self.directory.glob('layer*/expert-*'))
+            paths = list(dict.fromkeys(Path(p).resolve(strict=True) for p in
+                list(self.sources) + sorted(self.directory.glob('layer*/expert-*'))))
             if len(paths)>15360+80: raise ValueError('Excessive expert-bank sources')
             for path in paths: self._register(path, owned=Path(path).resolve().is_relative_to(self.directory))
             if self.new_bytes>self.cap: raise MemoryError('Existing new expert objects exceed the explicit bank cap')
@@ -50,8 +53,7 @@ class ExpertBank:
 
     def _register(self, directory, *, owned):
         path = Path(directory).resolve(strict=True)
-        if not path.is_relative_to(self.root): raise ValueError('Expert source escapes the declared root')
-        if not (path/'experts.bin').resolve(strict=True).is_relative_to(self.root):raise ValueError('Expert payload escapes the declared root')
+        self.roots.relative(path); self.roots.check_file(path/'experts.bin')
         metadata=path/'manifest.json'
         if not 1<=metadata.stat().st_size<=MiB: raise ValueError('Excessive expert bank source metadata')
         with metadata.open('rb') as stream:raw=stream.read(MiB+1)
@@ -119,7 +121,7 @@ class ExpertBank:
         """Offline exact source for original math; no fixture conversion or fetch."""
         if self.budget is None: raise RuntimeError('Expert bank is closed')
         path, entry=self.entries[f'{layer}:{expert}']
-        if not (path/'experts.bin').resolve(strict=True).is_relative_to(self.root):raise ValueError('Expert payload escaped before read')
+        self.roots.check_file(path/'experts.bin')
         if digest((path/'manifest.json').read_bytes())!=self.receipts[path]['manifest_sha256']:
             raise ValueError('Immutable original expert source changed before read')
         budget=MemoryBudget(cap=96*MiB,owner='original_expert_bank_read');budget.acquire(EXPERT_BYTES,category='scratch')
@@ -146,10 +148,9 @@ class ExpertBank:
 
 
 def existing_sources(root):
-    root=Path(root);paths=set()
+    root=Path(root);paths=set();selected=roots(root)
     for name in ('backbone-plan.json','generation/story-v1/plan.json'):
         for e in json.loads((root/name).read_bytes())['experts'].values():
-            path=(root/e['store']).resolve(strict=True)
-            if not path.is_relative_to(root.resolve()):raise ValueError('Historical store escapes its source root')
+            path=selected.path(e['store'])
             paths.add(path)
     return sorted(paths)

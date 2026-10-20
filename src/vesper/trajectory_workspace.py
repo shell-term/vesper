@@ -9,6 +9,7 @@ from .expert_bank import existing_sources
 from .model_artifacts import canonical,digest
 from .resources import MiB
 from .workspace import Workspace,WorkspaceError
+from .source_roots import roots,BANKS
 
 
 def select(root):
@@ -30,10 +31,15 @@ def bank_sources(root):
     root=Path(root)
     # Legacy immutable inputs remain readable, but all new writes go to the
     # selected platform. Do not move a live legacy bank or duplicate its bytes.
-    return sorted(set(existing_sources(root)+list((root/'expert-bank-v1').glob('layer*/expert-*'))))
+    selected=roots(root)
+    return sorted(set(existing_sources(root)+list((root/'expert-bank-v1').glob('layer*/expert-*'))
+        +[p for name in BANKS for p in selected.path(name,strict=False).glob('layer*/expert-*')]))
 
 
-def bank_path(root):return select(root).artifact_path('expert-bank-v1/placeholder',create_parent=True).parent
+def bank_path(root):
+    workspace=select(root);selected=roots(root)
+    if selected.mounts:return selected.path(selected.active_bank)
+    return workspace.artifact_path('expert-bank-v1/placeholder',create_parent=True).parent
 
 
 def own_evidence(root,path):

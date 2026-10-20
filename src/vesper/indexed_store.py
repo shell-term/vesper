@@ -17,6 +17,7 @@ from .resources import MemoryBudget, MiB
 from .storage import NativeStore, tensor_layout
 from .disk import DirectReader
 from .timing import Timings
+from .source_roots import roots
 
 MAX_INDEX_EXPERTS, MAX_INDEX_BYTES, INDEX_METADATA_BYTES = 384, 4 * MiB, 32 * MiB
 KIND = "vesper_indexed_native_experts"
@@ -30,9 +31,7 @@ def _metadata(path, limit):
 
 
 def _relative(root, directory):
-    root, directory = Path(root).resolve(strict=True), Path(directory).resolve(strict=True)
-    if not directory.is_relative_to(root): raise ValueError("Expert source escapes the declared source root")
-    name = directory.relative_to(root).as_posix()
+    name = roots(root).relative(directory)
     if name == "." or len(name) > 512: raise ValueError("Expected a bounded relative expert-store directory")
     return name
 
@@ -43,7 +42,7 @@ def _source(root, name, budget):
     if (len(name) > 512 or path.is_absolute() or ".." in path.parts
             or path.as_posix() != name or "\\" in name or re.match(r"^[A-Za-z]:", name)):
         raise ValueError("Invalid anchored original-store path")
-    directory = (root / path).resolve(strict=True)
+    directory = roots(root).path(name)
     if _relative(root, directory) != name: raise ValueError("Original source path resolves outside its declared location")
     m, raw = _metadata(directory / "manifest.json", MiB)
     # The existing parser retains every format/provenance/extent check. Bind
@@ -51,7 +50,7 @@ def _source(root, name, budget):
     packed = NativeStore(directory, budget, max_experts=48)
     if packed.manifest != m: raise ValueError("Original source manifest changed during validation")
     file = directory / "experts.bin"
-    if not file.resolve(strict=True).is_relative_to(root): raise ValueError("Expert payload escapes the declared source root")
+    roots(root).check_file(file)
     return packed, digest(raw)
 
 

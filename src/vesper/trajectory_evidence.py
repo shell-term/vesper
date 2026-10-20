@@ -140,6 +140,7 @@ def identity(report):
         'original_embedding_transport','original_grouped_conversion','Engram_controls','completion','decoded_selected_ids','quality_score')}
     stable['original_attention_adapter']={k:report['original_attention_adapter'][k] for k in (
         'model','revision','reference','profiles','torch_version','torch_git_version','torch_cuda_version','tilelang_version','official_arithmetic_memory_adapter_gate')}
+    if 'source_storage' in report:stable['source_storage']=report['source_storage']
     return canonical(stable)
 
 
@@ -236,6 +237,8 @@ def validate_indices(report,run):
 
 def validate_native(report,run,original,original_raw,reference_run):
     validate_original(original,reference_run)
+    if 'source_storage' in original and report.get('source_storage')!=original['source_storage']:
+        raise ValueError('Native execution changed the declared original source-root identity')
     case_id=original['scope']['case_id']
     if (report.get('probe'),report.get('status'),report.get('scope'),report.get('reference_report_sha256'),report.get('original_identity_sha256'),
             report.get('complete_goldens_sha256'),report.get('plan_sha256'),report.get('expert_plan'))!=(

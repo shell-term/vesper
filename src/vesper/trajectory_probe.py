@@ -12,6 +12,7 @@ from .resources import GiB
 from .trajectory_evidence import read,validate_original,validate_native
 from .trajectory_workspace import run_path,migrate_input,own_evidence
 from .model_artifacts import digest
+from .source_roots import source_scope
 
 
 def main():
@@ -38,23 +39,25 @@ def main():
     context=workspace.context('pc-'+a.run+'-'+a.operation)
     handle=None
     try:
-        if a.operation=='reference':
-            if a.nvrtc_bin is not None:
-                if os.name!='nt':p.error('Explicit NVRTC DLL preload is Windows-only')
-                handle=os.add_dll_directory(str(a.nvrtc_bin.resolve()));nvrtc=ctypes.CDLL(str(a.nvrtc_bin.resolve()/'nvrtc64_130_0.dll'))
-            from .trajectory_reference import capture_original
-            report=capture_original(a.artifacts,run,progress);validate_original(report,run,require_qualified=False)
-        else:
-            with RuntimeMemory(MemoryPolicy(host_cap_bytes=64*GiB)) as policy:
-                if a.operation=='prepare':
-                    from .trajectory_prepare import prepare
-                    report=prepare(a.artifacts,run,case_id=a.case or 'coding-python-expression',progress=progress)
-                else:
-                    from .trajectory_native import run_native
-                    original,raw=read(reference);report=run_native(a.artifacts,run,original,raw,reference_run,progress)
-                report['memory_before_policy_close']=policy.snapshot()
-            report['memory_after_policy_close']=policy.snapshot()
-            if a.operation=='native':validate_native(report,run,original,raw,reference_run)
+        with source_scope(a.artifacts) as storage:
+            if a.operation=='reference':
+                if a.nvrtc_bin is not None:
+                    if os.name!='nt':p.error('Explicit NVRTC DLL preload is Windows-only')
+                    handle=os.add_dll_directory(str(a.nvrtc_bin.resolve()));nvrtc=ctypes.CDLL(str(a.nvrtc_bin.resolve()/'nvrtc64_130_0.dll'))
+                from .trajectory_reference import capture_original
+                report=capture_original(a.artifacts,run,progress);validate_original(report,run,require_qualified=False)
+            else:
+                with RuntimeMemory(MemoryPolicy(host_cap_bytes=64*GiB)) as policy:
+                    if a.operation=='prepare':
+                        from .trajectory_prepare import prepare
+                        report=prepare(a.artifacts,run,case_id=a.case or 'coding-python-expression',progress=progress)
+                    else:
+                        from .trajectory_native import run_native
+                        original,raw=read(reference);report=run_native(a.artifacts,run,original,raw,reference_run,progress)
+                    report['memory_before_policy_close']=policy.snapshot()
+                report['memory_after_policy_close']=policy.snapshot()
+                if a.operation=='native':validate_native(report,run,original,raw,reference_run)
+            report['source_storage']=storage.public()
         raw=(json.dumps(report,indent=2)+'\n').encode()
         receipt=workspace.stamp_result({'probe':'pc_trajectory_execution_receipt','status':'pass','operation':a.operation,
             'raw_report':{'file':name,'bytes':len(raw),'sha256':digest(raw)},'scope':report['scope']},initial_context=context)

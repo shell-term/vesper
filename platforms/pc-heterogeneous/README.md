@@ -17,3 +17,8 @@ helper; Spark S0..S3 are separate. No shared issue reads are currently allowlist
 [Architecture](../../docs/architecture.md), [validation](../../docs/validation.md)
 and the [historical PC roadmap](../../docs/roadmap.md) remain reference entries.
 Preserve historical result paths; new bound runs use `results/pc-heterogeneous/`.
+
+For a bounded working set that outgrows the system SSD, use
+[explicit expert-bank SSD roots](../../docs/external-expert-banks.md). Logical
+index names and original payload bytes remain intact; private physical paths
+and PC qualification stay within this track.
