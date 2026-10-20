@@ -108,7 +108,19 @@ and the PC receipt cannot replace this gate.
   SGEMM shape. Forward execution rereads no head rows. The component ceiling
   is 3 GiB, within the full backbone's 5 GiB device ceiling, which in turn is
   inside the 8 GiB shared host/device pool; the physical 32 GiB reserve still
-  applies. Its fresh numerical comparison is pending.
+  applies. At `ca352867b8e7c511016a35fad4c665b977d3686e`, its fresh
+  [24 exact comparisons](../results/dgx-spark/2026-10-20-s1-components/head/compare-r03.json)
+  all passed, across eight generated inputs and the complete vocabulary.
+  Native peak owned device memory was 2,657,249,280 bytes. Minimum sampled
+  physical available memory was 42,901,000,192 bytes in native execution and
+  42,650,394,624 bytes in reference execution; both processes cleaned up their
+  owned resources. Device-head construction took 43.06 seconds. After the
+  first 207 ms call, the remaining synthetic head calls took 11–18 ms each;
+  those component timings do not measure model token throughput. Full
+  [native](../results/dgx-spark/2026-10-20-s1-components/head/native-r03.json),
+  [reference](../results/dgx-spark/2026-10-20-s1-components/head/reference-r03.json)
+  and [archive hashes](../results/dgx-spark/2026-10-20-s1-components/transport-r04.json)
+  preserve the original source and observed toolchain identities.
   Its first native attempt stopped before computation because the initial
   Spark candidate incorrectly assumed cuBLAS followed NVRTC's 13.0 version.
   Separate actual observations found cuBLAS version `130101`, math mode `0`,
@@ -136,11 +148,17 @@ and the PC receipt cannot replace this gate.
   must match the immutable bundle, its actually loaded binaries, the observed
   device/driver and both window/sharing Attention bindings. Missing, changed
   or foreign evidence refuses execution before the first model forward.
+  Both Attention reference and native numerical gates were rerun successfully
+  at the same `ca352867b8e7c511016a35fad4c665b977d3686e` source used by the
+  passing cached-head comparison. The
+  [current native receipt](../results/dgx-spark/2026-10-20-s1-components/attention/native-validation-r02.json)
+  binds the [current reference](../results/dgx-spark/2026-10-20-s1-components/attention/reference-r03.json)
+  and all six actual loaded binaries. Full-model generation remains pending.
 
 CPU/mock tests check bounds, failure/refusal, cleanup, corruption rejection and
-control flow. At `334ffd035daf8eecd523b1e3a5b9ca8c535d4bcf`, all four
-[CI environments](https://github.com/shell-term/vesper/actions/runs/39368126974)
-passed 675 tests: Ubuntu/Windows with Python 3.11/3.13, with one environment
+control flow. At `ca352867b8e7c511016a35fad4c665b977d3686e`, all four
+[CI environments](https://github.com/shell-term/vesper/actions/runs/39369617214)
+passed 681 tests: Ubuntu/Windows with Python 3.11/3.13, with one environment
 dependent skip on Linux. These tests do not qualify GB10 arithmetic. Current
 acceptance and pending gates belong to #16; component evidence alone cannot
 close S1.
