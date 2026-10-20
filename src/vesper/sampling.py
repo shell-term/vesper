@@ -1,6 +1,7 @@
 """Explicit transactional Philox state for the original full-vocabulary sampler."""
 
 from contextlib import ExitStack
+from copy import deepcopy
 import ctypes as C
 import hashlib
 import math
@@ -10,6 +11,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from .cuda import Driver,Device,compile_probe,_bind
+from .execution_target import resolve_execution_target, compile_execution_kernel
 from .memory import runtime_operation
 from .output import greedy
 from .resources import MemoryBudget,MiB
@@ -24,7 +26,9 @@ class SamplerSnapshot:
 
 
 class NativeSampler:
-    def __init__(self,seed=0,ordinal=0):
+    def __init__(self,seed=0,ordinal=0,*,execution_target=None):
+        self.execution_target = resolve_execution_target(execution_target)
+        self.execution_provenance = self.execution_target.describe()
         if type(seed) is not int or not 0<=seed<2**64: raise ValueError('Expected an explicit uint64 Philox seed')
         self.seed,self.offset,self.ordinal=seed,0,ordinal
         self.stack,self.lock,self.budget=ExitStack(),threading.RLock(),MemoryBudget(cap=128*MiB,owner='original_sampling')
@@ -37,17 +41,19 @@ class NativeSampler:
         if self.opened: raise RuntimeError('Sampler is already open')
         try:
             self.budget.acquire(self.budget.cap); self.stack.callback(self.budget.release,self.budget.cap)
-            self.driver=Driver(); self.device=self.stack.enter_context(Device(self.driver,self.ordinal,cap=16*MiB))
-            info=next(d for d in self.driver.inventory()['devices'] if d['ordinal']==self.ordinal)
-            if info['compute_capability']!='8.9': raise ValueError('Unregistered original sampling device profile')
+            self.driver=Driver()
+            inventory=self.driver.inventory(); info=next(d for d in inventory['devices'] if d['ordinal']==self.ordinal)
+            self.execution_provenance['device']=self.execution_target.validate_device(info,inventory)
+            self.device=self.stack.enter_context(Device(self.driver,self.ordinal,cap=16*MiB))
             query=_bind(self.driver.lib,'cuDeviceGetAttribute',[C.POINTER(C.c_int),C.c_int,C.c_int])
             sm,threads=C.c_int(),C.c_int()
             self.driver.check(query(C.byref(sm),16,self.ordinal)); self.driver.check(query(C.byref(threads),39,self.ordinal))
             self.multiprocessors,self.threads_per_sm=sm.value,threads.value
-            if (sm.value,threads.value)!=(128,1536): raise ValueError('Unregistered original sampling execution policy')
-            self.compiler={}; cubin=compile_probe('89',sampling=True,compiler_info=self.compiler)
-            self.cubin_sha256=hashlib.sha256(cubin).hexdigest()
-            if self.cubin_sha256!=SAMPLING_CUBIN_SHA256 or self.compiler['nvrtc_version']!=[12,4]: raise ValueError('Unqualified original sampler compiler/binary')
+            self.execution_provenance['sampling_policy']=self.execution_target.validate_sampling_policy(sm.value,threads.value)
+            self.compiler={}
+            cubin,provenance=compile_execution_kernel(compile_probe,self.execution_target,
+                sampling=True,compiler_info=self.compiler,pc_cubin_sha256=SAMPLING_CUBIN_SHA256)
+            self.execution_provenance.update(provenance); self.cubin_sha256=provenance['cubin_sha256']
             self.module=self.device.load(cubin)
             self.opened=True; return self
         except BaseException: self.stack.close(); raise
@@ -107,6 +113,13 @@ class NativeSampler:
                 result['ids_i64']=greedy(result['scores_fp32']); result['offset_before']=self.offset; result['offset_after']=self.offset+increment
             with self.budget.publication(): self.offset+=increment; self.calls+=1
             return result
+
+    def stats(self):
+        device=getattr(self,'device',None)
+        return {'execution':deepcopy(self.execution_provenance),'calls':self.calls,
+            'device_owned_bytes':sum(device.allocations.values()) if device else 0,
+            'device_peak_owned_bytes':device.peak if device else 0,
+            'host_reserved_bytes':self.budget.reserved,'opened':self.opened}
 
     def __exit__(self,*_):
         with self.lock: self.opened=False; self.handle=None; self.stack.close()

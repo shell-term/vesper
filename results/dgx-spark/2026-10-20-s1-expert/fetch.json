@@ -1,0 +1,82 @@
+{
+  "cases": [],
+  "execution_process_instance": "fe9e3738a4eb4e55b0533cf11ead74eb",
+  "full_model_quality_qualified": false,
+  "general_performance_claim": false,
+  "limits": {
+    "diagnostic_cap_bytes": 4194304,
+    "floor_enforcement": "stage_observation_not_OS_reservation",
+    "framework_and_context_memory_not_hard_capped": true,
+    "native_explicit_device_cap_bytes": 67108864,
+    "native_phase_admission_bytes": 268435456,
+    "physical_available_floor_bytes": 34359738368,
+    "reference_phase_admission_bytes": 3221225472
+  },
+  "memory_observations": [
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 46250422272,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 46254051328,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    }
+  ],
+  "mode": "fetch",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "original_kernel_parity_qualified": false,
+  "process_memory_observations": [
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 37904384,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 28434432,
+      "resident_bytes": 37904384,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 922861568
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 88899584,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 35500032,
+      "resident_bytes": 45309952,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 933289984
+    }
+  ],
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "schema": "vesper.spark-expert-probe.v1",
+  "scope": "one original layer-0 expert-0; 16 fixed single-token cases",
+  "separate_process_mode": true,
+  "status": "fixture_fetched",
+  "weights_fetched_bytes": 18800640,
+  "workspace_context": {
+    "binding_id": "8480a267191e4fafab923ad834fd976c",
+    "created_at": "2026-10-20T03:14:18.630206+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "af0112331ace08e44079184f7221fc1ea64a0cea",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "cb94348f9dbcccb8aca04b379b3cc2637e3c5ca2385236d2078336469a9a7baf",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "s1-expert-fetch-r01",
+    "schema_version": 1
+  }
+}
