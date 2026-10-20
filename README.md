@@ -65,10 +65,18 @@ reasoning/coding/tool-use evaluation and generation performance remain M2/M3 wor
 The [V4.1 text-message format gate](docs/message-format-validation.md) now
 matches 30 encodings, 11 response parses, 13 rejection cases and 2,336 original
 input token IDs. This CPU comparison includes complete reasoning/coding/tool
-task prompts. Their inputs exceed the current eight-call execution fixture;
+task prompts. Their inputs exceed the historical eight-call execution fixture;
 all three model evaluations are explicitly **not run**. The text adapter and
 deterministic scorers are implemented, while longer original-route execution
 and its numerical/state comparison remain open under #10.
+
+The subsequent [longer-input/storage gate](docs/sequence-storage-validation.md)
+adds an explicit 512-call admission profile and indexes existing original expert
+files without copying their payloads. Actual indexed forty-layer replay retains
+all 26,250 original boundaries. Separately, 63 input positions through both
+Engrams match 3,906 boundaries / 30,247,560 elements; original-address paging
+peaks at 248 MiB of physical row backing. These Engram hidden inputs are
+synthetic. Whole-model execution of the longer quality requests remains open.
 
 Direct comparisons with the pinned official implementation give:
 

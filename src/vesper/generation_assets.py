@@ -92,13 +92,16 @@ def prefetch_expert(reader, layer, expert, pool):
 
 class PlanningRows:
     """Prepared host bytes only. Fetching is explicit and precedes model steps."""
-    def __init__(self, run, reader, layer):
+    def __init__(self, run, reader, layer, *, max_rows=MAX_ROWS):
+        from .sequence import MAX_ROWS as sequence_rows
+        if type(max_rows) is not int or max_rows not in (MAX_ROWS, sequence_rows): raise ValueError("Unknown explicit selected-row profile")
         self.run, self.reader, self.layer = Path(run), reader, layer
+        self.max_rows = max_rows
         self.entries, self.manifest = {}, {}
 
     def prepare(self, ids):
         requested = set(map(int, ids.reshape(-1)))
-        if len(set(self.entries) | requested) > MAX_ROWS: raise ValueError("Generation Engram fixture row limit exceeded")
+        if len(set(self.entries) | requested) > self.max_rows: raise ValueError("Generation Engram fixture row limit exceeded")
         def fetch(row):
             source = row_address(self.reader.catalog, self.layer, row)
             path = self.run / f"row-cache/{self.layer}-{row}.bin"
@@ -127,22 +130,25 @@ class PlanningRows:
             size = file.tell(); os.fsync(file.fileno())
         m = {"kind": "original_engram_selected_rows", "model": MODEL, "revision": REVISION, "catalog_sha256": CATALOG_SHA256,
             "layer": self.layer, "rows": entries, "record_bytes": 512, "file_bytes": size, "original_payload_bytes": len(entries) * 264,
-            "logical_rows_per_record": 1, "physical_alignment_bytes": 4096, "maximum_rows": MAX_ROWS}
+            "logical_rows_per_record": 1, "physical_alignment_bytes": 4096, "maximum_rows": self.max_rows}
         (directory / "manifest.json").write_bytes((json.dumps(m, indent=2) + "\n").encode())
         self.manifest = m
         return m
 
 
 class GenerationAssets:
-    def __init__(self, root, run, reader):
+    def __init__(self, root, run, reader, *, max_embeddings=8, max_rows=MAX_ROWS):
+        from .sequence import MAX_EMBEDDINGS
+        if type(max_embeddings) is not int or max_embeddings not in (8, MAX_EMBEDDINGS): raise ValueError("Unknown explicit embedding profile")
         self.root, self.run, self.reader = Path(root), Path(run), reader
+        self.max_embeddings = max_embeddings
         self.token_rows, self.embedding_receipts = {}, {}
         self.reuse = embeddings(root)
-        self.rows = {l: PlanningRows(run, reader, l) for l in (1, 14)}
+        self.rows = {l: PlanningRows(run, reader, l, max_rows=max_rows) for l in (1, 14)}
 
     def token(self, token):
         if token in self.token_rows: return
-        if len(self.token_rows) >= 8: raise ValueError("Eight-call generation embedding fixture limit")
+        if len(self.token_rows) >= self.max_embeddings: raise ValueError("Generation embedding fixture limit")
         source = embedding_address(self.reader.catalog, token)
         path = self.run / f"embeddings/{token}.bin"
         raw, m = checked_cache(path, source, lambda: self.reuse[token].tobytes() if token in self.reuse else

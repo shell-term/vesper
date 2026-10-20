@@ -135,8 +135,10 @@ class TieredExpertRuntime:
     diagnostic arrays and an optional oracle are outside this buffer ledger.
     """
 
-    def __init__(self, store: Path, config: CacheConfig | None = None):
+    def __init__(self, store: Path, config: CacheConfig | None = None, *, source_factory=None):
         self.store_path, self.config = Path(store), config or CacheConfig()
+        if source_factory is not None and not callable(source_factory): raise ValueError("Expected an explicit expert source factory")
+        self.source_factory = source_factory
         self.stack, self.cache = None, None
 
     def __enter__(self):
@@ -149,7 +151,9 @@ class TieredExpertRuntime:
         try:
             self.budget.acquire(c.metadata_allowance_bytes,category='metadata')
             self.stack.callback(self.budget.release, c.metadata_allowance_bytes,category='metadata')
-            self.store = NativeStore(self.store_path, self.budget, max_experts=c.max_store_experts)
+            self.store = (NativeStore(self.store_path, self.budget, max_experts=c.max_store_experts) if self.source_factory is None
+                else self.source_factory(self.store_path, self.budget))
+            if self.store.budget is not self.budget: raise ValueError("Expert source must use the admitted cache budget")
             self.store.timings = self.timings
             self.store.gpu_integrity = c.integrity_mode == "gpu-sha256"
             self.stack.enter_context(self.store)

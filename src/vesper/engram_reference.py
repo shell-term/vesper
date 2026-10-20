@@ -19,14 +19,14 @@ from .reference_runtime import configure_reference_runtime
 
 
 class EngramOracle:
-    def __init__(self,reference,source,fixtures,virtual,ordinal=0,*,rows_root=None):
+    def __init__(self,reference,source,fixtures,virtual,ordinal=0,*,rows_root=None,max_rows=1024,paged_rows=False):
         import torch
         import tilelang
         if torch.get_default_dtype()!=torch.bfloat16:
             raise ValueError('Original Engram linear requires the released BF16 default dtype')
         if torch.__version__!='2.14.1+cu130' or torch.version.git_version!='5c4886908584029761b579af026dcfb627c84070' or tilelang.__version__!='0.1.12':
             raise ValueError('Unqualified original Engram reference framework profile')
-        self.torch=torch; self.ordinal=ordinal; self.virtual=virtual; self.controls=[]; self.methods={}
+        self.torch=torch; self.ordinal=ordinal; self.virtual=virtual; self.controls=[]; self.methods={};self.paged_rows=paged_rows
         self.source=fetch_prefix_reference(Path(reference))
         raw=read_checked(source,'inference/engram.py')
         self.engram_source_sha256=digest(raw)
@@ -47,7 +47,7 @@ class EngramOracle:
                 torch.float8_e8m0fnu if n.endswith('scale') else torch.float8_e4m3fn) for n,a in arrays.items()}
             weights['wkv.weight'].scale=weights['wkv.scale']; self.weights[layer]=weights
             # Original addresses and raw full shapes, with only observed pages backed.
-            with EngramRows((Path(fixtures)/'rows' if rows_root is None else Path(rows_root))/f'layer{layer}',layer) as rows:
+            with EngramRows((Path(fixtures)/'rows' if rows_root is None else Path(rows_root))/f'layer{layer}',layer,max_rows=max_rows) as rows:
                 self.manifests[str(layer)]['rows']=rows.manifest
                 self.allowed[layer]=set(rows.entries)
                 codes,scales={},{}
@@ -55,13 +55,20 @@ class EngramOracle:
                     page=rows.reader.read((e['offset']//4096)*4096,4096); raw=page[e['offset']%4096:e['offset']%4096+264]
                     if digest(raw)!=e['sha256']: raise ValueError('Original oracle row differs before VMM admission')
                     codes[row]=raw[:256]; scales[row]=raw[256:]
-                weight=virtual.table((total,256),codes).view(torch.float8_e4m3fn)
-                scale=virtual.table((total,8),scales).view(torch.float8_e8m0fnu)
+                make=virtual.paged_table if paged_rows else virtual.table
+                weight=make((total,256),codes).view(torch.float8_e4m3fn)
+                scale=make((total,8),scales).view(torch.float8_e8m0fnu)
                 ids=sorted(codes); index=torch.tensor(ids,dtype=torch.int64,device=f'cuda:{ordinal}')
                 for table,values in ((weight,codes),(scale,scales)):
-                    actual=torch.nn.functional.embedding(index,table).view(torch.uint8).cpu().numpy().tobytes()
+                    chunks=[ids] if not paged_rows else [ids[i:i+virtual.max_active_rows] for i in range(0,len(ids),virtual.max_active_rows)]
+                    for chunk in chunks:
+                        if paged_rows:virtual.activate(table,np.array(chunk,np.int64))
+                        selected=index if not paged_rows else torch.tensor(chunk,dtype=torch.int64,device=f'cuda:{ordinal}')
+                        actual=torch.nn.functional.embedding(selected,table).view(torch.uint8).cpu().numpy().tobytes()
+                        expected=b''.join(values[i] for i in chunk)
+                        if actual!=expected: raise RuntimeError('Full-address original row bit transport differs')
+                    if paged_rows:virtual.deactivate(table)
                     expected=b''.join(values[i] for i in ids)
-                    if actual!=expected: raise RuntimeError('Full-address original row bit transport differs')
                     self.transport.append({'layer':layer,'rows':len(ids),'bytes':len(expected),'sha256':digest(expected),'status':'pass'})
                 self.embeds[layer]=SimpleNamespace(vocab_start_idx=0,vocab_end_idx=total,block_size=32,weight=weight,scale=scale)
         self.fp32=self.kernel.fp8_gemm_kernel(25600,6144,block_size=32,out_dtype='float32',scale_dtype='float8_e8m0fnu')
@@ -77,6 +84,8 @@ class EngramOracle:
         if layer not in self.allowed or any(int(i) not in self.allowed[layer] for i in ids.reshape(-1)):
             raise ValueError('Unbacked original reference row refused before GPU access')
         torch=self.torch; device=f'cuda:{self.ordinal}'
+        if self.paged_rows:
+            for table in (self.embeds[layer].weight,self.embeds[layer].scale):self.virtual.activate(table,ids)
         x=torch.from_numpy(hidden.copy()).to(device).view(torch.bfloat16)
         indices=torch.from_numpy(ids.copy()).to(device); token_mask=None if mask is None else torch.from_numpy(mask.copy()).to(device)
         w=self.weights[layer]; embedding=lambda i:self.embed_forward(self.embeds[layer],i)

@@ -161,7 +161,7 @@ def validate_memory(report, cap):
         raise ValueError("Generation memory admission, available floor or cleanup differs")
 
 
-def run_native(root, run, original, progress=None):
+def run_native(root, run, original, progress=None, *, provider_factory=None):
     validate_original(original)
     root, run = Path(root), Path(run); plan = load_plan(root, run)
     if plan_identity(plan) != original["plan_sha256"]: raise ValueError("Native generation plan differs from original")
@@ -172,7 +172,8 @@ def run_native(root, run, original, progress=None):
         stack.enter_context(patch("urllib.request.urlopen", side_effect=RuntimeError("Native generation must remain offline")))
         arrays = load_bindings(root, bindings); head_arrays, head_manifest = load_head(root / "output-fixture")
         tokens = load_token_rows(root, run, plan)
-        providers = {l: PreparedMoE(root, bindings, l, plan["experts"][str(l)], original["expert_provenance"]) for l in LAYERS}
+        providers = {l: (PreparedMoE(root, bindings, l, plan["experts"][str(l)], original["expert_provenance"]) if provider_factory is None
+            else provider_factory(root, bindings, l, plan["experts"][str(l)], original["expert_provenance"])) for l in LAYERS}
         rows = {l: stack.enter_context(EngramRows(run / f"rows/layer{l}", l)) for l in (1, 14)}
         engine = open_backbone(stack, root, arrays, tokens, providers, head_arrays, engram_rows=rows)
         if (engine.tokenizer_identity != original["tokenizer"] or engine.engram_manifests != original["Engram_fixtures"]

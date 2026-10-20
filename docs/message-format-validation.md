@@ -106,6 +106,12 @@ executed. Tools are parsed and checked without execution.
 
 ## Execution work still required
 
+The following describes the historical eight-call fixture at this gate. The
+subsequent [longer-input/storage work](sequence-storage-validation.md) adds an
+explicit larger admission profile, indexed experts and a qualified 63-token
+Engram component comparison. Actual whole-model quality trajectories remain
+unprepared and unscored.
+
 A larger model-call integer alone is insufficient. The current immutable
 selected-expert store allows 48 experts per layer, the prepared embedding set
 allows eight IDs, and selected Engram fixtures allow 1,024 rows per layer. The

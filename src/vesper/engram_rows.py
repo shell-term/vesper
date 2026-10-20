@@ -19,11 +19,15 @@ METADATA_ALLOWANCE=6*MiB
 
 
 class EngramRows:
-    def __init__(self,directory,layer,*,cache_rows=32):
+    def __init__(self,directory,layer,*,cache_rows=32,max_rows=MAX_ROWS):
+        from .sequence import MAX_ROWS as sequence_rows
+        if type(max_rows) is not int or max_rows not in (MAX_ROWS,sequence_rows): raise ValueError("Unknown explicit Engram row profile")
         if type(layer) is not int or layer not in LAYERS or type(cache_rows) is not int or not 1<=cache_rows<=128:
             raise ValueError("Invalid bounded Engram row-cache profile")
         self.root=Path(directory); self.layer=layer; self.cache_rows=cache_rows
-        self.budget=MemoryBudget(cap=8*MiB); self.cache=OrderedDict(); self.lock=threading.RLock(); self.reader=None
+        self.max_rows=max_rows; self.metadata_allowance=METADATA_ALLOWANCE if max_rows==MAX_ROWS else 64*MiB
+        self.metadata_limit=MiB if max_rows==MAX_ROWS else 12*MiB
+        self.budget=MemoryBudget(cap=self.metadata_allowance+2*MiB); self.cache=OrderedDict(); self.lock=threading.RLock(); self.reader=None
         self.entries={}; self.manifest=None
         self._memory_reclaimer=None
         self.hits=self.misses=self.physical_bytes=self.logical_bytes=0
@@ -31,14 +35,16 @@ class EngramRows:
     def __enter__(self):
         with self.lock:
             if self.reader is not None: raise RuntimeError("Engram rows are already open")
-            self.budget.acquire(METADATA_ALLOWANCE,category='metadata')
+            self.budget.acquire(self.metadata_allowance,category='metadata')
             try:
                 path=self.root/'manifest.json'
-                if path.stat().st_size>MiB: raise ValueError("Excessive selected-row metadata")
-                m=json.loads(path.read_bytes()); rows=m.get('rows',[])
+                if path.stat().st_size>self.metadata_limit: raise ValueError("Excessive selected-row metadata")
+                with path.open('rb') as f: raw=f.read(self.metadata_limit+1)
+                if len(raw)>self.metadata_limit: raise ValueError("Selected-row metadata grew beyond its bound")
+                m=json.loads(raw); rows=m.get('rows',[])
                 if (m.get('kind'),m.get('model'),m.get('revision'),m.get('catalog_sha256'),m.get('layer'),m.get('record_bytes'),
-                        m.get('maximum_rows'),m.get('file_bytes'))!=('original_engram_selected_rows',MODEL,REVISION,CATALOG_SHA256,self.layer,512,MAX_ROWS,
-                            ((len(rows)*512+4095)//4096)*4096) or not 1<=len(rows)<=MAX_ROWS:
+                        m.get('maximum_rows'),m.get('file_bytes'))!=('original_engram_selected_rows',MODEL,REVISION,CATALOG_SHA256,self.layer,512,self.max_rows,
+                            ((len(rows)*512+4095)//4096)*4096) or not 1<=len(rows)<=self.max_rows:
                     raise ValueError("Original Engram selected-row identity differs")
                 if [r['row'] for r in rows]!=sorted(set(r['row'] for r in rows)) or any(
                         type(r['row']) is not int or not 0<=r['row']<TABLE_ROWS[LAYERS.index(self.layer)] or r['offset']!=i*512
@@ -55,7 +61,7 @@ class EngramRows:
             except BaseException:
                 if self.reader: self.reader.close(); self.reader=None
                 self.entries={}; self.manifest=None
-                self.budget.release(METADATA_ALLOWANCE,category='metadata'); raise
+                self.budget.release(self.metadata_allowance,category='metadata'); raise
 
     def _register_pressure(self):
         self._memory_reclaimer=self.budget.register_reclaimer(self.reclaim)
@@ -119,5 +125,5 @@ class EngramRows:
             self.budget.unregister_reclaimer(self._memory_reclaimer); self._memory_reclaimer=None
             self.clear()
             if self.reader is not None:
-                self.reader.close(); self.reader=None; self.budget.release(METADATA_ALLOWANCE,category='metadata')
+                self.reader.close(); self.reader=None; self.budget.release(self.metadata_allowance,category='metadata')
                 self.entries={}; self.manifest=None

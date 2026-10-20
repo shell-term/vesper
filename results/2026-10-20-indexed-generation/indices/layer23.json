@@ -1,0 +1,1857 @@
+{
+  "schema_version": 1,
+  "kind": "vesper_indexed_native_experts",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "layer": 23,
+  "maximum_experts": 384,
+  "expert_bytes": 18800640,
+  "layout": {
+    "w1_weight": {
+      "offset": 0,
+      "bytes": 5898240,
+      "shape": [
+        2304,
+        2560
+      ]
+    },
+    "w1_scale": {
+      "offset": 5898240,
+      "bytes": 368640,
+      "shape": [
+        2304,
+        160
+      ]
+    },
+    "w3_weight": {
+      "offset": 6266880,
+      "bytes": 5898240,
+      "shape": [
+        2304,
+        2560
+      ]
+    },
+    "w3_scale": {
+      "offset": 12165120,
+      "bytes": 368640,
+      "shape": [
+        2304,
+        160
+      ]
+    },
+    "w2_weight": {
+      "offset": 12533760,
+      "bytes": 5898240,
+      "shape": [
+        5120,
+        1152
+      ]
+    },
+    "w2_scale": {
+      "offset": 18432000,
+      "bytes": 368640,
+      "shape": [
+        5120,
+        72
+      ]
+    }
+  },
+  "sources": [
+    {
+      "directory": "backbone-stores/layer23/c9334d722237ad3e6353",
+      "manifest_sha256": "fbdf6121ffdac0e079e5373e61c23b812c6301d60fcba890625ddd42ef8124fd",
+      "file_bytes": 225607680
+    },
+    {
+      "directory": "generation/story-v1/stores/layer23/7fbf31535308faf1e4c2",
+      "manifest_sha256": "977ebcfd1fac296d206472a0aa92f78253508266f4e51c63bc48e1d1461331d1",
+      "file_bytes": 338411520
+    }
+  ],
+  "entries": [
+    {
+      "key": "23:25",
+      "offset": 0,
+      "bytes": 18800640,
+      "sha256": "ffe8ab854a894f2a976fcf7d1f1596cc555f980eb708bd5690c109b10500496e",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 25,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.25.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3567701848,
+            "bytes": 5898240,
+            "sha256": "6d402f30354e08bc83faa04b0183334bddce8644dce7946655456436d4097b0e"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.25.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 194070616,
+            "bytes": 368640,
+            "sha256": "10084518cfb0a7065db619105d4ba092a1179bf7550f66f20514464c0e67adb3"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.25.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3579498328,
+            "bytes": 5898240,
+            "sha256": "71b2255037b5216070610b62a18e9c16ba7e33438454c8a14c4c5543c8426afb"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.25.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 194807896,
+            "bytes": 368640,
+            "sha256": "22e0764f2fcbe8ff74425f1792b7c4fa488e6b5785d25d989fed5f97db68aa75"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.25.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3573600088,
+            "bytes": 5898240,
+            "sha256": "586e9076a341b2905e4241459629ff09c97dc94b9d03cf35979794ea0db17c04"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.25.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 194439256,
+            "bytes": 368640,
+            "sha256": "0436b90b091cb21259e7bd30cbc5b91cd286b43c750a630925605c8f758b0fab"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:68",
+      "offset": 18800640,
+      "bytes": 18800640,
+      "sha256": "f8a8e4158200e54b98a3e2fc1f5a62208c53cad1dd3d466544857047eaa7960c",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 68,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.68.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 6770446168,
+            "bytes": 5898240,
+            "sha256": "61310081a1e410c7d586d6834e2a18346a89a044900ea6a8a18682fc1e7d1a72"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.68.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 394242136,
+            "bytes": 368640,
+            "sha256": "bbc8758da170da044862917566b6da90f2508fd34f4f56895dddae3963f6c37c"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.68.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 6782242648,
+            "bytes": 5898240,
+            "sha256": "b886355ea9c85d632220bc19d60b683cdae29641303c185bd491141dfed2fc93"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.68.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 394979416,
+            "bytes": 368640,
+            "sha256": "69f63c3544da7edfd985c75640cea92e1ae71b9ee3f41edf1673a877d38d3580"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.68.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 6776344408,
+            "bytes": 5898240,
+            "sha256": "1703014e720045af3938c6f8899e99c1838b1dba6c54b01bdb81c1b94d754ac0"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.68.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 394610776,
+            "bytes": 368640,
+            "sha256": "1837e15275f830a7f2574469fc7ee32673621319ee2e4e29c237d19d6e3d6284"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:172",
+      "offset": 37601280,
+      "bytes": 18800640,
+      "sha256": "0ae7d2b2ccc049cfe43d4890751bf67054979e851bdeab2d3643d9c6e7ee4742",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 172,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.172.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 2045955928,
+            "bytes": 5898240,
+            "sha256": "f45b3f2ef66816fad351e18eaff7a52ec42d0eb6c6a15b2be56eb49c3ac46ac4"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.172.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 98961496,
+            "bytes": 368640,
+            "sha256": "fd16a1290c1054830dcb48d13cea65bddd164df129d7ecb01d05e6220eb95032"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.172.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 2057752408,
+            "bytes": 5898240,
+            "sha256": "f46ae502f5575eefb3d074e55c64aa919399303467e62762a3d508330f93f4d0"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.172.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 99698776,
+            "bytes": 368640,
+            "sha256": "60655e654f1aee05b4378e5ab7cce97153d054b386f7dd35424ddad06796ee39"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.172.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 2051854168,
+            "bytes": 5898240,
+            "sha256": "6208e1773b9f38d3dc3a31a0a43cefc64a1740f39fc9cbd0bc38451716b428f7"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.172.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 99330136,
+            "bytes": 368640,
+            "sha256": "27c08fd04ba35222d196a06ada3d24f4b55091776d7e48748ca53889d88b7e8d"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:183",
+      "offset": 56401920,
+      "bytes": 18800640,
+      "sha256": "b958517824516f5df8f3400e88dc3171a4ba4eb294d2079a836ddd3c8e3039d1",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 183,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.183.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 2258292568,
+            "bytes": 5898240,
+            "sha256": "94f1553ca6ab275dbc64dfb9e0d0b06081120f719fda42356e7219041cb9cbb5"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.183.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 112232536,
+            "bytes": 368640,
+            "sha256": "a2064e7a3776b0e076355b23d06a60bcba0f6221c563c7fb8352d3ade6fe10c2"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.183.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 2270089048,
+            "bytes": 5898240,
+            "sha256": "ccda5fa46344bbe748051d92747fd586ebc4b462a99515150cc019008e303c87"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.183.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 112969816,
+            "bytes": 368640,
+            "sha256": "fa012074eaddd8ed2ca550a37f904650ae9d2d20e7b52ccfa8bee8b6e37df27a"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.183.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 2264190808,
+            "bytes": 5898240,
+            "sha256": "f6fa6e741fcf66fe90cf28bee0e0b0a243a84139716baa9b925fec6ec8f55291"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.183.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 112601176,
+            "bytes": 368640,
+            "sha256": "5675367d3ca58d08d766e212fcd84469bdb208aef48311b7ed30190c25a395e1"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:188",
+      "offset": 75202560,
+      "bytes": 18800640,
+      "sha256": "a759acd7a48c04a871a5b4fdcc5be7b036fdba6aecc3e5a86722ee23889bdce1",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 188,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.188.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 2346766168,
+            "bytes": 5898240,
+            "sha256": "0aa8a42d5d9f1b2b66e9b2ef16cae6a96bf0fd5130c92e0599aa7860b1e722c2"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.188.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 117762136,
+            "bytes": 368640,
+            "sha256": "0cd52c8476d28a04f44ffac18744ecdddb700c80015b6d230c6e9a0e8c35a8f8"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.188.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 2358562648,
+            "bytes": 5898240,
+            "sha256": "01d85b0a748a1dcf97fe77a867abc4a2ee26d094dbd85c268d63647fb4c146ef"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.188.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 118499416,
+            "bytes": 368640,
+            "sha256": "c2c521a8ccaae9b83e4a6ca2707cbcf6addd23ef60ed20f297f1b984761bb579"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.188.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 2352664408,
+            "bytes": 5898240,
+            "sha256": "52622036dceaf91625667b5585b727e95bbdc3817b62524513b1a5656b9671b4"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.188.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 118130776,
+            "bytes": 368640,
+            "sha256": "9fbf7a8d1af879de5d8571f5feeac33721878fb01ea4eb94a084b97bfa1a09ad"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:210",
+      "offset": 94003200,
+      "bytes": 18800640,
+      "sha256": "d9504c77d7963127617b395a9b86f3d1fa5d1756ea18e0d3234f490d112f9dfa",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 210,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.210.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 2806828888,
+            "bytes": 5898240,
+            "sha256": "d0dfdf61733adaf9826aba505913aa549cf20502ebb597db57d88d4c088cece3"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.210.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 146516056,
+            "bytes": 368640,
+            "sha256": "916ed3770905709bb9a7f2986d8f6596a403bc95b18a5b019a4dd23051e6eaf7"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.210.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 2818625368,
+            "bytes": 5898240,
+            "sha256": "6fa3282c03ec0e3a746f63d0e075fb41a064819063e34bf3a059b4eb0f176dac"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.210.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 147253336,
+            "bytes": 368640,
+            "sha256": "a92c49f7b0529d167b53003cd7ee2b940e0048fbc3390d2c46d57450fd80cfc8"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.210.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 2812727128,
+            "bytes": 5898240,
+            "sha256": "0e26dcb15e5b9bf86e0d5f2d95ede7a04a3da0984c1ae144615c3ba254e0a9dc"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.210.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 146884696,
+            "bytes": 368640,
+            "sha256": "87787fd5dff53ae737d1c3a5a7aa520e999c726ad3003678d5d6527973d7740e"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:227",
+      "offset": 112803840,
+      "bytes": 18800640,
+      "sha256": "905a07f75a98f3c5250429a03e4e2e2ee467d908856a3bd7aa951d7348725b15",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 227,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.227.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3125333848,
+            "bytes": 5898240,
+            "sha256": "7121e29c07572870f713c43fc3b6d480b5bc16272901e1a170074d7c5594587c"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.227.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 166422616,
+            "bytes": 368640,
+            "sha256": "4d3f22e2be413ea4ba8334cfeb81a322cdc0c968264cb4869a2edce303213d3c"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.227.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3137130328,
+            "bytes": 5898240,
+            "sha256": "b52cf61dc96d006e3df03cfd8e27bce1ad53743cf392448b5fe95f8647b7b070"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.227.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 167159896,
+            "bytes": 368640,
+            "sha256": "8c7b6d7ec11cdec5727644c57955407f6adfa0bfac4db032c21713afc9eb6233"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.227.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3131232088,
+            "bytes": 5898240,
+            "sha256": "91cb6a2d61d8222e6b016d71d1c9be183af4b2bcf0bf5c25f7e4fc2eb95c3845"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.227.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 166791256,
+            "bytes": 368640,
+            "sha256": "b1ec4bf237bc6e407a17146a14e09b92f471251f2d403e7d071d74e61486f9da"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:235",
+      "offset": 131604480,
+      "bytes": 18800640,
+      "sha256": "ac0d18fbe33bb34c6118a3b93a38cacc2ce9b34ea7c17789cc9ab022e0ec77bc",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 235,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.235.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3284586328,
+            "bytes": 5898240,
+            "sha256": "baa5a389c46b8532aa6373a37c139189ba9c606c74f8a8b6d51ee60b7b376325"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.235.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 176375896,
+            "bytes": 368640,
+            "sha256": "5a8a49d36399c9033691ff8dbdbd32d2223b75ebb4695b15e5d107bca113d505"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.235.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3296382808,
+            "bytes": 5898240,
+            "sha256": "37874f2e17e4574eb3d89db05e107d1044f54df39eba9a442c310f26cbcff763"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.235.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 177113176,
+            "bytes": 368640,
+            "sha256": "ee1678e155071572e6d3435575beb80771bebf5a39677c1226231132a469ee9e"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.235.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3290484568,
+            "bytes": 5898240,
+            "sha256": "c3bedf0f4df8ee61f8f10064463c730c0e614752fd5c990b8bf95f54c96cde9a"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.235.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 176744536,
+            "bytes": 368640,
+            "sha256": "438d938298430b55db14de0fb4ec553996b08a3abfae35e025065804fea3c376"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:260",
+      "offset": 150405120,
+      "bytes": 18800640,
+      "sha256": "940be2f7bf9e84003ecc7d441fe95e4954ae5fbc2b69b0e020069e0429dd443d",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 260,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.260.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3780038488,
+            "bytes": 5898240,
+            "sha256": "f9d6218334a47cece6390b5aa23a89917957747cdd3fd5f35d3c2cb229b6dc48"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.260.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 207341656,
+            "bytes": 368640,
+            "sha256": "f01b810e37e987617110848803afbcc1fc29820b31ed8a45fd6922922a8f8727"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.260.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3791834968,
+            "bytes": 5898240,
+            "sha256": "61e9c559625bc338cae29e582a7716293366853efb49340442c86651f0bbfef0"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.260.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 208078936,
+            "bytes": 368640,
+            "sha256": "8f3b8b30a021732f318a7f29db0b5077e58878b15052221f2cc238d5d160292f"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.260.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3785936728,
+            "bytes": 5898240,
+            "sha256": "380be59d24f190400aeb9aeb4419e6517ab8d19192e5577f6dfe8cfac4ffdbef"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.260.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 207710296,
+            "bytes": 368640,
+            "sha256": "61f4078e556459b4502000345efb6d4bd72fd6f3d740bc22939f8facaa237508"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:271",
+      "offset": 169205760,
+      "bytes": 18800640,
+      "sha256": "55220138a66dd32e4173d53028b955f4cb1e488cb8fd00b76d0747c0456ffee9",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 271,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.271.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3992375128,
+            "bytes": 5898240,
+            "sha256": "4b4ea6e1519d528896bcd94cb907864e7a00e8f94c0651e9b49f0ad65d105616"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.271.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 220612696,
+            "bytes": 368640,
+            "sha256": "663c0f5b9f353b7de717d536d198b11a1c9aacabc25fb03fcde6bde5f2b9f8fb"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.271.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 4004171608,
+            "bytes": 5898240,
+            "sha256": "d2737cd957b84cc00081e1662bce96e71d38f8cd876544ef7d1e1ed3b179ddb6"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.271.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 221349976,
+            "bytes": 368640,
+            "sha256": "6356665a13af711569c38062c279d798bb24fcd6ae6aea18e4f1a1306d65062c"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.271.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 3998273368,
+            "bytes": 5898240,
+            "sha256": "1abf739fb255ff94b9d8d4cd482e3107e4e1f041febdcb164d72b97f1a00dd6a"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.271.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 220981336,
+            "bytes": 368640,
+            "sha256": "b5172e9e5854f99e08be885c24df0749826c0a412a0fb5e56f8c72dea4d85c34"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:275",
+      "offset": 188006400,
+      "bytes": 18800640,
+      "sha256": "898ac5c147b4dab29dd08bcfdb170ab520787e7dfa9595a635df0eb80d33e327",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 275,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.275.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 4063154008,
+            "bytes": 5898240,
+            "sha256": "e4f1ac708c9ce0939ea1a2108ffb5f21e8111586d1f599991551aca7d69f1459"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.275.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 225036376,
+            "bytes": 368640,
+            "sha256": "e6ed2557b453319468651bb1d8302883d3723da8cd424f244da30c4902b64d82"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.275.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 4074950488,
+            "bytes": 5898240,
+            "sha256": "0a8a8caa6561b20453ffca7c84a17547a6c3412ee71aa07f7df5177d4a9b1575"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.275.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 225773656,
+            "bytes": 368640,
+            "sha256": "b78f4cad1db61cadc0f289d29b3f37ca3c9a32407d1b85c42802a9cce2249e89"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.275.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 4069052248,
+            "bytes": 5898240,
+            "sha256": "14438be57c0543f4a8c8b910dd3f70fc7d86a23beb6a21c20210f1a95b522960"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.275.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 225405016,
+            "bytes": 368640,
+            "sha256": "889b56b7091b1bcc4b96e38f2dc5c2c80c8cba3cd5cc210775c9c1eb5745b7fc"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:286",
+      "offset": 206807040,
+      "bytes": 18800640,
+      "sha256": "2a40fe35f7c71258b1943b6938f61095d3ee4e2379eb751c93fb21820ba621e8",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 286,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.286.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 4275490648,
+            "bytes": 5898240,
+            "sha256": "26dbd6fe1f6cd254de495d80cb887ea45954868086f9748a21138426fd0a474b"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.286.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 238307416,
+            "bytes": 368640,
+            "sha256": "915ec0a3ad4eb17b9ce2b1b508201a12c1c366da3403639c14a0f21dd3e21628"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.286.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 4287287128,
+            "bytes": 5898240,
+            "sha256": "664125791692a5c068bf45ed0f0d96c274a761f5fe552cec637a5ad75c66dfc7"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.286.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 239044696,
+            "bytes": 368640,
+            "sha256": "86f5fb0be1b110881636874720ecb15386b540a0c44179207b2e37dbe76f97b7"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.286.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 4281388888,
+            "bytes": 5898240,
+            "sha256": "450f0b313029e0dcd4e9029a05f300bb5aa7851ebfdea0ee4546661440d92d8c"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.286.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 238676056,
+            "bytes": 368640,
+            "sha256": "e00c3fd79b7fe6161e9919131c5ea826265bd366422f55391ff25b0576f9dda8"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:290",
+      "offset": 225607680,
+      "bytes": 18800640,
+      "sha256": "53baee5858db525f1f165563398400d261f04397e8c8286ddc55749f070b60a8",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 290,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.290.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 4363964248,
+            "bytes": 5898240,
+            "sha256": "03159c075128eb8d481744e8bfff0a64cb9b363120f91cd239a13b9665825408"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.290.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 243837016,
+            "bytes": 368640,
+            "sha256": "c92bb5971a23333e16b91e31374fcebd43d9bb1e4aba5a53f86df381760bcffb"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.290.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 4375760728,
+            "bytes": 5898240,
+            "sha256": "6199c5ed20aaf5f35ff0458b72b57c104ab26b2cdf35311d3d6ed754d553ba2b"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.290.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 244574296,
+            "bytes": 368640,
+            "sha256": "7777beb400dd485d8c29399995201d92d273b1f6805806d2edb024f28ddafa38"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.290.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 4369862488,
+            "bytes": 5898240,
+            "sha256": "eac04cdabaa4a0950c351219274c53f103b65c97739c1b49924bfa73b579f4f0"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.290.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 244205656,
+            "bytes": 368640,
+            "sha256": "dcfc8231df4a03ab12454bc3b37a0b3f7d39c4b65b69151f3ebcb516ce51675c"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:323",
+      "offset": 244408320,
+      "bytes": 18800640,
+      "sha256": "4eafe0632806a8e14476404d58b1c2b3e1ee9b8d4250dc802ff860e590bffe37",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 323,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.323.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5018668888,
+            "bytes": 5898240,
+            "sha256": "60135cf5b17145bcfc90371cbbe42c79d78beaeffba4fb4e6462cc44fdc54739"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.323.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 284756056,
+            "bytes": 368640,
+            "sha256": "728f3104dd7c0048e8803cc55353cda4dd58bfce4731db69f109b4dd28a99041"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.323.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5030465368,
+            "bytes": 5898240,
+            "sha256": "ea003aec18228a8f35f8ab183813e042320fd1de153b8acc52edf3d1d108ec48"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.323.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 285493336,
+            "bytes": 368640,
+            "sha256": "e62089d69784fc656b140c88046d4904faab5089a4f4efbedb6b4ba9208a94c5"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.323.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5024567128,
+            "bytes": 5898240,
+            "sha256": "4096857d3422ef2d86e431839a339d63354f312c47617b23781bc233a79e36b5"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.323.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 285124696,
+            "bytes": 368640,
+            "sha256": "49fdf0bf4078c173c56d7a0fc35a3e18af39829926c62e22b92069c0d2ed5a02"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:331",
+      "offset": 263208960,
+      "bytes": 18800640,
+      "sha256": "2530681b83ecf060db58f315fb029a63d8be6d9803da84a0efc194f618e2800b",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 331,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.331.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5177921368,
+            "bytes": 5898240,
+            "sha256": "50fe3ae61412d2598bce9932a3d0f16d000a1cfddde391af47fa1a2cd8da9228"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.331.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 294709336,
+            "bytes": 368640,
+            "sha256": "c97549d772191d1104087042ce979a0568e5902f586820d8b187f1658bee4f21"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.331.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5189717848,
+            "bytes": 5898240,
+            "sha256": "5fd1248c7cade7c2fb328093669cf580568aceb94adaca151517aa4322342d75"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.331.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 295446616,
+            "bytes": 368640,
+            "sha256": "6bc6ee5994b705330330ce54b8fe3a138d00ad88758e86c062df3b56ecb0f43f"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.331.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5183819608,
+            "bytes": 5898240,
+            "sha256": "c3f7d4f3c2029b2fc81498b17fc99dc5d07817be21bd75d8e1757a6c7eef4cd6"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.331.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 295077976,
+            "bytes": 368640,
+            "sha256": "1ed98d5b9d81fafe7439cac4f820d3ccb2036e5f2f91dc1b8942fc9e78039df7"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:333",
+      "offset": 282009600,
+      "bytes": 18800640,
+      "sha256": "b6983584c1f86d58bcd3231bff59e7b3db91c101d1d309236af7a05acc1260e8",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 333,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.333.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5213310808,
+            "bytes": 5898240,
+            "sha256": "14707b4b7a9edebda2037bc38a81ddc9466da148642c9f3869f56484f08b6340"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.333.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 296921176,
+            "bytes": 368640,
+            "sha256": "d319ba0d0474d01c033922dcd13dea273de1f087ef10bfc50c3d1be6267dd95b"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.333.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5225107288,
+            "bytes": 5898240,
+            "sha256": "595b8763c2a06de37f6a917183eeb5d7e710ada9f2730333f16720586369c589"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.333.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 297658456,
+            "bytes": 368640,
+            "sha256": "126ac5da9178eb120df59a0093049659f558ecbfa14aa20a1636a2a913cac660"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.333.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5219209048,
+            "bytes": 5898240,
+            "sha256": "fb48eb2fc2fd76cc7f2a4064320158803875bf3483b5c321f45d2ba5e6bb06f7"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.333.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 297289816,
+            "bytes": 368640,
+            "sha256": "7afbb4230053a02a54ee2b2e2266c87d72b1b911673b8c0f426a13b2442e1f8d"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:358",
+      "offset": 300810240,
+      "bytes": 18800640,
+      "sha256": "87c48c1e1c8aac9fcd43660f30b9888f3c49686ddfe317adb6d441a8925e07c7",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 358,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.358.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5691068248,
+            "bytes": 5898240,
+            "sha256": "3d3a053623dd74562cac215296f742cc861f29e18761c14e1ad11f1174c9b953"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.358.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 326781016,
+            "bytes": 368640,
+            "sha256": "0dcb8bfd77d784220721dc476a842a633e2aaa7cc3f05fcf8a6bd39a11188b75"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.358.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5702864728,
+            "bytes": 5898240,
+            "sha256": "ce99cfa78675c3bbc9c787662229854fb786c05b37410b3f99b5b08dea2cc967"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.358.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 327518296,
+            "bytes": 368640,
+            "sha256": "f8e0d0ece8e29b0c58665679514a51a3b5d1178e672ba576951dfc630a2f137f"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.358.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5696966488,
+            "bytes": 5898240,
+            "sha256": "72ad67b5eb81f78b15f574766f7ac3b92ddc245f8ff60bf081942cc1aeea6eae"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.358.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 327149656,
+            "bytes": 368640,
+            "sha256": "bc11fee790b9d291856d872fec93c2d030ff072c8fe45b8b08888cb4ea66ccd7"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    },
+    {
+      "key": "23:362",
+      "offset": 319610880,
+      "bytes": 18800640,
+      "sha256": "453644e5d383c6ad63020739793d7f330254f167d3ec26763f8944ae34df96eb",
+      "provenance": {
+        "probe": "fetch_expert_fixture",
+        "status": "pass",
+        "kind": "complete_expert",
+        "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+        "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+        "layer": 23,
+        "expert": 362,
+        "swiglu_limit": 10.0,
+        "weights_fetched_bytes": 18800640,
+        "tensors": [
+          {
+            "name": "w1_weight",
+            "tensor": "layers.23.ffn.experts.362.w1.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5779541848,
+            "bytes": 5898240,
+            "sha256": "87f598d1c145f32347bf9a0f06f3b3b6c4f929ddaf98dcaf70e711e5abad2aac"
+          },
+          {
+            "name": "w1_scale",
+            "tensor": "layers.23.ffn.experts.362.w1.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 332310616,
+            "bytes": 368640,
+            "sha256": "d53d4c4987bfdf39a0acc898df45584c0981ac52963e211143faf39a2bccb9b1"
+          },
+          {
+            "name": "w3_weight",
+            "tensor": "layers.23.ffn.experts.362.w3.weight",
+            "dtype": "I8",
+            "shape": [
+              2304,
+              2560
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5791338328,
+            "bytes": 5898240,
+            "sha256": "cee4f10c1a17753c565e514170e94a57f2494eea3ccc4c080f7027937fe9ec5b"
+          },
+          {
+            "name": "w3_scale",
+            "tensor": "layers.23.ffn.experts.362.w3.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              2304,
+              160
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 333047896,
+            "bytes": 368640,
+            "sha256": "a2cd54af3bddbcd826911328e5aee72644ef64d0d2684fcad6a98f71cd5aa0ac"
+          },
+          {
+            "name": "w2_weight",
+            "tensor": "layers.23.ffn.experts.362.w2.weight",
+            "dtype": "I8",
+            "shape": [
+              5120,
+              1152
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 5785440088,
+            "bytes": 5898240,
+            "sha256": "badf51752f15fde0d92f603954f5064de33122363e99552bc4c43cc5491adc4f"
+          },
+          {
+            "name": "w2_scale",
+            "tensor": "layers.23.ffn.experts.362.w2.scale",
+            "dtype": "F8_E8M0",
+            "shape": [
+              5120,
+              72
+            ],
+            "shard": "model-00026-of-00048.safetensors",
+            "shard_byte_offset": 332679256,
+            "bytes": 368640,
+            "sha256": "3dcc82eb82c8f49c83ae5fafaf4e1cc4500673fc3f96ea1f04c680ea6dd06e0a"
+          }
+        ],
+        "note": "One original native expert; not the full model or an inference download cache."
+      },
+      "source": 1
+    }
+  ],
+  "payload_bytes_copied": 0,
+  "weight_payloads_fetched": 0
+}

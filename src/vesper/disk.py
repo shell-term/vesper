@@ -54,6 +54,8 @@ class DirectReader:
             raise
 
     def read(self, offset: int, size: int) -> bytes:
+        if self.handle is None or self.buffer is None:
+            raise RuntimeError("Direct reader is closed")
         if offset < 0 or offset % 4096 or size <= 0 or size % 4096 or size > self.capacity:
             raise ValueError("Direct read is not aligned or exceeds the buffer")
         if os.name == "nt":
@@ -72,6 +74,28 @@ class DirectReader:
             return bytes(view[:4096])
         finally:
             view.release()
+
+    def switch_file(self, path: Path):
+        """Reuse the aligned buffer; a failed open leaves the old handle valid.
+
+        Open the replacement first, then close the previous handle. No bytes
+        are read or published by switching, and there is no buffered fallback.
+        The caller serializes reads/switches just as it serializes read().
+        """
+        if self.handle is None or self.buffer is None:
+            raise RuntimeError("Direct reader is closed")
+        if os.name == "nt":
+            replacement = self.lib.CreateFileW(str(path), 0x80000000, 3, None, 3, 0x20000000, None)
+            if replacement == C.c_void_p(-1).value: raise C.WinError(C.get_last_error())
+            if not self.lib.CloseHandle(self.handle):
+                error = C.get_last_error(); self.lib.CloseHandle(replacement)
+                raise C.WinError(error)
+        else:
+            replacement = os.open(path, os.O_RDONLY | os.O_DIRECT)
+            try: os.close(self.handle)
+            except BaseException:
+                os.close(replacement); raise
+        self.handle = replacement
 
     def close(self):
         if os.name == "nt":

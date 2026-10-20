@@ -62,13 +62,15 @@ class ConnectedMoE:
     """
 
     def __init__(self, store: Path, gate_fixture: Path, router_fixture: Path, shared_fixture: Path,
-                 config: ConnectedConfig | None = None, *, cublas_library=None, layer=0, profile="qualified"):
+                 config: ConnectedConfig | None = None, *, cublas_library=None, layer=0, profile="qualified", source_factory=None):
         from .prefix_profile import validate_layer
         validate_layer(layer, (0, 2, 3, 20, 21, 22, 23, 24, 25), profile)
         self.layer = layer
         self.store_path, self.gate_fixture = Path(store), Path(gate_fixture)
         self.router_fixture, self.shared_fixture = Path(router_fixture), Path(shared_fixture)
         self.config, self.cublas_library = config or ConnectedConfig(), cublas_library
+        if source_factory is not None and not callable(source_factory): raise ValueError("Expected an explicit expert source factory")
+        self.source_factory = source_factory
         self.stack, self.active = None, False
         self.lock = threading.RLock()
         self.stats = {"calls_started": 0, "calls_completed": 0, "calls_failed": 0}
@@ -94,7 +96,7 @@ class ConnectedMoE:
             self.router = self.stack.enter_context(RouterProbe(biases, ordinal))
             self.shared = self.stack.enter_context(ResidentSharedExpert(shared, ordinal))
             self.accumulator = self.stack.enter_context(MoEAccumulator(ordinal, max_tokens=1))
-            self.experts = self.stack.enter_context(TieredExpertRuntime(self.store_path, c.cache))
+            self.experts = self.stack.enter_context(TieredExpertRuntime(self.store_path, c.cache, source_factory=self.source_factory))
             if any(entry["provenance"]["layer"] != self.layer for entry in self.experts.store.entries.values()):
                 raise ValueError("Connected store contains artifacts from another layer")
             self.devices = {"gate": self.gate.device, "router": self.router.device,

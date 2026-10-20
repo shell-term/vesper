@@ -80,9 +80,17 @@ The [V4.1 message format gate](message-format-validation.md) now qualifies
 unchanged original CPU encoder/tokenizer. Three complete quality tasks are
 prepared with deterministic scorers. Their prompts contain 63/30/293 tokens;
 their maximum requested single-query trajectories are 190/61/388 calls, beyond
-the current eight-call fixture. These evaluations did not run. Longer bounded
+the historical eight-call fixture. These evaluations did not run. Longer bounded
 expert/Engram/embedding stores and reference/native trajectories remain #10
 work; formatting/scorer tests do not close its model-quality requirement.
+
+The [longer-input/storage follow-up](sequence-storage-validation.md) now admits
+512 calls explicitly and indexes existing expert payloads without copying them.
+Indexed all-forty-layer replay preserves all 26,250 short-generation boundaries.
+A separate 63-position original/native Engram comparison passes 3,906 boundaries
+on synthetic hidden inputs, with 248 MiB peak original-address physical row
+backing. Larger whole-model route preparation, actual generated trajectories
+and reasoning/coding/tool scores remain open; #10 and M2 remain open.
 
 ## Working on an issue
 

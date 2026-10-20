@@ -22,7 +22,10 @@ class AccessDesc(C.Structure): _fields_=[('location',Location),('flags',C.c_int)
 
 
 class VirtualTables:
-    def __init__(self,ordinal=0):
+    def __init__(self,ordinal=0,*,max_rows=1024):
+        from .sequence import MAX_ROWS
+        if type(max_rows) is not int or max_rows not in (1024,MAX_ROWS): raise ValueError("Unknown explicit original-row transport profile")
+        self.max_rows=max_rows
         self.ordinal=ordinal; self.stack=ExitStack(); self.physical=0; self.peak=0; self.cap=4*GiB; self.virtual=0; self.virtual_peak=0; self.tables=[]
 
     def __enter__(self):
@@ -50,7 +53,7 @@ class VirtualTables:
 
     def table(self,shape,rows):
         import torch
-        if (shape not in ((384006168,256),(384006168,8),(384016682,256),(384016682,8),(129280,10240)) or not 1<=len(rows)<=1024
+        if (shape not in ((384006168,256),(384006168,8),(384016682,256),(384016682,8),(129280,10240)) or not 1<=len(rows)<=self.max_rows
                 or any(type(i) is not int or not 0<=i<shape[0] or type(raw) is not bytes or len(raw)!=shape[1] for i,raw in rows.items())):
             raise ValueError("Expected bounded original virtual table rows")
         self.device.current(); total=int(np.prod(shape)); size=((total+self.page-1)//self.page)*self.page
