@@ -23,7 +23,7 @@ def inventory(cc="12.1", name="NVIDIA GB10", api=13000):
 
 def compiler_metadata(architecture="121", version=(13, 0), **flags):
     return {"nvrtc_version": list(version), "architecture": architecture,
-        "concatenated_source_sha256": kernel_source_sha256(**flags),
+        "concatenated_source_sha256": kernel_source_sha256(execution_target=SPARK_TARGET if architecture=='121' else PC_TARGET,**flags),
         "options": [f"--gpu-architecture=sm_{architecture}", "--std=c++17", "--fmad=false",
                     "--ftz=false", "--include-path=<CUDA>/include"], "include_path_redacted": True}
 
@@ -137,7 +137,7 @@ class ExecutionTargetTests(TestCase):
         self.assertEqual(value, BINARY)
         self.assertEqual(compiler.call_args.args, ("121",))
         self.assertEqual(evidence["compiler"]["nvrtc_version"], [13, 0])
-        self.assertEqual(evidence["compiler"]["concatenated_source_sha256"], kernel_source_sha256(engram=True))
+        self.assertEqual(evidence["compiler"]["concatenated_source_sha256"], kernel_source_sha256(execution_target=SPARK_TARGET,engram=True))
         self.assertEqual(evidence["cubin_sha256"], BINARY_HASH)
         self.assertEqual(evidence["qualification"], "unqualified_candidate")
         metadata["nvrtc_version"][0] = 99

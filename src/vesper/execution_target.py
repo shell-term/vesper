@@ -23,7 +23,25 @@ _FLAGS = ("reduction_trace", "expert", "integrity", "routing", "shared", "aggreg
 _NORMALIZED_FLAGS = ("kv", "normalization", "projections", "hc", "compression", "indexer", "engram", "sampling")
 
 
-def kernel_source_sha256(**flags):
+def apply_execution_source_profile(source, architecture, *, has_normalization):
+    """Match the observed SM121 original complex-multiply rounding order.
+
+    PC source bytes stay identical. This changes only the imaginary component's
+    choice of fused multiply in Spark RoPE, established against same-device
+    original PyTorch; it does not introduce a lower-precision approximation.
+    """
+    if not isinstance(source,bytes) or type(has_normalization) is not bool:
+        raise ValueError('Expected native source bytes and an explicit normalization flag')
+    if architecture=='121' and has_normalization:
+        original=b'float im = fmaf(real, d, __fmul_rn(imag, c));'
+        replacement=b'float im = fmaf(imag, c, __fmul_rn(real, d));'
+        if source.count(original)!=1:
+            raise ValueError('Pinned Spark RoPE imaginary multiply boundary changed')
+        return source.replace(original,replacement)
+    return source
+
+
+def kernel_source_sha256(*, execution_target=None, **flags):
     """Reproduce compile_probe's input identity, without compiling or loading CUDA."""
     if any(key not in _FLAGS or type(value) is not bool for key, value in flags.items()):
         raise ValueError("Expected explicit supported native-kernel flags")
@@ -44,6 +62,8 @@ def kernel_source_sha256(**flags):
     source = b"\n".join((directory / name).read_bytes() for name in names)
     if any(flags.get(flag) for flag in _NORMALIZED_FLAGS):
         source = source.replace(b"\r\n", b"\n")
+    source=apply_execution_source_profile(source,resolve_execution_target(execution_target).architecture,
+        has_normalization=any(flags.get(key,False) for key in ('normalization','hc','engram')))
     return hashlib.sha256(source).hexdigest()
 
 
@@ -121,7 +141,7 @@ def compile_execution_kernel(compile_function, execution_target=None, *, compile
     target = resolve_execution_target(execution_target)
     if not re.fullmatch(r"[0-9a-f]{64}", pc_cubin_sha256 or ""):
         raise ValueError("Missing pinned PC binary identity")
-    before = kernel_source_sha256(**flags)
+    before = kernel_source_sha256(execution_target=target,**flags)
     binary = compile_function(target.architecture, compiler_info=compiler_info, **flags)
     if not isinstance(binary, bytes) or not binary or len(binary) > 16 * 1024 * 1024:
         raise ValueError("Invalid native-kernel binary")
@@ -132,13 +152,17 @@ def compile_execution_kernel(compile_function, execution_target=None, *, compile
     else:
         options = ["--gpu-architecture=sm_121", "--std=c++17", "--fmad=false", "--ftz=false",
                    "--include-path=<CUDA>/include"]
+        if flags.get("sampling"):
+            options.append("--include-path=<CUDA>/include/cccl")
         if (compiler_info.get("nvrtc_version") != [13, 0] or compiler_info.get("architecture") != "121"
                 or compiler_info.get("options") != options or compiler_info.get("include_path_redacted") is not True
                 or compiler_info.get("concatenated_source_sha256") != before
-                or kernel_source_sha256(**flags) != before):
+                or kernel_source_sha256(execution_target=target,**flags) != before):
             raise ValueError("Spark candidate compiler, source or options differ from its explicit profile")
     compiler = {key: deepcopy(compiler_info[key]) for key in
                 ("nvrtc_version", "architecture", "concatenated_source_sha256", "options", "include_path_redacted")
                 if key in compiler_info}
     return binary, {**target.describe(), "compiler": compiler, "cubin_sha256": digest,
+                    "source_rounding_adaptations": (["SM121 original complex multiply: imaginary-first fused product"]
+                        if target.is_candidate and any(flags.get(k) for k in ('normalization','hc','engram')) else []),
                     "kernel_flags": sorted(key for key, value in flags.items() if value)}

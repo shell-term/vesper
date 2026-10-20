@@ -296,6 +296,8 @@ def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: b
         source += b"\n" + (Path(__file__).parent / "kernels/sampling_probe.cu").read_bytes()
     if kv or normalization or projections or hc or compression or indexer or engram or sampling:
         source = source.replace(b"\r\n", b"\n")
+    from .execution_target import apply_execution_source_profile
+    source=apply_execution_source_profile(source,architecture,has_normalization=normalization or hc or engram)
     if compiler_info is not None:
         import hashlib
         major, minor = C.c_int(), C.c_int()
@@ -306,12 +308,18 @@ def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: b
                              concatenated_source_sha256=hashlib.sha256(source).hexdigest(),
                              options=[f"--gpu-architecture=sm_{architecture}", "--std=c++17", "--fmad=false",
                                       "--ftz=false", "--include-path=<CUDA>/include"], include_path_redacted=True)
+        if architecture == "121" and sampling:
+            compiler_info["options"].append("--include-path=<CUDA>/include/cccl")
     program = pointer()
     if create(C.byref(program), source, b"format_probe.cu", 0, None, None):
         raise CudaError("NVRTC could not create a program")
     try:
         options = [f"--gpu-architecture=sm_{architecture}", "--std=c++17", "--fmad=false",
                    "--ftz=false", f"--include-path={root / 'include'}"]
+        if architecture == "121" and sampling:
+            # CUDA 13 cuRAND headers include cuda/std headers from CCCL. This
+            # target-scoped include keeps the qualified PC command unchanged.
+            options.append(f"--include-path={root / 'include' / 'cccl'}")
         encoded = (C.c_char_p * len(options))(*[option.encode() for option in options])
         result = compile_(program, len(options), encoded)
         if result:
