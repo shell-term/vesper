@@ -32,6 +32,17 @@ The change does not cache an unauthenticated catalog, alter model arithmetic,
 or qualify a complete response. Fresh source-bound checks and generation
 remain required after this correction.
 
+At the fixed corrected runtime source `0fcb7fdbb9ec41aed6de7d831d803f20279b29e7`,
+the Spark CPU suite passed 660 tests (one environment skip). Fresh original
+Attention reference and native executions again passed all 36 cases and the
+two refusal/retry checks. The complete-vocabulary head again passed all 24
+comparisons across eight inputs, with owned cleanup. The
+[full fresh numerical records](../results/dgx-spark/2026-10-21-s1-text/transport-r02.json)
+retain the original remote context and exact byte hashes. The ordinary text
+retry is running as a finite, serial job at that source; a successful answer
+is still unconfirmed. A subsequent test-only correction makes CPU regression
+observers independent of CI host RAM; it does not change the running source.
+
 ## Original expert: measured on 2026-10-20
 
 Source: `af0112331ace08e44079184f7221fc1ea64a0cea`.

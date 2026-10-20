@@ -1,0 +1,5495 @@
+{
+  "bundle": "s1/attention-bundle-r02",
+  "bundle_manifest_sha256": "09e3beb771eda38d4c61b8a198bd40af016c3bec2d338c605d82886bfc996d8c",
+  "candidate_bundle_qualification": "unqualified_candidate",
+  "cases": [
+    {
+      "batch": 1,
+      "case": 0,
+      "checks": [
+        {
+          "actual_sha256": "d79410334fa50af2aa9570e837eda17710eb8a89cd1fb6127ba6804bdefdba78",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "d79410334fa50af2aa9570e837eda17710eb8a89cd1fb6127ba6804bdefdba78",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "d79410334fa50af2aa9570e837eda17710eb8a89cd1fb6127ba6804bdefdba78",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "d79410334fa50af2aa9570e837eda17710eb8a89cd1fb6127ba6804bdefdba78",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "1c5cd41332744f244df5d9a2b46a0632c891c1d81f2be34aa6cbd2f37f15929d",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 4096,
+          "expected_sha256": "1c5cd41332744f244df5d9a2b46a0632c891c1d81f2be34aa6cbd2f37f15929d",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            1,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "e0da17f6fce449e97d13f760345e8135bc559168def1a88e9c9b534898a93d6a",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 4096,
+          "expected_sha256": "e0da17f6fce449e97d13f760345e8135bc559168def1a88e9c9b534898a93d6a",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            1,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "0c4b66f6908f2a96c8a5167ae41544a55a2b559599610bd276acbbc28a6e1d50",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 320,
+          "expected_sha256": "0c4b66f6908f2a96c8a5167ae41544a55a2b559599610bd276acbbc28a6e1d50",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            1,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "62b8e6fccfd26d5c8cab977c4499ae5e9b7d02b509bc340e4ef583acb89a037a",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "62b8e6fccfd26d5c8cab977c4499ae5e9b7d02b509bc340e4ef583acb89a037a",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "1bc52076366674987ddabbccb1032be1db527b7efddf7834688a4b2bf1cdbee1",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "1bc52076366674987ddabbccb1032be1db527b7efddf7834688a4b2bf1cdbee1",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 256,
+      "heads": 64,
+      "input_scale": 0.125,
+      "input_sha256": {
+        "indices": "a5dcf5b8418dfafec16079148ec90cf81dfc6276c1cce220017c782ecb7d7aea",
+        "kv": "e230fbca344f2a06c527f479fe6c2038ab217d2bd17bddc8367d1f316b7ebdb9",
+        "q": "05436292677dcd75764aac8c7740d10e8b6893ecca11ac3271ab8ffecefbdf2c",
+        "sink": "7576647651b138fce14a008e3bf2388acd193039b4e7bda0a24ba45aca949300"
+      },
+      "mode": "normal",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 1
+    },
+    {
+      "batch": 1,
+      "case": 1,
+      "checks": [
+        {
+          "actual_sha256": "0557df8e6aa900a190dff23627820a3e1671a123e40853e837e4778896529210",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 49152,
+          "expected_sha256": "0557df8e6aa900a190dff23627820a3e1671a123e40853e837e4778896529210",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "0557df8e6aa900a190dff23627820a3e1671a123e40853e837e4778896529210",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 49152,
+          "expected_sha256": "0557df8e6aa900a190dff23627820a3e1671a123e40853e837e4778896529210",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "d23c0199ac77c255bbc3e93802e3762e92ea15215a3c84c9631424120761f0ce",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 12288,
+          "expected_sha256": "d23c0199ac77c255bbc3e93802e3762e92ea15215a3c84c9631424120761f0ce",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            1,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "4ecea5ca2b9ab161266b494c5ce0f33af715e1ced03ffbda9f3a52bb0b5e8e58",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 12288,
+          "expected_sha256": "4ecea5ca2b9ab161266b494c5ce0f33af715e1ced03ffbda9f3a52bb0b5e8e58",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            1,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "16870d2be0afd7dec1a199b9da8ac03082faaa08287aba1f508221567bedc6d2",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 960,
+          "expected_sha256": "16870d2be0afd7dec1a199b9da8ac03082faaa08287aba1f508221567bedc6d2",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            1,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "ee482ca9637046aee04bbc0f9c710453b783ef8bbea642164e8115d66d9fe151",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 49152,
+          "expected_sha256": "ee482ca9637046aee04bbc0f9c710453b783ef8bbea642164e8115d66d9fe151",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "b0576540114f03e0e6bbb90adafaba908ba47b32abb91b45787c4672ce5a37f9",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 49152,
+          "expected_sha256": "b0576540114f03e0e6bbb90adafaba908ba47b32abb91b45787c4672ce5a37f9",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            64,
+            256
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 256,
+      "heads": 64,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "c13b82652a718f9ff1146c6f337667ca9c295c36303e89210ce0a1dcae07e41b",
+        "kv": "3084261e3e5f95489c5f3389f53f9e65ced2623cd9522aff2c67967ed1f1ae7d",
+        "q": "48a19ca66ac08a4499523efff71d7ac52913771f10ebf8a6c969e7a01222245c",
+        "sink": "11001eaba75624288462e37201076849de3e66168b55ec36e26c1c9f9c29d1f3"
+      },
+      "mode": "normal",
+      "sequence": 3,
+      "status": "pass",
+      "topk": 32
+    },
+    {
+      "batch": 1,
+      "case": 2,
+      "checks": [
+        {
+          "actual_sha256": "904daa8a3c45fb13ff80eddb8a857c7ef3ea4a453e7f3a46b1957714e5a45fd4",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "904daa8a3c45fb13ff80eddb8a857c7ef3ea4a453e7f3a46b1957714e5a45fd4",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "904daa8a3c45fb13ff80eddb8a857c7ef3ea4a453e7f3a46b1957714e5a45fd4",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "904daa8a3c45fb13ff80eddb8a857c7ef3ea4a453e7f3a46b1957714e5a45fd4",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "3195a3f4770f3650fc6b1aace96b3d01bda277fcdaa8d9b11af10919d5bd26ff",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "3195a3f4770f3650fc6b1aace96b3d01bda277fcdaa8d9b11af10919d5bd26ff",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            1,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "257234276167faf15ffde7ee1dbecfd44efad717b32f8a9648410df1ec37154d",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "257234276167faf15ffde7ee1dbecfd44efad717b32f8a9648410df1ec37154d",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            1,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "0ff9ad7184922b9c6b7ba0e8835fd499f99e56c177f16a01cfd7d13d55e80e73",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 640,
+          "expected_sha256": "0ff9ad7184922b9c6b7ba0e8835fd499f99e56c177f16a01cfd7d13d55e80e73",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            1,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "687be95b9bf1dbb62109fd590e7aa182eaa2e0010e92fd7ff68b744b23774890",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "687be95b9bf1dbb62109fd590e7aa182eaa2e0010e92fd7ff68b744b23774890",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8d7f462a5eb86f069afaf7ac8922ee4edb2874f26ac3d177fcee1389918662d8",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "8d7f462a5eb86f069afaf7ac8922ee4edb2874f26ac3d177fcee1389918662d8",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 256,
+      "heads": 64,
+      "input_scale": 8.0,
+      "input_sha256": {
+        "indices": "9f8c38b260df4b241b9c14cd09d9db46048be56c68e01dd239ffaabd64669337",
+        "kv": "4e40d3e1fe4a594901875d435db91800ae28003ca2d2a86e2f5a933b1b2f5597",
+        "q": "79cfc0c12a923f1bbfcfbafabbd31bfe2fa50ebf3da4a528871e5a9154937ee9",
+        "sink": "8b2efac4f92a299c524c2a464f1850010d35bb1c5bd3a9859d42d816455b8b96"
+      },
+      "mode": "masked",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 64
+    },
+    {
+      "batch": 2,
+      "case": 3,
+      "checks": [
+        {
+          "actual_sha256": "b03fc7cf7fa7acaebcc97b6142794749107be173b9e0797af2f5e02f38cc2418",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 65536,
+          "expected_sha256": "b03fc7cf7fa7acaebcc97b6142794749107be173b9e0797af2f5e02f38cc2418",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "b03fc7cf7fa7acaebcc97b6142794749107be173b9e0797af2f5e02f38cc2418",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 65536,
+          "expected_sha256": "b03fc7cf7fa7acaebcc97b6142794749107be173b9e0797af2f5e02f38cc2418",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "33c4941a5d686dbd5d0cc3534fb9b5c4f8bcb4942ee84a97ae1e8abe19d6a00b",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "33c4941a5d686dbd5d0cc3534fb9b5c4f8bcb4942ee84a97ae1e8abe19d6a00b",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "5a66db92239dd0a208e24b6fc174aecc9bd18579602e984415be2036d537a03b",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "5a66db92239dd0a208e24b6fc174aecc9bd18579602e984415be2036d537a03b",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "abd4bed8c1f3554f2ac975b9010ca1885c3c1c2dc033a6e19583042d7dd09a23",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 2560,
+          "expected_sha256": "abd4bed8c1f3554f2ac975b9010ca1885c3c1c2dc033a6e19583042d7dd09a23",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "674f57b9857f853ae1789f28606b46e55af7b1cdbe83827110bebccd3037385f",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 131072,
+          "expected_sha256": "674f57b9857f853ae1789f28606b46e55af7b1cdbe83827110bebccd3037385f",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "be1f5abe4a3b22ec86f3754c66af14a941120afddb68ad159326f70ee627e7f7",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "be1f5abe4a3b22ec86f3754c66af14a941120afddb68ad159326f70ee627e7f7",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 256,
+      "heads": 64,
+      "input_scale": 0.5,
+      "input_sha256": {
+        "indices": "587373e14c2a9e118ceae402baa09b33c0d3f8ed50b1a18cb73ddf64416e9631",
+        "kv": "caad1a6fc52b59d092229ea760b5aaa74ecf4f1316dcacd2ed0490a8a32e71dd",
+        "q": "7d9a42a0b1e50522bfbe43fe811ad95d9b7e8b581e0a6b4b7e16786417455de3",
+        "sink": "f716dd68b784e01dd0f200a2e63dbdc3600cda432057a60c51a0061382233577"
+      },
+      "mode": "masked",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 65
+    },
+    {
+      "batch": 1,
+      "case": 4,
+      "checks": [
+        {
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "a8a633554471dcbb5786c2707791c9369cde21d68ff85a46b97c6526cf8e0524",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "a8a633554471dcbb5786c2707791c9369cde21d68ff85a46b97c6526cf8e0524",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "42b9b4f98dee0c47b19c7d498e2dfe001763d5a1eae4110c0fef0198fba8f3b2",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 1280,
+          "expected_sha256": "42b9b4f98dee0c47b19c7d498e2dfe001763d5a1eae4110c0fef0198fba8f3b2",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 256,
+      "heads": 64,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "5f4ecdb7b71c3e403983fe405cddcdc2f2576b655fdb3e80d94a6f7c32e58bc2",
+        "kv": "e6ef1b17118f667b324473fd775836ca5a06bcc10f4a23c27f20dd27713b492f",
+        "q": "499cfae9faec593da0df34ce4a00b42d3c425f83a8b136ec09d06221c77691fa",
+        "sink": "18b4d615b2ae6fb67bd1194ff9663ad3ef0b37f9c4aab74eb08f93667e9d503f"
+      },
+      "mode": "empty",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 128
+    },
+    {
+      "batch": 1,
+      "case": 5,
+      "checks": [
+        {
+          "actual_sha256": "824f4188cb88258910281258a9bf615db2394a82cac7b06fa368c734f83e25e5",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "824f4188cb88258910281258a9bf615db2394a82cac7b06fa368c734f83e25e5",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "824f4188cb88258910281258a9bf615db2394a82cac7b06fa368c734f83e25e5",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "824f4188cb88258910281258a9bf615db2394a82cac7b06fa368c734f83e25e5",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8a90e8bdc2891310550344c98c3525163c8b1f30162e0b55456def53def0d4a8",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "8a90e8bdc2891310550344c98c3525163c8b1f30162e0b55456def53def0d4a8",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            4,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "559b925928cde378ac7c63e9feeaa4b51572364073361842eb60a4e5d91d72ec",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "559b925928cde378ac7c63e9feeaa4b51572364073361842eb60a4e5d91d72ec",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            4,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "0ed06727e856cdea1b6bd10995ed8f0b73bd76aee4ce726948d1dd1f2e509cec",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 2560,
+          "expected_sha256": "0ed06727e856cdea1b6bd10995ed8f0b73bd76aee4ce726948d1dd1f2e509cec",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            4,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "83e844911fffef402b446525ba79bfbc6698b0ff967eedd7dbbf95c18651df39",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 131072,
+          "expected_sha256": "83e844911fffef402b446525ba79bfbc6698b0ff967eedd7dbbf95c18651df39",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            4,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "d2959b39e7e426f42b430d12276755629f8ed7806c04288ebf90927402a0a1cb",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "d2959b39e7e426f42b430d12276755629f8ed7806c04288ebf90927402a0a1cb",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 256,
+      "heads": 64,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "6a3d5325c6665df17a36089f7b436a90d45c1408a9e34e2a8c6882b23351a08d",
+        "kv": "44eb53b1590353e1fe79b47dd573743ccc9008437e66fc192d00049320d29f89",
+        "q": "fd107911a6fea7893db40602a24a4e06559bdf05481f99bf2d6f4a60489fd3a6",
+        "sink": "81437daddf8655d5eb236dc37fcab293746d993cbcde683b682898580751a7f4"
+      },
+      "mode": "duplicates",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 193
+    },
+    {
+      "batch": 1,
+      "case": 6,
+      "checks": [
+        {
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "46ac448298521650c9dfcc1d8dad9f941244e7bb071dc84c6841750d864015a9",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "46ac448298521650c9dfcc1d8dad9f941244e7bb071dc84c6841750d864015a9",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "e26d192442cc59a256c39b950dc3391ee9657d2520ccb05d5ba02035dbffbda1",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 640,
+          "expected_sha256": "e26d192442cc59a256c39b950dc3391ee9657d2520ccb05d5ba02035dbffbda1",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 256,
+      "heads": 64,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "0f54fbe7ca10206fe5ea66382bc27dbe88042578351fb4334602d1c362569bf0",
+        "kv": "7bfa89ee41f18871269c5b9b6970fc8411661211c4f11631ef51eab4afd8f839",
+        "q": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+        "sink": "e86768247140a3c226c5650d2f587054948613d5216d61b83050fbca2446d400"
+      },
+      "mode": "zeros",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 128
+    },
+    {
+      "batch": 1,
+      "case": 7,
+      "checks": [
+        {
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "110e0985f9ada109351a384aaa3a01899d1f71fb3cfcf49e7a88920eb7a9968b",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "110e0985f9ada109351a384aaa3a01899d1f71fb3cfcf49e7a88920eb7a9968b",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "559d7ebc47e6d3ae0a32be9f3ccd05814029290f95960fabd451eabcbc23c980",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "559d7ebc47e6d3ae0a32be9f3ccd05814029290f95960fabd451eabcbc23c980",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "221e3cf6c8dc68d0100346173a37b397ff2b588aec0414461d84c4f69ebb3fb8",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 1280,
+          "expected_sha256": "221e3cf6c8dc68d0100346173a37b397ff2b588aec0414461d84c4f69ebb3fb8",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 256,
+      "heads": 64,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "b4a865029785c14f56211e82b92309b79b370379c3afe68d54006828f1462eff",
+        "kv": "45ed38c5221ec26aeaa7ad817a058f4f30c51145a3556d70c12cde5c99c9b097",
+        "q": "05bc9ce65f21ac5f7143ffe72f51a14b418775644a461398a715e22e957b3dff",
+        "sink": "f388a012a817b4f7062620c4a5a49a55693c619baec52087c0cb842141eac4bf"
+      },
+      "mode": "signed_zeros",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 65
+    },
+    {
+      "batch": 1,
+      "case": 8,
+      "checks": [
+        {
+          "actual_sha256": "ff73de2f20ce7bf0f6aff48eff7c98fc71891bb990033e7e11cb114f42d3edb6",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "ff73de2f20ce7bf0f6aff48eff7c98fc71891bb990033e7e11cb114f42d3edb6",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "ff73de2f20ce7bf0f6aff48eff7c98fc71891bb990033e7e11cb114f42d3edb6",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "ff73de2f20ce7bf0f6aff48eff7c98fc71891bb990033e7e11cb114f42d3edb6",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "3298370f5e17b5681f2a56c45287f65bef168b258e2badc0ba4e76f610d1002c",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "3298370f5e17b5681f2a56c45287f65bef168b258e2badc0ba4e76f610d1002c",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8866b714422521b7e63b2badd02f3b67a70897d9f9cc2ea2fc26751427d3cad2",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "8866b714422521b7e63b2badd02f3b67a70897d9f9cc2ea2fc26751427d3cad2",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "4c400254d95d29d7e865b0f59385ac924e5d6a0426244a6c7bc92e635374bf64",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 640,
+          "expected_sha256": "4c400254d95d29d7e865b0f59385ac924e5d6a0426244a6c7bc92e635374bf64",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "6a619c5b8b9b7ada2df566028fcf7ec752bc94cd68034fbe68be1dcab25ec0fe",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "6a619c5b8b9b7ada2df566028fcf7ec752bc94cd68034fbe68be1dcab25ec0fe",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "1b327adbbcf0f06cc756224eee86975a906365c0c3a0f1c49f1e95427a114184",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "1b327adbbcf0f06cc756224eee86975a906365c0c3a0f1c49f1e95427a114184",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 256,
+      "heads": 64,
+      "input_scale": 1e-06,
+      "input_sha256": {
+        "indices": "66297df60f3a5dd9c5ff583ee255c17a6c407ecfae4b7a46d9e2f168a88c1e26",
+        "kv": "33526b2068a6cb6b3fc8fcb95cb3ae42cd383368ecc2c2340102e36390e8c68b",
+        "q": "c5f0316b4914e053533bc5780ea5e55bbab06684c52d179f47133eefb9630483",
+        "sink": "23b481e811c860a73d1b9cc75f0f49ed982de15e9a09ad1c6e8fa49a9befdbbe"
+      },
+      "mode": "normal",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 127
+    },
+    {
+      "batch": 1,
+      "case": 9,
+      "checks": [
+        {
+          "actual_sha256": "a2c08c06829e47e99274f88377b06d592ceae70d812ec2998bfdb663ed486a07",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "a2c08c06829e47e99274f88377b06d592ceae70d812ec2998bfdb663ed486a07",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "a2c08c06829e47e99274f88377b06d592ceae70d812ec2998bfdb663ed486a07",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "a2c08c06829e47e99274f88377b06d592ceae70d812ec2998bfdb663ed486a07",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "eb7cc1ba68de70bbbc55659bf69f11c838b9923721eb882e090ed3b070e16364",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "eb7cc1ba68de70bbbc55659bf69f11c838b9923721eb882e090ed3b070e16364",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "3513f7981d1ead42bde088485afbba413d675b83c061c6362634bcb044bf8613",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "3513f7981d1ead42bde088485afbba413d675b83c061c6362634bcb044bf8613",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "3db6986c5f9831d56f3f73602aafc25bcdd26f16625cb73f7808fca58e352d94",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 1280,
+          "expected_sha256": "3db6986c5f9831d56f3f73602aafc25bcdd26f16625cb73f7808fca58e352d94",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "55161db899b5fd492d543c0ff3ae486e4e1059c3cadbd9c98f65f31b11a23dc8",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "55161db899b5fd492d543c0ff3ae486e4e1059c3cadbd9c98f65f31b11a23dc8",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "c295ce2cff0e91fc2667353a1e2f7afb42b8910d04cbce5be68e9dd8f36566cb",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "c295ce2cff0e91fc2667353a1e2f7afb42b8910d04cbce5be68e9dd8f36566cb",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            256
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 256,
+      "heads": 64,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "d7f0941af16d394ce591ca99a1cb12b80f972cd83a89f4a80ff1ecfd2013ab80",
+        "kv": "426a37e7e9cde86983b1f524634adec2e30a12a737eeb109270aa898cbbbb54d",
+        "q": "a2c08c06829e47e99274f88377b06d592ceae70d812ec2998bfdb663ed486a07",
+        "sink": "5341e6b2646979a70e57653007a1f310169421ec9bdd9f1a5648f75ade005af1"
+      },
+      "mode": "ties",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 128
+    },
+    {
+      "batch": 1,
+      "case": 10,
+      "checks": [
+        {
+          "actual_sha256": "7ed433d2f9b345ba11ce1ba0a559d7d286eb6b9efde4c4ab73ab4d8770126685",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "7ed433d2f9b345ba11ce1ba0a559d7d286eb6b9efde4c4ab73ab4d8770126685",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "7ed433d2f9b345ba11ce1ba0a559d7d286eb6b9efde4c4ab73ab4d8770126685",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "7ed433d2f9b345ba11ce1ba0a559d7d286eb6b9efde4c4ab73ab4d8770126685",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "82dae3a1f916517a7bdb643441656ac28dae011e10b1b51d6dd8c18f89e4ea60",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 12288,
+          "expected_sha256": "82dae3a1f916517a7bdb643441656ac28dae011e10b1b51d6dd8c18f89e4ea60",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "9ff7049b12c9b6851b2d1a31b7dcce632c34caae82576424dd8f932c450b018e",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 12288,
+          "expected_sha256": "9ff7049b12c9b6851b2d1a31b7dcce632c34caae82576424dd8f932c450b018e",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "4bb81ad33d21df944344568af0c45894e1f392dddd97572779e2398c6b10b74a",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 960,
+          "expected_sha256": "4bb81ad33d21df944344568af0c45894e1f392dddd97572779e2398c6b10b74a",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fec5c531c8e3bc89e405728b7c9800b4d9721dee009a5af42774814e565d0030",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 49152,
+          "expected_sha256": "fec5c531c8e3bc89e405728b7c9800b4d9721dee009a5af42774814e565d0030",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "a63214e17afb1568b2d5f89f8b9f93a82a6bde5c59f58e861e33c5b3fab0e65c",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "a63214e17afb1568b2d5f89f8b9f93a82a6bde5c59f58e861e33c5b3fab0e65c",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 256,
+      "heads": 64,
+      "input_scale": 0.125,
+      "input_sha256": {
+        "indices": "caf35557fb06e9f856b8aa0ccac3642773ee00aba7c9601d5929649e9094fb82",
+        "kv": "178f802971524062e70307de811fc1a4aef6a7b796c0f888419220e1b9269364",
+        "q": "a70fb11e156369bd663bea45395768e5ff7229d6320627f884fbc5a009fe29b4",
+        "sink": "282bec2d67fdd884738fe4aed779d35d9212b33420e0e75efccc757bb3fc6835"
+      },
+      "mode": "sink_positive",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 129
+    },
+    {
+      "batch": 1,
+      "case": 11,
+      "checks": [
+        {
+          "actual_sha256": "2ad21407486b34b45c6fa2878cb6fb68f0f8213ef289d8e927595b72d2f4efbf",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "2ad21407486b34b45c6fa2878cb6fb68f0f8213ef289d8e927595b72d2f4efbf",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "2ad21407486b34b45c6fa2878cb6fb68f0f8213ef289d8e927595b72d2f4efbf",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "2ad21407486b34b45c6fa2878cb6fb68f0f8213ef289d8e927595b72d2f4efbf",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "82dae3a1f916517a7bdb643441656ac28dae011e10b1b51d6dd8c18f89e4ea60",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 12288,
+          "expected_sha256": "82dae3a1f916517a7bdb643441656ac28dae011e10b1b51d6dd8c18f89e4ea60",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "9ff7049b12c9b6851b2d1a31b7dcce632c34caae82576424dd8f932c450b018e",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 12288,
+          "expected_sha256": "9ff7049b12c9b6851b2d1a31b7dcce632c34caae82576424dd8f932c450b018e",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "4bb81ad33d21df944344568af0c45894e1f392dddd97572779e2398c6b10b74a",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 960,
+          "expected_sha256": "4bb81ad33d21df944344568af0c45894e1f392dddd97572779e2398c6b10b74a",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fec5c531c8e3bc89e405728b7c9800b4d9721dee009a5af42774814e565d0030",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 49152,
+          "expected_sha256": "fec5c531c8e3bc89e405728b7c9800b4d9721dee009a5af42774814e565d0030",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            64,
+            256
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "92b775cc4024527c4eff72371342b2f2cac5710d305b5291c24df32bd932c544",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "92b775cc4024527c4eff72371342b2f2cac5710d305b5291c24df32bd932c544",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            256
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 256,
+      "heads": 64,
+      "input_scale": 0.125,
+      "input_sha256": {
+        "indices": "caf35557fb06e9f856b8aa0ccac3642773ee00aba7c9601d5929649e9094fb82",
+        "kv": "178f802971524062e70307de811fc1a4aef6a7b796c0f888419220e1b9269364",
+        "q": "a70fb11e156369bd663bea45395768e5ff7229d6320627f884fbc5a009fe29b4",
+        "sink": "dd19c33a4c672d87940410177f37aebaa487ce6f73ed438b9a25fe47add9d429"
+      },
+      "mode": "sink_negative",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 129
+    },
+    {
+      "batch": 1,
+      "case": 0,
+      "checks": [
+        {
+          "actual_sha256": "39d3288ebaee2ee33ec1ddcce648c764efc8c715e65b63ad8031cb2b71d0787a",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 8192,
+          "expected_sha256": "39d3288ebaee2ee33ec1ddcce648c764efc8c715e65b63ad8031cb2b71d0787a",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "39d3288ebaee2ee33ec1ddcce648c764efc8c715e65b63ad8031cb2b71d0787a",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 8192,
+          "expected_sha256": "39d3288ebaee2ee33ec1ddcce648c764efc8c715e65b63ad8031cb2b71d0787a",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "2284d873a301125de4d1d8f7075ce66189d691f1636cf10db4fdf15a3b4c4549",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 1024,
+          "expected_sha256": "2284d873a301125de4d1d8f7075ce66189d691f1636cf10db4fdf15a3b4c4549",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            1,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "99a90c182e6edcc9b072b7aef9a15623877ae575ab9e6e3bf2a4289e67dea541",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 1024,
+          "expected_sha256": "99a90c182e6edcc9b072b7aef9a15623877ae575ab9e6e3bf2a4289e67dea541",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            1,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "83ba407c3851c984b29873ab3d68b7f00a0490b09dfcf310f65805bfcbdccbd3",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 80,
+          "expected_sha256": "83ba407c3851c984b29873ab3d68b7f00a0490b09dfcf310f65805bfcbdccbd3",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            1,
+            5,
+            16
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "1745efdbef1d52ccd1754228c7e92e0a44f745995e9fc2cb8da8d09fc7dd0fa4",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "1745efdbef1d52ccd1754228c7e92e0a44f745995e9fc2cb8da8d09fc7dd0fa4",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "52b03d48a86c10a40b841092127445d4ada640b1dbfd9b30015ea10a0b153b24",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "52b03d48a86c10a40b841092127445d4ada640b1dbfd9b30015ea10a0b153b24",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 16,
+      "input_scale": 0.125,
+      "input_sha256": {
+        "indices": "a5dcf5b8418dfafec16079148ec90cf81dfc6276c1cce220017c782ecb7d7aea",
+        "kv": "f6d8d51f3defe8ff4d0e5245f5d76b0bcec61119f812924934268d8959aad0b1",
+        "q": "85edd4ec9181f7fd47b4a29428b5f1db3db633fda7be77483bbcb215aba24895",
+        "sink": "064946a21c5de3b68574c2a30eaab9128e4e5f85cc3e760efd737dae78a97a74"
+      },
+      "mode": "normal",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 1
+    },
+    {
+      "batch": 1,
+      "case": 1,
+      "checks": [
+        {
+          "actual_sha256": "85bf9357e3fe900617c0b927d6b00f0768fbd51443bca2b4b91f1ff794766f59",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 24576,
+          "expected_sha256": "85bf9357e3fe900617c0b927d6b00f0768fbd51443bca2b4b91f1ff794766f59",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "85bf9357e3fe900617c0b927d6b00f0768fbd51443bca2b4b91f1ff794766f59",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 24576,
+          "expected_sha256": "85bf9357e3fe900617c0b927d6b00f0768fbd51443bca2b4b91f1ff794766f59",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "27f3bb3cda481b32f62c2c5e5ae670dd91cdc1a9b608f8efef56324a42eb04a8",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 3072,
+          "expected_sha256": "27f3bb3cda481b32f62c2c5e5ae670dd91cdc1a9b608f8efef56324a42eb04a8",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            1,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "1473c8c3ea2a1f3c21902476c807ce876b5585264bf50aa228ec786a52930508",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 3072,
+          "expected_sha256": "1473c8c3ea2a1f3c21902476c807ce876b5585264bf50aa228ec786a52930508",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            1,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "ba875b42942be8c212f3bc243e0065f1636fe55ad1c284863b093244e820373d",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 240,
+          "expected_sha256": "ba875b42942be8c212f3bc243e0065f1636fe55ad1c284863b093244e820373d",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            1,
+            5,
+            16
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "3469db544af74b282798a7b16cb9a5f9a38501fb51751e4dbb258845a2d46c7a",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 24576,
+          "expected_sha256": "3469db544af74b282798a7b16cb9a5f9a38501fb51751e4dbb258845a2d46c7a",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "e6d60d4fa930de164b5506a1ffddec5e09bdf4a48c2ea56ed27cf6bba568ae02",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 24576,
+          "expected_sha256": "e6d60d4fa930de164b5506a1ffddec5e09bdf4a48c2ea56ed27cf6bba568ae02",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            16,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 16,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "fce62be5cbaf5a0c9023449c0b278c9ebbb2aeeb063932c4fa239138ee7b1458",
+        "kv": "2e99ab5a6fa40951d6f678b7d67a414505959679aaa17ae9f55ca8c307756eaf",
+        "q": "ab27cc2adc1c39bef67c302c77164e0234b808ba71b26e21e3f807f864ff3c22",
+        "sink": "ed194387ef4eae5ee2ebdef256155181d6d84956b4ffdb028e4175d32f0d26bc"
+      },
+      "mode": "normal",
+      "sequence": 3,
+      "status": "pass",
+      "topk": 32
+    },
+    {
+      "batch": 1,
+      "case": 2,
+      "checks": [
+        {
+          "actual_sha256": "6ace028007ca826e909685ad63f62653586ed47dafcf3ef88011cb7c3fa72a82",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "6ace028007ca826e909685ad63f62653586ed47dafcf3ef88011cb7c3fa72a82",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "6ace028007ca826e909685ad63f62653586ed47dafcf3ef88011cb7c3fa72a82",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "6ace028007ca826e909685ad63f62653586ed47dafcf3ef88011cb7c3fa72a82",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "16bd327d54841634ebaa7fe2fc91a851424dc60fbadeb58e5d7f983fe908f874",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 2048,
+          "expected_sha256": "16bd327d54841634ebaa7fe2fc91a851424dc60fbadeb58e5d7f983fe908f874",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            1,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "2b12edfacc1a516eb47f7eaf97e645ed76d94960118ccf9d86c78c7605f4f2ac",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 2048,
+          "expected_sha256": "2b12edfacc1a516eb47f7eaf97e645ed76d94960118ccf9d86c78c7605f4f2ac",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            1,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "ec3e6e7c4caa2b001691c13f329c004f5369fb1ca18fc4a4a7130b5f2949eef5",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 160,
+          "expected_sha256": "ec3e6e7c4caa2b001691c13f329c004f5369fb1ca18fc4a4a7130b5f2949eef5",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            1,
+            5,
+            16
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "040f6eb149842a055373402763cc35623b804ee2d2d5872873d4df1e58f5460f",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "040f6eb149842a055373402763cc35623b804ee2d2d5872873d4df1e58f5460f",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "4e8d07a99ea7ac8a7298ab2dc80312af493a55346da2f2efdd2af78bfbbec3d6",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "4e8d07a99ea7ac8a7298ab2dc80312af493a55346da2f2efdd2af78bfbbec3d6",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 16,
+      "input_scale": 8.0,
+      "input_sha256": {
+        "indices": "080716b2052dfd70ba141d1b663b1674a7c895aca4b9bca33cd7d3bc65bedc72",
+        "kv": "074922b3235c8ecdc166016bb5e317aad489c2a2be9e91a87dd63255a19a8c9b",
+        "q": "f3048780a065133279b86749b13a72b992aa2ddf43e3a4cdd7e41fd5263ef59b",
+        "sink": "721ad3d45f179c8d6512e639ea923f6b2642f3b078a276ecaabab75cce02b524"
+      },
+      "mode": "masked",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 64
+    },
+    {
+      "batch": 2,
+      "case": 3,
+      "checks": [
+        {
+          "actual_sha256": "750f5daa9ce78f36afe761f0f31520928b97298a174dff2d70dcc203eaf84579",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "750f5daa9ce78f36afe761f0f31520928b97298a174dff2d70dcc203eaf84579",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "750f5daa9ce78f36afe761f0f31520928b97298a174dff2d70dcc203eaf84579",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "750f5daa9ce78f36afe761f0f31520928b97298a174dff2d70dcc203eaf84579",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "efcb5fc5ad2dbb3a52b5399b41e7b377b82a4c2959f34fab7060d71a40176fdc",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "efcb5fc5ad2dbb3a52b5399b41e7b377b82a4c2959f34fab7060d71a40176fdc",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "a87eb7eeb8f21e575b227c6535bb29427f7582fe8085d1ea6fe760ed61617e7b",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "a87eb7eeb8f21e575b227c6535bb29427f7582fe8085d1ea6fe760ed61617e7b",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "65ae1ebf3360160c408eefc25a3c5518d407743444cf2f79a96c87c82c5f0abc",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 640,
+          "expected_sha256": "65ae1ebf3360160c408eefc25a3c5518d407743444cf2f79a96c87c82c5f0abc",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            5,
+            16
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "beae8cd69a60c72bce7afc5d4df547a87d16d145875c7a536cd452c51622fbf2",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "beae8cd69a60c72bce7afc5d4df547a87d16d145875c7a536cd452c51622fbf2",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "67548c60af59ca71ee61bdebd89186462befaefdf92511022a06bb5cc08580c6",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "67548c60af59ca71ee61bdebd89186462befaefdf92511022a06bb5cc08580c6",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 16,
+      "input_scale": 0.5,
+      "input_sha256": {
+        "indices": "e7746c288335ab8e9bdb0e63d8abae1597154b46afbbf0052c393a904bd8bbad",
+        "kv": "8cf5f4a619825c9e4f45e58f79a819c8f9b89ec345be285d123c17ee55c69f4c",
+        "q": "534e2661641cc1e27d5d36f45a00032e03b64f1249fdbe44a1bdcbd6d909f127",
+        "sink": "639ef48c19adbe80260bc1a388a4ff5f6997fc33d23114a3019f06c3e3d4d106"
+      },
+      "mode": "masked",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 65
+    },
+    {
+      "batch": 1,
+      "case": 4,
+      "checks": [
+        {
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "b2e50d5d7f3e1936da75a863f0c00e2e5b665550b4b26b298052e843d2dbb640",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 4096,
+          "expected_sha256": "b2e50d5d7f3e1936da75a863f0c00e2e5b665550b4b26b298052e843d2dbb640",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 4096,
+          "expected_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "600e1fc16460093e071ecf6910cdaf0a062dbc9f12aed5db9cee3123189b5377",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 320,
+          "expected_sha256": "600e1fc16460093e071ecf6910cdaf0a062dbc9f12aed5db9cee3123189b5377",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            5,
+            16
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 16,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "5f4ecdb7b71c3e403983fe405cddcdc2f2576b655fdb3e80d94a6f7c32e58bc2",
+        "kv": "50838cb6983d1a2f134cec5de4d0542fa009abec8085986c58da87374e625966",
+        "q": "be0c42e1fad0be7b426fb1e9e925f73db971985f338f1bdb898ad4a5a172f160",
+        "sink": "9b18d9eb65e965f55d2ffaff90917ab5c29dd8566bc354e0da6a07e3eee7c04f"
+      },
+      "mode": "empty",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 128
+    },
+    {
+      "batch": 1,
+      "case": 5,
+      "checks": [
+        {
+          "actual_sha256": "bccdffcf4cfca374af5f4c18bd92b7db9f425c0294139cb3817acde2fe2c726f",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "bccdffcf4cfca374af5f4c18bd92b7db9f425c0294139cb3817acde2fe2c726f",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "bccdffcf4cfca374af5f4c18bd92b7db9f425c0294139cb3817acde2fe2c726f",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "bccdffcf4cfca374af5f4c18bd92b7db9f425c0294139cb3817acde2fe2c726f",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "7f5f88ad6fa9b4c994e12042c85849d309e01d9b51dbc383169d13b012fe3fde",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "7f5f88ad6fa9b4c994e12042c85849d309e01d9b51dbc383169d13b012fe3fde",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            4,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "08879af6fa26d73b6716feee604a0d5631fdf47968abf6972f160a029ba3ea8f",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "08879af6fa26d73b6716feee604a0d5631fdf47968abf6972f160a029ba3ea8f",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            4,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "afc7b5d794a189c9545f17a3c17043c65d1d46f59d2f9c32ccb5f3e5f9547ba3",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 640,
+          "expected_sha256": "afc7b5d794a189c9545f17a3c17043c65d1d46f59d2f9c32ccb5f3e5f9547ba3",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            4,
+            5,
+            16
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "740364753507935c3a47e1f167d459af56ba195e3d73023f14ae8f10882db089",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "740364753507935c3a47e1f167d459af56ba195e3d73023f14ae8f10882db089",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            4,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "44193bcdecf2ffb6c592589c4aea54a1e2cea157ab936c7a5517cb2c9ed6cc76",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "44193bcdecf2ffb6c592589c4aea54a1e2cea157ab936c7a5517cb2c9ed6cc76",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 16,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "42ceadb0a186894e2c94fed9f30a78b96ec989ec7d8dabbedd738db951fd28cc",
+        "kv": "22754925afe3d3f1dacbb5501df839aedfb6d0c4a39e867a3d548f2d154043a9",
+        "q": "876fee84cfd46c58a022c565e69beab53ca8b4faaa33bb1c3bfffd65f17442d9",
+        "sink": "770e4e07277e967d430bca02d99108d45ea6b2fafea020810d8bde46773cf137"
+      },
+      "mode": "duplicates",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 193
+    },
+    {
+      "batch": 1,
+      "case": 6,
+      "checks": [
+        {
+          "actual_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 8192,
+          "expected_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 8192,
+          "expected_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 2048,
+          "expected_sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fc3bd1e348ef843a5052596a42863c169d54cc3c352449596039497873862155",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 2048,
+          "expected_sha256": "fc3bd1e348ef843a5052596a42863c169d54cc3c352449596039497873862155",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "472678347bf4cfb7e14ccc96871601e30315ddb30915de024ac6f4248a48ba0b",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 160,
+          "expected_sha256": "472678347bf4cfb7e14ccc96871601e30315ddb30915de024ac6f4248a48ba0b",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            5,
+            16
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 16,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "efcb0f42b17c0f9d1eadee498d2c341389803424073c9d8804f4dc1a23aa1618",
+        "kv": "9b94b83334ada38b48b53f19ef2c45abc9f84fb723564671290a556f75d6fdc8",
+        "q": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+        "sink": "03457dd9ed05b897c60958feb2ba8488778feae02bcbf29ea145c9867d5ad27d"
+      },
+      "mode": "zeros",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 128
+    },
+    {
+      "batch": 1,
+      "case": 7,
+      "checks": [
+        {
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "c8c5198c2725eaba32af437a4b203733a7ab47a1cca3f0de1d78f2cd2a2ffc7b",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 4096,
+          "expected_sha256": "c8c5198c2725eaba32af437a4b203733a7ab47a1cca3f0de1d78f2cd2a2ffc7b",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "b2a68601d692832a39efd3c10c0d20553679ce1fb072ee19d949205bf11d10e6",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 4096,
+          "expected_sha256": "b2a68601d692832a39efd3c10c0d20553679ce1fb072ee19d949205bf11d10e6",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "0301b294b5dfdc5fc1cfae9b8863db71186519ca99255ee7b2129684a841f8aa",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 320,
+          "expected_sha256": "0301b294b5dfdc5fc1cfae9b8863db71186519ca99255ee7b2129684a841f8aa",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            5,
+            16
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 16,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "5c698dfd052b2840cf70d93b7a180cdca9d0e2da4dfec8c71c76738b6a45da46",
+        "kv": "19f9e46a431709a7d4b74de907596ea6a5ea63e6fca3cbae96bc11c2e41854fd",
+        "q": "a006db85d547330a276b53d1a61787bbb3dc46a70333aff8f072b91208b10ddd",
+        "sink": "a9e0f22d997940373e830a95eae7582a64e76c35d0f9779cb18fbed43a0e79b6"
+      },
+      "mode": "signed_zeros",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 65
+    },
+    {
+      "batch": 1,
+      "case": 8,
+      "checks": [
+        {
+          "actual_sha256": "7948b8518d35223800b3cf9f284c3e1a31336e48819335d2f8ab9ccbd66147bc",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 8192,
+          "expected_sha256": "7948b8518d35223800b3cf9f284c3e1a31336e48819335d2f8ab9ccbd66147bc",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "7948b8518d35223800b3cf9f284c3e1a31336e48819335d2f8ab9ccbd66147bc",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 8192,
+          "expected_sha256": "7948b8518d35223800b3cf9f284c3e1a31336e48819335d2f8ab9ccbd66147bc",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "be42b6bfb8e4f30cf96ea3988eb48fd3a38cc555b6ef48122d8d854f8b30ec96",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 2048,
+          "expected_sha256": "be42b6bfb8e4f30cf96ea3988eb48fd3a38cc555b6ef48122d8d854f8b30ec96",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "3e98ee4fa377e06f2d082b078c63bd7d79cdb24a1d932cc721a13c8eed3e093e",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 2048,
+          "expected_sha256": "3e98ee4fa377e06f2d082b078c63bd7d79cdb24a1d932cc721a13c8eed3e093e",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "228ca617790830f5de5b4791eb331cffc1fc3aec4ae78cb1e769ad6daf971ccc",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 160,
+          "expected_sha256": "228ca617790830f5de5b4791eb331cffc1fc3aec4ae78cb1e769ad6daf971ccc",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            5,
+            16
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "9e57e4282241ce0f76a0643b0410a4da470903786db7e1690d8ce962a5f02702",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "9e57e4282241ce0f76a0643b0410a4da470903786db7e1690d8ce962a5f02702",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "a1f37e97e527c5a1960d1e18a1ac7c6359feb21a1b55aca91908f28b9902b5c7",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "a1f37e97e527c5a1960d1e18a1ac7c6359feb21a1b55aca91908f28b9902b5c7",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 16,
+      "input_scale": 1e-06,
+      "input_sha256": {
+        "indices": "8ad061f0f2dd0d84cc9b290596a208dddbc36376f2c5710b6137bc841ce496f4",
+        "kv": "092ec84d932ca27aa8132214c1acc1405c6c6c6cb7e435edffa263b07e9e1d67",
+        "q": "026a3c839724e6a09af36d5ca113dd21fe4888e11a67110d83f24f9cc243cafd",
+        "sink": "8674b9ab21536231395f060cd0c1cb7bdb72ae4c279262abde0b8a70650c7f1d"
+      },
+      "mode": "normal",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 127
+    },
+    {
+      "batch": 1,
+      "case": 9,
+      "checks": [
+        {
+          "actual_sha256": "90acde5b4fd7d59391769e2d5207de8e14e7fe4b947d5cb3192741ddf6b39a29",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "90acde5b4fd7d59391769e2d5207de8e14e7fe4b947d5cb3192741ddf6b39a29",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "90acde5b4fd7d59391769e2d5207de8e14e7fe4b947d5cb3192741ddf6b39a29",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 16384,
+          "expected_sha256": "90acde5b4fd7d59391769e2d5207de8e14e7fe4b947d5cb3192741ddf6b39a29",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fb44a4675b91b34d9335d10de218b2bcad9d9973b8659421d997c65e5d6eb87c",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 4096,
+          "expected_sha256": "fb44a4675b91b34d9335d10de218b2bcad9d9973b8659421d997c65e5d6eb87c",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "3035aac5fb87474c303702f9030301b4e6bb7aee93be3710b8ab8dcea201db70",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 4096,
+          "expected_sha256": "3035aac5fb87474c303702f9030301b4e6bb7aee93be3710b8ab8dcea201db70",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "9ddddf4682afde2c511d32f8ca473cbbd2c186e208f948452f24afab7824d87f",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 320,
+          "expected_sha256": "9ddddf4682afde2c511d32f8ca473cbbd2c186e208f948452f24afab7824d87f",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            5,
+            16
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "1a99b0c56f711583b3df6328380dc406f2e8f9c17d539e4d7ed0a19f4ca63ee0",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "1a99b0c56f711583b3df6328380dc406f2e8f9c17d539e4d7ed0a19f4ca63ee0",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "b3de7bcc0cd9911ceca1e5248faa07f4ebb8a0a34e088ef5e6301797f7ca5be4",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "b3de7bcc0cd9911ceca1e5248faa07f4ebb8a0a34e088ef5e6301797f7ca5be4",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            16,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 16,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "ab4ec1d679446edf1336c311d9ac04af6c743f895bde06ccf42ae52b9b0f4545",
+        "kv": "1422a875fbcd734214c0e1cb361747b16a972412d9997c4b16205b31079f3844",
+        "q": "90acde5b4fd7d59391769e2d5207de8e14e7fe4b947d5cb3192741ddf6b39a29",
+        "sink": "f5a5fd42d16a20302798ef6ed309979b43003d2320d9f0e8ea9831a92759fb4b"
+      },
+      "mode": "ties",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 128
+    },
+    {
+      "batch": 1,
+      "case": 10,
+      "checks": [
+        {
+          "actual_sha256": "d2a6a5649cd67f8dd928e70d555b8469bb814c0c9eb9514ed74ac8c383024bf6",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 8192,
+          "expected_sha256": "d2a6a5649cd67f8dd928e70d555b8469bb814c0c9eb9514ed74ac8c383024bf6",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "d2a6a5649cd67f8dd928e70d555b8469bb814c0c9eb9514ed74ac8c383024bf6",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 8192,
+          "expected_sha256": "d2a6a5649cd67f8dd928e70d555b8469bb814c0c9eb9514ed74ac8c383024bf6",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "9d2676bae253b3a568cdedc5c448f995d8dc0ad72d014d15343d026f62612c02",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 3072,
+          "expected_sha256": "9d2676bae253b3a568cdedc5c448f995d8dc0ad72d014d15343d026f62612c02",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "b320b9ae61687c57e2596fe2c3fafb0f1003257556b3f04c6bfd6d06e1371eea",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 3072,
+          "expected_sha256": "b320b9ae61687c57e2596fe2c3fafb0f1003257556b3f04c6bfd6d06e1371eea",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fcdde730638f57a3c4839ee4c59f99233563afea4b75648ca4e2d9ad3ca6ed51",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 240,
+          "expected_sha256": "fcdde730638f57a3c4839ee4c59f99233563afea4b75648ca4e2d9ad3ca6ed51",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            5,
+            16
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "3f58616754c403a5ce2f752e3ff595fcb907039e6947286a94e122411484693d",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 24576,
+          "expected_sha256": "3f58616754c403a5ce2f752e3ff595fcb907039e6947286a94e122411484693d",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "a19507218aa39de9e77b6dc358fdf21b4783321e809882ef7a16004ab86415eb",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "a19507218aa39de9e77b6dc358fdf21b4783321e809882ef7a16004ab86415eb",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 16,
+      "input_scale": 0.125,
+      "input_sha256": {
+        "indices": "bd0425d3838bea173d772cc5dcd8f6991d19f424433dc10dafe85ff1dddea90c",
+        "kv": "bef69495e3798d1470d558a2ed673fee44737de98a118eb26292dd04352f0720",
+        "q": "ac93ce602f1995af2fe92922d988d190c7bea103f58837ab8252fe65fdbf9d5b",
+        "sink": "983909e4f3f0fd24c6d8528ffe2a6b704edac560b29866f81f78799c185b9071"
+      },
+      "mode": "sink_positive",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 129
+    },
+    {
+      "batch": 1,
+      "case": 11,
+      "checks": [
+        {
+          "actual_sha256": "2d0551e093c03f27a6ce9f6642b358640510fe96e7617e763cff5f65fb34367e",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 8192,
+          "expected_sha256": "2d0551e093c03f27a6ce9f6642b358640510fe96e7617e763cff5f65fb34367e",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "2d0551e093c03f27a6ce9f6642b358640510fe96e7617e763cff5f65fb34367e",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 8192,
+          "expected_sha256": "2d0551e093c03f27a6ce9f6642b358640510fe96e7617e763cff5f65fb34367e",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "9d2676bae253b3a568cdedc5c448f995d8dc0ad72d014d15343d026f62612c02",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 3072,
+          "expected_sha256": "9d2676bae253b3a568cdedc5c448f995d8dc0ad72d014d15343d026f62612c02",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "b320b9ae61687c57e2596fe2c3fafb0f1003257556b3f04c6bfd6d06e1371eea",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 3072,
+          "expected_sha256": "b320b9ae61687c57e2596fe2c3fafb0f1003257556b3f04c6bfd6d06e1371eea",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            16,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fcdde730638f57a3c4839ee4c59f99233563afea4b75648ca4e2d9ad3ca6ed51",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 240,
+          "expected_sha256": "fcdde730638f57a3c4839ee4c59f99233563afea4b75648ca4e2d9ad3ca6ed51",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            5,
+            16
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "3f58616754c403a5ce2f752e3ff595fcb907039e6947286a94e122411484693d",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 24576,
+          "expected_sha256": "3f58616754c403a5ce2f752e3ff595fcb907039e6947286a94e122411484693d",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            16,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "cd7ee3df045904f7612bdfb9e16c36397ef0f29ad7ae15f7abfc5f60d06624ed",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "cd7ee3df045904f7612bdfb9e16c36397ef0f29ad7ae15f7abfc5f60d06624ed",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            16,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 16,
+      "input_scale": 0.125,
+      "input_sha256": {
+        "indices": "bd0425d3838bea173d772cc5dcd8f6991d19f424433dc10dafe85ff1dddea90c",
+        "kv": "bef69495e3798d1470d558a2ed673fee44737de98a118eb26292dd04352f0720",
+        "q": "ac93ce602f1995af2fe92922d988d190c7bea103f58837ab8252fe65fdbf9d5b",
+        "sink": "bb29c747c76f744845f7610414586efb13fa7f5f8fb30a0eb26af7c86a5777f9"
+      },
+      "mode": "sink_negative",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 129
+    },
+    {
+      "batch": 1,
+      "case": 0,
+      "checks": [
+        {
+          "actual_sha256": "e66b47e1afc8ad1d79b81b041a73a8f71cb29ce1cf314678b3f56b55927079c5",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "e66b47e1afc8ad1d79b81b041a73a8f71cb29ce1cf314678b3f56b55927079c5",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "e66b47e1afc8ad1d79b81b041a73a8f71cb29ce1cf314678b3f56b55927079c5",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "e66b47e1afc8ad1d79b81b041a73a8f71cb29ce1cf314678b3f56b55927079c5",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "98a56aa2eb1c6554e0c6c9143db7ec13e5e3f4a811225601c1bdfefa4fa2b9a6",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 4096,
+          "expected_sha256": "98a56aa2eb1c6554e0c6c9143db7ec13e5e3f4a811225601c1bdfefa4fa2b9a6",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            1,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "e0da17f6fce449e97d13f760345e8135bc559168def1a88e9c9b534898a93d6a",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 4096,
+          "expected_sha256": "e0da17f6fce449e97d13f760345e8135bc559168def1a88e9c9b534898a93d6a",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            1,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "a6e9cdbbfe7a45504486724a7ce876369208b44833df1f6a7c4f9a7c415c266d",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 320,
+          "expected_sha256": "a6e9cdbbfe7a45504486724a7ce876369208b44833df1f6a7c4f9a7c415c266d",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            1,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "c2f8f9a3ca7ea1f2026326e3429e3bb52659d78cd4ab2cc1c06182b42a5db44e",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "c2f8f9a3ca7ea1f2026326e3429e3bb52659d78cd4ab2cc1c06182b42a5db44e",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8bc28a87926c052e4217088d0d210c3709b2d1c9a1334df3910f819b1d12a2d1",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "8bc28a87926c052e4217088d0d210c3709b2d1c9a1334df3910f819b1d12a2d1",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 64,
+      "input_scale": 0.125,
+      "input_sha256": {
+        "indices": "a2d398922901344d08180dc41d3e9d73d8c148c7f6e092835bbb28e02dbcf184",
+        "kv": "b66b01d5a67707c5aad54ec77e5c99c9dbabb068273500e0418a6cddb162ddf8",
+        "q": "f26e0544614e1b4172a113e7c34e2bb20f1f11acdc31ff175173d8431f29bad4",
+        "sink": "fbc786e2c829b42186286826a0f96c196f9384a10791fe55dc7da3ae32d36ffd"
+      },
+      "mode": "normal",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 1
+    },
+    {
+      "batch": 1,
+      "case": 1,
+      "checks": [
+        {
+          "actual_sha256": "8e12bd21921bd0fca8c912552f32f0193a48b0c2bfb75990a49b67c588d1c5cc",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 98304,
+          "expected_sha256": "8e12bd21921bd0fca8c912552f32f0193a48b0c2bfb75990a49b67c588d1c5cc",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8e12bd21921bd0fca8c912552f32f0193a48b0c2bfb75990a49b67c588d1c5cc",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 98304,
+          "expected_sha256": "8e12bd21921bd0fca8c912552f32f0193a48b0c2bfb75990a49b67c588d1c5cc",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "f25535505a29b173075db580a4fe5b1304833af232be4e520b4cbd1f75a92fab",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 12288,
+          "expected_sha256": "f25535505a29b173075db580a4fe5b1304833af232be4e520b4cbd1f75a92fab",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            1,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "4498b6518cd55402864599b2dd3dcb2f8b26768a8cb02416ac57fd180c26b9a1",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 12288,
+          "expected_sha256": "4498b6518cd55402864599b2dd3dcb2f8b26768a8cb02416ac57fd180c26b9a1",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            1,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "ce39b81cf7cb0f8c96cc64a1d47a676d95710facf8aba908c966d93e7885a817",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 960,
+          "expected_sha256": "ce39b81cf7cb0f8c96cc64a1d47a676d95710facf8aba908c966d93e7885a817",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            1,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "9a18f43e77087139a03da0eb30736c81b05a8f47080888f5c462303c10f4cf08",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 98304,
+          "expected_sha256": "9a18f43e77087139a03da0eb30736c81b05a8f47080888f5c462303c10f4cf08",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "7e9a5c6e4bf996ec7d64783dde7b2117e5517719ee07c1040545e2ba22caaca1",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 98304,
+          "expected_sha256": "7e9a5c6e4bf996ec7d64783dde7b2117e5517719ee07c1040545e2ba22caaca1",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            3,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 64,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "2ad9211a243e28c1a81f63951a387e4acb68c097ab3f04f84017c0ce66d77064",
+        "kv": "2a2f22abc7545510670aa4f6a95514da42c27399b01a6fce8132f93e38662558",
+        "q": "0d2f4e8ab4c0923e1e6b627319e768991b13dd3d677d526487d41e306fae2073",
+        "sink": "6c1716cd271345371135e37d504c185075dee042a454c6c4a4713e7e7b78bb5b"
+      },
+      "mode": "normal",
+      "sequence": 3,
+      "status": "pass",
+      "topk": 32
+    },
+    {
+      "batch": 1,
+      "case": 2,
+      "checks": [
+        {
+          "actual_sha256": "66f2e75c648c807396f6fe145e1f1484e5fdbbbe40f7a6dad67a4ebe90211d04",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 65536,
+          "expected_sha256": "66f2e75c648c807396f6fe145e1f1484e5fdbbbe40f7a6dad67a4ebe90211d04",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "66f2e75c648c807396f6fe145e1f1484e5fdbbbe40f7a6dad67a4ebe90211d04",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 65536,
+          "expected_sha256": "66f2e75c648c807396f6fe145e1f1484e5fdbbbe40f7a6dad67a4ebe90211d04",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "d5beaa81e5f87a94ee277258e1f95aedfca2822761cf31875d77bc13125c1606",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "d5beaa81e5f87a94ee277258e1f95aedfca2822761cf31875d77bc13125c1606",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            1,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "3c4c3410562c50836799cd3225d37a57beb76f96d8fd306a8f22e63c34144b16",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "3c4c3410562c50836799cd3225d37a57beb76f96d8fd306a8f22e63c34144b16",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            1,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "ae66fb1b2d66fcf9c0ee13a650d792a70e3c16693673051981ef45c4924ae36d",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 640,
+          "expected_sha256": "ae66fb1b2d66fcf9c0ee13a650d792a70e3c16693673051981ef45c4924ae36d",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            1,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "7ad94b4d75d93ca6a0e85a9d292080b34a7699a99f03350daca5c841c73ac933",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "7ad94b4d75d93ca6a0e85a9d292080b34a7699a99f03350daca5c841c73ac933",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "0f98936fa5a5b373fde8b55b86ae181257c18f2c0f090b122fcb2389324da9dd",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "0f98936fa5a5b373fde8b55b86ae181257c18f2c0f090b122fcb2389324da9dd",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 64,
+      "input_scale": 8.0,
+      "input_sha256": {
+        "indices": "e015bfdd91645ec86c502e5656a4689a305df416c233335e0f2e1b276413814d",
+        "kv": "cebd80bf42b8583962475634bf4e49a61af1fe9a6d2c9ab2f7320b9b597f90db",
+        "q": "d626c6f5ba475468099ba6bfa6181de2ed800ecb3432cdfad190d836d3ac7a39",
+        "sink": "80d1582ee0f9194203e8dc8974652fbdbc17ef3afcd83b7e1bd773d49212a34f"
+      },
+      "mode": "masked",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 64
+    },
+    {
+      "batch": 2,
+      "case": 3,
+      "checks": [
+        {
+          "actual_sha256": "203080af0cdc56b7f0ed5cc68d955e919ff28736d45aeeac13709f0916fe4e9d",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 131072,
+          "expected_sha256": "203080af0cdc56b7f0ed5cc68d955e919ff28736d45aeeac13709f0916fe4e9d",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "203080af0cdc56b7f0ed5cc68d955e919ff28736d45aeeac13709f0916fe4e9d",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 131072,
+          "expected_sha256": "203080af0cdc56b7f0ed5cc68d955e919ff28736d45aeeac13709f0916fe4e9d",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "aee08b9810938801d3db74e42ed6fbb3df24fa3b3eedf06f195266d9558d40a5",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "aee08b9810938801d3db74e42ed6fbb3df24fa3b3eedf06f195266d9558d40a5",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "bd783546fe0d52f8bafe0e8ac672f086976e7e76782e7b75f42731006ca6f6a1",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "bd783546fe0d52f8bafe0e8ac672f086976e7e76782e7b75f42731006ca6f6a1",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "5d26c39c1acf29b9e6bd2bac2dc605ab6d30f42f70ff437f68e28b36c707c1e4",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 2560,
+          "expected_sha256": "5d26c39c1acf29b9e6bd2bac2dc605ab6d30f42f70ff437f68e28b36c707c1e4",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "ee57305ebb217fdbb8804f3a5c37c143e34aca0f4e584ae560f9e632d83ef182",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 262144,
+          "expected_sha256": "ee57305ebb217fdbb8804f3a5c37c143e34aca0f4e584ae560f9e632d83ef182",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "f4a929147b55a6b590cee09a07867074975783958b243758444f00ba82df1059",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 131072,
+          "expected_sha256": "f4a929147b55a6b590cee09a07867074975783958b243758444f00ba82df1059",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 64,
+      "input_scale": 0.5,
+      "input_sha256": {
+        "indices": "be0ac57ce55fff62e1085a01a5c28990005990c0f3715193d0b90aa4b0b2afba",
+        "kv": "7de6b5e00e8973eb36b472c2ffe42ac20334ee7bb7dfa83c28204b86c7db8508",
+        "q": "d570974a61c65bdf599f001f2fe6e13eb8894ec353dc69fad4fb9abda68415c2",
+        "sink": "f8a054e9268646beacc14a1cd1ddaa7ea187d56fbee6948864945123ac3c656f"
+      },
+      "mode": "masked",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 65
+    },
+    {
+      "batch": 1,
+      "case": 4,
+      "checks": [
+        {
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 65536,
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 65536,
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "a8a633554471dcbb5786c2707791c9369cde21d68ff85a46b97c6526cf8e0524",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "a8a633554471dcbb5786c2707791c9369cde21d68ff85a46b97c6526cf8e0524",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "42b9b4f98dee0c47b19c7d498e2dfe001763d5a1eae4110c0fef0198fba8f3b2",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 1280,
+          "expected_sha256": "42b9b4f98dee0c47b19c7d498e2dfe001763d5a1eae4110c0fef0198fba8f3b2",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 131072,
+          "expected_sha256": "07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 64,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "5f4ecdb7b71c3e403983fe405cddcdc2f2576b655fdb3e80d94a6f7c32e58bc2",
+        "kv": "ef6a7a713f308aa55f63936d7824a63b13eeedb3976bbef9a00d7767e789d3fa",
+        "q": "cac855759f8350d74885e9866b1010438856e64936802d1cc73176181aa07849",
+        "sink": "ef42ae9cb638fd204dc1989a1c8d6061940d1088de53884d76224516b7fa61fe"
+      },
+      "mode": "empty",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 128
+    },
+    {
+      "batch": 1,
+      "case": 5,
+      "checks": [
+        {
+          "actual_sha256": "1ec3e9ab889b0d13a4e4d91b0abbe92f28ad8c715c474a8e9bffb205ff57c7da",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 65536,
+          "expected_sha256": "1ec3e9ab889b0d13a4e4d91b0abbe92f28ad8c715c474a8e9bffb205ff57c7da",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "1ec3e9ab889b0d13a4e4d91b0abbe92f28ad8c715c474a8e9bffb205ff57c7da",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 65536,
+          "expected_sha256": "1ec3e9ab889b0d13a4e4d91b0abbe92f28ad8c715c474a8e9bffb205ff57c7da",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "e68c29c74636ed03d8140992268d325c39b399de02e5885091b613dc88aa2dce",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "e68c29c74636ed03d8140992268d325c39b399de02e5885091b613dc88aa2dce",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            4,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "564f76f11841fc2d55b8a8c483adec2a218a288930d09e5747d820aefc61ca22",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "564f76f11841fc2d55b8a8c483adec2a218a288930d09e5747d820aefc61ca22",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            4,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "aeac209435e23e0d0331d850358130a36d97de3f9aa834a13d97e44c2cd4abc9",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 2560,
+          "expected_sha256": "aeac209435e23e0d0331d850358130a36d97de3f9aa834a13d97e44c2cd4abc9",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            4,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "7daadd5a1bae480672c11a72bcd9d26399ec83c18b062e378b278b7afb813c6f",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 262144,
+          "expected_sha256": "7daadd5a1bae480672c11a72bcd9d26399ec83c18b062e378b278b7afb813c6f",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            4,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "4fe5643d3ea13030e190723bec935976cb51b15dd66c967c8ce84b46569d80bc",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "4fe5643d3ea13030e190723bec935976cb51b15dd66c967c8ce84b46569d80bc",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 64,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "fecc31f5d1b7b66f970af0809697c6d504f73fc9b9b1eb49b96c067e8bdb1cbc",
+        "kv": "08b07e3e9d6e1114a180142fd5ce69ffa6dabaf472b755ff7dfd0812d0e56e94",
+        "q": "5133bec0759d71abd1676e2ade16af3ae3036416db93f34a183c519bd76ddd87",
+        "sink": "ecbd5c3842d8c58dc701b135396f162761ecdc696ce17bcbd7315eea9f909244"
+      },
+      "mode": "duplicates",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 193
+    },
+    {
+      "batch": 1,
+      "case": 6,
+      "checks": [
+        {
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "46ac448298521650c9dfcc1d8dad9f941244e7bb071dc84c6841750d864015a9",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "46ac448298521650c9dfcc1d8dad9f941244e7bb071dc84c6841750d864015a9",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "e26d192442cc59a256c39b950dc3391ee9657d2520ccb05d5ba02035dbffbda1",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 640,
+          "expected_sha256": "e26d192442cc59a256c39b950dc3391ee9657d2520ccb05d5ba02035dbffbda1",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 64,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "7abcfb037cf5e79833f5e065c2d4c794ca8d222de848b2550e7dc74161a305c7",
+        "kv": "9b94b83334ada38b48b53f19ef2c45abc9f84fb723564671290a556f75d6fdc8",
+        "q": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+        "sink": "803e121b767f734e5253bf630b0440952c40912029c139ad951dd4bfbaa4ab4a"
+      },
+      "mode": "zeros",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 128
+    },
+    {
+      "batch": 1,
+      "case": 7,
+      "checks": [
+        {
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 65536,
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 65536,
+          "expected_sha256": "fa43239bcee7b97ca62f007cc68487560a39e19f74f3dde7486db3f98df8e471",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "110e0985f9ada109351a384aaa3a01899d1f71fb3cfcf49e7a88920eb7a9968b",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "110e0985f9ada109351a384aaa3a01899d1f71fb3cfcf49e7a88920eb7a9968b",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "559d7ebc47e6d3ae0a32be9f3ccd05814029290f95960fabd451eabcbc23c980",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "559d7ebc47e6d3ae0a32be9f3ccd05814029290f95960fabd451eabcbc23c980",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "221e3cf6c8dc68d0100346173a37b397ff2b588aec0414461d84c4f69ebb3fb8",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 1280,
+          "expected_sha256": "221e3cf6c8dc68d0100346173a37b397ff2b588aec0414461d84c4f69ebb3fb8",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 131072,
+          "expected_sha256": "07854d2fef297a06ba81685e660c332de36d5d18d546927d30daad6d7fda1541",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "8a39d2abd3999ab73c34db2476849cddf303ce389b35826850f9a700589b4a90",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 64,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "87e178a3d13450ddc5dabcd5025ee3dbc5755963a1f37f11c16a7dbc90cbff95",
+        "kv": "19f9e46a431709a7d4b74de907596ea6a5ea63e6fca3cbae96bc11c2e41854fd",
+        "q": "7238109db3ad4ae642f53161e4c286a377cbb4c4378334ceeffb60e6ff51ed5b",
+        "sink": "ea56ab45863d4cde64147df7a7ce8b27e7a4ec3bc18ec2ea8a9fccca2971cca1"
+      },
+      "mode": "signed_zeros",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 65
+    },
+    {
+      "batch": 1,
+      "case": 8,
+      "checks": [
+        {
+          "actual_sha256": "ba8e6f1dec1c822290d7411cc3c6d81132dd5cb2a3d27fe0c82fe7fb79935549",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "ba8e6f1dec1c822290d7411cc3c6d81132dd5cb2a3d27fe0c82fe7fb79935549",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "ba8e6f1dec1c822290d7411cc3c6d81132dd5cb2a3d27fe0c82fe7fb79935549",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "ba8e6f1dec1c822290d7411cc3c6d81132dd5cb2a3d27fe0c82fe7fb79935549",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "90d1215fcf8e207afe7b481dcd65e5c75059de81aec03d646142ea725eb40e35",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "90d1215fcf8e207afe7b481dcd65e5c75059de81aec03d646142ea725eb40e35",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8866b714422521b7e63b2badd02f3b67a70897d9f9cc2ea2fc26751427d3cad2",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 8192,
+          "expected_sha256": "8866b714422521b7e63b2badd02f3b67a70897d9f9cc2ea2fc26751427d3cad2",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "b5e223a74ce57ffb475ac3d22dccf1c18b1afd69356ab8ccc13b04c5463e2ce6",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 640,
+          "expected_sha256": "b5e223a74ce57ffb475ac3d22dccf1c18b1afd69356ab8ccc13b04c5463e2ce6",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "ec8acc9c0f5e4fb18106cbbc2f744556739ec475fa4bd36d6499ce6583a32e00",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "ec8acc9c0f5e4fb18106cbbc2f744556739ec475fa4bd36d6499ce6583a32e00",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "349498e716cb3c9863c2b6d04e81aba923a60d53028a9c7441cf5336dcd800ca",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "349498e716cb3c9863c2b6d04e81aba923a60d53028a9c7441cf5336dcd800ca",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 64,
+      "input_scale": 1e-06,
+      "input_sha256": {
+        "indices": "1ea04b389d32d9f046a02abcf1a3f78b8f0283db903200bf5b2d1b3d7ca197ec",
+        "kv": "094c117fc1033ea4866cdac76664c9bc095a66b654420c13bc0b9c2872b430ce",
+        "q": "ea578bc167c3f479bfc3d38068cb3f26eccebe2fcdafcbe72d6ae2b968138c13",
+        "sink": "a7fcdb48008071bbd07d822c99e8a011a0dfc3e288231cd56b96b0ce357225bf"
+      },
+      "mode": "normal",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 127
+    },
+    {
+      "batch": 1,
+      "case": 9,
+      "checks": [
+        {
+          "actual_sha256": "67e1855aed2aa0669f09fe7256b1d7cbfce6f118d8f80486bd280f460e39d0ac",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 65536,
+          "expected_sha256": "67e1855aed2aa0669f09fe7256b1d7cbfce6f118d8f80486bd280f460e39d0ac",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "67e1855aed2aa0669f09fe7256b1d7cbfce6f118d8f80486bd280f460e39d0ac",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 65536,
+          "expected_sha256": "67e1855aed2aa0669f09fe7256b1d7cbfce6f118d8f80486bd280f460e39d0ac",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "f92674f9804a1e9021e9c2991f49f135aca419fc77f84d27e353998510487009",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "f92674f9804a1e9021e9c2991f49f135aca419fc77f84d27e353998510487009",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "3513f7981d1ead42bde088485afbba413d675b83c061c6362634bcb044bf8613",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 16384,
+          "expected_sha256": "3513f7981d1ead42bde088485afbba413d675b83c061c6362634bcb044bf8613",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "bbb854142e10a24c9ae810ccbd5d1316260147a9a269bb9240440a76256ad936",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 1280,
+          "expected_sha256": "bbb854142e10a24c9ae810ccbd5d1316260147a9a269bb9240440a76256ad936",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "9f4d68261069758b0f5e16ee29d3daaf7cfd2e6253a12d44a3fe33b5ef30a59b",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 131072,
+          "expected_sha256": "9f4d68261069758b0f5e16ee29d3daaf7cfd2e6253a12d44a3fe33b5ef30a59b",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "672440c3ba84143a82db45b39b0ec2b4204ca25852827bfba155c539265744b5",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 65536,
+          "expected_sha256": "672440c3ba84143a82db45b39b0ec2b4204ca25852827bfba155c539265744b5",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 64,
+      "input_scale": 1.0,
+      "input_sha256": {
+        "indices": "d5043cb39e3d375752aa3b0a64f77a6612014b1093e912da90d81f8b68f59ed8",
+        "kv": "1422a875fbcd734214c0e1cb361747b16a972412d9997c4b16205b31079f3844",
+        "q": "67e1855aed2aa0669f09fe7256b1d7cbfce6f118d8f80486bd280f460e39d0ac",
+        "sink": "5341e6b2646979a70e57653007a1f310169421ec9bdd9f1a5648f75ade005af1"
+      },
+      "mode": "ties",
+      "sequence": 2,
+      "status": "pass",
+      "topk": 128
+    },
+    {
+      "batch": 1,
+      "case": 10,
+      "checks": [
+        {
+          "actual_sha256": "664980ff7b0afc4cd45364b7047a49eae23b121dd74bac221141dcf0f75a5d21",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "664980ff7b0afc4cd45364b7047a49eae23b121dd74bac221141dcf0f75a5d21",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "664980ff7b0afc4cd45364b7047a49eae23b121dd74bac221141dcf0f75a5d21",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "664980ff7b0afc4cd45364b7047a49eae23b121dd74bac221141dcf0f75a5d21",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8c1e147444a8494070ebffc8c71d55bca50dd07ec0a2eb5554f7dd0ff0686ea7",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 12288,
+          "expected_sha256": "8c1e147444a8494070ebffc8c71d55bca50dd07ec0a2eb5554f7dd0ff0686ea7",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "9e80a37b542f3711819f0613d80b577f2ec01bbf6b8d079a61db467b34ecc129",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 12288,
+          "expected_sha256": "9e80a37b542f3711819f0613d80b577f2ec01bbf6b8d079a61db467b34ecc129",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "67bc000a37e330c8a597f9d43cafdf500ba6b0d058814768b0a7cdb3eeb9ef14",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 960,
+          "expected_sha256": "67bc000a37e330c8a597f9d43cafdf500ba6b0d058814768b0a7cdb3eeb9ef14",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "12d202c59b80356affca1248f62565c52110ead364d85a3247128ac143f425f1",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 98304,
+          "expected_sha256": "12d202c59b80356affca1248f62565c52110ead364d85a3247128ac143f425f1",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "308f7e8a3f662093ca5b5a7a8cc35e1f362a6a17b7cf1e99bea1af5ec19ae9b2",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "308f7e8a3f662093ca5b5a7a8cc35e1f362a6a17b7cf1e99bea1af5ec19ae9b2",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 64,
+      "input_scale": 0.125,
+      "input_sha256": {
+        "indices": "3dc1f21e918bf11151f1d1013fa11572518a74c177e73e0f072d589316f168ae",
+        "kv": "077ce4b08875688cb669845a3cc416b3c3af97a95bc7450cc1ae016116ca8ed0",
+        "q": "0e4ea8e78eae1683ce29965128baf39d6013d1695a2f957f50329d6087488801",
+        "sink": "282bec2d67fdd884738fe4aed779d35d9212b33420e0e75efccc757bb3fc6835"
+      },
+      "mode": "sink_positive",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 129
+    },
+    {
+      "batch": 1,
+      "case": 11,
+      "checks": [
+        {
+          "actual_sha256": "1e3c47e8e86445b4810c23b3bbe780101c160a34fceba32352588ea6ca4b6ba1",
+          "check": "native_instrumentation_BF16",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "1e3c47e8e86445b4810c23b3bbe780101c160a34fceba32352588ea6ca4b6ba1",
+          "mismatches": 0,
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "1e3c47e8e86445b4810c23b3bbe780101c160a34fceba32352588ea6ca4b6ba1",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 32768,
+          "expected_sha256": "1e3c47e8e86445b4810c23b3bbe780101c160a34fceba32352588ea6ca4b6ba1",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "8c1e147444a8494070ebffc8c71d55bca50dd07ec0a2eb5554f7dd0ff0686ea7",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 12288,
+          "expected_sha256": "8c1e147444a8494070ebffc8c71d55bca50dd07ec0a2eb5554f7dd0ff0686ea7",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "9e80a37b542f3711819f0613d80b577f2ec01bbf6b8d079a61db467b34ecc129",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 12288,
+          "expected_sha256": "9e80a37b542f3711819f0613d80b577f2ec01bbf6b8d079a61db467b34ecc129",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "67bc000a37e330c8a597f9d43cafdf500ba6b0d058814768b0a7cdb3eeb9ef14",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 960,
+          "expected_sha256": "67bc000a37e330c8a597f9d43cafdf500ba6b0d058814768b0a7cdb3eeb9ef14",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "12d202c59b80356affca1248f62565c52110ead364d85a3247128ac143f425f1",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 98304,
+          "expected_sha256": "12d202c59b80356affca1248f62565c52110ead364d85a3247128ac143f425f1",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            3,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "2c34897de2b7d70fecd635dde3939f477aad9d22c1b6e17ce73a1f74adb9a9ea",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "2c34897de2b7d70fecd635dde3939f477aad9d22c1b6e17ce73a1f74adb9a9ea",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            1,
+            1,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "dimension": 512,
+      "heads": 64,
+      "input_scale": 0.125,
+      "input_sha256": {
+        "indices": "3dc1f21e918bf11151f1d1013fa11572518a74c177e73e0f072d589316f168ae",
+        "kv": "077ce4b08875688cb669845a3cc416b3c3af97a95bc7450cc1ae016116ca8ed0",
+        "q": "0e4ea8e78eae1683ce29965128baf39d6013d1695a2f957f50329d6087488801",
+        "sink": "dd19c33a4c672d87940410177f37aebaa487ce6f73ed438b9a25fe47add9d429"
+      },
+      "mode": "sink_negative",
+      "sequence": 1,
+      "status": "pass",
+      "topk": 129
+    }
+  ],
+  "driver_api_version": 13000,
+  "exclusions": [
+    "untouched 64x512 original kernel resource gate",
+    "model forward",
+    "long-context qualification",
+    "quality",
+    "generation speed"
+  ],
+  "execution_target": "spark-sm121-candidate",
+  "faults": [
+    {
+      "allocation_attempts": 1,
+      "caught": "MemoryError",
+      "condition": "host_pressure",
+      "device_owned_bytes_after_failure": 0,
+      "partial_result_returned": false,
+      "retry_checks": [
+        {
+          "actual_sha256": "203080af0cdc56b7f0ed5cc68d955e919ff28736d45aeeac13709f0916fe4e9d",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 131072,
+          "expected_sha256": "203080af0cdc56b7f0ed5cc68d955e919ff28736d45aeeac13709f0916fe4e9d",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "aee08b9810938801d3db74e42ed6fbb3df24fa3b3eedf06f195266d9558d40a5",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "aee08b9810938801d3db74e42ed6fbb3df24fa3b3eedf06f195266d9558d40a5",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "bd783546fe0d52f8bafe0e8ac672f086976e7e76782e7b75f42731006ca6f6a1",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "bd783546fe0d52f8bafe0e8ac672f086976e7e76782e7b75f42731006ca6f6a1",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "5d26c39c1acf29b9e6bd2bac2dc605ab6d30f42f70ff437f68e28b36c707c1e4",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 2560,
+          "expected_sha256": "5d26c39c1acf29b9e6bd2bac2dc605ab6d30f42f70ff437f68e28b36c707c1e4",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "ee57305ebb217fdbb8804f3a5c37c143e34aca0f4e584ae560f9e632d83ef182",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 262144,
+          "expected_sha256": "ee57305ebb217fdbb8804f3a5c37c143e34aca0f4e584ae560f9e632d83ef182",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "f4a929147b55a6b590cee09a07867074975783958b243758444f00ba82df1059",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 131072,
+          "expected_sha256": "f4a929147b55a6b590cee09a07867074975783958b243758444f00ba82df1059",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "allocation_attempts": 4,
+      "caught": "MemoryError",
+      "condition": "fourth_device_allocation",
+      "device_owned_bytes_after_failure": 0,
+      "partial_result_returned": false,
+      "retry_checks": [
+        {
+          "actual_sha256": "203080af0cdc56b7f0ed5cc68d955e919ff28736d45aeeac13709f0916fe4e9d",
+          "check": "output_bf16",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "uint16",
+          "elements": 131072,
+          "expected_sha256": "203080af0cdc56b7f0ed5cc68d955e919ff28736d45aeeac13709f0916fe4e9d",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "aee08b9810938801d3db74e42ed6fbb3df24fa3b3eedf06f195266d9558d40a5",
+          "check": "qk_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "aee08b9810938801d3db74e42ed6fbb3df24fa3b3eedf06f195266d9558d40a5",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "bd783546fe0d52f8bafe0e8ac672f086976e7e76782e7b75f42731006ca6f6a1",
+          "check": "probability_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 32768,
+          "expected_sha256": "bd783546fe0d52f8bafe0e8ac672f086976e7e76782e7b75f42731006ca6f6a1",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            64,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "5d26c39c1acf29b9e6bd2bac2dc605ab6d30f42f70ff437f68e28b36c707c1e4",
+          "check": "softmax_state_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 2560,
+          "expected_sha256": "5d26c39c1acf29b9e6bd2bac2dc605ab6d30f42f70ff437f68e28b36c707c1e4",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            5,
+            64
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "ee57305ebb217fdbb8804f3a5c37c143e34aca0f4e584ae560f9e632d83ef182",
+          "check": "value_accumulator_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 262144,
+          "expected_sha256": "ee57305ebb217fdbb8804f3a5c37c143e34aca0f4e584ae560f9e632d83ef182",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        },
+        {
+          "actual_sha256": "f4a929147b55a6b590cee09a07867074975783958b243758444f00ba82df1059",
+          "check": "output_fp32",
+          "comparison": "SHA256 of exact storage bits; no tolerance",
+          "dtype": "float32",
+          "elements": 131072,
+          "expected_sha256": "f4a929147b55a6b590cee09a07867074975783958b243758444f00ba82df1059",
+          "layout_matches": true,
+          "mismatches": 0,
+          "shape": [
+            2,
+            2,
+            64,
+            512
+          ],
+          "status": "pass"
+        }
+      ],
+      "status": "pass"
+    }
+  ],
+  "full_model_quality_qualified": false,
+  "general_performance_claim": false,
+  "memory_observations": [
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 46049234944,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45809700864,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45809700864,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45809246208,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45809639424,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45809639424,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45809184768,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45809184768,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45809184768,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45808730112,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45808730112,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45808730112,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45808730112,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45808222208,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45808615424,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45808615424,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45804916736,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45804867584,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45804867584,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45804867584,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45804359680,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45804126208,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45804126208,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45804077056,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45804077056,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45804077056,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803569152,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803569152,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803569152,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803520000,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803520000,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803520000,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803520000,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803520000,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803520000,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803208704,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803208704,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803208704,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45803208704,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 46039113728,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    }
+  ],
+  "minimum_sampled_host_available_bytes": 45803208704,
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "native_cleanup": {
+    "device_owned_bytes": 0,
+    "device_peak_owned_bytes": 2897168,
+    "driver_module_memory_excluded": true,
+    "execution_target": "spark-sm121-candidate",
+    "host_allowance_bytes": 33554432,
+    "host_reserved_bytes": 0,
+    "original_kernel_parity_qualified": false,
+    "owned_context_active": false,
+    "owned_modules_active": 0,
+    "qualification": "unqualified_candidate",
+    "qualification_receipt_issued": false,
+    "reservation_is_RSS_limit": false,
+    "spark_reference_qualification": "not_run",
+    "target_selection_changes_model_arithmetic": false
+  },
+  "native_kernel_profiles": [
+    {
+      "cubin_sha256": "b457c7b4817183d034ad11ff53036bf00483c14eb52d327b322fd00bec2c6bd6",
+      "diagnostics": false,
+      "dimension": 512,
+      "dynamic_shared_bytes": 69632,
+      "generated_cuda_sha256": "407eb0d0799e7e7cb289b4413c9f4d672cdf69a894ca1cae555949fb811d5fa7",
+      "heads": 16
+    },
+    {
+      "cubin_sha256": "e5132b7755104b97300516d8dcbf2b01ab55a7f3f66407a6ab68f1de1e3fae79",
+      "diagnostics": true,
+      "dimension": 512,
+      "dynamic_shared_bytes": 69632,
+      "generated_cuda_sha256": "169b1b5fb67b8d0e76ee4b44af5bac562aa68c062ff7e4372df46c70aa3aa4fa",
+      "heads": 16
+    },
+    {
+      "cubin_sha256": "6b356143262a62e8cd11cdf14e0b086cc933455070e7a69e95caded07b4aa02e",
+      "diagnostics": false,
+      "dimension": 256,
+      "dynamic_shared_bytes": 43008,
+      "generated_cuda_sha256": "9382acc78c350ddb8fa8497d69d864673502c30b0936f7122a4866a7dcfa18f5",
+      "heads": 64
+    },
+    {
+      "cubin_sha256": "a2f1c02a0d1f78df1b7ba869d74d777d30be76b50f34fd8c9bc8c2a00c040845",
+      "diagnostics": true,
+      "dimension": 256,
+      "dynamic_shared_bytes": 43008,
+      "generated_cuda_sha256": "c713c2fcc9450f89d121d6d9fbf6cf20d1d54c4a8a3c23d3769758c5890775ed",
+      "heads": 64
+    },
+    {
+      "cubin_sha256": "36b30dea65f0811d6f914668278b30468e544cb34ca33d37d17e9c3ce3c2f8f9",
+      "diagnostics": false,
+      "dimension": 512,
+      "dynamic_shared_bytes": 75776,
+      "generated_cuda_sha256": "cac2c574ef414fb81a49fdb3602a22dd4e11e44d1018845ad52dae456ace6ee6",
+      "heads": 64
+    },
+    {
+      "cubin_sha256": "419ff7b86f17420853bb2c5ba10750dcd060adede0d6a7853f1586ca09ac48a2",
+      "diagnostics": true,
+      "dimension": 512,
+      "dynamic_shared_bytes": 75776,
+      "generated_cuda_sha256": "8defc11c491c5891a359e0941bd2bcf4f99514632c543592508957d5dc24f0e1",
+      "heads": 64
+    }
+  ],
+  "native_process_tensor_framework_imported": false,
+  "observed_device": {
+    "compute_capability": "12.1",
+    "name": "NVIDIA GB10",
+    "ordinal": 0,
+    "total_bytes": 130661142528
+  },
+  "original_kernel_parity_qualified": true,
+  "probe": "spark_native_attention_reference_parity",
+  "reference_result": "s1/attention/reference-r04.json",
+  "reference_result_sha256": "a8e800435607760071b96c884dbd7b3f96c09b227e78277d6837fd008dcf134f",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "schema": "vesper.spark-native-attention-validation.v1",
+  "scope": "Fixed 36-case native sparse Attention outputs and all five FP32 boundaries against the GB10 PTX memory oracle",
+  "status": "pass",
+  "workspace_context": {
+    "binding_id": "8480a267191e4fafab923ad834fd976c",
+    "created_at": "2026-10-20T23:31:16.617234+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "0fcb7fdbb9ec41aed6de7d831d803f20279b29e7",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "cb94348f9dbcccb8aca04b379b3cc2637e3c5ca2385236d2078336469a9a7baf",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "r03",
+    "schema_version": 1
+  }
+}
