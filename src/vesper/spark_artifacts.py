@@ -8,8 +8,9 @@ it does not download, requantize, or create a second model-wide expert pack.
 
 from __future__ import annotations
 
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from collections import OrderedDict
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 import hashlib
 import json
 import os
@@ -17,6 +18,7 @@ from pathlib import Path
 import re
 import shutil
 import stat
+import threading
 import urllib.request
 
 import numpy as np
@@ -35,6 +37,10 @@ MIN_CHUNK_BYTES = 2 * MiB
 MAX_JOURNAL_BYTES = 8 * MiB
 DOWNLOAD_METADATA_ALLOWANCE = 64 * MiB
 EXPERT_METADATA_BYTES = 16 * MiB
+
+
+class AcquisitionCancelled(RuntimeError):
+    """An active stream reached a cooperative stop after another task failed."""
 
 
 def _json(value):
@@ -71,6 +77,23 @@ def _validate_chunk(chunk_bytes):
         raise ValueError("Download chunks must be aligned, between 2 and 8 MiB")
 
 
+def _validate_workers(workers):
+    if type(workers) is not int or workers not in (1, 2, 4):
+        raise ValueError("Original acquisition supports one, two or four bounded workers")
+
+
+def _prioritize(inventory, priority_shards):
+    if (not isinstance(priority_shards, (tuple, list))
+            or any(not isinstance(name, str) for name in priority_shards)
+            or len(set(priority_shards)) != len(priority_shards)):
+        raise ValueError("Priority shards must be a unique list/tuple of registered filenames")
+    lookup = {row["file"]: row for row in inventory}
+    if any(name not in lookup for name in priority_shards):
+        raise ValueError("Priority shard is not part of the pinned original inventory")
+    selected = set(priority_shards)
+    return [lookup[name] for name in priority_shards] + [row for row in inventory if row["file"] not in selected]
+
+
 def _identity(expected, chunk_bytes):
     if (not re.fullmatch(r"model-\d{5}-of-00048\.safetensors", expected.get("file", ""))
             or type(expected.get("bytes")) is not int or expected["bytes"] <= 0
@@ -96,14 +119,16 @@ def _existing_bytes(root, inventory):
 
 
 def plan_originals(metadata, originals, *, quota_bytes, disk_reserve=64 * GiB,
-                   chunk_bytes=CHUNK_BYTES, workspace=None):
+                   chunk_bytes=CHUNK_BYTES, workers=1, priority_shards=(), workspace=None):
     """Read-only resource admission; does not open a network connection."""
     _validate_chunk(chunk_bytes)
+    _validate_workers(workers)
     _scope(workspace, metadata, originals)
     _regular_below(Path(metadata), Path(metadata) / "tree.json")
     if type(disk_reserve) is not int or disk_reserve < 32 * GiB:
         raise ValueError("Keep at least a 32 GiB SSD reserve")
     inventory = shard_inventory(metadata)
+    ordered = _prioritize(inventory, priority_shards)
     expected = sum(row["bytes"] for row in inventory)
     required = expected + DOWNLOAD_METADATA_ALLOWANCE
     if type(quota_bytes) is not int or quota_bytes < required:
@@ -126,6 +151,8 @@ def plan_originals(metadata, originals, *, quota_bytes, disk_reserve=64 * GiB,
             "metadata_allowance_bytes": DOWNLOAD_METADATA_ALLOWANCE, "existing_bytes": occupied,
             "remaining_capacity_admission_bytes": remaining, "disk_reserve_bytes": disk_reserve,
             "chunk_bytes": chunk_bytes, "whole_checkpoint_downloaded": False,
+            "workers": workers, "transfer_memory_allowance_bytes": workers * 64 * MiB,
+            "priority_shards": list(priority_shards), "transfer_order": [row["file"] for row in ordered],
             "network_started": False, "second_expert_pack_created": False}
 
 
@@ -246,7 +273,8 @@ def _publish(part, final):
             os.close(directory)
 
 
-def _download_one(root, expected, chunk_bytes, *, opener, checkpoint, progress=None):
+def _download_one(root, expected, chunk_bytes, *, opener, checkpoint, progress=None,
+                  cancelled=None, publication_lock=None):
     identity = _identity(expected, chunk_bytes)
     final = root / expected["file"]
     part, journal = root / (final.name + ".part"), root / (final.name + ".chunks.jsonl")
@@ -258,6 +286,9 @@ def _download_one(root, expected, chunk_bytes, *, opener, checkpoint, progress=N
         return 0
     offset, sha = _resume(part, journal, identity, checkpoint)
     received = 0
+    def check_cancelled():
+        if cancelled is not None and cancelled():
+            raise AcquisitionCancelled("Original acquisition stopped after another task failed")
     if offset < expected["bytes"]:
         request = urllib.request.Request(f"{BASE}/resolve/{REVISION}/{final.name}",
             headers={"Range": f"bytes={offset}-{expected['bytes'] - 1}", "Accept-Encoding": "identity"})
@@ -270,12 +301,14 @@ def _download_one(root, expected, chunk_bytes, *, opener, checkpoint, progress=N
                     wanted = min(chunk_bytes, expected["bytes"] - offset)
                     raw = bytearray()
                     while len(raw) < wanted:
+                        check_cancelled()
                         block = response.read(wanted - len(raw))
                         if not block:
                             raise OSError("Truncated original transfer; acknowledged prefix retained")
                         if len(block) > wanted - len(raw):
                             raise ValueError("Original transfer exceeded its bounded read request")
                         raw.extend(block)
+                    check_cancelled()
                     _write_all(output, raw); os.fsync(output.fileno())
                     row = {"offset": offset, "bytes": len(raw), "sha256": digest(raw)}
                     _write_all(records, _json(row)); os.fsync(records.fileno())
@@ -286,38 +319,144 @@ def _download_one(root, expected, chunk_bytes, *, opener, checkpoint, progress=N
                     raise ValueError("Original transfer exceeded its declared extent")
     if offset != expected["bytes"] or sha.hexdigest() != expected["sha256"]:
         raise ValueError("Original whole-file SHA-256 differs; partial preserved")
-    checkpoint()
-    _publish(part, final)
+    with publication_lock if publication_lock is not None else nullcontext():
+        check_cancelled()
+        checkpoint()
+        _publish(part, final)
     return received
+
+
+def _download_group(root, inventory, chunk_bytes, *, workers, opener, checkpoint, progress=None):
+    """Bounded submissions, serialized observations and joined failure cleanup.
+
+    The caller holds the namespace's process lock for this whole operation.
+    The coordinator lock also hides POSIX publication's temporary second hard
+    link from another worker's ownership/quota observation.
+    """
+    _validate_workers(workers)
+    if len({row["file"] for row in inventory}) != len(inventory):
+        raise ValueError("Each original shard may have only one acquisition task")
+    lock, stopped = threading.RLock(), threading.Event()
+    state = {"error": None, "active": set(), "completed": 0, "received": 0}
+
+    def checked():
+        with lock:
+            if stopped.is_set():
+                raise AcquisitionCancelled("Original acquisition has a pending failure")
+            checkpoint()
+
+    def observed(row):
+        with lock:
+            if progress is not None:
+                progress({**row, "workers": workers, "active_shard_tasks": len(state["active"]),
+                          "completed_shards": state["completed"]})
+
+    def run(row):
+        name = row["file"]
+        with lock:
+            if stopped.is_set():
+                raise AcquisitionCancelled("Original acquisition stopped before task start")
+            state["active"].add(name)
+        try:
+            count = _download_one(root, row, chunk_bytes, opener=opener, checkpoint=checked,
+                progress=observed, cancelled=stopped.is_set, publication_lock=lock)
+            with lock:
+                state["completed"] += 1
+                state["received"] += count
+            return count
+        except BaseException as error:
+            with lock:
+                if state["error"] is None and not isinstance(error, AcquisitionCancelled):
+                    state["error"] = error
+                stopped.set()
+            raise
+        finally:
+            with lock:
+                state["active"].discard(name)
+
+    if workers == 1:
+        # Retain the original caller-thread callback behavior for the default.
+        # There are no child tasks to join when a sequential call fails.
+        for row in inventory:
+            run(row)
+        return state["received"]
+
+    rows = iter(inventory)
+    executor = ThreadPoolExecutor(max_workers=workers, thread_name_prefix="vesper-original")
+    pending = set()
+    try:
+        def submit():
+            with lock:
+                if stopped.is_set():
+                    return False
+                try:
+                    row = next(rows)
+                except StopIteration:
+                    return False
+                pending.add(executor.submit(run, row))
+                return True
+        for _ in range(workers):
+            if not submit():
+                break
+        while pending:
+            done, _ = wait(pending, return_when=FIRST_COMPLETED)
+            pending.difference_update(done)
+            for future in done:
+                try:
+                    future.result()
+                except BaseException:
+                    stopped.set()
+            if stopped.is_set():
+                for future in pending:
+                    future.cancel()
+                break
+            for _ in done:
+                if not submit():
+                    break
+    except BaseException:
+        stopped.set()
+        raise
+    finally:
+        # Do not release the process lock, publish completion, or surface a
+        # failure while another owned stream is still live. A blocked socket
+        # read must return/timeout before it can reach its stop checkpoint.
+        executor.shutdown(wait=True, cancel_futures=True)
+    if state["error"] is not None:
+        raise state["error"]
+    if stopped.is_set() or state["active"] or state["completed"] != len(inventory):
+        raise AcquisitionCancelled("Original acquisition ended without every shard completing")
+    return state["received"]
 
 
 def download_originals(metadata, originals, *, quota_bytes, disk_reserve=64 * GiB,
                        chunk_bytes=CHUNK_BYTES, execute=False, workspace=None,
-                       opener=None, progress=None):
+                       opener=None, progress=None, workers=1, priority_shards=()):
     """Explicit full import, with one original copy and bounded transfer memory."""
     if execute is not True:
         raise ValueError("Full original download requires execute=True; inspect plan_originals first")
+    _validate_workers(workers)
     ws = _scope(workspace, metadata, originals)
     initial_context = ws.context()
     plan = plan_originals(metadata, originals, quota_bytes=quota_bytes, disk_reserve=disk_reserve,
-                          chunk_bytes=chunk_bytes, workspace=ws)
+                          chunk_bytes=chunk_bytes, workers=workers, priority_shards=priority_shards, workspace=ws)
     inventory = shard_inventory(metadata)
+    ordered = _prioritize(inventory, priority_shards)
     root = Path(originals); root.mkdir(parents=True, exist_ok=True)
-    budget = MemoryBudget(cap=64 * MiB, owner="spark_original_download")
+    budget = MemoryBudget(cap=workers * 64 * MiB, owner="spark_original_download")
     budget.acquire(budget.cap)
     new_bytes = 0
     try:
         with _download_lock(root):
             def checkpoint():
                 budget.acquire(0)
+                ws.check()
+                ws.stamp_result({}, initial_context=initial_context)
                 if _existing_bytes(root, inventory) > quota_bytes:
                     raise OSError("Original acquisition exceeded its directory quota")
                 if shutil.disk_usage(root).free < disk_reserve + DOWNLOAD_METADATA_ALLOWANCE:
                     raise OSError("Original acquisition reached the SSD reserve")
-            for row in inventory:
-                ws.check(); checkpoint()
-                new_bytes += _download_one(root, row, chunk_bytes, opener=opener or urllib.request.urlopen,
-                                            checkpoint=checkpoint, progress=progress)
+            new_bytes = _download_group(root, ordered, chunk_bytes, workers=workers,
+                opener=opener or urllib.request.urlopen, checkpoint=checkpoint, progress=progress)
             ws.check()
             ws.stamp_result({}, initial_context=initial_context)
             result = {"kind": "verified_original_download", "model": MODEL, "revision": REVISION,
@@ -326,6 +465,8 @@ def download_originals(metadata, originals, *, quota_bytes, disk_reserve=64 * Gi
                       "new_network_payload_bytes": new_bytes, "whole_checkpoint_downloaded": len(inventory) == 48,
                       "whole_shard_SHA256_verified": True, "quota_bytes": quota_bytes,
                       "disk_reserve_bytes": disk_reserve, "transfer_memory_allowance_bytes": budget.cap,
+                      "workers": workers, "all_worker_tasks_joined": True,
+                      "priority_shards": list(priority_shards), "transfer_order": [row["file"] for row in ordered],
                       "second_expert_pack_created": False, "runtime_or_quality_qualified": False}
             manifest = root / "download-manifest.json"
             if manifest.exists():
