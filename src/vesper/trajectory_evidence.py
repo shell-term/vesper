@@ -19,7 +19,13 @@ from .sequence_assets import request
 from .storage import tensor_layout
 
 # Discovery records cannot qualify themselves by recalculating their checksums.
-QUALIFIED = {}
+QUALIFIED = {
+    # Independently captured complete original chat request, 34 calls through
+    # EOS; inspected source/method/conversion pins, paging cleanup and score.
+    'coding-python-expression':(
+        '6ea474c4e274ccb4bebf35b21fbd18db5eafb4def4716f992225e84028652280',
+        'd07a07ee1eb75b0eaca932fc67d77889b60e707a210aac22edd910704826c29e'),
+}
 ORIGINAL_FORMAT_RAW_SHA256='cc278155dfa3edfee96e2c7603b4bd14eea00edfd18a6595133d2cb4dd040df0'
 # Complete inputs already independently checked by the original CPU encoder.
 INPUT_PINS={
