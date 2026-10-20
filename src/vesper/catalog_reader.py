@@ -1,6 +1,9 @@
 """Reuse authenticated small metadata; fetch only pinned payload ranges."""
 
 from pathlib import Path
+from http.client import IncompleteRead
+import socket
+import ssl
 import struct
 import threading
 import time
@@ -9,6 +12,13 @@ import urllib.error
 from .checkpoint import LIMIT, read_range
 from .model_artifacts import load_catalog, read_checked, digest
 from .resources import MemoryBudget, MiB
+
+
+def _transient_transport(error):
+    # Certificate failures and payload-validation errors must fail immediately.
+    if isinstance(error, urllib.error.URLError): error = error.reason
+    return (isinstance(error, (ConnectionError, TimeoutError, IncompleteRead, ssl.SSLEOFError))
+        or isinstance(error, socket.gaierror) and error.errno == socket.EAI_AGAIN)
 
 
 class CatalogReader:
@@ -62,6 +72,9 @@ class CatalogReader:
                 break
             except urllib.error.HTTPError as error:
                 if error.code not in (429, 500, 502, 503, 504) or attempt == 3: raise
+                time.sleep(2 ** attempt)
+            except (urllib.error.URLError, ConnectionError, TimeoutError, IncompleteRead, ssl.SSLError, socket.gaierror) as error:
+                if not _transient_transport(error) or attempt == 3: raise
                 time.sleep(2 ** attempt)
         with self.lock:
             self.payload_bytes += len(raw); self.network_ranges += 1

@@ -1,6 +1,8 @@
 import json
+from http.client import IncompleteRead
 from pathlib import Path
 import struct
+import ssl
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -75,6 +77,36 @@ class BackboneBindingTests(unittest.TestCase):
                     with self.assertRaises(urllib.error.HTTPError): reader.range("model.safetensors", 8 + len(header), 4)
                     fetch.assert_called_once(); sleep.assert_not_called()
                 self.assertEqual(reader.stats()["payload_bytes_fetched"], 4)
+
+    def test_transient_disconnects_retry_the_same_range_with_a_fixed_attempt_limit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); header, loaded = self.catalog(root)
+            args = ("model.safetensors", 8 + len(header), 4)
+            with patch("vesper.catalog_reader.load_catalog", return_value=loaded), CatalogReader(root) as reader:
+                for error in (ConnectionResetError(10054, "reset"), TimeoutError("timeout"), IncompleteRead(b"d", 3),
+                        urllib.error.URLError(ConnectionResetError("wrapped reset")), ssl.SSLEOFError("EOF")):
+                    with self.subTest(error=type(error).__name__), patch("vesper.catalog_reader.read_range", side_effect=[error, b"data"]) as fetch, patch("vesper.catalog_reader.time.sleep") as sleep:
+                        self.assertEqual(reader.range(*args), b"data")
+                        self.assertEqual(fetch.call_args_list, [unittest.mock.call(*args)] * 2)
+                        sleep.assert_called_once_with(1)
+                self.assertEqual(reader.stats()["payload_bytes_fetched"], 20)
+                self.assertEqual(reader.stats()["network_payload_ranges"], 5)
+                with patch("vesper.catalog_reader.read_range", side_effect=ConnectionResetError("still reset")) as fetch, patch("vesper.catalog_reader.time.sleep") as sleep:
+                    with self.assertRaises(ConnectionResetError): reader.range(*args)
+                    self.assertEqual(fetch.call_count, 4)
+                    self.assertEqual([c.args for c in sleep.call_args_list], [(1,), (2,), (4,)])
+                self.assertEqual(reader.stats()["payload_bytes_fetched"], 20)
+
+    def test_certificate_and_payload_validation_failures_are_never_retried(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); header, loaded = self.catalog(root)
+            with patch("vesper.catalog_reader.load_catalog", return_value=loaded), CatalogReader(root) as reader:
+                for error in (ValueError("different original range"), ssl.SSLCertVerificationError("certificate"),
+                        urllib.error.URLError(ssl.SSLCertVerificationError("wrapped certificate"))):
+                    with self.subTest(error=type(error).__name__), patch("vesper.catalog_reader.read_range", side_effect=error) as fetch, patch("vesper.catalog_reader.time.sleep") as sleep:
+                        with self.assertRaises(type(error)): reader.range("model.safetensors", 8 + len(header), 4)
+                        fetch.assert_called_once(); sleep.assert_not_called()
+                self.assertEqual(reader.stats()["payload_bytes_fetched"], 0)
 
 
 if __name__ == "__main__": unittest.main()

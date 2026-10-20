@@ -80,6 +80,7 @@ def migrate_input(root,name):
     if plan_identity(changed)!=plan_identity(plan):raise ValueError('Migration changed the logical model input snapshot')
     workspace.check()
     with (target/'plan.json').open('xb') as stream:stream.write((json.dumps(changed,indent=2)+'\n').encode())
+    _copy(legacy/'plan.json',target/'legacy-plan.json',64*MiB)
     if (legacy/'preparation.json').exists():_copy(legacy/'preparation.json',target/'legacy-preparation.json',64*MiB)
     load_plan(root,target)
     return {'status':'pass','platform':workspace.platform,'logical_plan_sha256':plan_identity(plan),'expert_payload_bytes_copied':0,
