@@ -51,6 +51,9 @@ class Driver:
         self.corrupt = False
         self.fail_host = False
         self.fail_free = False
+        self.cuda_free = 80 * spark.GiB
+        self.cuda_total = 128 * spark.GiB
+        self.cuda_memory_status = 0
 
     def inventory(self):
         return device_info()
@@ -65,8 +68,8 @@ class Driver:
         return 0
 
     def cuMemGetInfo_v2(self, free, total):
-        free._obj.value, total._obj.value = 80 * spark.GiB, 128 * spark.GiB
-        return 0
+        free._obj.value, total._obj.value = self.cuda_free, self.cuda_total
+        return self.cuda_memory_status
 
     def cuMemAlloc_v2(self, output, size):
         self.events.append("device_allocate")
@@ -264,6 +267,48 @@ class SparkProbeTests(unittest.TestCase):
         self.assertNotIn("pinned_free", driver.events)
         self.assertEqual(driver.events[-1], ("restore", 987))
         self.assertTrue(report["integer_roundtrip"]["cleanup"]["owned_resources_release_calls_succeeded"])
+
+    def test_cuda_heap_below_32gib_is_allowed_when_physical_reserve_and_small_buffer_fit(self):
+        driver = Driver()
+        driver.cuda_free = spark.MiB
+        report = self.collect(driver=driver)
+        self.assertEqual(report["status"], "bounded_roundtrip_pass")
+        observation = report["integer_roundtrip"]["cuda_memory_before"]
+        self.assertEqual(observation["free_bytes"], spark.MiB)
+        self.assertFalse(observation["physical_floor_applied_again_to_cuda_free"])
+        self.assertTrue(observation["physical_available_floor_enforced_by_host_checkpoints"])
+
+    def test_cuda_buffer_shortage_preserves_numbers_and_does_not_allocate(self):
+        driver = Driver()
+        driver.cuda_free = 63
+        report = self.collect(driver=driver)
+        self.assertEqual(report["status"], "unsupported")
+        observation = report["integer_roundtrip"]["cuda_memory_before"]
+        self.assertEqual(observation["free_bytes"], 63)
+        self.assertEqual(observation["required_owned_device_buffer_bytes"], 64)
+        self.assertEqual(observation["query_status"], 0)
+        self.assertNotIn("device_allocate", driver.events)
+        self.assertEqual(driver.events[-1], ("restore", 987))
+
+    def test_cuda_memory_query_failure_preserves_query_status_and_does_not_allocate(self):
+        driver = Driver()
+        driver.cuda_free = driver.cuda_total = 0
+        driver.cuda_memory_status = 999
+        report = self.collect(driver=driver)
+        self.assertEqual(report["status"], "unsupported")
+        self.assertEqual(report["integer_roundtrip"]["cuda_memory_before"]["query_status"], 999)
+        self.assertNotIn("device_allocate", driver.events)
+
+    def test_large_cuda_heap_cannot_override_insufficient_physical_memory(self):
+        driver = Driver()
+        with patch.object(spark.platform, "system", return_value="Linux"), \
+             patch.object(spark.platform, "machine", return_value="aarch64"), \
+             patch.object(spark, "host_memory", return_value=memory(32 * spark.GiB - 1)), \
+             patch.object(spark, "Driver", return_value=driver) as factory:
+            report = spark.collect("probe", Workspace(), buffer_bytes=64)
+        self.assertEqual(report["status"], "unsupported")
+        factory.assert_not_called()
+        self.assertEqual(driver.events, [])
 
     def test_mismatch_is_not_reported_as_pass_and_cleanup_survives(self):
         driver = Driver()

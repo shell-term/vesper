@@ -272,11 +272,21 @@ def integer_probe(driver, image, buffer_bytes, checkpoint):
         _check(driver.cuCtxCreate_v2(C.byref(context), 4, 0), "cuCtxCreate_v2")
         checkpoint(2 * buffer_bytes)
         free, total = C.c_size_t(), C.c_size_t()
-        _check(driver.cuMemGetInfo_v2(C.byref(free), C.byref(total)), "cuMemGetInfo_v2")
-        if free.value - 2 * buffer_bytes < AVAILABLE_FLOOR_BYTES:
-            raise Unsupported("CUDA's shared-pool free-memory observation is below reserve")
+        query_status = driver.cuMemGetInfo_v2(C.byref(free), C.byref(total))
         report["cuda_memory_before"] = {"free_bytes": free.value, "total_bytes": total.value,
+                                         "query_status": query_status,
+                                         "required_owned_device_buffer_bytes": buffer_bytes,
+                                         "physical_available_floor_enforced_by_host_checkpoints": True,
+                                         "physical_floor_applied_again_to_cuda_free": False,
                                          "counted_as_additional_capacity": False}
+        _check(query_status, "cuMemGetInfo_v2")
+        if not 0 <= free.value <= total.value or total.value == 0:
+            raise Unsupported("Invalid CUDA free-memory observation")
+        # CUDA's allocatable heap is a separate constraint, not extra RAM and
+        # not Linux MemAvailable. The physical 32 GiB reserve is enforced by
+        # checkpoint above for both owned buffers; CUDA must admit its buffer.
+        if free.value < buffer_bytes:
+            raise Unsupported("CUDA free-memory observation cannot admit the owned device buffer")
         _check(driver.cuMemAlloc_v2(C.byref(device), buffer_bytes), "cuMemAlloc_v2")
         report["device_peak_explicit_bytes"] = buffer_bytes
         checkpoint(buffer_bytes)
