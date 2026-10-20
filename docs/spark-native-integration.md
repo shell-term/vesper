@@ -63,9 +63,18 @@ or active context; neither Torch nor TileLang was imported in native execution.
 That result is not the independent original Attention numerical gate. The full
 original shared-memory kernel requests 141,312 bytes, above this GB10's measured
 101,376-byte limit. A separately pinned Spark reference adapter preserves its
-floating-point/control instructions while changing integer Query storage. It
-must pass fresh data-movement, negative-control and intermediate comparisons;
-the PC adapter and receipt are not substitutes.
+floating-point/control instructions while changing integer Query storage.
+
+At `e0edf283a995fa8bb8ad6e060208a55ba3059f2a`, that independent Spark reference
+gate passed all 36 intermediate/output cases, all four load/store bit patterns,
+and the wrong-column negative control. Its minimum sampled physical available
+memory was 45,253,332,992 bytes, above the reserve. The full untouched kernel
+remains blocked by its shared-memory requirement. The
+[complete oracle report](../results/dgx-spark/2026-10-20-s1-components/attention/reference-r01.json)
+and [byte-preserving archive hash](../results/dgx-spark/2026-10-20-s1-components/attention/oracle-transport-r01.json)
+qualify this reference adapter and corpus. A fresh native Driver comparison
+against those original-computation boundaries is a separate gate; plain/trace
+self-consistency and the PC receipt cannot replace it.
 
 - A new explicit `spark-sm121-candidate` target compiles the shared arithmetic
   on Spark and records the actual source, compiler, options and binary. Existing
@@ -76,7 +85,10 @@ the PC adapter and receipt are not substitutes.
   checked; the foreign SM89 bundle remains rejected. Numerical qualification
   and complete-model integration remain separate gates.
 - The output candidate projects every vocabulary row in FP32 while staging
-  bounded original BF16 rows. It requires its own same-device numerical gate.
+  bounded original BF16 rows. Its separate-process component probe authenticates
+  the complete released head shard and the original tensor hash, then compares
+  all 129,280 logits against the unchanged official `ParallelHead.forward`.
+  That probe is implemented; same-device numerical execution remains pending.
 - An opt-in unified-memory policy charges device allocations to the same host
   ceiling as CPU, pinned and retained state. Discrete-GPU accounting keeps its
   existing default behavior. The physical available floor is not a VRAM floor.
@@ -85,6 +97,16 @@ the PC adapter and receipt are not substitutes.
   checked prefixes, whole-file SHA-256, SSD quota and exclusive publication.
   Verified local span readers avoid a second 288.78 GB expert pack and do not
   fetch from the network during forward execution.
+- Acquisition supports one, two or four bounded streams, with immutable shard
+  priorities, checked resume, and all workers joined before a completion or
+  failure result. Four streams reserve 256 MiB for transfer work. The active
+  acquisition uses its own fixed-source Spark checkout, so integration edits
+  cannot silently change the code identity of an in-flight import.
+- All 40 blocks, both original Engram tables, the streamed head and generated
+  token feedback are connected through a lazy runtime. The explicit text probe
+  prepares small local dense derivatives, then requires a complete EOS response
+  and owned-resource cleanup. Its code and CPU control-flow tests do not count
+  as successful full-model text generation.
 
 CPU/mock tests check bounds, failure/refusal, cleanup, corruption rejection and
 control flow. They do not qualify GB10 arithmetic. Current acceptance and pending

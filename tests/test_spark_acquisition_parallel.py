@@ -88,7 +88,10 @@ class ParallelAcquisitionTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.workspace = Workspace(self.temp.name)
+        # Windows CI may return an 8.3 TEMP alias. Match the real Workspace's
+        # canonical root before the unchanged namespace guard compares paths.
+        self.root = Path(self.temp.name).resolve()
+        self.workspace = Workspace(self.root)
         self.metadata, self.originals = [self.workspace.base / name for name in ("metadata", "originals")]
         self.metadata.mkdir(parents=True)
         self.originals.mkdir()
