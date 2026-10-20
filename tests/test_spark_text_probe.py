@@ -87,9 +87,11 @@ class Assets:
     events = []
     failure = None
     missing_moe = False
-    def __init__(self, metadata, originals, integrity, *, workspace, fixtures):
+    def __init__(self, metadata, originals, integrity, *, workspace, fixtures, budget):
         self.workspace, self.paths = workspace, (metadata, originals, integrity, fixtures)
-        self.budget = MemoryBudget(cap=16 * MiB, owner="test_assets")
+        if budget.cap != GiB or budget.owner != "spark_model_assets":
+            raise AssertionError("The real supplied asset budget differs from the S1 limit")
+        self.budget = budget
 
     def __enter__(self):
         if current_policy() is None:
@@ -276,6 +278,9 @@ class TextProbeTests(unittest.TestCase):
         self.assertEqual(after["charged_host_bytes"], 0)
         self.assertEqual(after["live_leases"], 0)
         self.assertTrue(after["unified_device_memory"])
+        self.assertEqual(report["limits"]["shared_host_cap_bytes"], after["host_cap_bytes"])
+        self.assertEqual(report["limits"]["asset_host_cap_bytes"], GiB)
+        self.assertEqual(report["limits"]["device_cap_bytes"], 5 * GiB)
         self.assertTrue(report["owned_resources_closed"])
         self.assertTrue(report["memory_runtime_closed"])
         self.assertLess(len(json.dumps(report)), probe.REPORT_LIMIT)

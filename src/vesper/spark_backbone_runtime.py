@@ -38,6 +38,16 @@ from .window_attention import NativeWindowAttention
 
 TARGET = "spark-sm121-candidate"
 
+# Short S1 composition: legacy component admissions (including control,
+# per-step diagnostics and transient catalog parsing) need about 5.3 GiB.
+# Keep 6 GiB for those conservative, possibly overlapping admissions, 1 GiB
+# for leased original assets, and the existing 5 GiB device ceiling. These
+# are one shared physical-pool ledger, never RAM plus additional VRAM.
+SPARK_COMPONENT_ALLOWANCE = 6 * GiB
+SPARK_ASSET_CAP = GiB
+SPARK_DEVICE_CAP = 5 * GiB
+SPARK_SHARED_CAP = SPARK_COMPONENT_ALLOWANCE + SPARK_ASSET_CAP + SPARK_DEVICE_CAP
+
 
 def _layer(layer):
     if type(layer) is not int or layer not in LAYERS:
@@ -284,8 +294,8 @@ class SparkBackboneCandidate(NativeBackbone):
 
 def spark_memory_policy():
     """Enter RuntimeMemory with this policy before opening SparkModelAssets."""
-    return MemoryPolicy(host_cap_bytes=8 * GiB, pinned_cap_bytes=128 * MiB,
-                        device_caps={0:5 * GiB}, unified_device_memory=True)
+    return MemoryPolicy(host_cap_bytes=SPARK_SHARED_CAP, pinned_cap_bytes=128 * MiB,
+                        device_caps={0:SPARK_DEVICE_CAP}, unified_device_memory=True)
 
 
 def open_spark_backbone(stack, assets, attention_bundle, *, temperature=.7, seed=2026):

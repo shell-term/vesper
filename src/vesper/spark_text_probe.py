@@ -30,7 +30,8 @@ from .messages import EOS, encode_messages, parse_completion
 from .resources import MemoryBudget, MiB, GiB
 from .sequence import MAX_CALLS, SequenceRequest, scope as sequence_scope
 from .spark_attention import load_candidate
-from .spark_backbone_runtime import open_spark_backbone, spark_memory_policy, TARGET
+from .spark_backbone_runtime import (open_spark_backbone, spark_memory_policy, TARGET,
+    SPARK_SHARED_CAP, SPARK_ASSET_CAP, SPARK_DEVICE_CAP, SPARK_COMPONENT_ALLOWANCE)
 from .spark_probe import Driver, Unsupported, host_memory, require_capacity
 from .spark_tensor_views import SparkModelAssets
 from .spark_attention_validation import check_receipt
@@ -281,7 +282,9 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
             "purpose": "explicit S1 functional request; no benchmark condition changed"},
         "artifact_inputs": {"metadata": metadata, "originals": originals, "integrity": integrity,
                             "bundle": bundle, "fixtures": fixtures},
-        "limits": {"shared_host_cap_bytes": 8 * GiB, "physical_available_floor_bytes": 32 * GiB,
+        "limits": {"shared_host_cap_bytes": SPARK_SHARED_CAP, "physical_available_floor_bytes": 32 * GiB,
+            "asset_host_cap_bytes": SPARK_ASSET_CAP, "device_cap_bytes": SPARK_DEVICE_CAP,
+            "conservative_component_allowance_bytes": SPARK_COMPONENT_ALLOWANCE,
             "probe_host_admission_bytes": HOST_ADMISSION, "step_diagnostic_admission_bytes": STEP_DIAGNOSTIC_ADMISSION,
             "report_limit_bytes": REPORT_LIMIT, "reservation_is_RSS_or_OS_limit": False},
         "memory_observations": [], "steps": [], "owned_resources_closed": False, "memory_runtime_closed": False,
@@ -325,7 +328,8 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                 with ExitStack() as stack:
                     stage = "assets"
                     assets = stack.enter_context(SparkModelAssets(paths["metadata"], paths["originals"], paths["integrity"],
-                        workspace=workspace, fixtures=paths["fixtures"]))
+                        workspace=workspace, fixtures=paths["fixtures"],
+                        budget=MemoryBudget(cap=SPARK_ASSET_CAP, owner="spark_model_assets")))
                     if mode == "prepare":
                         stage = "moe_preparation"
                         report["preparation"] = assets.prepare_moe_fixtures()

@@ -256,7 +256,7 @@ class CompositionTests(unittest.TestCase):
         policy = runtime.spark_memory_policy()
         self.assertTrue(policy.unified_device_memory)
         self.assertEqual(policy.device_caps, {0:5 * runtime.GiB})
-        self.assertEqual(policy.host_cap_bytes, 8 * runtime.GiB)
+        self.assertEqual(policy.host_cap_bytes, 12 * runtime.GiB)
         self.assertEqual(policy.available_floor_bytes, 32 * runtime.GiB)
 
     def test_complete_composition_is_lazy_all40_and_explicitly_unqualified(self):

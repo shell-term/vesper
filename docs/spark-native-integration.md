@@ -5,6 +5,33 @@ Active task: [Spark #16](https://github.com/shell-term/vesper/issues/16),
 This report records bounded component evidence. Complete-model text generation,
 practical quality and speed are not yet qualified on Spark.
 
+## S1 integration memory correction: 2026-10-21
+
+Acquisition and integrity registration completed for all 48 pinned originals
+(510,296,708,312 bytes). The first full-model attempt at `ca352867` stopped
+before completing its first input token: opening the first original expert
+store requested a 512 MiB catalog admission while the internal ledger had
+reached 8,327,851,284 bytes against an 8 GiB cap. Recorded physical available
+memory stayed above the 32 GiB reserve; the cap short-circuit did not observe
+physical availability at the exact failing allocation. Owned cleanup passed.
+No response or full-model quality pass was produced.
+The [custody, preparation and failed generation reports](../results/dgx-spark/2026-10-21-s1-text/transport-r01.json)
+are preserved byte-for-byte with their original source/checkout identities.
+
+The ledger intentionally adds conservative legacy component admissions and
+actual unified GPU allocations. Removing either without tracking its real
+ownership would undercount memory. The short text composition now budgets
+12 GiB: 6 GiB for component/control/diagnostic admissions and transient metadata
+(about 5.3 GiB of enumerated allowances), a separately enforced 1 GiB original
+asset budget, and the existing 5 GiB device cap. The allowances can overlap in
+their coverage of payloads; this is a conservative admission ledger, not RSS
+or an OS memory limit. Every allocation still passes the shared cap, pinned
+cap and 32 GiB physical available-memory reserve. A bounded refusal record
+distinguishes cap and physical-pressure failures and survives owned cleanup.
+The change does not cache an unauthenticated catalog, alter model arithmetic,
+or qualify a complete response. Fresh source-bound checks and generation
+remain required after this correction.
+
 ## Original expert: measured on 2026-10-20
 
 Source: `af0112331ace08e44079184f7221fc1ea64a0cea`.
