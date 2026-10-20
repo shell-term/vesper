@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "probe": "whole_model_preparation_capacity_refusal",
+  "status": "capacity_refused",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "case_id": "reasoning-integer",
+  "prompt_tokens": 63,
+  "max_new_tokens": 128,
+  "error": {
+    "type": "OSError",
+    "reason": "Generation preparation would consume the 64 GiB disk reserve",
+    "process_exit_code": 1
+  },
+  "successful_preparation_calls": 69,
+  "sampled_ids_including_any_actual_eos": [
+    2581,
+    1309,
+    3287,
+    16,
+    21017,
+    27438,
+    19075
+  ],
+  "decoded_selected_ids_prefix": "We need answer. Need parse trick",
+  "last_completed_position": 68,
+  "incomplete_attempt": {
+    "position": 69,
+    "last_logged_completed_layer": 21
+  },
+  "complete_plan_produced": false,
+  "completed_preparation_receipt_produced": false,
+  "original_reference_execution_run": false,
+  "independent_native_comparison_run": false,
+  "quality_scored": false,
+  "actual_eos_reached": false,
+  "observed_attempt_source": {
+    "git_head": "dae9b94aefaf49b369dae4ede0db8d6e062e2995",
+    "clean_checkout_observed_before_launch_and_after_exit": true,
+    "execution_context_receipt_produced": false,
+    "basis": "live checkout observations; no retrospective execution receipt"
+  },
+  "private_log": {
+    "bytes": 304098,
+    "sha256": "d59adddd7f9386481457716af0343a702cf8eea6e6bee76579c42fe10706f052",
+    "published": false,
+    "omission_reason": "contains private traceback paths"
+  },
+  "owned_expert_objects_retained": 3375,
+  "new_objects_imported": 2942,
+  "owned_packed_payload_bytes_retained": 63452160000,
+  "new_packed_payload_bytes_imported": 55311482880,
+  "owned_staging_empty_after_exit": true,
+  "mid_run_process_observation": {
+    "kind": "read_only_external_preparation_observation",
+    "captured_utc": "2026-10-20T07:42:35.2470111Z",
+    "matched_own_processes": 2,
+    "process_usage": [
+      {
+        "WorkingSet64": 4325376,
+        "PeakWorkingSet64": 4366336,
+        "PrivateMemorySize64": 839680
+      },
+      {
+        "WorkingSet64": 8732950528,
+        "PeakWorkingSet64": 9213485056,
+        "PrivateMemorySize64": 21472243712
+      }
+    ],
+    "qualification_produced": false,
+    "observation": "Filtered CIM query matched only the exact preparation module/run/case arguments; both launcher and child are retained. No PID or command line is published. This is a mid-run observation, not a completed execution receipt or cleanup proof."
+  },
+  "failure_record_operation": "inspection_of_failed_attempt_log_and_retained_object_metadata",
+  "new_model_execution_run_in_this_writer": false
+}

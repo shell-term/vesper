@@ -1,0 +1,97 @@
+{
+  "actual_copy_execution_receipt": "migration.json",
+  "copied_expert_objects": 3375,
+  "failed_preparation": {
+    "case_id": "reasoning-integer",
+    "complete_plan_produced": false,
+    "prompt_tokens": 63,
+    "quality_scored": false,
+    "sampled_ids": 7,
+    "successful_calls": 69
+  },
+  "files": {
+    "capacity-failure.json": {
+      "bytes": 2667,
+      "sha256": "a737c497d7935e0ccd4d1dd6ec25b42b0e0703f0ea0f70c72d3c8fbedd26cc23"
+    },
+    "migration.json": {
+      "bytes": 1018411,
+      "sha256": "e67b58d3b0e30d9b73bbb9e72a8f885cc613fd376d92143cf9833146a0bd59b1"
+    }
+  },
+  "model_quality_comparison_run": false,
+  "new_model_execution_run_in_summary_writer": false,
+  "packed_payload_bytes": 63452160000,
+  "probe": "pc_expert_bank_capacity_and_verified_ssd_copy_summary",
+  "reasoning_task_complete": false,
+  "schema_version": 1,
+  "scope": "failed preparation capacity inspection and exact file copy; no reasoning quality gate",
+  "source_file_bytes_deleted": 0,
+  "source_original_files_remaining": 6750,
+  "source_retirement_requested": false,
+  "source_storage": {
+    "active_bank": "pc-heterogeneous/expert-bank-v2",
+    "config_sha256": "e80193e45c2121d4be45daed31100bcc5fed4bb256cea49b9d0a03543204314d",
+    "disk_available_floor_bytes": 68719476736,
+    "kind": "vesper_pc_source_root_identity",
+    "maximum_mounted_banks": 2,
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "mounts": [
+      {
+        "logical_prefix": "pc-heterogeneous/expert-bank-v1",
+        "marker": {
+          "kind": "vesper_owned_pc_expert_bank",
+          "logical_prefix": "pc-heterogeneous/expert-bank-v1",
+          "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+          "packed_payload_cap_bytes": 68719476736,
+          "platform": "pc-heterogeneous",
+          "profile": "native",
+          "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+          "schema_version": 1,
+          "store_id": "ce8cca377d0542609b29d0e7148488ee"
+        },
+        "marker_sha256": "52ee0f84ec7fe329fa6eac81f6384efc445eeaf312449638c5305c730739a799"
+      },
+      {
+        "logical_prefix": "pc-heterogeneous/expert-bank-v2",
+        "marker": {
+          "kind": "vesper_owned_pc_expert_bank",
+          "logical_prefix": "pc-heterogeneous/expert-bank-v2",
+          "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+          "packed_payload_cap_bytes": 68719476736,
+          "platform": "pc-heterogeneous",
+          "profile": "native",
+          "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+          "schema_version": 1,
+          "store_id": "74d041ceccc6402096e4740a868fc703"
+        },
+        "marker_sha256": "df04bdce83e3adac65a1990dc7b8919c58d198d98bcc950f304e4add04bba8a2"
+      }
+    ],
+    "per_bank_packed_payload_cap_bytes": 68719476736,
+    "platform": "pc-heterogeneous",
+    "profile": "native",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "schema_version": 1
+  },
+  "status": "pass",
+  "summary_operation": "file_bound_evidence_publication",
+  "tool_task_complete": false,
+  "verified_file_bytes": 63467411542,
+  "verified_files": 6750,
+  "weight_bytes_converted": 0,
+  "workspace_context": {
+    "binding_id": "d8ba9a395cbd47b69ba549fa5d13ed14",
+    "created_at": "2026-10-20T09:20:44.673439+00:00",
+    "dirty_diff_sha256": "70c2328bc951bbcaa2a8a7178919438b57762c27b26400d6655ac47b6814cb10",
+    "git_head": "461ba64b1bae140c3d0fa57c291fbb8c2bde507c",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "pc-heterogeneous",
+    "profile": "native",
+    "registry_sha256": "62c940bcbae1587ad43f67a2080aa08597abb92071de8844a6eea1810215427e",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "pc-expert-ssd-evidence-publication-20261020",
+    "schema_version": 1
+  }
+}

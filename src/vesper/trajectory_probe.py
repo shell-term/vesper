@@ -9,10 +9,12 @@ import re
 
 from .memory import RuntimeMemory,MemoryPolicy
 from .resources import GiB
-from .trajectory_evidence import read,validate_original,validate_native
+from .trajectory_evidence import read,validate_original,validate_native,load_plan
 from .trajectory_workspace import run_path,migrate_input,own_evidence
 from .model_artifacts import digest
 from .source_roots import source_scope
+from .trajectory_space import capture_admission,REPORT_BYTES
+from .generation_assets import reserve_disk
 
 
 def main():
@@ -40,6 +42,9 @@ def main():
     handle=None
     try:
         with source_scope(a.artifacts) as storage:
+            admission=None
+            if a.operation!='prepare':
+                admission=capture_admission(load_plan(a.artifacts,run));reserve_disk(run,admission)
             if a.operation=='reference':
                 if a.nvrtc_bin is not None:
                     if os.name!='nt':p.error('Explicit NVRTC DLL preload is Windows-only')
@@ -58,7 +63,9 @@ def main():
                 report['memory_after_policy_close']=policy.snapshot()
                 if a.operation=='native':validate_native(report,run,original,raw,reference_run)
             report['source_storage']=storage.public()
+            if admission is not None:report['case_output_disk_admission_bytes']=admission
         raw=(json.dumps(report,indent=2)+'\n').encode()
+        if len(raw)>REPORT_BYTES:raise ValueError('Trajectory report exceeds its admitted metadata bound')
         receipt=workspace.stamp_result({'probe':'pc_trajectory_execution_receipt','status':'pass','operation':a.operation,
             'raw_report':{'file':name,'bytes':len(raw),'sha256':digest(raw)},'scope':report['scope']},initial_context=context)
         with (run/name).open('xb') as stream:stream.write(raw)

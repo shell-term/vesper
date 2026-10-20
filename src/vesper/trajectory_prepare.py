@@ -31,6 +31,7 @@ from .sequence import MAX_EMBEDDINGS, MAX_ROWS, scope
 from .sequence_assets import request
 from .tokenizer import PinnedTokenizer
 from .trajectory_workspace import select,bank_path,bank_sources
+from .trajectory_space import preparation_admission,REPORT_BYTES
 
 
 class PlanningMoE(PreparedMoE):
@@ -66,7 +67,7 @@ def prepare(root,run,*,case_id='coding-python-expression',progress=None):
     if not run.resolve().is_relative_to((root/'pc-heterogeneous/trajectories').resolve()):raise ValueError('Expected a bound PC whole-model trajectory run')
     run.mkdir(parents=True,exist_ok=True)
     if (run/'plan.json').exists():raise FileExistsError('Refusing to replace a complete whole-model preparation')
-    reserve_disk(run,8*GiB)
+    run_admission=preparation_admission(root);reserve_disk(run,run_admission)
     case,req=request(case_id);bindings=json.loads((root/'backbone-controls.json').read_bytes())
     started=time.perf_counter()
     with ExitStack() as stack:
@@ -98,6 +99,7 @@ def prepare(root,run,*,case_id='coding-python-expression',progress=None):
             with (run/f'indices/layer{l}.json').open('xb') as stream:stream.write((path/'manifest.json').read_bytes())
             experts[str(l)]={'ids':sorted(p.available),'store':path.resolve().relative_to(root.resolve()).as_posix(),**receipt}
         report={'schema_version':1,'probe':'whole_model_trajectory_artifact_preparation','status':'pass','model':MODEL,'revision':REVISION,
+            'run_file_disk_admission_bytes':run_admission,
             'scope':scope(),'case':case,'request':{'prompt':req.prompt,'max_new_tokens':req.max_new_tokens,'eos_id':req.eos_id},
             'temperature':.7,'seed':2026,'layers':list(LAYERS),'bindings_sha256':bindings['bindings_sha256'],'output_fixture':head_manifest,
             'tokenizer':engine.tokenizer_identity,'assets':prepared_assets,'experts':experts,'calls':calls,'completion':session.summary(),
@@ -106,5 +108,7 @@ def prepare(root,run,*,case_id='coding-python-expression',progress=None):
             'original_reference_execution_run':False,'quality_scored':False,'transaction':engine.transaction.stats()}
     report['compiler_after_close']=cache.stats();report['bank_after_close']=bank.stats()
     report['plan_sha256']=canonical(report)
-    with (run/'plan.json').open('xb') as stream:stream.write((json.dumps(report,indent=2)+'\n').encode())
+    raw=(json.dumps(report,indent=2)+'\n').encode()
+    if len(raw)>REPORT_BYTES:raise ValueError('Preparation plan exceeds its admitted metadata bound')
+    with (run/'plan.json').open('xb') as stream:stream.write(raw)
     return report

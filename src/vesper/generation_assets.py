@@ -47,9 +47,11 @@ def checked_cache(path, source, fetch):
         if m.get("source") != source or m.get("sha256") != digest(raw): raise ValueError("Cached original generation row differs")
     else:
         raw = fetch(); m = {"source": source, "sha256": digest(raw)}
+        metadata=(json.dumps(m)+"\n").encode()
+        if len(metadata)>4096:raise ValueError("Original row cache metadata exceeds its bound")
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("xb") as file: file.write(raw)
-        meta.write_bytes((json.dumps(m) + "\n").encode())
+        meta.write_bytes(metadata)
     if len(raw) != size: raise ValueError("Original generation row extent differs")
     return raw, m
 
@@ -131,7 +133,9 @@ class PlanningRows:
         m = {"kind": "original_engram_selected_rows", "model": MODEL, "revision": REVISION, "catalog_sha256": CATALOG_SHA256,
             "layer": self.layer, "rows": entries, "record_bytes": 512, "file_bytes": size, "original_payload_bytes": len(entries) * 264,
             "logical_rows_per_record": 1, "physical_alignment_bytes": 4096, "maximum_rows": self.max_rows}
-        (directory / "manifest.json").write_bytes((json.dumps(m, indent=2) + "\n").encode())
+        metadata=(json.dumps(m,indent=2)+"\n").encode()
+        if len(metadata)>12*MiB:raise ValueError("Original selected-row manifest exceeds its bound")
+        (directory / "manifest.json").write_bytes(metadata)
         self.manifest = m
         return m
 

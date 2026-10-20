@@ -25,6 +25,18 @@ space, uses at most four expert owners/eight transfers, and preserves every
 original weight/scale byte. Host-memory caps and the 32 GiB available-RAM floor
 are unchanged.
 
+Run files and expert payloads have separate admissions. When the active bank is
+on another filesystem, the preparation run admits **1 GiB** on its own volume:
+the bounded embedding/row caches, aligned frozen rows, two copies of the forty
+index manifests, capped plan/report metadata, scratch and progress allowance
+sum to less than that. Co-located run/bank storage retains the earlier 8 GiB
+preparation admission. Each independent capture separately admits its sealed
+actual call count times the 4 MiB per-call maximum, plus 64 MiB for its report
+and 4 MiB for its context. Plans/reports and row metadata refuse their bounds
+before publication. These checks preserve the **64 GiB available-disk floor**;
+they are cooperative admissions, not OS quotas. The task and output budget do
+not change when storage moves.
+
 The [source resolver](../src/vesper/source_roots.py) rejects unregistered roots,
 foreign markers, overlapping roots, changed configuration, traversal and linked
 mounts. A process lease prevents cooperating PC captures and migration from
@@ -52,6 +64,16 @@ Returned receipts describe verified file relocation. They are not GPU execution,
 answer scoring or a model-quality gate. Their source context identifies the
 actual migration; later model captures retain their own execution contexts and
 bind the selected source-root identity.
+
+The [file-bound PC evidence](../results/pc-heterogeneous/2026-10-20-expert-bank-ssd/summary.json)
+retains the failed preparation inspection and the actual independent file-copy
+receipt. The copy verifies **3,375 objects / 63,452,160,000 packed payload bytes**
+and **63,467,411,542 total file bytes**, with all **6,750 original source files
+retained** and **zero source bytes deleted or weight bytes converted**. Its
+execution context records source `461ba64`; the summary is explicitly metadata
+publication. The earlier failed GPU preparation has no completed execution
+receipt and is not retrospectively stamped as a successful run. Reasoning
+quality remains open until a fresh complete original/native comparison passes.
 
 ## Reproduction
 
