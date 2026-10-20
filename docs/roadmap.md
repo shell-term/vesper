@@ -1,5 +1,10 @@
 # Roadmap and progress tracking
 
+This M0..M3 roadmap is the **PC track**. Spark uses separate S0..S3 milestones
+and its [own entry](../platforms/dgx-spark/README.md). Select the target through
+[workspace rules](../platforms/README.md) before reading/updating progress.
+Shared code does not transfer platform qualification.
+
 [Issues](https://github.com/shell-term/vesper/issues) are the source of task state.
 [Milestones](https://github.com/shell-term/vesper/milestones) group acceptance
 gates. This document explains their scope and workflow; it does not duplicate a

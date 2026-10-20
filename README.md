@@ -1,5 +1,9 @@
 # Vesper
 
+**Platform entries:** [Consumer NVIDIA PC](platforms/pc-heterogeneous/README.md) ·
+[DGX Spark](platforms/dgx-spark/README.md). The historical status below describes
+PC research, not Spark qualification. Start with [workspace rules](platforms/README.md).
+
 **Big models. Original weights. Your hardware.**
 
 Vesper is building a native-precision Mixture-of-Experts inference engine across
