@@ -74,6 +74,11 @@ after inspection. This feedback is not a cyclic GitHub blocking dependency.
 
 ### Official-benchmark subsets and final coverage
 
+The executable CPU preparation/grading/comparison/estimate commands and current
+finite proposal are in [the small evaluation guide](spark-small-evaluation.md).
+Implementation and validation boundaries are recorded in
+[short-loop progress](spark-short-loop-progress.md).
+
 On 2026-10-21 the user adopted fixed small subsets of official-benchmark
 questions for the development loop, with periodic checks on held-out questions.
 Compare the pinned original model revision

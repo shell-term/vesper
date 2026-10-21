@@ -29,7 +29,9 @@ from .generation import TextGeneration
 from .memory import RuntimeMemory, process_memory
 from .messages import EOS, encode_messages, parse_completion
 from .resources import MemoryBudget, MiB, GiB
-from .sequence import MAX_CALLS, SequenceRequest, scope as sequence_scope
+from .sequence import MAX_CALLS
+from .spark_text_request import (SparkTextLimits, SparkTextRequest, MAX_COMPLETION_CHARS,
+                                 MAX_USER_PROMPT_CHARS)
 from .spark_attention import load_candidate
 from .spark_backbone_runtime import (open_spark_backbone, spark_memory_policy, TARGET,
     SPARK_SHARED_CAP, SPARK_ASSET_CAP, SPARK_DEVICE_CAP, SPARK_COMPONENT_ALLOWANCE)
@@ -97,6 +99,8 @@ def _guard(workspace, run_id):
         raise ValueError("Expected a simple lowercase run identity")
     workspace.check()
     workspace.check_runtime_module(__file__, "src/vesper/spark_text_probe.py")
+    from . import spark_text_request as request_module
+    workspace.check_runtime_module(request_module.__file__, "src/vesper/spark_text_request.py")
     from . import workspace as workspace_module
     workspace.check_runtime_module(workspace_module.__file__, "src/vesper/workspace.py")
     context = workspace.context(run_id)
@@ -106,14 +110,14 @@ def _guard(workspace, run_id):
     return context
 
 
-def _validate(mode, prompt, max_new_tokens, temperature, seed):
+def _validate(mode, prompt, max_new_tokens, temperature, seed, limits):
     if mode not in ("prepare", "generate"):
         raise ValueError("Unknown local Spark text mode")
-    if (type(prompt) is not str or not prompt or len(prompt) > 4000
-            or type(max_new_tokens) is not int or not 1 <= max_new_tokens <= MAX_CALLS
+    if (type(prompt) is not str or not prompt or len(prompt) > MAX_USER_PROMPT_CHARS
             or type(temperature) not in (float, int) or not math.isfinite(temperature) or not 0 <= temperature <= 1000
             or type(seed) is not int or not 0 <= seed < 2**64):
-        raise ValueError("Expected bounded text, at most 512 generated tokens, temperature in [0,1000] and uint64 seed")
+        raise ValueError("Expected bounded text, temperature in [0,1000] and uint64 seed")
+    limits.admission(max_new_tokens)
 
 
 def _array_hash(value):
@@ -272,7 +276,7 @@ def _finish_completion(report, session, tokenizer):
     report["eos_response_complete"] = summary["stop_reason"] == "eos"
     report["parsed_completion"] = None
     if report["eos_response_complete"]:
-        parsed = parse_completion(serialized, thinking_mode="chat")
+        parsed = parse_completion(serialized, thinking_mode=report["request"]["thinking_mode"])
         report["parsed_completion"] = parsed
         if not parsed["content"].strip() or parsed["tool_calls"]:
             raise ValueError("This text-only functional request requires a nonempty plain response")
@@ -308,37 +312,49 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
             attention_reference_result="s1/attention/reference-r02.json",
             attention_receipt_result="s1/attention/native-validation-r01.json",
             prompt=DEFAULT_PROMPT, max_new_tokens=64, temperature=0., seed=2026, progress=None, max_model_calls=MAX_CALLS,
-            reuse_profile="baseline"):
+            reuse_profile="baseline", thinking_mode="chat", reasoning_effort=None,
+            max_input_tokens=MAX_CALLS, context_tokens=MAX_CALLS, max_duration_seconds=None):
     """Return an unstamped report after resource cleanup; the CLI writes it."""
     initial = _guard(workspace, run_id)
-    _validate(mode, prompt, max_new_tokens, temperature, seed)
+    limits = SparkTextLimits(context_tokens, max_input_tokens, max_model_calls, max_duration_seconds)
+    _validate(mode, prompt, max_new_tokens, temperature, seed, limits)
     if reuse_profile not in ("baseline", "s2"):
         raise ValueError("Expected baseline or s2 native preparation reuse")
-    if type(max_model_calls) is not int or not 1 <= max_model_calls <= MAX_CALLS:
-        raise ValueError("Expected a bounded model-call budget up to 512")
+    if (thinking_mode not in ("chat", "thinking") or
+            (reasoning_effort is not None and (type(reasoning_effort) is not int or not 1 <= reasoning_effort <= 100))):
+        raise ValueError("Expected chat/thinking and an optional reasoning effort in [1,100]")
+    if thinking_mode == "chat" and reasoning_effort is not None:
+        raise ValueError("Reasoning effort applies only to thinking mode")
     if mode == "generate" and any(not isinstance(value, str) or not value for value in
                                    (attention_reference_result, attention_receipt_result)):
         raise ValueError("Generation requires both current Attention reference and native validation results")
     paths = {name: workspace.artifact_path(value) for name, value in
              (("metadata", metadata), ("originals", originals), ("integrity", integrity), ("bundle", bundle), ("fixtures", fixtures))}
     messages = [{"role": "user", "content": prompt}]
-    serialized = encode_messages(messages, thinking_mode="chat")
+    serialized = encode_messages(messages, thinking_mode=thinking_mode, reasoning_effort=reasoning_effort)
+    host_admission = HOST_ADMISSION * limits.metadata_multiplier
+    report_limit = REPORT_LIMIT * limits.metadata_multiplier
     report = {"schema": SCHEMA, "mode": mode, "status": "unsupported", "model": MODEL, "revision": REVISION,
-        "execution_target": TARGET, "scope": "short native all40 text functional request", "sequence_scope": sequence_scope(),
+        "execution_target": TARGET,
+        "scope": ("short native all40 text functional request" if context_tokens == MAX_CALLS else
+                  "bounded native all40 text functional request"), "sequence_scope": limits.scope(),
         "functional_acceptance": False, "eos_response_complete": False, "full_model_quality_qualified": False,
         "original_kernel_parity_qualified": False, "general_performance_claim": False,
         "network_in_forward": False, "checkpoint_download_started": False, "automatic_retry": False,
         "request": {"messages": messages, "serialized_chat": serialized, "user_prompt": prompt,
-            "thinking_mode": "chat", "thinking_enabled": False, "temperature": float(temperature), "seed": seed,
+            "thinking_mode": thinking_mode, "thinking_enabled": thinking_mode == "thinking",
+            "reasoning_effort": (75 if reasoning_effort is None else reasoning_effort) if thinking_mode == "thinking" else None,
+            "temperature": float(temperature), "seed": seed,
             "max_new_tokens": max_new_tokens, "maximum_model_calls": max_model_calls,
-            "purpose": "explicit S1 functional request; no benchmark condition changed"},
+            "requested_limits": limits.admission(max_new_tokens), "admitted_limits": None,
+            "purpose": "explicit bounded functional request; no benchmark condition changed"},
         "artifact_inputs": {"metadata": metadata, "originals": originals, "integrity": integrity,
                             "bundle": bundle, "fixtures": fixtures},
         "limits": {"shared_host_cap_bytes": SPARK_SHARED_CAP, "physical_available_floor_bytes": 32 * GiB,
             "asset_host_cap_bytes": SPARK_ASSET_CAP, "device_cap_bytes": SPARK_DEVICE_CAP,
             "conservative_component_allowance_bytes": SPARK_COMPONENT_ALLOWANCE,
-            "probe_host_admission_bytes": HOST_ADMISSION, "step_diagnostic_admission_bytes": STEP_DIAGNOSTIC_ADMISSION,
-            "report_limit_bytes": REPORT_LIMIT, "reservation_is_RSS_or_OS_limit": False},
+            "probe_host_admission_bytes": host_admission, "step_diagnostic_admission_bytes": STEP_DIAGNOSTIC_ADMISSION,
+            "report_limit_bytes": report_limit, "reservation_is_RSS_or_OS_limit": False},
         "memory_observations": [], "steps": [], "owned_resources_closed": False, "memory_runtime_closed": False,
         "attention_qualification": None}
     report["preparation_reuse_profile"] = reuse_profile
@@ -346,6 +362,21 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
     memory, admission = None, None
     engine = assets = tokenizer = session = result = None
     stage, started = "platform", time.perf_counter()
+    class DurationBudgetExceeded(Exception):
+        pass
+    def duration_exceeded():
+        return max_duration_seconds is not None and time.perf_counter() - started >= max_duration_seconds
+    def check_duration():
+        if duration_exceeded():
+            raise DurationBudgetExceeded()
+    def record_error(error):
+        if isinstance(error, DurationBudgetExceeded):
+            report.update(status="partial_duration_budget", duration_budget_exceeded=True,
+                          duration_budget_stop_stage=stage)
+            if memory is None:
+                report.update(owned_resources_closed=True, memory_runtime_closed=True)
+        else:
+            _failed(report, workspace, run_id, error, stage, initial)
     def mark(name):
         report["timing_marks_seconds_from_start"][name] = time.perf_counter() - started
     def update(event=None):
@@ -369,7 +400,8 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
             raise Unsupported("Spark text execution requires Linux AArch64")
         report["observed_platform"] = {"system": "Linux", "architecture": platform.machine().lower(),
                                       "single_physical_pool": True}
-        check(HOST_ADMISSION)
+        check_duration()
+        check(host_admission)
         if mode == "generate":
             # Authenticate both current source-bound reports and the immutable
             # bundle before assets, CUDA inventory, or any model operator opens.
@@ -384,10 +416,11 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                 "case_count": len(proof["cases"]), "fault_count": len(proof["faults"]),
                 "full_model_quality_qualified": False}
         stage = "memory_runtime"
+        check_duration()
         memory = RuntimeMemory(spark_memory_policy())
         with memory:
-            admission = MemoryBudget(cap=HOST_ADMISSION + STEP_DIAGNOSTIC_ADMISSION, owner="spark_text_probe")
-            admission.acquire(HOST_ADMISSION, category="diagnostics")
+            admission = MemoryBudget(cap=host_admission + STEP_DIAGNOSTIC_ADMISSION, owner="spark_text_probe")
+            admission.acquire(host_admission, category="diagnostics")
             try:
                 with ExitStack() as stack:
                     stage = "assets"
@@ -403,12 +436,14 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                         workspace=workspace, fixtures=paths["fixtures"],
                         budget=MemoryBudget(cap=SPARK_ASSET_CAP, owner="spark_model_assets"), **reuse))
                     mark("assets_open_complete")
+                    check_duration()
                     if mode == "prepare":
                         stage = "moe_preparation"
                         report["preparation"] = assets.prepare_moe_fixtures()
                         report["status"] = "local_moe_prepared"
                         report["cuda_inventory_requested"] = False
                     else:
+                        check_duration()
                         stage = "prepared_local_assets"
                         for layer in range(40):
                             assets.moe_paths(layer)
@@ -430,11 +465,15 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                         eos = tokenizer.encode(EOS)
                         if len(eos) != 1 or tokenizer.decode(eos) != EOS:
                             raise ValueError("Original tokenizer EOS must be one preserved special token")
-                        request = SequenceRequest(serialized, max_new_tokens=max_new_tokens, eos_id=eos[0])
+                        request = SparkTextRequest(serialized, max_new_tokens=max_new_tokens, eos_id=eos[0], limits=limits)
                         report["request"]["prompt_ids"] = list(request.encode(tokenizer))
                         report["request"]["eos_id"] = eos[0]
+                        report["request"]["admitted_limits"] = {**limits.admission(max_new_tokens),
+                            "actual_input_tokens": len(report["request"]["prompt_ids"]),
+                            "maximum_required_model_calls": len(report["request"]["prompt_ids"]) + max_new_tokens - 1}
                         report["tokenizer"] = {"version": TOKENIZERS_VERSION, "vocabulary": len(tokenizer)}
                         stage = "model_open"
+                        check_duration()
                         mark("model_open_start")
                         update({"phase":"model_open"})
                         reuse = {} if reuse_profile == "baseline" else {"reuse_profile": reuse_profile}
@@ -450,9 +489,10 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                         report["status"] = "running"
                         with RouteObserver(engine) as observer:
                             while not session.done:
+                                check_duration()
                                 if session.position >= max_model_calls:
                                     break
-                                if session.position >= MAX_CALLS:
+                                if session.position >= limits.context_tokens:
                                     raise ValueError("Serial model calls exceeded the explicit functional scope")
                                 check(STEP_DIAGNOSTIC_ADMISSION)
                                 admission.acquire(STEP_DIAGNOSTIC_ADMISSION, category="diagnostics")
@@ -466,6 +506,9 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                                     report["steps"].append(_step_summary(meta, result, observer.current,
                                         time.perf_counter() - step_start))
                                     update({"phase":"model_call_complete", "last_model_call_seconds":time.perf_counter()-step_start})
+                                    if meta.get("selected_id") is not None and len(tokenizer.decode(list(session.generated))) > MAX_COMPLETION_CHARS:
+                                        report["completion_character_budget_exceeded"] = True
+                                        break
                                 except Exception:
                                     report["failed_step"] = {"driver_position_after_failure": session.position,
                                         "route_io": observer.current.copy(),
@@ -477,9 +520,16 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                                 check()
                         stage = "completion_parse"
                         mark("generation_complete")
-                        _finish_completion(report, session, tokenizer)
+                        if report.get("completion_character_budget_exceeded"):
+                            report["completion"] = session.summary()
+                            report["completion_serialized_including_eos"] = tokenizer.decode(list(session.generated))
+                            report["parsed_completion"] = None
+                        else:
+                            _finish_completion(report, session, tokenizer)
                         report["engine_before_close"] = engine.stats()
-                        report["status"] = ("functional_response_complete" if report["eos_response_complete"] else
+                        report["status"] = ("partial_duration_budget" if duration_exceeded() else
+                            "partial_completion_character_budget" if report.get("completion_character_budget_exceeded") else
+                            "functional_response_complete" if report["eos_response_complete"] else
                             "partial_model_call_budget" if not session.done else "partial_max_new_tokens")
                     report["assets_before_close"] = assets.stats()
                     if catalog is not None:
@@ -491,7 +541,7 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                         _finish_completion(report, session, tokenizer)
                     except Exception:
                         pass
-                _failed(report, workspace, run_id, error, stage, initial)
+                record_error(error)
             finally:
                 # Drop all per-call arrays and bound-method owners before the
                 # shared governor checks its remaining resource leases.
@@ -508,11 +558,12 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                 stage = "memory_runtime_cleanup"
         report["memory_runtime_closed"] = True
     except (Exception, KeyboardInterrupt) as error:
-        _failed(report, workspace, run_id, error, stage, initial)
+        record_error(error)
     finally:
         if memory is not None:
             report["memory_after_runtime_close"] = memory.snapshot()
         report["wall_seconds_total"] = time.perf_counter() - started
+        report["duration_budget_exceeded"] = duration_exceeded()
         mark("runtime_cleanup_complete")
         report["process_after_cleanup"] = process_memory()
         try:
@@ -520,7 +571,9 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
         except Exception as error:
             _failed(report, workspace, run_id, error, "post_cleanup_memory", initial)
     clean = report["owned_resources_closed"] and report["memory_runtime_closed"]
-    if not clean and report["status"] in ("functional_response_complete", "local_moe_prepared", "partial_max_new_tokens", "partial_model_call_budget"):
+    if report["duration_budget_exceeded"] and report["status"] in ("functional_response_complete", "local_moe_prepared"):
+        report["status"] = "partial_duration_budget"
+    if not clean and report["status"] in ("functional_response_complete", "local_moe_prepared", "partial_max_new_tokens", "partial_model_call_budget", "partial_duration_budget", "partial_completion_character_budget"):
         report.update(status="failed", reason="Owned Spark runtime cleanup could not be established")
     report["functional_acceptance"] = bool(clean and report["status"] == "functional_response_complete")
     try:
@@ -530,7 +583,7 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
             "generated_ids":report.get("completion",{}).get("selected_ids_including_eos", [])})
     except (Exception, KeyboardInterrupt) as error:
         report["final_progress_failure_type"] = type(error).__name__
-    if len(json.dumps(report, ensure_ascii=False).encode()) > REPORT_LIMIT:
+    if len(json.dumps(report, ensure_ascii=False).encode()) > report_limit:
         raise ValueError("Functional report exceeded its explicit metadata bound")
     workspace.stamp_result({}, run_id=run_id, initial_context=initial)
     return report
@@ -553,6 +606,11 @@ def main(argv=None):
     parser.add_argument("--temperature", type=float, default=0.)
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument("--max-model-calls", type=int, default=MAX_CALLS)
+    parser.add_argument("--max-input-tokens", type=int, default=MAX_CALLS)
+    parser.add_argument("--context-tokens", type=int, default=MAX_CALLS)
+    parser.add_argument("--max-duration-seconds", type=float)
+    parser.add_argument("--thinking-mode", choices=("chat", "thinking"), default="chat")
+    parser.add_argument("--reasoning-effort", type=int)
     parser.add_argument("--reuse-profile", choices=("baseline", "s2"), default="baseline")
     args = parser.parse_args(argv)
     from .workspace import Workspace
@@ -566,7 +624,9 @@ def main(argv=None):
         attention_reference_result=args.attention_reference_result, attention_receipt_result=args.attention_receipt_result, prompt=args.prompt,
         max_new_tokens=args.max_new_tokens, temperature=args.temperature, seed=args.seed,
         progress=ProgressFile(workspace,args.run_id), max_model_calls=args.max_model_calls,
-        reuse_profile=args.reuse_profile)
+        reuse_profile=args.reuse_profile, thinking_mode=args.thinking_mode, reasoning_effort=args.reasoning_effort,
+        max_input_tokens=args.max_input_tokens, context_tokens=args.context_tokens,
+        max_duration_seconds=args.max_duration_seconds)
     path = workspace.write_result(relative, report, run_id=args.run_id, initial_context=initial)
     print(json.dumps({"mode": args.mode, "status": report["status"], "functional_acceptance": report["functional_acceptance"],
                       "result": path.relative_to(workspace.root).as_posix()}))

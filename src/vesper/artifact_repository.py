@@ -5,12 +5,14 @@ small block-digest sidecars. It neither downloads nor duplicates checkpoint data
 """
 
 from collections import OrderedDict
+from contextlib import contextmanager
 import ctypes as C
 import hashlib
 import json
 import os
 from pathlib import Path
 import shutil
+import threading
 
 from .checkpoint import MODEL,REVISION
 from .disk import DirectReader
@@ -25,9 +27,12 @@ class DirectBytes(DirectReader):
     """One aligned anonymous scratch buffer; exact EOF tails, no buffered fallback."""
     def __init__(self,path,budget,capacity=BLOCK):
         self.file_bytes=Path(path).stat().st_size; self.valid_bytes_read=0; self.aligned_bytes_requested=0
+        self._scratch_lock=threading.RLock(); self._scratch_borrowed=False
         super().__init__(path,capacity,budget)
 
-    def read(self,offset,size):
+    def _fill(self,offset,size):
+        if self.handle is None or self.buffer is None:
+            raise RuntimeError('Direct reader is closed')
         if offset<0 or offset%4096 or size<=0 or size%4096 or size>self.capacity or offset>=self.file_bytes:
             raise ValueError('Unaligned, excessive or out-of-file direct artifact read')
         expected=min(size,self.file_bytes-offset)
@@ -42,7 +47,51 @@ class DirectBytes(DirectReader):
             finally: view.release()
         if actual!=expected: raise OSError('Unexpected short direct artifact read')
         self.valid_bytes_read+=actual; self.aligned_bytes_requested+=size
-        return self.array()[:actual].tobytes()
+        return actual
+
+    @contextmanager
+    def _read_view(self,offset,size):
+        """Borrow read-only direct scratch until this scope exits.
+
+        Bulk verification needs no owned payload copy: the existing aligned
+        buffer remains exclusively leased through hashing and publication.
+        The view is invalidated on every exit, including failed verification.
+        A nested read/close/switch cannot overwrite or free the live scratch.
+        This is an internal serial-reader contract, not a persistent cache.
+        """
+        with self._scratch_lock:
+            if self._scratch_borrowed:
+                raise RuntimeError('Direct scratch already has a live read lease')
+            self._scratch_borrowed=True; view=None
+            try:
+                actual=self._fill(offset,size)
+                view=memoryview(self.array())[:actual].toreadonly()
+                yield view
+            finally:
+                if view is not None: view.release()
+                self._scratch_borrowed=False
+
+    def read(self,offset,size):
+        # Row callers retain the existing owned-bytes API and lifetime.
+        with self._scratch_lock:
+            if self._scratch_borrowed:
+                raise RuntimeError('Direct scratch already has a live read lease')
+            actual=self._fill(offset,size)
+            return self.array()[:actual].tobytes()
+
+    def close(self):
+        with self._scratch_lock:
+            if self._scratch_borrowed:
+                raise RuntimeError('Cannot close direct scratch with a live read lease')
+            super().close()
+
+    def switch_file(self,path):
+        with self._scratch_lock:
+            if self._scratch_borrowed:
+                raise RuntimeError('Cannot switch direct scratch with a live read lease')
+            size=Path(path).stat().st_size
+            super().switch_file(path)
+            self.file_bytes=size
 
 
 def register_blob(path,expected,index_path,budget):
@@ -156,8 +205,9 @@ class VerifiedBlob:
 
         The larger capacity is explicit opt-in; legacy row reads retain their
         4 KiB limit. Direct reads include complete 64 KiB integrity blocks and
-        use the existing aligned scratch. Each batch additionally reserves its
-        temporary byte copy and one digest-index page before any payload I/O.
+        use the existing aligned scratch under an exclusive read lease. Each
+        batch additionally reserves one digest-index page before payload I/O;
+        no full-sized temporary payload copy is allocated.
         No payload or index-page cache is added by this path. A failed later
         batch may leave a verified prefix in the caller's target, just as a
         sequence of row reads does; callers publish only after full success.
@@ -175,36 +225,37 @@ class VerifiedBlob:
         batch_capacity=(self.data.capacity//BLOCK)*BLOCK
         for start in range(aligned_start,aligned_end,batch_capacity):
             request=min(batch_capacity,aligned_end-start)
-            temporary=request+4096
+            temporary=4096
             self.budget.acquire(temporary,category='scratch')
-            raw=index_page=data_view=block_view=None
+            index_page=block_view=None
             try:
-                raw=self.data.read(start,request); data_view=memoryview(raw)
-                current_page=None
-                for local in range(0,len(raw),BLOCK):
-                    number=(start+local)//BLOCK; index_offset=number*32
-                    page=(index_offset//4096)*4096
-                    if page!=current_page:
-                        # Drop the previous page before creating its replacement;
-                        # the transient reservation includes exactly one page.
-                        index_page=None
-                        index_page=self.index.read(page,4096)
-                        if hashlib.sha256(index_page).digest()!=self.index_page_hashes[page//4096]:
-                            raise ValueError('Integrity-index page changed after original registration')
-                        current_page=page
-                    expected=index_page[index_offset%4096:index_offset%4096+32]
-                    block_view=data_view[local:min(local+BLOCK,len(raw))]
-                    if hashlib.sha256(block_view).digest()!=expected:
-                        raise ValueError('Original artifact block SHA-256 differs before span publication')
-                    block_view.release(); block_view=None
-                begin=max(offset,start); end=min(offset+size,start+len(raw))
-                if end<=begin:
-                    raise OSError('Original artifact verified span is incomplete')
-                view[begin-offset:end-offset]=data_view[begin-start:end-start]
+                with self.data._read_view(start,request) as data_view:
+                    current_page=None
+                    for local in range(0,len(data_view),BLOCK):
+                        number=(start+local)//BLOCK; index_offset=number*32
+                        page=(index_offset//4096)*4096
+                        if page!=current_page:
+                            # Drop the previous page before creating its replacement;
+                            # the transient reservation includes exactly one page.
+                            index_page=None
+                            index_page=self.index.read(page,4096)
+                            if hashlib.sha256(index_page).digest()!=self.index_page_hashes[page//4096]:
+                                raise ValueError('Integrity-index page changed after original registration')
+                            current_page=page
+                        expected=index_page[index_offset%4096:index_offset%4096+32]
+                        block_view=data_view[local:min(local+BLOCK,len(data_view))]
+                        try:
+                            if hashlib.sha256(block_view).digest()!=expected:
+                                raise ValueError('Original artifact block SHA-256 differs before span publication')
+                        finally:
+                            block_view.release(); block_view=None
+                    begin=max(offset,start); end=min(offset+size,start+len(data_view))
+                    if end<=begin:
+                        raise OSError('Original artifact verified span is incomplete')
+                    view[begin-offset:end-offset]=data_view[begin-start:end-start]
             finally:
                 if block_view is not None: block_view.release()
-                if data_view is not None: data_view.release()
-                raw=index_page=None
+                index_page=None
                 self.budget.release(temporary,category='scratch')
 
     def close(self):

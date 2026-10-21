@@ -80,7 +80,7 @@ class Tokenizer:
         return [1] if text == EOS else list(self.prompt_ids)
 
     def decode(self, ids):
-        return "".join({1: EOS, 4: "4", 5: "bad", 6: "<think>"}.get(i, "x") for i in ids)
+        return "".join({1: EOS, 4: "4", 5: "bad", 6: "<think>", 7: "reason", 8: END_THINK}.get(i, "x") for i in ids)
 
 
 class Assets:
@@ -345,6 +345,132 @@ class TextProbeTests(unittest.TestCase):
         self.assertEqual(events[-1]["generated_tokens"],0)
         self.assertEqual(set(report["steps"][0]["engrams"]),{"1","14"})
         self.assertNotIn("first_selected_output",report["timing_marks_seconds_from_start"])
+
+    def test_thinking_uses_original_prefix_effort_parser_and_feedback(self):
+        Engine.selections = (7, 8, 4, 1)
+        report = self.generate(thinking_mode="thinking", reasoning_effort=100)
+        self.assertTrue(report["functional_acceptance"])
+        request = report["request"]
+        self.assertTrue(request["serialized_chat"].endswith(ASSISTANT + "<think>"))
+        self.assertIn("Reasoning Effort: 100 (range 1-100", request["serialized_chat"])
+        self.assertEqual(request["reasoning_effort"], 100)
+        self.assertTrue(request["thinking_enabled"])
+        self.assertEqual(report["parsed_completion"]["reasoning_content"], "reason")
+        self.assertEqual(report["parsed_completion"]["content"], "4")
+        self.assertEqual(Engine.instances[0].inputs[-3:], [(7, True), (8, True), (4, True)])
+
+    def test_thinking_default_effort_and_missing_terminator_fail_closed(self):
+        report = self.generate(thinking_mode="thinking")
+        self.assertEqual(report["request"]["reasoning_effort"], 75)
+        self.assertEqual(report["status"], "failed")
+        self.assertEqual(report["failure_stage"], "completion_parse")
+        self.assertTrue(report["memory_runtime_closed"])
+        self.assertFalse(report["functional_acceptance"])
+
+    def test_input_output_and_execution_budgets_are_separate_and_serialized(self):
+        Tokenizer.prompt_ids = tuple([10] * 600)
+        report = self.generate(context_tokens=1152, max_input_tokens=700, max_new_tokens=32,
+                               max_model_calls=1, max_duration_seconds=60)
+        self.assertEqual(report["status"], "partial_model_call_budget")
+        limits = report["request"]["admitted_limits"]
+        self.assertEqual(limits["actual_input_tokens"], 600)
+        self.assertEqual(limits["maximum_required_model_calls"], 631)
+        self.assertEqual(limits["input_tokens"], 700)
+        self.assertEqual(limits["generated_tokens_including_eos"], 32)
+        self.assertEqual(limits["model_calls"], 1)
+        self.assertEqual(limits["duration_seconds"], 60)
+        self.assertFalse(limits["silent_truncation"])
+        self.assertEqual(report["sequence_scope"]["maximum_model_calls"], 1152)
+        self.assertFalse(report["sequence_scope"]["extended_context_hardware_qualified"])
+        self.assertEqual(report["limits"]["probe_host_admission_bytes"], 3 * probe.HOST_ADMISSION)
+        self.assertEqual(report["limits"]["shared_host_cap_bytes"], 12 * GiB)
+        self.assertEqual(report["completion"]["calls"], 1)
+
+    def test_invalid_thinking_and_extended_limits_cannot_open_resources(self):
+        for kwargs in ({"thinking_mode": "unknown"}, {"reasoning_effort": 100},
+                       {"thinking_mode": "thinking", "reasoning_effort": True},
+                       {"thinking_mode": "thinking", "reasoning_effort": 101},
+                       {"context_tokens": 1153, "max_duration_seconds": 1},
+                       {"context_tokens": 1152}, {"max_input_tokens": 513},
+                       {"max_duration_seconds": float("inf")}, {"max_duration_seconds": 0}):
+            with self.subTest(kwargs=kwargs), self.assertRaises(ValueError):
+                self.generate(**kwargs)
+        self.assertEqual(Assets.events, [])
+        self.inventory.assert_not_called()
+
+    def test_explicit_input_token_limit_never_truncates_the_prompt(self):
+        Tokenizer.prompt_ids = (10, 11, 12)
+        report = self.generate(max_input_tokens=2)
+        self.assertEqual(report["status"], "failed")
+        self.assertEqual(report["failure_stage"], "tokenizer")
+        self.assertIsNone(report["request"]["admitted_limits"])
+        self.assertEqual(Engine.instances, [])
+
+    def test_duration_budget_stops_between_calls_and_preserves_committed_progress(self):
+        clock = [0.]
+        original = Engine.step
+        def slow(engine, ids, *, sample):
+            result = original(engine, ids, sample=sample)
+            clock[0] = 11.
+            return result
+        with patch.object(probe.time, "perf_counter", side_effect=lambda: clock[0]), \
+             patch.object(Engine, "step", slow):
+            report = self.generate(max_duration_seconds=10)
+        self.assertEqual(report["status"], "partial_duration_budget")
+        self.assertTrue(report["duration_budget_exceeded"])
+        self.assertEqual(report["completion"]["calls"], 1)
+        self.assertEqual(Engine.instances[0].calls, 1)
+        self.assertTrue(report["memory_runtime_closed"])
+        self.assertTrue(report["owned_resources_closed"])
+        self.assertFalse(report["functional_acceptance"])
+
+    def test_duration_in_cleanup_cannot_turn_a_late_response_into_a_budget_pass(self):
+        clock = [0.]
+        original = Engine.__exit__
+        def slow_close(engine, *error):
+            original(engine, *error)
+            clock[0] = 11.
+        with patch.object(probe.time, "perf_counter", side_effect=lambda: clock[0]), \
+             patch.object(Engine, "__exit__", slow_close):
+            report = self.generate(max_duration_seconds=10)
+        self.assertTrue(report["eos_response_complete"])
+        self.assertEqual(report["status"], "partial_duration_budget")
+        self.assertFalse(report["functional_acceptance"])
+        self.assertTrue(report["memory_runtime_closed"])
+
+    def test_preparation_or_its_cleanup_overrun_retains_details_but_returns_partial(self):
+        for delayed in ("prepare_moe_fixtures", "__exit__"):
+            with self.subTest(delayed=delayed):
+                clock = [0.]
+                original = getattr(Assets, delayed)
+                def slow(owner, *args):
+                    value = original(owner, *args)
+                    clock[0] = 11.
+                    return value
+                with patch.object(probe.time, "perf_counter", side_effect=lambda: clock[0]), \
+                     patch.object(Assets, delayed, slow):
+                    report = probe.collect("prepare", self.ws, run_id="prepare-budget-r01", max_duration_seconds=10)
+                self.assertEqual(report["status"], "partial_duration_budget")
+                self.assertTrue(report["duration_budget_exceeded"])
+                self.assertEqual(report["preparation"]["layers"], list(range(40)))
+                self.assertEqual(report["preparation"]["network_payload_bytes"], 0)
+                self.assertTrue(report["memory_runtime_closed"])
+                self.assertTrue(report["owned_resources_closed"])
+                self.assertFalse(report["functional_acceptance"])
+                self.assertEqual(report["memory_after_runtime_close"]["charged_host_bytes"], 0)
+        self.inventory.assert_not_called()
+        self.assertEqual(Engine.instances, [])
+
+    def test_parser_character_budget_retains_output_and_never_claims_eos_success(self):
+        Engine.selections = (5, 5, 1)
+        with patch.object(probe, "MAX_COMPLETION_CHARS", 4):
+            report = self.generate()
+        self.assertEqual(report["status"], "partial_completion_character_budget")
+        self.assertEqual(report["completion"]["selected_ids_including_eos"], [5, 5])
+        self.assertEqual(report["completion_serialized_including_eos"], "badbad")
+        self.assertIsNone(report["parsed_completion"])
+        self.assertFalse(report["functional_acceptance"])
+        self.assertTrue(report["memory_runtime_closed"])
 
     def test_atomic_live_progress_retains_counters_and_refuses_a_prior_run(self):
         live=probe.ProgressFile(self.ws,"live-r01")
@@ -656,6 +782,20 @@ class TextProbeTests(unittest.TestCase):
             code = probe.main(["generate", "--run-id", "partial-r01", "--max-new-tokens", "1"])
         self.assertEqual(code, 2)
         self.assertFalse(self.ws.writes[0]["functional_acceptance"])
+
+    def test_cli_records_explicit_thinking_and_independent_request_bounds(self):
+        with patch("vesper.workspace.Workspace.open", return_value=self.ws), redirect_stdout(io.StringIO()):
+            code = probe.main(["generate", "--run-id", "thinking-cli-r01", "--thinking-mode", "thinking",
+                "--reasoning-effort", "25", "--context-tokens", "1152", "--max-input-tokens", "700",
+                "--max-new-tokens", "32", "--max-model-calls", "1", "--max-duration-seconds", "60"])
+        self.assertEqual(code, 2)
+        report = self.ws.writes[0]
+        self.assertEqual(report["status"], "partial_model_call_budget")
+        self.assertEqual(report["request"]["thinking_mode"], "thinking")
+        self.assertEqual(report["request"]["reasoning_effort"], 25)
+        self.assertEqual(report["request"]["admitted_limits"]["model_calls"], 1)
+        self.assertEqual(report["request"]["admitted_limits"]["input_tokens"], 700)
+        self.assertEqual(report["request"]["admitted_limits"]["context_tokens"], 1152)
 
 
 if __name__ == "__main__":

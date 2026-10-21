@@ -19,6 +19,8 @@ Evidence: [S0 management and bounded hardware report](../../docs/spark-platform-
 S1 execution evidence: [native integration report](../../docs/spark-native-integration.md).
 The report separates short-text execution, component parity and practical-quality gates.
 S2 evidence: [measured preparation and candidate progress](../../docs/spark-s2-preparation.md).
+Current implementation: [short-loop progress](../../docs/spark-short-loop-progress.md)
+and [small official-benchmark protocol](../../docs/spark-small-evaluation.md).
 It records bounded component/all-layer partial checks and unadopted codec/audit
 experiments; S2, ordinary EOS requalification and image input remain open.
 
