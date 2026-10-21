@@ -42,6 +42,26 @@ def load_toolkit_library(name):
     raise RuntimeError(f'Installed CUDA {name} library was not found in the system loader or toolkit layouts')
 
 
+def _compiler_library_identity(lib):
+    """Private, process-local identity; inability to identify means no reuse."""
+    handle, name = getattr(lib, '_handle', None), getattr(lib, '_name', None)
+    if type(handle) is not int or not isinstance(name, str): return None
+    try:
+        path = Path(name)
+        if not path.is_absolute() or not path.is_file():
+            address = C.cast(lib.nvrtcVersion, C.c_void_p).value
+            for line in Path('/proc/self/maps').read_text().splitlines():
+                fields = line.split(maxsplit=5)
+                begin, end = (int(value, 16) for value in fields[0].split('-'))
+                if begin <= address < end and len(fields) == 6:
+                    path = Path(fields[5]); break
+        path = path.resolve(strict=True); info = path.stat()
+        if not path.is_file(): return None
+        return handle, str(path), info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns
+    except (OSError, TypeError, ValueError, C.ArgumentError):
+        return None
+
+
 class Driver:
     @observe_external('driver_initialization')
     def __init__(self):
@@ -296,30 +316,55 @@ def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: b
         source += b"\n" + (Path(__file__).parent / "kernels/sampling_probe.cu").read_bytes()
     if kv or normalization or projections or hc or compression or indexer or engram or sampling:
         source = source.replace(b"\r\n", b"\n")
-    from .execution_target import apply_execution_source_profile
+    from .execution_target import (apply_execution_source_profile, _current_spark_kernel_cache,
+                                   _validate_spark_compiler)
     source=apply_execution_source_profile(source,architecture,has_normalization=normalization or hc or engram)
-    if compiler_info is not None:
+    cache = _current_spark_kernel_cache() if architecture == '121' else None
+    metadata = {}
+    if compiler_info is not None or cache is not None:
         import hashlib
         major, minor = C.c_int(), C.c_int()
         version = _bind(lib, "nvrtcVersion", [C.POINTER(C.c_int), C.POINTER(C.c_int)])
         if version(C.byref(major), C.byref(minor)):
             raise CudaError("Cannot query the native NVRTC compiler version")
-        compiler_info.update(nvrtc_version=[major.value, minor.value], architecture=architecture,
-                             concatenated_source_sha256=hashlib.sha256(source).hexdigest(),
-                             options=[f"--gpu-architecture=sm_{architecture}", "--std=c++17", "--fmad=false",
-                                      "--ftz=false", "--include-path=<CUDA>/include"], include_path_redacted=True)
+        metadata.update(nvrtc_version=[major.value, minor.value], architecture=architecture,
+                        concatenated_source_sha256=hashlib.sha256(source).hexdigest(),
+                        options=[f"--gpu-architecture=sm_{architecture}", "--std=c++17", "--fmad=false",
+                                 "--ftz=false", "--include-path=<CUDA>/include"], include_path_redacted=True)
         if architecture == "121" and sampling:
-            compiler_info["options"].append("--include-path=<CUDA>/include/cccl")
+            metadata["options"].append("--include-path=<CUDA>/include/cccl")
+        if compiler_info is not None: compiler_info.update(metadata)
+    options = [f"--gpu-architecture=sm_{architecture}", "--std=c++17", "--fmad=false",
+               "--ftz=false", f"--include-path={root / 'include'}"]
+    if architecture == "121" and sampling:
+        options.append(f"--include-path={root / 'include' / 'cccl'}")
+    cache_key = None
+    flags = dict(reduction_trace=reduction_trace, expert=expert, integrity=integrity, routing=routing,
+                 shared=shared, aggregation=aggregation, kv=kv, normalization=normalization,
+                 projections=projections, hc=hc, compression=compression, indexer=indexer,
+                 engram=engram, sampling=sampling)
+    if cache is not None:
+        try:
+            _validate_spark_compiler(metadata, metadata['concatenated_source_sha256'], flags)
+            identity = _compiler_library_identity(lib)
+            if identity is not None:
+                generator = compile_probe.__wrapped__
+                cache_key = (generator, generator.__code__, tuple(flags.items()),
+                             metadata['concatenated_source_sha256'], tuple(options),
+                             tuple(metadata['nvrtc_version']), identity)
+                cached = cache.get(cache_key)
+                if cached is not None:
+                    binary, recorded = cached
+                    if compiler_info is not None: compiler_info.update(recorded)
+                    if dll_directory: dll_directory.close()
+                    return binary
+        except BaseException:
+            if dll_directory: dll_directory.close()
+            raise
     program = pointer()
     if create(C.byref(program), source, b"format_probe.cu", 0, None, None):
         raise CudaError("NVRTC could not create a program")
     try:
-        options = [f"--gpu-architecture=sm_{architecture}", "--std=c++17", "--fmad=false",
-                   "--ftz=false", f"--include-path={root / 'include'}"]
-        if architecture == "121" and sampling:
-            # CUDA 13 cuRAND headers include cuda/std headers from CCCL. This
-            # target-scoped include keeps the qualified PC command unchanged.
-            options.append(f"--include-path={root / 'include' / 'cccl'}")
         encoded = (C.c_char_p * len(options))(*[option.encode() for option in options])
         result = compile_(program, len(options), encoded)
         if result:
@@ -334,7 +379,14 @@ def compile_probe(architecture: str, *, reduction_trace: bool = False, expert: b
         image = C.create_string_buffer(length.value)
         if get_cubin(program, image):
             raise CudaError("NVRTC could not return its cubin")
-        return image.raw
+        binary = image.raw
+        if cache_key is not None:
+            _validate_spark_compiler(metadata, metadata['concatenated_source_sha256'], flags)
+            if _compiler_library_identity(lib) != identity:
+                raise ValueError('Spark compiler identity changed during compilation')
+            if len(binary) > 16 * MiB: raise ValueError('Invalid native-kernel binary')
+            cache.put(cache_key, binary, metadata)
+        return binary
     finally:
         destroy(C.byref(program))
         if dll_directory:

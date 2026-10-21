@@ -14,6 +14,7 @@ import gc
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import platform
 import re
@@ -42,6 +43,49 @@ DEFAULT_PROMPT = "What is 2 + 2? Answer with the number only."
 HOST_ADMISSION = 128 * MiB
 STEP_DIAGNOSTIC_ADMISSION = 512 * MiB
 REPORT_LIMIT = 32 * MiB
+
+
+class ProgressFile:
+    """Small atomic live snapshots, separate from immutable final evidence."""
+    def __init__(self, workspace, run_id):
+        self.workspace, self.run_id = workspace, run_id
+        self.relative = f"s1/text/{run_id}/progress.json"
+        self.temporary = f"s1/text/{run_id}/progress.tmp"
+        self.context = workspace.context(run_id)
+        self.started, self.written = time.perf_counter(), 0.
+        self.path = workspace.artifact_path(self.relative, create_parent=True)
+        if self.path.exists():
+            raise FileExistsError("Refusing to replace an earlier text run's progress")
+
+    def __call__(self, value):
+        now = time.perf_counter()
+        force = value.get("phase") in ("model_call_complete", "layer_complete", "finished")
+        if not force and now - self.written < .5:
+            return
+        payload = {"schema":"vesper.spark-text-progress.v1", "run_id":self.run_id,
+            "observed_unix":time.time(), "elapsed_seconds":now-self.started,
+            "workspace_context":self.context, **value}
+        raw = (json.dumps(payload, ensure_ascii=False)+"\n").encode()
+        if len(raw) > 64 * 1024:
+            raise ValueError("Text progress exceeded its explicit bound")
+        temporary = self.workspace.artifact_path(self.temporary, create_parent=True)
+        self.path = self.workspace.artifact_path(self.relative)
+        owned = None
+        try:
+            with temporary.open("xb") as stream:
+                info = os.fstat(stream.fileno())
+                owned = info.st_dev, info.st_ino
+                stream.write(raw)
+            os.replace(temporary, self.path)
+        finally:
+            if owned is not None:
+                try:
+                    info = temporary.lstat()
+                    if not temporary.is_symlink() and (info.st_dev,info.st_ino) == owned:
+                        temporary.unlink()
+                except FileNotFoundError:
+                    pass
+        self.written = now
 
 
 def _sha(raw):
@@ -187,6 +231,7 @@ def _step_summary(meta, result, routes, seconds):
         raise ValueError("Native text requires finite full-vocabulary logits")
     return {**meta, "model_call_wall_seconds_including_native_diagnostics": seconds, "returned_array_owner_bytes": diagnostics,
             "layers": layers, "route_io": routes.copy(), "logits_fp32": _array_hash(logits),
+            "engrams": {str(layer):_array_hash(result[f"engram{layer}"]["output_bf16"]) for layer in (1,14)},
             "output_bf16": _array_hash(result["output_bf16"])}
 
 
@@ -208,10 +253,10 @@ def _warning(workspace, run_id, error, stage, initial):
 
 
 def _failed(report, workspace, run_id, error, stage, initial):
-    if report.get("status") == "failed" and "failure_type" in report:
+    if report.get("status") in ("failed", "cancelled") and "failure_type" in report:
         report.setdefault("secondary_failures", []).append({"failure_type": type(error).__name__, "stage": stage})
         return
-    report.update(status="failed", functional_acceptance=False, failure_type=type(error).__name__,
+    report.update(status="cancelled" if isinstance(error, KeyboardInterrupt) else "failed", functional_acceptance=False, failure_type=type(error).__name__,
                   failure_stage=stage, reason="Local Spark functional execution could not complete")
     if "private_failure" not in report:
         report["private_failure"] = _warning(workspace, run_id, error, stage, initial)
@@ -260,10 +305,12 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
             integrity="s1/original-integrity", bundle="s1/attention-candidate", fixtures="s1/moe-original",
             attention_reference_result="s1/attention/reference-r02.json",
             attention_receipt_result="s1/attention/native-validation-r01.json",
-            prompt=DEFAULT_PROMPT, max_new_tokens=64, temperature=0., seed=2026):
+            prompt=DEFAULT_PROMPT, max_new_tokens=64, temperature=0., seed=2026, progress=None, max_model_calls=MAX_CALLS):
     """Return an unstamped report after resource cleanup; the CLI writes it."""
     initial = _guard(workspace, run_id)
     _validate(mode, prompt, max_new_tokens, temperature, seed)
+    if type(max_model_calls) is not int or not 1 <= max_model_calls <= MAX_CALLS:
+        raise ValueError("Expected a bounded model-call budget up to 512")
     if mode == "generate" and any(not isinstance(value, str) or not value for value in
                                    (attention_reference_result, attention_receipt_result)):
         raise ValueError("Generation requires both current Attention reference and native validation results")
@@ -278,7 +325,7 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
         "network_in_forward": False, "checkpoint_download_started": False, "automatic_retry": False,
         "request": {"messages": messages, "serialized_chat": serialized, "user_prompt": prompt,
             "thinking_mode": "chat", "thinking_enabled": False, "temperature": float(temperature), "seed": seed,
-            "max_new_tokens": max_new_tokens, "maximum_model_calls": MAX_CALLS,
+            "max_new_tokens": max_new_tokens, "maximum_model_calls": max_model_calls,
             "purpose": "explicit S1 functional request; no benchmark condition changed"},
         "artifact_inputs": {"metadata": metadata, "originals": originals, "integrity": integrity,
                             "bundle": bundle, "fixtures": fixtures},
@@ -292,6 +339,14 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
     memory, admission = None, None
     engine = assets = tokenizer = session = result = None
     stage, started = "platform", time.perf_counter()
+    def update(event=None):
+        if progress is not None:
+            value = {"status":report["status"], "stage":stage,
+                "completed_model_calls":0 if session is None else session.position,
+                "prompt_tokens":len(report["request"].get("prompt_ids", [])),
+                "generated_tokens":0 if session is None else len(session.generated),
+                "generated_ids":[] if session is None else list(session.generated), **(event or {})}
+            progress(value)
     def check(pending=0):
         workspace.check()
         observation = host_memory()
@@ -362,24 +417,31 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                         report["request"]["eos_id"] = eos[0]
                         report["tokenizer"] = {"version": TOKENIZERS_VERSION, "vocabulary": len(tokenizer)}
                         stage = "model_open"
-                        engine = open_spark_backbone(stack, assets, paths["bundle"], temperature=float(temperature), seed=seed)
+                        update({"phase":"model_open"})
+                        engine = open_spark_backbone(stack, assets, paths["bundle"], temperature=float(temperature), seed=seed,
+                            progress=update if progress is not None else None)
                         stage = "model_attention_qualification"
                         _check_engine_receipt(engine, proof)
                         session = TextGeneration(tokenizer, engine.step, request)
                         report["tokenizer"]["compressed_identity"] = engine.tokenizer_identity
                         stage = "generation"
+                        report["status"] = "running"
                         with RouteObserver(engine) as observer:
                             while not session.done:
+                                if session.position >= max_model_calls:
+                                    break
                                 if session.position >= MAX_CALLS:
                                     raise ValueError("Serial model calls exceeded the explicit functional scope")
                                 check(STEP_DIAGNOSTIC_ADMISSION)
                                 admission.acquire(STEP_DIAGNOSTIC_ADMISSION, category="diagnostics")
                                 observer.current = []
                                 step_start = time.perf_counter()
+                                update({"phase":"model_call_start"})
                                 try:
                                     meta, result = session.advance()
                                     report["steps"].append(_step_summary(meta, result, observer.current,
                                         time.perf_counter() - step_start))
+                                    update({"phase":"model_call_complete", "last_model_call_seconds":time.perf_counter()-step_start})
                                 except Exception:
                                     report["failed_step"] = {"driver_position_after_failure": session.position,
                                         "route_io": observer.current.copy(),
@@ -392,9 +454,10 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                         stage = "completion_parse"
                         _finish_completion(report, session, tokenizer)
                         report["engine_before_close"] = engine.stats()
-                        report["status"] = "functional_response_complete" if report["eos_response_complete"] else "partial_max_new_tokens"
+                        report["status"] = ("functional_response_complete" if report["eos_response_complete"] else
+                            "partial_model_call_budget" if not session.done else "partial_max_new_tokens")
                     report["assets_before_close"] = assets.stats()
-            except Exception as error:
+            except (Exception, KeyboardInterrupt) as error:
                 if session is not None and tokenizer is not None:
                     try:
                         _finish_completion(report, session, tokenizer)
@@ -415,7 +478,7 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                     and report["memory_after_owned_close"]["live_reclaimers"] == 0)
                 stage = "memory_runtime_cleanup"
         report["memory_runtime_closed"] = True
-    except Exception as error:
+    except (Exception, KeyboardInterrupt) as error:
         _failed(report, workspace, run_id, error, stage, initial)
     finally:
         if memory is not None:
@@ -427,9 +490,16 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
         except Exception as error:
             _failed(report, workspace, run_id, error, "post_cleanup_memory", initial)
     clean = report["owned_resources_closed"] and report["memory_runtime_closed"]
-    if not clean and report["status"] in ("functional_response_complete", "local_moe_prepared", "partial_max_new_tokens"):
+    if not clean and report["status"] in ("functional_response_complete", "local_moe_prepared", "partial_max_new_tokens", "partial_model_call_budget"):
         report.update(status="failed", reason="Owned Spark runtime cleanup could not be established")
     report["functional_acceptance"] = bool(clean and report["status"] == "functional_response_complete")
+    try:
+        update({"phase":"finished", "completed_model_calls":report.get("completion",{}).get("calls",len(report["steps"])),
+            "validated_model_calls":len(report["steps"]),
+            "generated_tokens":len(report.get("completion",{}).get("selected_ids_including_eos", [])),
+            "generated_ids":report.get("completion",{}).get("selected_ids_including_eos", [])})
+    except (Exception, KeyboardInterrupt) as error:
+        report["final_progress_failure_type"] = type(error).__name__
     if len(json.dumps(report, ensure_ascii=False).encode()) > REPORT_LIMIT:
         raise ValueError("Functional report exceeded its explicit metadata bound")
     workspace.stamp_result({}, run_id=run_id, initial_context=initial)
@@ -452,6 +522,7 @@ def main(argv=None):
     parser.add_argument("--max-new-tokens", type=int, default=64)
     parser.add_argument("--temperature", type=float, default=0.)
     parser.add_argument("--seed", type=int, default=2026)
+    parser.add_argument("--max-model-calls", type=int, default=MAX_CALLS)
     args = parser.parse_args(argv)
     from .workspace import Workspace
     workspace = Workspace.open(args.workspace)
@@ -462,7 +533,8 @@ def main(argv=None):
     report = collect(args.mode, workspace, run_id=args.run_id, metadata=args.metadata, originals=args.originals,
         integrity=args.integrity, bundle=args.bundle, fixtures=args.fixtures,
         attention_reference_result=args.attention_reference_result, attention_receipt_result=args.attention_receipt_result, prompt=args.prompt,
-        max_new_tokens=args.max_new_tokens, temperature=args.temperature, seed=args.seed)
+        max_new_tokens=args.max_new_tokens, temperature=args.temperature, seed=args.seed,
+        progress=ProgressFile(workspace,args.run_id), max_model_calls=args.max_model_calls)
     path = workspace.write_result(relative, report, run_id=args.run_id, initial_context=initial)
     print(json.dumps({"mode": args.mode, "status": report["status"], "functional_acceptance": report["functional_acceptance"],
                       "result": path.relative_to(workspace.root).as_posix()}))

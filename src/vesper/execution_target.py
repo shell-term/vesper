@@ -8,12 +8,15 @@ separate step: this module cannot manufacture or promote a qualification receipt
 
 from __future__ import annotations
 
+from collections import OrderedDict
+from contextlib import contextmanager
 from copy import deepcopy
 from dataclasses import dataclass
 import hashlib
 from pathlib import Path
 import platform
 import re
+import threading
 
 
 PC_TARGET = "pc-sm89"
@@ -21,6 +24,126 @@ SPARK_TARGET = "spark-sm121-candidate"
 _FLAGS = ("reduction_trace", "expert", "integrity", "routing", "shared", "aggregation",
           "kv", "normalization", "projections", "hc", "compression", "indexer", "engram", "sampling")
 _NORMALIZED_FLAGS = ("kv", "normalization", "projections", "hc", "compression", "indexer", "engram", "sampling")
+_spark_cache = None
+_spark_cache_lock = threading.RLock()
+
+
+class _SparkKernelCache:
+    """One explicit runtime owns bounded copies, never GPU modules or receipts."""
+    ENTRY_METADATA_BYTES = 4096
+    MAX_ENTRIES = 32
+
+    def __init__(self, policy, capacity):
+        self.policy, self.capacity = policy, capacity
+        self.entries, self.bytes = OrderedDict(), 0
+        self.hits = self.misses = self.evictions = 0
+        self.closed = False
+        self.reclaimer = policy.register_reclaimer(self.reclaim)
+
+    def get(self, key):
+        with self.policy.lock:
+            if self.closed: return None
+            self.policy.checkpoint()
+            entry = self.entries.pop(key, None)
+            if entry is None:
+                self.misses += 1
+                return None
+            self.entries[key] = entry
+            self.hits += 1
+            # The cache retains its own immutable copy. An operator's temporary
+            # compiler output cannot keep an evicted cache allocation alive.
+            return bytes(memoryview(entry[0])), deepcopy(entry[1])
+
+    def reclaim(self, requested):
+        with self.policy.lock:
+            freed = 0
+            while self.entries and freed < requested:
+                _, (_, _, lease) = self.entries.popitem(last=False)
+                self.bytes -= lease.size; freed += lease.size
+                lease.release(); self.evictions += 1
+            return freed
+
+    def put(self, key, binary, compiler):
+        charge = len(binary) + self.ENTRY_METADATA_BYTES
+        if charge > self.capacity: return
+        with self.policy.lock:
+            if self.closed: return
+            self.policy.checkpoint()
+            if key in self.entries: return
+            while self.entries and (self.bytes + charge > self.capacity or len(self.entries) >= self.MAX_ENTRIES):
+                self.reclaim(next(iter(self.entries.values()))[2].size)
+            try:
+                lease = self.policy.reserve(charge, 'cache', 'spark_compiled_kernels')
+            except MemoryError:
+                # Retention is optional. The already compiled caller-owned
+                # result follows the same admission rules as an uncached build.
+                return
+            try:
+                retained = bytes(memoryview(binary))
+                self.entries[key] = retained, deepcopy(compiler), lease
+                self.bytes += charge
+            except BaseException:
+                lease.release(); raise
+
+    def stats(self):
+        with self.policy.lock:
+            return {'hits': self.hits, 'misses': self.misses, 'evictions': self.evictions,
+                    'entries': len(self.entries), 'charged_bytes': self.bytes,
+                    'capacity_bytes': self.capacity, 'closed': self.closed,
+                    'qualification_receipt_issued': False}
+
+    def close(self):
+        with self.policy.lock:
+            if self.closed: return
+            self.reclaim(self.bytes)
+            self.policy.unregister_reclaimer(self.reclaimer)
+            self.closed = True
+
+
+@contextmanager
+def spark_kernel_cache(capacity_bytes=64 * 1024**2):
+    """Reuse exact Spark compile inputs inside one caller-owned runtime scope.
+
+    Enter after RuntimeMemory and before operators in the same ExitStack. All
+    retained binaries and bounded metadata remain charged until eviction/close.
+    PC compilation and calls outside this explicit scope keep their old path.
+    """
+    global _spark_cache
+    from .memory import current_policy
+    policy = current_policy()
+    if (type(capacity_bytes) is not int or not 4096 <= capacity_bytes <= 64 * 1024**2
+            or policy is None or not policy.config.unified_device_memory):
+        raise ValueError('Spark kernel reuse requires an active unified runtime and a bounded cache')
+    with policy.lock:
+        policy.checkpoint()
+        with _spark_cache_lock:
+            if _spark_cache is not None: raise RuntimeError('A Spark kernel cache is already active')
+            cache = _SparkKernelCache(policy, capacity_bytes)
+            _spark_cache = cache
+    try:
+        yield cache
+    finally:
+        with _spark_cache_lock:
+            _spark_cache = None
+        cache.close()
+
+
+def _current_spark_kernel_cache():
+    from .memory import current_policy
+    with _spark_cache_lock:
+        cache = _spark_cache
+    return cache if cache is not None and not cache.closed and cache.policy is current_policy() else None
+
+
+def _validate_spark_compiler(compiler_info, source, flags):
+    options = ["--gpu-architecture=sm_121", "--std=c++17", "--fmad=false", "--ftz=false",
+               "--include-path=<CUDA>/include"]
+    if flags.get("sampling"): options.append("--include-path=<CUDA>/include/cccl")
+    if (compiler_info.get("nvrtc_version") != [13, 0] or compiler_info.get("architecture") != "121"
+            or compiler_info.get("options") != options or compiler_info.get("include_path_redacted") is not True
+            or compiler_info.get("concatenated_source_sha256") != source
+            or kernel_source_sha256(execution_target=SPARK_TARGET, **flags) != source):
+        raise ValueError("Spark candidate compiler, source or options differ from its explicit profile")
 
 
 def apply_execution_source_profile(source, architecture, *, has_normalization):
@@ -154,15 +277,7 @@ def compile_execution_kernel(compile_function, execution_target=None, *, compile
         if compiler_info.get("nvrtc_version") != [12, 4] or digest != pc_cubin_sha256:
             raise ValueError("Unregistered native compiler/binary; qualification required")
     else:
-        options = ["--gpu-architecture=sm_121", "--std=c++17", "--fmad=false", "--ftz=false",
-                   "--include-path=<CUDA>/include"]
-        if flags.get("sampling"):
-            options.append("--include-path=<CUDA>/include/cccl")
-        if (compiler_info.get("nvrtc_version") != [13, 0] or compiler_info.get("architecture") != "121"
-                or compiler_info.get("options") != options or compiler_info.get("include_path_redacted") is not True
-                or compiler_info.get("concatenated_source_sha256") != before
-                or kernel_source_sha256(execution_target=target,**flags) != before):
-            raise ValueError("Spark candidate compiler, source or options differ from its explicit profile")
+        _validate_spark_compiler(compiler_info, before, flags)
     compiler = {key: deepcopy(compiler_info[key]) for key in
                 ("nvrtc_version", "architecture", "concatenated_source_sha256", "options", "include_path_redacted")
                 if key in compiler_info}

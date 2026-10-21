@@ -174,6 +174,42 @@ class TensorViewTests(unittest.TestCase):
         self.assertEqual(self.budget.reserved, 0)
         self.assertEqual(a.stats()["live_arrays"], 0)
 
+    def test_temporary_upload_reads_once_then_releases_cache_but_not_borrowers(self):
+        with self.assets() as a:
+            baseline = self.budget.reserved
+            name = "layers.0.large.weight"
+            with a.upload_arrays(0) as arrays:
+                first = arrays[name]
+                read_count = len(a.reader.reads)
+                self.assertIs(arrays[name], first)
+                self.assertEqual(len(a.reader.reads), read_count)
+                self.assertFalse(first.flags.writeable)
+                borrowed = first[1:5]
+                del first
+            self.assertEqual(arrays.values, {})
+            with self.assertRaises(RuntimeError): arrays[name]
+            self.assertEqual(self.budget.reserved, baseline + 17 * MiB)
+            del borrowed
+            gc.collect()
+            self.assertEqual(self.budget.reserved, baseline)
+            with a.upload_arrays(0) as next_view:
+                next_view[name]
+                self.assertGreater(len(a.reader.reads), read_count)
+        self.assertEqual(self.budget.reserved, 0)
+
+    def test_temporary_upload_cap_and_exception_do_not_leak(self):
+        with self.assets() as a:
+            baseline = self.budget.reserved
+            with patch.object(views, "UPLOAD_ARRAY_CAP", MiB), a.upload_arrays(0) as arrays:
+                with self.assertRaises(MemoryError): arrays["layers.0.large.weight"]
+                self.assertEqual(a.reader.reads, [])
+            with self.assertRaisesRegex(ValueError, "injected upload"):
+                with a.upload_arrays(0) as arrays:
+                    arrays["layers.0.large.weight"]
+                    raise ValueError("injected upload")
+            gc.collect()
+            self.assertEqual(self.budget.reserved, baseline)
+
     def test_read_error_and_nonfinite_values_never_publish_or_leak_a_lease(self):
         with self.assets() as a:
             baseline = self.budget.reserved

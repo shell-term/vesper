@@ -173,6 +173,7 @@ class Engine:
             raise OSError("private /machine/local/secret-model-path failed")
         hidden = np.zeros((1, 1, 4, 5120), np.uint16)
         result = {"output_bf16": hidden, "head": {"logits_fp32": np.zeros((1, 129280), np.float32)}}
+        result.update({f"engram{layer}":{"output_bf16":hidden} for layer in (1,14)})
         for layer in range(40):
             with self.operator_pool.moe_factory(layer) as owner:
                 route = owner.forward()
@@ -218,7 +219,7 @@ class TextProbeTests(unittest.TestCase):
             "observed_device": {"ordinal": 0, "name": "NVIDIA GB10", "compute_capability": "12.1", "total_bytes": 128 * GiB},
             "driver_api_version": 13000,
             "cases": [None] * 36, "faults": [None] * 2})
-        def open_engine(stack, assets, bundle, *, temperature, seed):
+        def open_engine(stack, assets, bundle, *, temperature, seed, progress=None):
             return stack.enter_context(Engine(assets, bundle, temperature, seed))
         patches = [patch.object(probe, "SparkModelAssets", Assets), patch.object(probe, "PinnedTokenizer", Tokenizer),
             patch.object(probe, "check_receipt", self.attention_check),
@@ -284,6 +285,66 @@ class TextProbeTests(unittest.TestCase):
         self.assertTrue(report["owned_resources_closed"])
         self.assertTrue(report["memory_runtime_closed"])
         self.assertLess(len(json.dumps(report)), probe.REPORT_LIMIT)
+
+    def test_short_call_budget_records_partial_progress_and_never_claims_a_response(self):
+        events=[]
+        report=self.generate(max_model_calls=1, progress=events.append)
+        self.assertEqual(report["status"], "partial_model_call_budget")
+        self.assertFalse(report["functional_acceptance"])
+        self.assertTrue(report["owned_resources_closed"])
+        self.assertTrue(report["memory_runtime_closed"])
+        self.assertEqual(report["completion"]["calls"],1)
+        self.assertEqual(events[-1]["completed_model_calls"],1)
+        self.assertEqual(events[-1]["generated_tokens"],0)
+        self.assertEqual(set(report["steps"][0]["engrams"]),{"1","14"})
+
+    def test_atomic_live_progress_retains_counters_and_refuses_a_prior_run(self):
+        live=probe.ProgressFile(self.ws,"live-r01")
+        live({"phase":"layer_complete","layer":3,"completed_model_calls":2,"generated_tokens":0})
+        path=self.ws.artifact_path("s1/text/live-r01/progress.json")
+        first=json.loads(path.read_text())
+        self.assertEqual(first["layer"],3)
+        self.assertEqual(first["completed_model_calls"],2)
+        live({"phase":"model_call_complete","completed_model_calls":3,"generated_tokens":1,"generated_ids":[4]})
+        last=json.loads(path.read_text())
+        self.assertEqual(last["generated_ids"],[4])
+        self.assertEqual(last["completed_model_calls"],3)
+        self.assertFalse(self.ws.artifact_path("s1/text/live-r01/progress.tmp").exists())
+        with self.assertRaises(FileExistsError):probe.ProgressFile(self.ws,"live-r01")
+
+    def test_interrupted_atomic_progress_removes_only_owned_temp_and_can_finish(self):
+        live=probe.ProgressFile(self.ws,"live-r01")
+        temporary=self.ws.artifact_path("s1/text/live-r01/progress.tmp")
+        for error in (KeyboardInterrupt(), OSError("injected replacement")):
+            with patch.object(probe.os,"replace",side_effect=error):
+                with self.assertRaises(type(error)):live({"phase":"layer_complete"})
+            self.assertFalse(temporary.exists())
+        live({"phase":"finished","status":"cancelled"})
+        self.assertEqual(json.loads(live.path.read_text())["status"],"cancelled")
+        temporary.write_text("pre-existing foreign temp")
+        with self.assertRaises(FileExistsError):live({"phase":"finished"})
+        self.assertEqual(temporary.read_text(),"pre-existing foreign temp")
+
+    def test_final_progress_failure_cannot_hide_successful_immutable_report(self):
+        def progress(event):
+            if event.get("phase")=="finished":raise OSError("injected progress failure")
+        report=self.generate(progress=progress)
+        self.assertTrue(report["functional_acceptance"])
+        self.assertEqual(report["final_progress_failure_type"],"OSError")
+
+    def test_keyboard_interrupt_preserves_completed_calls_and_cleanup(self):
+        original=Engine.step
+        def interrupted(engine, ids, *, sample):
+            if engine.calls==1:raise KeyboardInterrupt()
+            return original(engine,ids,sample=sample)
+        with patch.object(Engine,"step",interrupted):
+            report=self.generate()
+        self.assertEqual(report["status"],"cancelled")
+        self.assertEqual(report["completion"]["calls"],1)
+        self.assertEqual(len(report["steps"]),1)
+        self.assertTrue(report["owned_resources_closed"])
+        self.assertTrue(report["memory_runtime_closed"])
+        self.assertFalse(report["functional_acceptance"])
 
     def test_max_new_tokens_is_partial_and_never_a_functional_or_quality_pass(self):
         Engine.selections = (4,)

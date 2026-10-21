@@ -10,6 +10,7 @@ used during forward. Component execution does not establish model quality.
 from contextlib import ExitStack
 from dataclasses import dataclass
 import threading
+import time
 
 import numpy as np
 
@@ -19,6 +20,7 @@ from .compression import NativeCompression
 from .checkpoint import MODEL, REVISION
 from .connected import ConnectedConfig, ConnectedMoE
 from .engram import NativeEngram
+from .execution_target import spark_kernel_cache
 from .hc import NativeHC
 from .indexer import NativeIndexer
 from .memory import MemoryPolicy, current_policy
@@ -85,7 +87,7 @@ class LayerProxy:
 
 class LayerOperatorPool:
     """Serialize layer switches; close old ownership before creating new work."""
-    def __init__(self, assets, ordinal=0, *, hc_factory=None, projection_factory=None, moe_factory=None):
+    def __init__(self, assets, ordinal=0, *, hc_factory=None, projection_factory=None, moe_factory=None, progress=None):
         self.assets, self.ordinal = assets, ordinal
         self.factories = {"hc": hc_factory or NativeHC, "projection": projection_factory or NativeProjections}
         self.moe_factory = moe_factory or self._moe
@@ -95,6 +97,12 @@ class LayerOperatorPool:
         self.moe_entered = False
         self.counts = {"hc_opened": 0, "projection_opened": 0, "moe_opened": 0, "calls": 0}
         self.peak_resident = {"hc": 0, "projection": 0}
+        self.progress = progress
+        self.timings = {kind:{"open_calls":0,"open_seconds":0.,"compute_seconds":0.} for kind in ("hc","projection","moe")}
+
+    def _notify(self, kind, layer, phase):
+        if self.progress is not None:
+            self.progress({"kind":kind,"layer":layer,"phase":phase})
 
     def __enter__(self):
         with self.lock:
@@ -131,16 +139,20 @@ class LayerOperatorPool:
             return current[1]
         self._close_kind(kind)
         owner = ExitStack()
+        started = time.perf_counter()
+        self._notify(kind, layer, "operator_open")
         try:
-            arrays = self.assets.arrays_for_layer(layer)
-            operator = owner.enter_context(self.factories[kind](arrays, self.ordinal, layer=layer,
-                profile="backbone_probe", execution_target=TARGET))
+            with self.assets.upload_arrays(layer) as arrays:
+                operator = owner.enter_context(self.factories[kind](arrays, self.ordinal, layer=layer,
+                    profile="backbone_probe", execution_target=TARGET))
             if not operator.opened or operator.layer != layer or operator.ordinal != self.ordinal:
                 raise ValueError("Streamed operator identity differs")
         except BaseException:
             owner.close()
             raise
         self.active[kind] = layer, operator, owner
+        self.timings[kind]["open_calls"] += 1
+        self.timings[kind]["open_seconds"] += time.perf_counter() - started
         self.counts[kind + "_opened"] += 1
         self.peak_resident[kind] = 1
         return operator
@@ -190,9 +202,13 @@ class LayerOperatorPool:
                 # No cache-dependent gate changes or retained stale accumulator.
                 self.moe_owner = self.moe_factory(layer)
                 self.moe_entered = False
+                started = time.perf_counter()
+                self._notify(kind, layer, "operator_open")
                 try:
                     operator = self.moe_owner.__enter__()
                     self.moe_entered = True
+                    self.timings[kind]["open_calls"] += 1
+                    self.timings[kind]["open_seconds"] += time.perf_counter() - started
                 except BaseException:
                     if getattr(self.moe_owner, "stack", None) is not None:
                         self.poisoned = True
@@ -200,6 +216,8 @@ class LayerOperatorPool:
                         self.moe_owner = None
                     raise
                 error = None
+                started = time.perf_counter()
+                self._notify(kind, layer, "operator_compute")
                 try:
                     if operator.layer != layer:
                         raise ValueError("Streamed MoE identity differs")
@@ -210,11 +228,19 @@ class LayerOperatorPool:
                     raise
                 finally:
                     self._close_moe(error)
+                    self.timings[kind]["compute_seconds"] += time.perf_counter() - started
+                self._notify(kind, layer, "layer_complete")
             else:
                 if kind not in self.factories or method not in (
                         {"mixes", "pre", "post"} if kind == "hc" else {"fp8", "grouped", "round_window"}):
                     raise ValueError("Unsupported streamed weight operation")
-                result = getattr(self._operator(kind, layer), method)(*args, **kwargs)
+                operator = self._operator(kind, layer)
+                started = time.perf_counter()
+                self._notify(kind, layer, "operator_compute")
+                try:
+                    result = getattr(operator, method)(*args, **kwargs)
+                finally:
+                    self.timings[kind]["compute_seconds"] += time.perf_counter() - started
             self.counts["calls"] += 1
             return result
 
@@ -224,6 +250,7 @@ class LayerOperatorPool:
                 "moe_cleanup_owner_retained": self.moe_owner is not None,
                 "opened": self.opened, "poisoned": self.poisoned,
                 "expert_ram_cache_bytes": 0, "helper_device": None,
+                "host_wall_timings": {kind:dict(values) for kind,values in self.timings.items()},
                 "arithmetic_qualification": "not_run", "network_in_forward": False}
 
     def __exit__(self, *_):
@@ -281,6 +308,9 @@ class SparkBackboneCandidate(NativeBackbone):
                 "all_backbone_layers": list(LAYERS), "engram_layers": [1, 14],
                 "original_kernel_parity_qualified": False, "full_model_quality_qualified": False,
                 "state": self.transaction.stats(), "layer_pool": self.operator_pool.stats(),
+                "engram_operators": {str(layer):op.stats() for layer,op in self.engrams.items()},
+                "head_operator": self.head.stats(), "sampler_operator": self.transaction.sampler.stats(),
+                "compiled_kernel_cache": (self.compilation_cache.stats() if hasattr(getattr(self,"compilation_cache",None),"stats") else None),
                 "network_in_forward": False, "trajectory_replay": False}
 
     def __exit__(self, *error):
@@ -298,7 +328,7 @@ def spark_memory_policy():
                         device_caps={0:SPARK_DEVICE_CAP}, unified_device_memory=True)
 
 
-def open_spark_backbone(stack, assets, attention_bundle, *, temperature=.7, seed=2026):
+def open_spark_backbone(stack, assets, attention_bundle, *, temperature=.7, seed=2026, progress=None):
     """Compose a bounded candidate in a caller-owned ExitStack.
 
     Assets must already be open and locally verified. This function performs no
@@ -317,7 +347,8 @@ def open_spark_backbone(stack, assets, attention_bundle, *, temperature=.7, seed
         raise ValueError("Open the unified runtime memory policy before opening model assets")
     elif not policy.config.unified_device_memory:
         raise ValueError("Spark operators require one shared physical host/device memory ceiling")
-    pool = stack.enter_context(LayerOperatorPool(assets))
+    compilation = stack.enter_context(spark_kernel_cache())
+    pool = stack.enter_context(LayerOperatorPool(assets, progress=progress))
     hc = {layer: pool.proxy("hc", layer) for layer in LAYERS}
     projections = {layer: pool.proxy("projection", layer) for layer in LAYERS}
     moe = {layer: pool.proxy("moe", layer) for layer in LAYERS}
@@ -342,4 +373,5 @@ def open_spark_backbone(stack, assets, attention_bundle, *, temperature=.7, seed
         temperature=temperature, embedding_reader=assets.embedding, pool=pool))
     engine.tokenizer_identity = tokenizer_identity
     engine.memory_policy = policy
+    engine.compilation_cache = compilation
     return engine

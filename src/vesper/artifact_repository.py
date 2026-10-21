@@ -18,6 +18,7 @@ from .model_artifacts import shard_inventory,CATALOG_SHA256,SHARD_INVENTORY_SHA2
 from .resources import MemoryBudget,MiB,GiB
 
 BLOCK=65536
+MAX_VERIFIED_SPAN=8*MiB
 
 
 class DirectBytes(DirectReader):
@@ -101,8 +102,12 @@ def register_existing(source,originals,integrity,*,execute=False):
 
 
 class VerifiedBlob:
-    def __init__(self,path,index_root,receipt,expected,budget):
+    def __init__(self,path,index_root,receipt,expected,budget,*,max_span_bytes=4096):
+        if (type(max_span_bytes) is not int or not 4096<=max_span_bytes<=MAX_VERIFIED_SPAN
+                or max_span_bytes%4096):
+            raise ValueError('Verified span capacity must be 4 KiB aligned and at most 8 MiB')
         self.path=Path(path); self.index_path=Path(index_root)/receipt['index_file']; self.receipt=receipt; self.budget=budget
+        self.max_span_bytes=max_span_bytes
         self.data=self.index=None; self.pages=OrderedDict(); self.closed=False
         self.metadata_reserved=0
         if any(receipt.get(k)!=v for k,v in expected.items()) or receipt.get('block_bytes')!=BLOCK or receipt.get('blocks')!=(expected['bytes']+BLOCK-1)//BLOCK:
@@ -115,7 +120,7 @@ class VerifiedBlob:
         try:
             metadata=(receipt['index_bytes']//4096)*96
             budget.acquire(metadata,category='integrity'); self.metadata_reserved=metadata
-            self.data=DirectBytes(self.path,budget); self.index=DirectBytes(self.index_path,budget)
+            self.data=DirectBytes(self.path,budget,capacity=max(BLOCK,max_span_bytes)); self.index=DirectBytes(self.index_path,budget)
             sha=hashlib.sha256(); self.index_page_hashes=[]
             for offset in range(0,receipt['index_bytes'],BLOCK):
                 budget.acquire(0); raw=self.index.read(offset,BLOCK); sha.update(raw)
@@ -145,6 +150,62 @@ class VerifiedBlob:
         output=b''.join(result)
         if len(output)!=size: raise OSError('Original artifact row range is incomplete')
         return output
+
+    def read_into(self,offset,target):
+        """Fill a bounded caller-owned span, verifying all source blocks first.
+
+        The larger capacity is explicit opt-in; legacy row reads retain their
+        4 KiB limit. Direct reads include complete 64 KiB integrity blocks and
+        use the existing aligned scratch. Each batch additionally reserves its
+        temporary byte copy and one digest-index page before any payload I/O.
+        No payload or index-page cache is added by this path. A failed later
+        batch may leave a verified prefix in the caller's target, just as a
+        sequence of row reads does; callers publish only after full success.
+        """
+        view=memoryview(target)
+        if view.readonly or not view.c_contiguous:
+            raise ValueError('Expected a caller-owned writable contiguous verified span')
+        view=view.cast('B'); size=view.nbytes
+        if (self.closed or type(offset) is not int or offset<0 or not 0<size<=self.max_span_bytes
+                or offset+size>self.receipt['bytes']):
+            raise ValueError('Original artifact verified span range differs')
+        aligned_start=(offset//BLOCK)*BLOCK
+        aligned_end=((offset+size+BLOCK-1)//BLOCK)*BLOCK
+        # At least one whole integrity block fits even for the legacy capacity.
+        batch_capacity=(self.data.capacity//BLOCK)*BLOCK
+        for start in range(aligned_start,aligned_end,batch_capacity):
+            request=min(batch_capacity,aligned_end-start)
+            temporary=request+4096
+            self.budget.acquire(temporary,category='scratch')
+            raw=index_page=data_view=block_view=None
+            try:
+                raw=self.data.read(start,request); data_view=memoryview(raw)
+                current_page=None
+                for local in range(0,len(raw),BLOCK):
+                    number=(start+local)//BLOCK; index_offset=number*32
+                    page=(index_offset//4096)*4096
+                    if page!=current_page:
+                        # Drop the previous page before creating its replacement;
+                        # the transient reservation includes exactly one page.
+                        index_page=None
+                        index_page=self.index.read(page,4096)
+                        if hashlib.sha256(index_page).digest()!=self.index_page_hashes[page//4096]:
+                            raise ValueError('Integrity-index page changed after original registration')
+                        current_page=page
+                    expected=index_page[index_offset%4096:index_offset%4096+32]
+                    block_view=data_view[local:min(local+BLOCK,len(raw))]
+                    if hashlib.sha256(block_view).digest()!=expected:
+                        raise ValueError('Original artifact block SHA-256 differs before span publication')
+                    block_view.release(); block_view=None
+                begin=max(offset,start); end=min(offset+size,start+len(raw))
+                if end<=begin:
+                    raise OSError('Original artifact verified span is incomplete')
+                view[begin-offset:end-offset]=data_view[begin-start:end-start]
+            finally:
+                if block_view is not None: block_view.release()
+                if data_view is not None: data_view.release()
+                raw=index_page=None
+                self.budget.release(temporary,category='scratch')
 
     def close(self):
         self.clear()

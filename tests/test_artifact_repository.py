@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from vesper.artifact_repository import BLOCK,DirectBytes,register_blob,register_existing,VerifiedBlob
+from vesper.artifact_repository import BLOCK,MAX_VERIFIED_SPAN,DirectBytes,register_blob,register_existing,VerifiedBlob
 from vesper.resources import MemoryBudget,MiB
 
 
@@ -55,6 +55,119 @@ class ArtifactRepositoryTests(unittest.TestCase):
             index.write_bytes(b'owned-by-someone-else')
             with self.assertRaises(ValueError): register_blob(file,expected,index,budget)
             self.assertEqual(index.read_bytes(),b'owned-by-someone-else'); self.assertEqual(budget.reserved,0)
+
+    def test_opt_in_span_uses_bounded_bulk_io_and_verifies_unaligned_blocks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            file,raw,expected=self.create(tmp,size=2*MAX_VERIFIED_SPAN+123)
+            budget=MemoryBudget(cap=64*MiB,available_floor=0)
+            receipt=register_blob(file,expected,Path(tmp)/(file.name+'.sha256'),budget)
+            blob=VerifiedBlob(file,tmp,receipt,expected,budget,max_span_bytes=MAX_VERIFIED_SPAN)
+            try:
+                target=bytearray(MAX_VERIFIED_SPAN)
+                with patch.object(blob.data,'read',wraps=blob.data.read) as data_read, \
+                     patch.object(blob.index,'read',wraps=blob.index.read) as index_read, \
+                     patch.object(budget,'acquire',wraps=budget.acquire) as acquire:
+                    blob.read_into(17,target)
+                    self.assertEqual(target,raw[17:17+len(target)])
+                    self.assertEqual([call.args for call in data_read.call_args_list],
+                                     [(0,MAX_VERIFIED_SPAN),(MAX_VERIFIED_SPAN,BLOCK)])
+                    self.assertEqual(index_read.call_count,2)
+                    self.assertEqual(acquire.call_count,2)
+                tail=bytearray(130)
+                blob.read_into(len(raw)-len(tail),tail)
+                self.assertEqual(tail,raw[-len(tail):])
+                self.assertFalse(blob.pages)
+                self.assertLess(budget.peak,2*MAX_VERIFIED_SPAN+MiB)
+            finally: blob.close()
+            self.assertEqual(budget.reserved,0)
+
+    def test_span_opt_in_preserves_legacy_row_limit_and_rejects_before_io(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            file,raw,expected=self.create(tmp); budget=self.budget()
+            receipt=register_blob(file,expected,Path(tmp)/(file.name+'.sha256'),budget)
+            blob=VerifiedBlob(file,tmp,receipt,expected,budget)
+            try:
+                with patch.object(blob.data,'read',side_effect=AssertionError('Invalid span must not read payload')):
+                    for offset,target in ((0,bytearray(4097)),(-1,bytearray(2)),(True,bytearray(2)),
+                            (len(raw),bytearray(2)),(0,b'readonly'),(0,bytearray()),
+                            (0,memoryview(bytearray(16))[::2])):
+                        with self.subTest(offset=offset,size=len(target)),self.assertRaises(ValueError):
+                            blob.read_into(offset,target)
+                    with self.assertRaises(ValueError): blob.read(0,4097)
+            finally: blob.close()
+            for capacity in (0,True,4095,4097,MAX_VERIFIED_SPAN+4096):
+                with patch('vesper.artifact_repository.DirectBytes',side_effect=AssertionError('No I/O')):
+                    with self.subTest(capacity=capacity),self.assertRaises(ValueError):
+                        VerifiedBlob(file,tmp,receipt,expected,budget,max_span_bytes=capacity)
+            self.assertEqual(budget.reserved,0)
+
+    def test_bulk_corruption_and_short_read_do_not_publish_or_leak(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            file,raw,expected=self.create(tmp,size=8*BLOCK+123)
+            budget=MemoryBudget(cap=32*MiB,available_floor=0)
+            index=Path(tmp)/(file.name+'.sha256')
+            receipt=register_blob(file,expected,index,budget)
+            for fault in ('data','index','short'):
+                file.write_bytes(raw)
+                # Preserve the authenticated index before each independent fault.
+                index_raw=index.read_bytes()
+                blob=VerifiedBlob(file,tmp,receipt,expected,budget,max_span_bytes=MAX_VERIFIED_SPAN)
+                target=bytearray(b'Z'*(4*BLOCK))
+                try:
+                    if fault=='data':
+                        with file.open('r+b',buffering=0) as out:
+                            out.seek(3*BLOCK+7); out.write(b'X'); out.flush()
+                        pattern='block SHA'
+                    elif fault=='index':
+                        with index.open('r+b',buffering=0) as out:
+                            out.write(b'\xff'*32); out.flush()
+                        pattern='index page changed'
+                    else:
+                        with file.open('r+b',buffering=0) as out: out.truncate(BLOCK)
+                        pattern='short direct artifact read'
+                    held=budget.reserved
+                    with self.subTest(fault=fault),self.assertRaisesRegex((ValueError,OSError),pattern):
+                        blob.read_into(0,target)
+                    self.assertEqual(target,b'Z'*len(target))
+                    self.assertEqual(budget.reserved,held)
+                finally:
+                    blob.close(); index.write_bytes(index_raw)
+                self.assertEqual(budget.reserved,0)
+
+    def test_bulk_pressure_refuses_before_payload_and_releases_transient_reservation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            file,raw,expected=self.create(tmp); budget=MemoryBudget(cap=32*MiB,available_floor=0)
+            receipt=register_blob(file,expected,Path(tmp)/(file.name+'.sha256'),budget)
+            blob=VerifiedBlob(file,tmp,receipt,expected,budget,max_span_bytes=MAX_VERIFIED_SPAN)
+            try:
+                held=budget.reserved
+                with patch.object(budget,'acquire',side_effect=MemoryError('Pressure')), \
+                     patch.object(blob.data,'read',side_effect=AssertionError('Must refuse before payload')):
+                    with self.assertRaisesRegex(MemoryError,'Pressure'): blob.read_into(0,bytearray(BLOCK))
+                self.assertEqual(budget.reserved,held)
+            finally: blob.close()
+            self.assertEqual(budget.reserved,0)
+
+    def test_bulk_checks_whole_blocks_and_failed_later_batch_keeps_only_verified_prefix(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            file,raw,expected=self.create(tmp,size=MAX_VERIFIED_SPAN+BLOCK)
+            budget=MemoryBudget(cap=64*MiB,available_floor=0)
+            receipt=register_blob(file,expected,Path(tmp)/(file.name+'.sha256'),budget)
+            blob=VerifiedBlob(file,tmp,receipt,expected,budget,max_span_bytes=MAX_VERIFIED_SPAN)
+            try:
+                with file.open('r+b',buffering=0) as out: out.write(b'X'); out.flush()
+                tiny=bytearray(b'Z'*8)
+                with self.assertRaisesRegex(ValueError,'block SHA'): blob.read_into(17,tiny)
+                self.assertEqual(tiny,b'Z'*8)
+                with file.open('r+b',buffering=0) as out:
+                    out.write(raw[:1]); out.seek(MAX_VERIFIED_SPAN+5); out.write(b'X'); out.flush()
+                target=bytearray(b'Z'*MAX_VERIFIED_SPAN); held=budget.reserved
+                with self.assertRaisesRegex(ValueError,'block SHA'): blob.read_into(17,target)
+                self.assertEqual(target[:-17],raw[17:MAX_VERIFIED_SPAN])
+                self.assertEqual(target[-17:],b'Z'*17)
+                self.assertEqual(budget.reserved,held)
+            finally: blob.close()
+            self.assertEqual(budget.reserved,0)
 
     def test_corrupted_data_and_index_refuse_before_publication(self):
         with tempfile.TemporaryDirectory() as tmp:

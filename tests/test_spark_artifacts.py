@@ -330,11 +330,14 @@ class OriginalReadTests(unittest.TestCase):
             with assets.OriginalShardExpertStore(self.metadata, self.originals, self.integrity,
                     self.budget, layer=39, workspace=self.ws) as store:
                 self.assertEqual(set(store.entries), {f"39:{i}" for i in range(384)})
-                store.read_into("39:383", target)
+                with patch.object(assets.VerifiedBlob, "read", side_effect=AssertionError("Spark spans must use bulk I/O")):
+                    store.read_into("39:383", target)
                 self.assertEqual(hashlib.sha256(target).hexdigest(), hashlib.sha256(self.last).hexdigest())
                 store.validate("39:383", target, tensors=True)
                 self.assertEqual(store.stats()["network_payload_bytes_in_forward"], 0)
                 self.assertEqual(store.stats()["payload_bytes_repacked"], 0)
+                self.assertEqual(store.stats()["maximum_verified_span_read_bytes"], 8 * MiB)
+                self.assertEqual(store.stats()["verification_block_bytes"], 65536)
                 self.assertLessEqual(len(store.blobs), 2)
         self.assertEqual(self.budget.reserved, 0)
         self.assertFalse((self.originals / "experts.bin").exists())
@@ -353,7 +356,8 @@ class OriginalReadTests(unittest.TestCase):
         with assets.OriginalTensorReader(self.metadata, self.originals, self.integrity,
                 self.budget, tensor_names=("head.weight", "embed.weight", "control.weight"), workspace=self.ws) as reader:
             target = np.empty((512, 5120), np.uint16)
-            reader.read_into("head.weight", 10240, target)
+            with patch.object(assets.VerifiedBlob, "read", side_effect=AssertionError("Spark spans must use bulk I/O")):
+                reader.read_into("head.weight", 10240, target)
             self.assertTrue(np.all(target == 0x1111))
             tiny = bytearray(8)
             reader.read_into("embed.weight", 0, tiny)
@@ -362,6 +366,7 @@ class OriginalReadTests(unittest.TestCase):
             self.assertEqual(tiny, b"mall syn")
             self.assertEqual(reader.stats()["open_shard_readers"], 2)
             self.assertGreater(reader.stats()["physical_data_bytes_read"], target.nbytes)
+            self.assertEqual(reader.stats()["maximum_direct_read_bytes"], 8 * MiB)
         self.assertEqual(self.budget.reserved, 0)
 
     def test_dense_extent_dtype_alignment_and_size_fail_before_payload_io(self):

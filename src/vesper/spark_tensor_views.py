@@ -33,6 +33,7 @@ from .spark_artifacts import OriginalTensorReader, CHUNK_BYTES, _scope, _regular
 CONTROL_COUNT = 1251
 CONTROL_BYTES = 7199083968
 MAX_ARRAY_BYTES = 256 * MiB
+UPLOAD_ARRAY_CAP = 256 * MiB
 FIXTURE_SCRATCH_BYTES = 160 * MiB
 FIXTURE_QUOTA_BYTES = 2 * GiB
 FIXTURE_LAYER_ALLOWANCE = 40 * MiB
@@ -75,6 +76,30 @@ class _TensorMapping(Mapping):
 
     def __getitem__(self, name):
         return self.assets._array(self.names[name])
+
+
+class _UploadTensorMapping(_TensorMapping):
+    """One bounded validation/upload lifetime; no cross-layer weight cache."""
+    def __init__(self, assets, names):
+        super().__init__(assets, names)
+        self.values, self.bytes, self.closed = {}, 0, False
+
+    def __getitem__(self, name):
+        if self.closed:
+            raise RuntimeError("The temporary original upload view is closed")
+        source = self.names[name]
+        if name not in self.values:
+            size = self.assets.reader.tensors[source]["bytes"]
+            if self.bytes + size > UPLOAD_ARRAY_CAP:
+                raise MemoryError("Original upload views exceed their 256 MiB bound")
+            value = self.assets._array(source)
+            self.values[name] = value
+            self.bytes += value.nbytes
+        return self.values[name]
+
+    def close(self):
+        self.values.clear()
+        self.bytes, self.closed = 0, True
 
 
 class OriginalEmbeddingRows:
@@ -244,6 +269,20 @@ class SparkModelAssets:
         return _TensorMapping(self, {n: n for n in self.arrays if n.startswith(f"layers.{layer}.")})
 
     arrays_for_layer = layer_arrays
+
+    @contextmanager
+    def upload_arrays(self, layer):
+        """Read once for both native validation and the subsequent GPU upload.
+
+        These immutable arrays retain their ordinary owned leases. Closing the
+        view releases only this cache's references, never another borrowed view.
+        """
+        self._check_open(); _layer(layer)
+        arrays = _UploadTensorMapping(self, {n:n for n in self.arrays if n.startswith(f"layers.{layer}.")})
+        try:
+            yield arrays
+        finally:
+            arrays.close()
 
     def compression_arrays(self):
         return self.arrays

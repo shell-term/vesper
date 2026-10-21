@@ -39,9 +39,31 @@ two refusal/retry checks. The complete-vocabulary head again passed all 24
 comparisons across eight inputs, with owned cleanup. The
 [full fresh numerical records](../results/dgx-spark/2026-10-21-s1-text/transport-r02.json)
 retain the original remote context and exact byte hashes. The ordinary text
-retry is running as a finite, serial job at that source; a successful answer
-is still unconfirmed. A subsequent test-only correction makes CPU regression
+retry was explicitly stopped by the user before it completed; its private
+worker recorded cancellation and no immutable generation result was produced.
+A successful answer is still unconfirmed. A subsequent test-only correction makes CPU regression
 observers independent of CI host RAM; it does not change the running source.
+
+## Bounded S1 latency correction: 2026-10-21
+
+Inspection of the cancelled run found repeated validation/upload reads of the
+same immutable dense tensors, 4 KiB storage operations, and repeated compilation
+when opening successive layers. The Spark-only composition now reuses tensor
+arrays during one operator's initialization, authenticates bounded reads in
+8 MiB aligned batches, and retains at most 64 MiB / 32 entries of exact compiled
+kernel inputs and binaries inside one charged runtime scope. It retains no
+extra model-wide tensor cache, changes no weight or arithmetic precision, and
+does not issue numerical qualification from a compilation-cache hit.
+
+The layer-zero probe compares exact returned-array bits with and without upload
+reuse, including original six-expert routing. Both modes use the bulk reader;
+their fixed cold/warm order means their timings cannot isolate each change's
+speedup. Fresh Attention and full-vocabulary head gates, a one-call all-40-layer
+probe, and the unchanged ordinary EOS text request remain required on hardware.
+The local CPU suite passed 679 tests with two environment-dependent skips.
+Private progress snapshots record completed calls and current layer without
+substituting partial progress for immutable acceptance evidence. S1 stays open
+until an actual complete response and owned cleanup are verified.
 
 ## Original expert: measured on 2026-10-20
 

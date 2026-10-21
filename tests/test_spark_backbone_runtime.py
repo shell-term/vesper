@@ -1,6 +1,6 @@
 """CPU-only streamed composition/ownership tests; no model quality claim."""
 
-from contextlib import ExitStack
+from contextlib import ExitStack, contextmanager
 from dataclasses import FrozenInstanceError
 from pathlib import Path
 import threading
@@ -35,13 +35,19 @@ class Operator:
         self.events.append(("call", self.kind, self.layer))
         return {"layer": self.layer, "args": args, "kwargs": kwargs}
 
+    def stats(self):
+        return {"opened":self.opened,"calls_completed":1}
+
     mixes = pre = post = fp8 = grouped = round_window = forward = _call
 
 
 class StreamedPoolTests(unittest.TestCase):
     def setUp(self):
         self.events = []
-        self.assets = SimpleNamespace(workspace=Mock(), arrays_for_layer=Mock(side_effect=lambda layer: {"layer": layer}))
+        @contextmanager
+        def upload_arrays(layer):
+            yield {"layer": layer}
+        self.assets = SimpleNamespace(workspace=Mock(), arrays_for_layer=Mock(), upload_arrays=upload_arrays)
         self.factories = {}
         for kind in ("hc", "projection"):
             def factory(arrays, ordinal, *, layer, profile, execution_target, kind=kind):
@@ -281,6 +287,7 @@ class CompositionTests(unittest.TestCase):
         with ExitStack() as patches:
             patches.enter_context(patch("vesper.resources.physical_memory", return_value={"available": 128 * runtime.GiB}))
             patches.enter_context(patch.object(runtime, "current_policy", return_value=SimpleNamespace(config=runtime.spark_memory_policy())))
+            patches.enter_context(patch.object(runtime, "spark_kernel_cache", side_effect=lambda:ExitStack()))
             for name in ("NativeNormRoPE", "SparkAttentionCandidate", "NativeCompression", "NativeIndexer", "NativeSampler", "SparkOutputCandidate"):
                 factory = lambda *a, name=name, **kw: op(name, **({"profile": "long_context"} if name == "SparkAttentionCandidate" else {}))
                 patches.enter_context(patch.object(runtime, name, side_effect=factory))

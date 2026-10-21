@@ -23,7 +23,7 @@ import urllib.request
 
 import numpy as np
 
-from .artifact_repository import VerifiedBlob, register_existing
+from .artifact_repository import BLOCK, VerifiedBlob, register_existing
 from .bandwidth import EXPERT_BYTES
 from .checkpoint import MODEL, REVISION, BASE, EXPERT_LAYOUT, validate_expert_identity
 from .integrity import digest_shape, hash_chunks
@@ -586,7 +586,7 @@ class OriginalTensorReader:
             _regular_below(self.originals, self.originals / name)
             _regular_below(self.integrity, self.integrity / (name + ".sha256"))
             self.blobs[name] = VerifiedBlob(self.originals / name, self.integrity,
-                self.receipts[name], self.inventory[name], self.budget)
+                self.receipts[name], self.inventory[name], self.budget, max_span_bytes=CHUNK_BYTES)
         return self.blobs[name]
 
     def read_into(self, name, byte_offset, target):
@@ -604,10 +604,7 @@ class OriginalTensorReader:
             raise ValueError("Original tensor read exceeds its aligned element extent or 8 MiB bound")
         self.budget.acquire(0)
         source = self._blob(t["shard"])
-        for offset in range(0, view.nbytes, 4096):
-            self.budget.acquire(0)
-            raw = source.read(t["shard_byte_offset"] + byte_offset + offset, min(4096, view.nbytes - offset))
-            view[offset:offset + len(raw)] = raw
+        source.read_into(t["shard_byte_offset"] + byte_offset, view)
         self.logical_bytes += view.nbytes; self.read_calls += 1
 
     def stats(self):
@@ -615,7 +612,8 @@ class OriginalTensorReader:
                 "logical_bytes": self.logical_bytes, "logical_reads": self.read_calls,
                 "physical_data_bytes_read": self.retired_data_bytes + sum(b.data.aligned_bytes_requested for b in self.blobs.values()),
                 "integrity_index_bytes_read": self.retired_index_bytes + sum(b.index.aligned_bytes_requested for b in self.blobs.values()),
-                "maximum_span_request_bytes": CHUNK_BYTES, "maximum_verified_block_slice_bytes": 4096,
+                "maximum_span_request_bytes": CHUNK_BYTES, "maximum_verified_block_slice_bytes": CHUNK_BYTES,
+                "verification_block_bytes": BLOCK, "maximum_direct_read_bytes": CHUNK_BYTES,
                 "model_wide_mapping": False, "network_bytes_in_forward": 0}
 
     def __exit__(self, *_):
@@ -638,7 +636,8 @@ class OriginalShardExpertStore:
     SourceFactory example: lambda _, budget: OriginalShardExpertStore(
         metadata, originals, integrity, budget, layer=layer, workspace=ws).
     The caller owns one expert-sized writable target. Extra payload storage is
-    only VerifiedBlob's bounded direct-I/O scratch and two cached blocks.
+    only VerifiedBlob's bounded direct-I/O scratch, a bounded transient read
+    copy, and at most two cached blocks. Every source block remains verified.
     """
 
     def __init__(self, metadata, originals, integrity, budget, *, layer, workspace=None):
@@ -702,7 +701,7 @@ class OriginalShardExpertStore:
             _regular_below(self.originals, self.originals / name)
             _regular_below(self.integrity, self.integrity / (name + ".sha256"))
             self.blobs[name] = VerifiedBlob(self.originals / name, self.integrity,
-                self.receipts[name], self.inventory[name], self.budget)
+                self.receipts[name], self.inventory[name], self.budget, max_span_bytes=CHUNK_BYTES)
             self.file_switches += 1
         return self.blobs[name]
 
@@ -731,11 +730,11 @@ class OriginalShardExpertStore:
             for t in entry["provenance"]["tensors"]:
                 source, sha = self._blob(t["shard"]), hashlib.sha256()
                 region = self.manifest["layout"][t["name"]]
-                for offset in range(0, t["bytes"], 4096):
-                    self.budget.acquire(0)
-                    raw = source.read(t["shard_byte_offset"] + offset, min(4096, t["bytes"] - offset))
-                    view[region["offset"] + offset:region["offset"] + offset + len(raw)] = raw
-                    sha.update(raw); full_hash.update(raw)
+                for offset in range(0, t["bytes"], CHUNK_BYTES):
+                    size = min(CHUNK_BYTES, t["bytes"] - offset)
+                    target_span = view[region["offset"] + offset:region["offset"] + offset + size]
+                    source.read_into(t["shard_byte_offset"] + offset, target_span)
+                    sha.update(target_span); full_hash.update(target_span)
                 hashes[t["name"]] = sha.hexdigest()
         actual = full_hash.hexdigest()
         if entry["sha256"] is not None and entry["sha256"] != actual:
@@ -761,7 +760,8 @@ class OriginalShardExpertStore:
                 "physical_data_bytes_read": self.retired_data_bytes + sum(b.data.aligned_bytes_requested for b in self.blobs.values()),
                 "integrity_index_bytes_read": self.retired_index_bytes + sum(b.index.aligned_bytes_requested for b in self.blobs.values()),
                 "payload_bytes_repacked": 0, "network_payload_bytes_in_forward": 0,
-                "maximum_verified_span_read_bytes": 4096}
+                "maximum_verified_span_read_bytes": CHUNK_BYTES,
+                "verification_block_bytes": BLOCK, "maximum_direct_read_bytes": CHUNK_BYTES}
 
     def __exit__(self, *_):
         first_error = None

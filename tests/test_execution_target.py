@@ -9,7 +9,9 @@ from unittest import TestCase, main
 from unittest.mock import Mock, patch
 
 from vesper.execution_target import (PC_TARGET, SPARK_TARGET, ExecutionTarget,
-    compile_execution_kernel, kernel_source_sha256, resolve_execution_target)
+    compile_execution_kernel, kernel_source_sha256, resolve_execution_target, spark_kernel_cache)
+from vesper.memory import MemoryPolicy, RuntimeMemory
+from vesper.resources import GiB
 
 
 BINARY = b"mock-not-a-real-CUBIN"
@@ -266,6 +268,66 @@ class ExecutionTargetTests(TestCase):
             self.assertEqual(operator.compiler["nvrtc_version"], [12, 4])
             self.assertEqual(operator.stats()["execution"]["execution_target"], PC_TARGET)
         self.assertFalse(device.context)
+
+
+class SparkKernelCacheTests(TestCase):
+    def setUp(self):
+        self.stack = ExitStack(); self.addCleanup(self.stack.close)
+        self.stack.enter_context(patch.object(RuntimeMemory, 'CONTROL_METADATA_BYTES', 0))
+        self.stack.enter_context(patch.object(RuntimeMemory, 'ENABLE_WATCHDOG', False))
+
+    def runtime(self, cap=20000, unified=True):
+        return RuntimeMemory(MemoryPolicy(host_cap_bytes=cap, pinned_cap_bytes=128,
+            device_caps={0:1024}, unified_device_memory=unified), available=lambda:128*GiB,
+            process=lambda:{'resident_bytes':0})
+
+    def test_cache_requires_explicit_unified_runtime_and_bounded_capacity(self):
+        with self.assertRaises(ValueError):
+            with spark_kernel_cache(): pass
+        with self.runtime(unified=False):
+            with self.assertRaises(ValueError):
+                with spark_kernel_cache(): pass
+        with self.runtime():
+            for capacity in (True, 4095, 64*1024**2+1):
+                with self.assertRaises(ValueError):
+                    with spark_kernel_cache(capacity): pass
+
+    def test_cache_owns_copies_charges_retention_evicts_and_cleans_up(self):
+        with self.runtime() as policy:
+            with spark_kernel_cache(9000) as cache:
+                for key in ('first', 'second', 'third'):
+                    cache.put(key, BINARY, {'nvrtc_version':[13,0]})
+                self.assertEqual(cache.stats()['entries'],2)
+                self.assertEqual(cache.stats()['evictions'],1)
+                self.assertEqual(policy.host,2*(4096+len(BINARY)))
+                self.assertIsNone(cache.get('first'))
+                binary, compiler = cache.get('third')
+                self.assertEqual(binary,BINARY)
+                self.assertIsNot(binary,cache.entries['third'][0])
+                compiler['nvrtc_version'][0]=99
+                self.assertEqual(cache.get('third')[1]['nvrtc_version'],[13,0])
+                lease=policy.reserve(14000,'scratch','work')
+                try:
+                    self.assertEqual(cache.stats()['entries'],0)
+                    self.assertEqual(policy.host,14000)
+                    self.assertLessEqual(policy.host,policy.config.host_cap_bytes)
+                finally: lease.release()
+            self.assertEqual(policy.host,0)
+            self.assertFalse(policy.reclaimers)
+            self.assertTrue(cache.stats()['closed'])
+            cache.put('late',BINARY,{})
+            self.assertEqual(policy.host,0)
+
+    def test_arbitrary_compiler_functions_are_never_cached_or_promoted(self):
+        compiler=Mock(side_effect=mock_compile)
+        with self.runtime():
+            with spark_kernel_cache() as cache:
+                for _ in range(2):
+                    _, evidence=compile_execution_kernel(compiler,SPARK_TARGET,compiler_info={},
+                        pc_cubin_sha256=BINARY_HASH,kv=True)
+                    self.assertFalse(evidence['qualification_receipt_issued'])
+                self.assertEqual(compiler.call_count,2)
+                self.assertEqual(cache.stats()['entries'],0)
 
 
 if __name__ == "__main__":
