@@ -85,12 +85,15 @@ a budget stop is not an automatic pass. Closing a scoped issue records its
 declared outcome; later changes still return to the improvement/validation loop.
 
 Use fixed subsets of selected public benchmarks during development. After
-optimization, run the complete declared evaluation split of each selected
-benchmark as part of final testing, with matched released-precision reference
+optimization, prepare the complete declared evaluation split of each selected
+benchmark for the user's execution decision, with matched released-precision reference
 outputs and per-benchmark degradation metrics. Select the suite and quality
 tolerances separately and estimate its cost before running it; it does not run
-automatically during current optimization or policy editing. A final failure
-returns work through earlier coverage and final revalidation after improvement.
+automatically. Present scope, subset results, time estimates, reference-cache
+coverage, resource use and resume options, then wait for explicit authorization
+before any full comparator/candidate run. A final failure returns work through
+earlier coverage; additional full revalidation outside the approved plan also
+needs the user's decision. Deferral keeps full-suite qualification pending.
 See [benchmark validation](validation.md#public-benchmarks-and-final-degradation-measurement).
 
 ## Remaining quality and optional mechanisms

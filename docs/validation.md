@@ -77,6 +77,26 @@ split. Define the suite and acceptance criteria in advance. Final testing is
 part of the improvement loop: a failed criterion requires improvement and
 revalidation, not a permanent pass for the preceding candidate.
 
+Before starting a full evaluation, prepare a reviewable summary for the user:
+selected benchmarks/versions/splits and item/repetition counts; candidate and
+comparator identities and cached reference coverage; current subset results;
+estimated preparation/prefill/generation/scoring time for both paths, including
+uncertainty and estimation assumptions; expected resource use; and implemented
+checkpoint/resume behavior with any limitations. Estimates must come from
+relevant subset measurements when available, not the 20 tps goal alone.
+
+Implement persistence at completed question/trial boundaries and resume only
+the remaining items with the same candidate/settings. Preserve the interrupted
+attempt separately if its question must restart; do not double-count it.
+
+Record the user's explicit decision on the concrete execution scope and budget
+before running either path on a full benchmark. Do not launch the long comparator
+as hidden preparation for that decision. The user may run, revise or defer the
+plan. Resume within an already approved plan without asking again; material
+scope/budget changes or full reruns outside it need a new decision. Deferred
+full coverage remains pending. Preparing this summary does not block unrelated
+authorized development or bounded subset checks.
+
 Bind both comparator and candidate outputs to question IDs, dataset/version,
 the same model release/revision, prompt format, thinking/sampling settings,
 generation budgets and scoring/harness versions. Tool or image evaluations

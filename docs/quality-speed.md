@@ -47,8 +47,9 @@ the loop short. Fix the question identities and comparison settings before
 measuring a candidate; preserve each question's prompt and generation budget.
 Subset scores describe only that subset, not the benchmark's full score.
 
-Once optimization produces a final candidate, part of final testing is to run
-**all items in each selected benchmark's declared evaluation split**. Compare
+Once optimization produces a final candidate, prepare the full evaluation for
+the user's execution decision. An authorized final evaluation runs **all items
+in each selected benchmark's declared evaluation split**. Compare
 with the same model release/revision under released precision and matched
 evaluation conditions. Reuse valid reference outputs when their provenance and
 coverage support the entire comparison. Record score degradation together with
@@ -62,6 +63,21 @@ and cannot be reported as a completed full evaluation. A failed final criterion
 returns the candidate to the improvement loop, including earlier checks and a
 new complete final evaluation after changes. Full question coverage does not
 require routine per-layer/per-token intermediate tracing.
+
+Before running either path on a full benchmark, present the selected scope, recent
+subset results, expected time range and its assumptions, reference-cache
+coverage, resource impact and pause/resume capability. The user can choose to
+run the plan, narrow its selected scope, or defer it. Start only after explicit
+authorization for that plan; reaching a milestone or completing preparation
+does not authorize execution. Routine preparation and previously authorized
+bounded subset work can continue. Reuse an existing authorization for its
+unchanged scope/budget, including supported resumptions; bring material plan
+changes or additional full reruns back to the user. Deferral leaves full-suite
+qualification pending and does not manufacture a pass.
+
+The benchmark runner must save completed question/trial results and resume the
+remaining items under the same candidate and evaluation settings. An interrupted
+question may need to restart; make that limitation clear in the proposed plan.
 
 ## Comparator and candidate identity
 
