@@ -72,6 +72,36 @@ blanket pass. A revised protocol or candidate requires a separately declared
 trial, retaining earlier results rather than changing their passing criteria
 after inspection. This feedback is not a cyclic GitHub blocking dependency.
 
+### Official-benchmark subsets and final coverage
+
+On 2026-10-21 the user adopted fixed small subsets of official-benchmark
+questions for the development loop, with periodic checks on held-out questions.
+Compare the pinned original model revision
+`1bae0e1088993b9b82de08f59de5be5a34e42170` and each improved profile under
+matched inputs, inference, tool and grading conditions. Keep subset membership
+and scoring fixed before inspecting results; do not tune against the held-out
+questions. These checks detect regressions within their declared scope; a small
+sample cannot establish small differences in broad model quality.
+
+The final post-optimization test covers every question of each selected
+benchmark, version and split. Selecting a text-only split means its entire
+pinned text-only split, not the benchmark's excluded multimodal questions.
+This does not select every benchmark discussed as a candidate. The final
+benchmark list, dataset versions/splits, repeats, output/reasoning settings,
+tools, judges, quality criteria and execution budgets must be fixed before
+execution. A complete single pass is not automatically a reproduction of an
+official score: the official sampling, tool, grading and aggregation conditions
+also matter. Use the [1017 model's official evaluation table](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
+and the [official evaluation instructions](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/evaluation/README.md)
+to establish those conditions rather than assuming all candidate evaluations
+share one protocol.
+
+Long full-suite runs remain deferred until optimization and a declared execution
+plan are ready. This policy starts no benchmark run or dataset download and
+does not waive the existing quality, image, source-identity or resource gates.
+Final-test findings return to improvement and affected revalidation; final
+coverage is an acceptance scope, not a one-way development sequence.
+
 ## The 20 tokens/s target
 
 Measure batch 1, concurrency 1, accepted continuation tokens, including active

@@ -55,6 +55,19 @@ the current implementation. Preserve those records unchanged and mark affected
 current claims as needing validation. Unaffected history is not erased, and
 every iteration need not repeat the full practical-quality suite.
 
+The adopted quality-evaluation policy uses fixed small subsets of
+official-benchmark questions for these loops, plus periodic held-out checks,
+comparing the pinned original model and improved profiles under matched
+conditions. After optimization, the final test covers all questions of each
+selected benchmark/version/split. The candidate list is not a commitment to
+run every benchmark discussed. Fix the selected list, splits, repeats,
+output/reasoning settings, tools, grading, criteria and budgets before execution;
+an all-question single pass does not by itself reproduce an official score.
+Long full-suite runs remain deferred until the optimized configuration and
+declared execution plan are ready. See the
+[official-benchmark coverage policy](spark-optimization-candidates.md#official-benchmark-subsets-and-final-coverage).
+Findings still feed back into improvement and affected revalidation.
+
 ## Work breakdown and dependencies
 
 | Work | Prerequisites and acceptance outcome | Required evidence |
@@ -66,7 +79,7 @@ every iteration need not repeat the full practical-quality suite.
 | [#20: Verify selected end-to-end behavior and evaluation readiness](https://github.com/shell-term/vesper/issues/20) | Readiness acceptance uses #18, #19 and #24. Fix inputs, selected profile, conditions and budgets before measurement; reconfirm ordinary EOS and report the 20tps target's status | Prompt processing, first output, sustained continuation, I/O/memory/cleanup, comparable diagnostic modes and a bounded evaluation plan |
 | [#21: Connect and check the existing benchmark/harness](https://github.com/shell-term/vesper/issues/21) | Each check requires its actual runtime capabilities, artifacts, source-bound receipts and declared budget, not blanket S2 closure. Choose the connection method and supported targets in the issue | Input/output, tools, cancellation, usage accounting and setting correspondence; supported and unsupported behavior recorded explicitly |
 | [#25: Implement and qualify bounded image input](https://github.com/shell-term/vesper/issues/25) | Required product capability. Standalone checks use their actual vision/native prerequisites; final connected-image acceptance also requires #21's transport contract | Original preprocessing/vision/aligner, image features/masks/routing/Engram, prefill semantics, real image-conditioned EOS responses, resource/time bounds and harness image transport |
-| [#22: Evaluate practical text/image, reasoning, coding and tool behavior](https://github.com/shell-term/vesper/issues/22) | Final integrated acceptance requires #21 and #25 and recorded budgets. Earlier prototyping or bounded subset checks retain their explicit scope; long quality execution remains deferred | Fixed common tasks, grading and settings; named-profile text/image comparisons; accuracy, time and resources separately; timeout, unsupported scope and task failure distinguished |
+| [#22: Evaluate practical text/image, reasoning, coding and tool behavior](https://github.com/shell-term/vesper/issues/22) | Final integrated acceptance requires #21 and #25 and recorded budgets. Earlier prototyping or fixed official-benchmark subset checks retain their explicit scope; long quality execution remains deferred | Fixed tasks, grading and matched settings; periodic held-out checks; final all-question coverage of each selected benchmark/version/split; named-profile text/image comparisons; accuracy, time and resources separately; timeout, unsupported scope and task failure distinguished |
 
 Implementation methods are hypotheses to test, not a commitment to build every
 cache or derivative. An outcome is not accepted merely because code exists or a
