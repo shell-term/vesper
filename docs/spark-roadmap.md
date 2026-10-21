@@ -15,7 +15,7 @@ reading or changing progress. PC progress and qualification remain separate.
 | [S0: Isolated management and platform baseline](https://github.com/shell-term/vesper/milestone/5) | Separate checkout/progress/result identities, then bounded ARM64/GB10 and unified-memory checks | [Management #13](https://github.com/shell-term/vesper/issues/13), [platform #14](https://github.com/shell-term/vesper/issues/14), [S0 report](spark-platform-validation.md) |
 | [S1: Native model integration](https://github.com/shell-term/vesper/milestone/6) | All 40 blocks, both Engrams, original routed experts, real head and generated-token feedback complete an ordinary EOS response with owned cleanup | [Integration #16](https://github.com/shell-term/vesper/issues/16), [S1 report](spark-native-integration.md) |
 | [S2: Optimization candidates and measured selection](https://github.com/shell-term/vesper/milestone/7) | Improve native setup/I/O, evaluate compression/reduction against agreed quality gates, select a configuration and establish measured readiness | [Metadata #18](https://github.com/shell-term/vesper/issues/18), [backends #19](https://github.com/shell-term/vesper/issues/19), [candidate protocol #23](https://github.com/shell-term/vesper/issues/23), [experiments #24](https://github.com/shell-term/vesper/issues/24), [readiness #20](https://github.com/shell-term/vesper/issues/20) |
-| [S3: Benchmark connection and practical quality](https://github.com/shell-term/vesper/milestone/8) | Connect the selected benchmark/harness and evaluate practical quality within an explicit supported scope and matched conditions | [Connection #21](https://github.com/shell-term/vesper/issues/21), [quality #22](https://github.com/shell-term/vesper/issues/22) |
+| [S3: Benchmark connection and practical quality](https://github.com/shell-term/vesper/milestone/8) | Connect the selected benchmark/harness, implement required bounded image input, and evaluate practical text/image quality within declared matched scope | [Connection #21](https://github.com/shell-term/vesper/issues/21), [images #25](https://github.com/shell-term/vesper/issues/25), [quality #22](https://github.com/shell-term/vesper/issues/22) |
 
 S0 and S1 retain their completed evidence and original acceptance scope. S1's
 ordinary answer establishes functional integration, not useful interactive
@@ -35,7 +35,8 @@ authorizes evaluation, not adoption as the default model.
 | [#24: Compare candidates and select a configuration](https://github.com/shell-term/vesper/issues/24) | Follows #19 and #23. Implement bounded candidates and run short matched quality/latency/resource comparisons after acceleration | Quality differences, sustained accepted-token speed, I/O, resource bounds, failure cleanup and adoption/rejection; retaining native is valid if alternatives fail |
 | [#20: Verify selected end-to-end behavior and evaluation readiness](https://github.com/shell-term/vesper/issues/20) | Follows #18, #19 and #24. Fix inputs, selected profile, conditions and budgets before measurement; reconfirm ordinary EOS and report the 20tps target's status | Prompt processing, first output, sustained continuation, I/O/memory/cleanup, comparable diagnostic modes and a bounded S3 execution plan |
 | [#21: Connect and check the existing benchmark/harness](https://github.com/shell-term/vesper/issues/21) | Follows S2 measurement/readiness in #20. Choose the actual connection method and targets in the issue | Input/output, tools, cancellation, usage accounting and setting correspondence; supported and unsupported behavior recorded explicitly |
-| [#22: Evaluate practical Japanese, reasoning, coding and tool behavior](https://github.com/shell-term/vesper/issues/22) | Follows the connection check in #21, using the recorded S2 execution budget | Fixed common tasks, grading and settings; baseline comparisons; accuracy, time and resource results reported separately; timeout, unsupported scope and task failure distinguished |
+| [#25: Implement and qualify bounded image input](https://github.com/shell-term/vesper/issues/25) | Required product capability requested by the user; follows #20 and initial text connection #21 | Original preprocessing/vision/aligner, image features/masks/routing/Engram, prefill semantics, real image-conditioned EOS responses, resource/time bounds and harness image transport |
+| [#22: Evaluate practical text/image, reasoning, coding and tool behavior](https://github.com/shell-term/vesper/issues/22) | Follows #21 and #25, using recorded budgets | Fixed common tasks, grading and settings; named-profile text/image comparisons; accuracy, time and resources separately; timeout, unsupported scope and task failure distinguished |
 
 Implementation methods are hypotheses to test, not a commitment to build every
 cache or derivative. A phase is not accepted merely because code exists or a
@@ -82,8 +83,13 @@ differences and comparison methods fixed before experiments. It adopts no
 specific extra quantization, expert removal or changed routing yet, and does
 not require approximate candidates to be bit-identical to native. Preserve
 originals and keep candidates reversible. An expert unselected in a short
-probe is not unused model data. Text-unused capability removal may save storage
-without reducing active-token work; establish the actual dependency graph.
+probe is not unused model data. Image input is required: preserve vision,
+aligner, image marker vectors and trained image routing bias. They are not
+unused-storage reduction candidates. Other excluded capabilities require an
+actual dependency proof and may save storage without reducing active-token work.
+S2's text-only candidate screen leaves image quality explicitly unqualified;
+shared-backbone lossy candidates require image evaluation under #25 before
+being accepted as an image-enabled product profile.
 
 See [candidate and target policy](spark-optimization-candidates.md). The
 aspirational target is at least 20 accepted continuation tokens/s for batch 1,
@@ -102,9 +108,9 @@ composition's 12 GiB shared ledger, 1 GiB asset cap and 5 GiB device cap are the
 measured starting limits, not permission to retain every layer. Admission
 counters and sampled RSS are not an OS hard-memory guarantee.
 
-Images, longer context/reasoning and MTP execution are separate expansion candidates.
-Confirm model and implementation support and define their own acceptance
-scope before scheduling them; implementing every candidate is not required to
-finish this seven-issue plan. Inventorying capability-specific data does not
-imply implementing that capability. No scheduled task or concrete approximate
-model profile is introduced by this management update.
+Image input is now a required S3 implementation, not an optional future
+candidate. Current Spark execution is text-only; preserved image weights do
+not constitute support. Its encoder/prefill/first-output budget is separate
+from the text-continuation 20 tokens/s aspiration. Longer context/reasoning
+and MTP execution remain separate expansion candidates with their own scope.
+This eight-issue plan creates no scheduled task or concrete approximate profile.

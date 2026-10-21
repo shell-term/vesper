@@ -2,7 +2,7 @@
 
 日本語案内: S2に圧縮・削減候補の評価を含めます。精度を第一に、品質差を測って構成を選びます。20 tpsは挑戦目標であり、達成済み・達成見込み・必須の完了条件を意味しません。
 
-The user explicitly expanded S2 on 2026-10-21 and adopted 20tokens/s as an
+The user explicitly expanded S2 on 2026-10-21 and adopted 20 tokens/s as an
 aspirational target. This supersedes the earlier native-only S2 scope and
 withdraws the unadopted 900s ordinary-response / 192 calls / 3 h proposal. Follow
 the [roadmap](spark-roadmap.md) and own-platform Issues; PC policy is unchanged.
@@ -12,7 +12,7 @@ the [roadmap](spark-roadmap.md) and own-platform Issues; PC policy is unchanged.
 | Class | Required distinction | Evaluation |
 | --- | --- | --- |
 | Native preparation/I/O reuse | Reuse authenticated catalogs, bounded backends, transfer or exact prepared data without changing model semantics | Exact native boundaries, routing/state, identity, ownership and matched timings; #18/#19 |
-| Text-unused capability data | Prove the actual text execution dependency graph before excluding any vision/MTP or other data | Bytes/capability manifest, text invariance and reversible packaging; a short unselected expert is not unused data |
+| Capability-specific data | Image input is required: retain vision, aligner, learned markers and trained image-routing bias. Prove dependencies before excluding any other capability, such as unused MTP execution data | Bytes/capability manifest, supported behavior and reversible packaging; a short unselected expert is not unused data |
 | Lossless representation and residency | Layout/packing, authenticated caching/prefetch and bounded residency may reduce traffic without modifying trained routes | Actual compression ratio, miss/hit/read costs, decode overhead, pressure and unchanged outputs |
 | Additional lossy compression | Original expert weights are already FP4; evaluate selected tensor/precision changes rather than assuming another low-bit label saves space | Named profile, authenticated transform, declared quality differences and numerical/practical comparisons |
 | Expert/tensor reduction or changed routing | These can change the model's behavior and supported capabilities | Named approximate profile, held-out quality screen, severe-regression stops and explicit adoption/rejection |
@@ -22,6 +22,12 @@ selects candidate(s), and fixes acceptable quality differences and comparison
 methods before approximate experiments. #24 implements the selected bounded
 experiments and records the choice. Native remains the original contract;
 approximate results must never inherit its receipts or be labeled native passes.
+Image input is a required S3 gate [#25](https://github.com/shell-term/vesper/issues/25).
+S2 text evidence leaves image functionality and quality unqualified. Lossy
+changes to shared experts/backbone require image-quality evaluation before
+the chosen configuration is accepted as an image-enabled product profile,
+even if its vision weights remain unchanged. Current Spark has no vision
+encoder/aligner/image-feature insertion path; retaining weights alone is insufficient.
 Keep source originals intact; derive reversible manifests/artifacts with explicit
 SSD quotas instead of destructively editing the pinned checkpoint. No specific
 extra quantization, expert deletion, routing change or derivative profile is
@@ -43,7 +49,7 @@ every approximate product candidate. A recorded rejection and retention of nativ
 is a valid selection result if supported by evidence. Broader harness, tools and
 practical task quality remain S3 #21/#22, after S2 readiness in #20.
 
-## The 20tokens/s target
+## The 20 tokens/s target
 
 Measure batch 1, concurrency 1, accepted continuation tokens, including active
 SSD reads/cache misses, transfers and computation. Use declared prompts,
@@ -54,7 +60,7 @@ prompt processing, setup and cleanup are reported separately. Serving and
 full-diagnostic modes must disclose different work; compare like modes.
 
 The S1 arithmetic run selected only `4` and EOS after 18 prompt tokens. It is an
-ordinary completion regression, not evidence of sustained20tokens/s. Its last
+ordinary completion regression, not evidence of sustained 20 tokens/s. Its last
 model call read 4,606,590,976 physical expert-data bytes, plus 154,877,952 integrity
 index bytes. At unchanged traffic, 20 calls/s would require 92.13 GB/s of expert
 data reads alone. This is a calculated traffic requirement, not a storage
@@ -63,7 +69,7 @@ The [raw baseline](../results/dgx-spark/2026-10-21-s1-optimized/generate-r04.jso
 preserves the original conditions. Actual sustained throughput and cache locality
 remain to be measured.
 
-S2 must publish target attainment or the remaining barriers honestly. 20tokens/s
+S2 must publish target attainment or the remaining barriers honestly. 20 tokens/s
 is not mandatory for closure; measured quality-first selection, ordinary EOS,
 owned cleanup, resource preservation and a declared viable next evaluation plan
 are. Numeric execution budgets are agreed before final qualification, never

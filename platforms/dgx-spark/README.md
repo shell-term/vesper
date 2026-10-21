@@ -27,6 +27,7 @@ The report separates short-text execution, component parity and practical-qualit
 - [Candidate comparisons and configuration selection #24](https://github.com/shell-term/vesper/issues/24).
 - [Benchmark/harness connection checks #21](https://github.com/shell-term/vesper/issues/21).
 - [Practical-quality evaluation #22](https://github.com/shell-term/vesper/issues/22).
+- [Required bounded image input #25](https://github.com/shell-term/vesper/issues/25).
 - [Spark issues](https://github.com/shell-term/vesper/issues?q=is%3Aissue+label%3Aplatform%3Adgx-spark).
 - [S0: Management and platform](https://github.com/shell-term/vesper/milestone/5).
 - [S1: Native model integration](https://github.com/shell-term/vesper/milestone/6).
@@ -54,6 +55,10 @@ then evaluates named compression/reduction profiles with quality tolerances
 and comparisons fixed before experiments. This plan adopts no specific extra
 quantization, expert removal or changed routing. See the
 [candidate and target policy](../../docs/spark-optimization-candidates.md).
+Image input is required under #25. Preserve its vision/aligner/marker/routing
+weights in S2; current Spark execution remains text-only and candidate image
+quality is unqualified until the required image gate passes. The 20 tokens/s
+aspiration is text continuation; image encoding/prefill has a separate budget.
 
 The completed S1 integration connected original expert and Engram storage with
 all 40 model blocks, the real vocabulary head and generated-token feedback.
