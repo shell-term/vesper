@@ -261,7 +261,8 @@ def main(argv=None):
     with target.open('xb') as stream:
         stream.write((json.dumps(stamped, indent=2) + '\n').encode())
     print(json.dumps({'status': report['status'], 'mode': args.mode,
-                      'model_execution_run': args.mode != 'prepare', 'result': name}), flush=True)
+                      'model_execution_attempted': args.mode != 'prepare',
+                      'completed_model_calls': len(report.get('calls', [])), 'result': name}), flush=True)
 
 
 if __name__ == '__main__':

@@ -22,6 +22,12 @@ uses short checks before expensive tracing. See the [quality/speed workflow](doc
 
 ## Status
 
+An opt-in [bounded session experiment](docs/session-lifetime.md) now completes
+the qualified five-call input with identical logits, routes and final state.
+Observed decode rate is 0.0472 versus 0.0762 tokens/s (1.615x) with more resident
+memory. This is one diagnostic comparison with different admission ceilings,
+not practical production throughput or broad task-quality qualification.
+
 This is a **verification runtime** with a first qualified, bounded raw-text
 continuation against original generation. Native
 experts now run on the RTX 4090 through SSD, bounded RAM and two GPU cache tiers.
@@ -99,7 +105,7 @@ state. Both executions reach `xs[-1]` and EOS; all three declared expression
 cases pass. An actual failed token restores state/RNG and retries exactly.
 Native sampled resident RAM peaks at **7.98 GiB**, with **87.46 GiB minimum
 sampled available RAM**. This is one expression task; broader coding,
-reasoning/tool-use, chunk prefill and generation speed remain open. See the
+reasoning/tool-use, chunk prefill and production generation speed remain open. See the
 [file-bound results](results/pc-heterogeneous/2026-10-20-coding-trajectory/summary.json).
 
 Direct comparisons with the pinned official implementation give:
@@ -114,7 +120,8 @@ Direct comparisons with the pinned official implementation give:
 The expert checks include both input projections, asymmetric clamps, weighted
 SwiGLU, the BF16 boundary, down-input quantization and the output projection.
 Independent format checks also pass on both GPUs. Other Transformer-block
-profiles, full-model quality and generation speed remain unverified. The 3080 Ti currently stores original bytes;
+profiles and full-model quality remain unverified; the scoped timing experiment
+above does not qualify production throughput. The 3080 Ti currently stores original bytes;
 all model arithmetic in the cache probe runs on the 4090. See the
 [cache report and complete results](docs/cache-validation.md), [resident expert report](docs/expert-validation.md)
 and the [initial transfer/storage measurements](docs/first-probe.md).

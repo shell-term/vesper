@@ -1,0 +1,22 @@
+{
+  "probe": "operator_observation_of_initial_retained_attempt",
+  "observed_at": "2026-10-21T02:04:44.628011+00:00",
+  "observed_source_commit": "a920fa3f79192452e9533c72c876596139273d47",
+  "status": "resource_refused",
+  "exit_code": 1,
+  "phase": "retained_moe_context_setup",
+  "error_type": "MemoryError",
+  "error_message": "Allocation cannot fit the runtime host or pinned ceiling",
+  "configured_pinned_cap_bytes": 1073741824,
+  "per_layer_two_staging_buffers_bytes": 37601280,
+  "planned_40_layer_staging_bytes": 1504051200,
+  "completed_model_calls": 0,
+  "completed_execution_receipt_produced": false,
+  "quality_scored": false,
+  "cleanup_counters_recorded": false,
+  "not_a_stamped_model_execution_receipt": true,
+  "private_console_trace_published": false,
+  "original_weights_changed": false,
+  "time_budget_changed": false,
+  "next_action": "explicit 2 GiB benchmark-only pinned allowance; keep 64 GiB host cap and 32 GiB floor"
+}

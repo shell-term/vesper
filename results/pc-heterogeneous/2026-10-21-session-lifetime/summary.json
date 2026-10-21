@@ -1,0 +1,292 @@
+{
+  "additional_quantization": false,
+  "all_variants_completed": true,
+  "baseline_pinned_ceiling_was_reached": false,
+  "files": {
+    "baseline.json": {
+      "bytes": 464153,
+      "sha256": "74cfcb19878ee1d6f1b9d495889e9e86560cc13ab92b8eeee456082f1e1a2c25"
+    },
+    "initial-retained-refusal.json": {
+      "bytes": 948,
+      "sha256": "bb235a59d5e23e5d376153f47a793925da4d4c6d1a5a94e715c042369e21044f"
+    },
+    "preparation.json": {
+      "bytes": 25050,
+      "sha256": "12938728a077af4000576af882285cf5dbb938a4eec7a44a86b8fc751d1be78b"
+    },
+    "retained.json": {
+      "bytes": 465668,
+      "sha256": "1f6783bec8b4ca3c60214407002a0998929364b77ef3dfb614089b4a6a47c5b9"
+    },
+    "second-retained-refusal.json": {
+      "bytes": 969,
+      "sha256": "acc14b168a6037eff2752240fae5a6eac819ee91064ca5af1553b56e737a2c8f"
+    }
+  },
+  "finished_production_engine_throughput_claim": false,
+  "fully_matched_resource_policy": false,
+  "host_cap_bytes": {
+    "baseline": 68719476736,
+    "retained": 103079215104
+  },
+  "initial_retained_attempt_resource_refused": true,
+  "initial_retained_refusal_is_completed_execution_evidence": false,
+  "input_preparation_payload_bytes_copied": 0,
+  "new_model_execution_run_in_summary_writer": false,
+  "numerical_profile": "released-fp4",
+  "observations": {
+    "baseline": {
+      "complete_short_reference_match": true,
+      "context_closes": 200,
+      "context_open_seconds": 47.595979199988506,
+      "context_opens": 200,
+      "device_peaks": {
+        "0": 10442542756,
+        "1": 37748160
+      },
+      "direct_read_bytes": 22560768000,
+      "direct_read_calls": 1200,
+      "expert_stage_timings": {
+        "compute.kernels": {
+          "calls": 7200,
+          "total_ms": 1861.7470000000008
+        },
+        "host.ram_allocate": {
+          "calls": 400,
+          "total_ms": 10.613800000000001
+        },
+        "host.ram_copy": {
+          "calls": 400,
+          "total_ms": 1426.8473000000001
+        },
+        "host.store_staging_copy": {
+          "calls": 1200,
+          "total_ms": 1743.6734999999999
+        },
+        "integrity.cpu_sha256": {
+          "calls": 1200,
+          "total_ms": 20040.813899999997
+        },
+        "integrity.gpu0_digest_d2h": {
+          "calls": 1200,
+          "total_ms": 78.01709999999999
+        },
+        "integrity.gpu0_sha256": {
+          "calls": 1200,
+          "total_ms": 4325.9286999999995
+        },
+        "integrity.gpu1_digest_d2h": {
+          "calls": 800,
+          "total_ms": 31.858700000000002
+        },
+        "integrity.gpu1_sha256": {
+          "calls": 800,
+          "total_ms": 376.21999999999997
+        },
+        "integrity.prepare_cpu_chunks": {
+          "calls": 1200,
+          "total_ms": 15804.8699
+        },
+        "storage.direct_read": {
+          "calls": 1200,
+          "total_ms": 5448.487399999999
+        },
+        "transfer.diagnostics_d2h": {
+          "calls": 1200,
+          "total_ms": 243.9838000000001
+        },
+        "transfer.helper_d2h": {
+          "calls": 400,
+          "total_ms": 618.0470999999999
+        },
+        "transfer.helper_h2d": {
+          "calls": 800,
+          "total_ms": 1260.8927
+        },
+        "transfer.input_h2d": {
+          "calls": 1200,
+          "total_ms": 50.09269999999999
+        },
+        "transfer.primary_d2h": {
+          "calls": 800,
+          "total_ms": 1231.9337000000003
+        },
+        "transfer.primary_h2d": {
+          "calls": 1200,
+          "total_ms": 1902.2680000000003
+        }
+      },
+      "minimum_observed_available_bytes": 134411997184,
+      "process_peaks": {
+        "private_commit_bytes": 21382340608,
+        "resident_bytes": 8540921856
+      },
+      "source_tiers": {
+        "store": 1200
+      },
+      "status": "pass",
+      "timing": {
+        "completed_model_calls": 5,
+        "decode_forward_seconds": 42.406384899999466,
+        "decode_tokens_after_first": 2,
+        "decode_tokens_per_second": 0.047162709217404314,
+        "engine_TTFT_seconds": 131.97106600000006,
+        "forward_seconds": 116.89702189999844,
+        "prefill_forward_seconds": 74.49063699999897,
+        "prompt_complete": true,
+        "prompt_tokens": 3,
+        "request_TTFT_seconds": 74.49203900000066,
+        "setup_seconds": 57.479026999999405,
+        "total_engine_wall_seconds_including_checks_and_cleanup": 176.5744885999993
+      }
+    },
+    "retained": {
+      "complete_short_reference_match": true,
+      "context_closes": 40,
+      "context_open_seconds": 17.135017100003097,
+      "context_opens": 40,
+      "device_peaks": {
+        "0": 13948602720,
+        "1": 1509926400
+      },
+      "direct_read_bytes": 15848939520,
+      "direct_read_calls": 843,
+      "expert_stage_timings": {
+        "compute.kernels": {
+          "calls": 7200,
+          "total_ms": 1866.1041000000007
+        },
+        "host.ram_allocate": {
+          "calls": 1023,
+          "total_ms": 23.414599999999993
+        },
+        "host.ram_copy": {
+          "calls": 1363,
+          "total_ms": 3835.6723000000006
+        },
+        "host.store_staging_copy": {
+          "calls": 843,
+          "total_ms": 1105.6320999999998
+        },
+        "integrity.cpu_sha256": {
+          "calls": 843,
+          "total_ms": 14021.5588
+        },
+        "integrity.gpu0_digest_d2h": {
+          "calls": 1200,
+          "total_ms": 71.60440000000001
+        },
+        "integrity.gpu0_sha256": {
+          "calls": 1200,
+          "total_ms": 4175.887599999999
+        },
+        "integrity.gpu1_digest_d2h": {
+          "calls": 1120,
+          "total_ms": 125.6402
+        },
+        "integrity.gpu1_sha256": {
+          "calls": 1120,
+          "total_ms": 2338.1556999999993
+        },
+        "integrity.prepare_cpu_chunks": {
+          "calls": 786,
+          "total_ms": 10216.941000000003
+        },
+        "storage.direct_read": {
+          "calls": 843,
+          "total_ms": 3499.4068
+        },
+        "transfer.diagnostics_d2h": {
+          "calls": 1200,
+          "total_ms": 283.0492
+        },
+        "transfer.helper_d2h": {
+          "calls": 1040,
+          "total_ms": 8277.8272
+        },
+        "transfer.helper_h2d": {
+          "calls": 1120,
+          "total_ms": 9440.1332
+        },
+        "transfer.input_h2d": {
+          "calls": 1200,
+          "total_ms": 42.27680000000001
+        },
+        "transfer.primary_d2h": {
+          "calls": 1120,
+          "total_ms": 1697.0721000000003
+        },
+        "transfer.primary_h2d": {
+          "calls": 1200,
+          "total_ms": 1889.5932
+        }
+      },
+      "minimum_observed_available_bytes": 126417604608,
+      "process_peaks": {
+        "private_commit_bytes": 35423186944,
+        "resident_bytes": 16968953856
+      },
+      "source_tiers": {
+        "helper_gpu": 17,
+        "ram": 340,
+        "store": 843
+      },
+      "status": "pass",
+      "timing": {
+        "completed_model_calls": 5,
+        "decode_forward_seconds": 26.25636889999987,
+        "decode_tokens_after_first": 2,
+        "decode_tokens_per_second": 0.07617199497833115,
+        "engine_TTFT_seconds": 104.19255010000052,
+        "forward_seconds": 70.9853847000013,
+        "prefill_forward_seconds": 44.729015800001434,
+        "prompt_complete": true,
+        "prompt_tokens": 3,
+        "request_TTFT_seconds": 44.73047159999987,
+        "setup_seconds": 59.46207850000064,
+        "total_engine_wall_seconds_including_checks_and_cleanup": 132.82414450000033
+      }
+    }
+  },
+  "observed_ratios": {
+    "decode_rate_retained_over_baseline": 1.6150894688259685,
+    "engine_TTFT_baseline_over_retained": 1.2666075057510222,
+    "forward_wall_baseline_over_retained": 1.6467759158315343
+  },
+  "pinned_cap_bytes": {
+    "baseline": 1073741824,
+    "retained": 2147483648
+  },
+  "private_raw_model_assets_published": false,
+  "probe": "pc_session_lifetime_measurement_publication",
+  "reasoning_coding_tool_qualification": false,
+  "repeated_measurement_claim": false,
+  "scope": "one exploratory five-call raw-text comparison; host/pinned admission ceilings differ",
+  "second_retained_attempt_resource_refused": true,
+  "source_revision_difference": "retained benchmark admits 96 GiB conservative host charges and 2 GiB pinned staging rather than 64/1 GiB, and reports resource refusals; no model arithmetic changes",
+  "status": "pass",
+  "task_quality_scored": false,
+  "timing_limitations": [
+    "Python imports and reference validation excluded",
+    "diagnostic operator tensor materialization included",
+    "OS and driver caches not reset",
+    "baseline then retained order, one run each",
+    "cooperative budget, setup/cleanup may overrun a checkpoint"
+  ],
+  "validation_scope": "complete logits, ordered routes/weights, feedback and RNG for completed calls; final state and qualified image set only for complete variants",
+  "workspace_context": {
+    "binding_id": "d8ba9a395cbd47b69ba549fa5d13ed14",
+    "created_at": "2026-10-21T02:10:39.607021+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "68bbde5f7410f866ac1d93271de6631b6272fbf2",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "pc-heterogeneous",
+    "profile": "native",
+    "registry_sha256": "62c940bcbae1587ad43f67a2080aa08597abb92071de8844a6eea1810215427e",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "pc-session-lifetime-publication-20261021",
+    "schema_version": 1
+  }
+}

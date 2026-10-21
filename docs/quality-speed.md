@@ -104,3 +104,6 @@ still materialize intermediate tensors, and that cost is included; these
 numbers are measurements of this prototype, not a finished production engine.
 The raw continuation has no reasoning/coding/tool task score. No new lossy
 numerical profile is implemented by this context-lifetime experiment.
+
+The first [actual measurement and resource tradeoff](session-lifetime.md) is
+published separately, including setup refusals and differing admission ceilings.
