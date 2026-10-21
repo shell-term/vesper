@@ -7,9 +7,13 @@ Do not infer Spark progress from the PC roadmap.
 
 Current plan: [Spark roadmap](../../docs/spark-roadmap.md). It keeps the S0/S1
 evidence, includes native latency work and compression/reduction candidate
-evaluation in S2, then follows with benchmark connection and broader practical
-quality in S3. Accuracy is first; 20 tokens/s is an aspirational continuation
-target, not a mandatory S2 completion threshold. GitHub owns live task state.
+evaluation in S2, and benchmark connection and broader practical quality in S3.
+These milestones group outcomes. Development loops through validation,
+improvement and revalidation, including affected previously passed checks;
+bounded work may cross milestone boundaries when its actual prerequisites are
+met. Long quality checks remain deferred. Accuracy is first; 20 tokens/s is an
+aspirational continuation target, not a mandatory S2 completion threshold.
+GitHub owns live task state.
 
 Evidence: [S0 management and bounded hardware report](../../docs/spark-platform-validation.md).
 S1 execution evidence: [native integration report](../../docs/spark-native-integration.md).
@@ -40,8 +44,10 @@ experiments; S2, ordinary EOS requalification and image input remain open.
 These are task links, not pass claims. Read current state using
 `python -m vesper.workspace read-progress --issue 13` or `--issue 14`.
 Use `--issue 16` for S1 implementation and validation progress.
-Start native S2 execution with `--issue 18`; candidate inventory/protocol is
-`--issue 23`. Follow the roadmap's dependencies for the remaining work.
+Native preparation evidence is under `--issue 18` and `--issue 19`;
+candidate inventory/protocol is `--issue 23`. Select each iteration from the
+roadmap and live own-platform issue state. Its dependencies describe final
+acceptance; they do not prohibit earlier bounded work with the required inputs.
 Registry changes are required before additional task IDs become valid. Shared
 model source may be inspected, but PC progress/results do not qualify Spark.
 

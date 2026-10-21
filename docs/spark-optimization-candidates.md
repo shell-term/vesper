@@ -1,6 +1,6 @@
 # Spark S2 candidate and target policy
 
-日本語案内: S2に圧縮・削減候補の評価を含めます。精度を第一に、品質差を測って構成を選びます。20 tpsは挑戦目標であり、達成済み・達成見込み・必須の完了条件を意味しません。
+日本語案内: S2に圧縮・削減候補の評価を含めます。精度を第一に、品質差を測って構成を選びます。検証・改善・再検証はS2/S3をまたいで繰り返し、変更の影響を受ける既合格項目も再確認します。20 tpsは挑戦目標であり、達成済み・達成見込み・必須の完了条件を意味しません。
 
 The user explicitly expanded S2 on 2026-10-21 and adopted 20 tokens/s as an
 aspirational target. This supersedes the earlier native-only S2 scope and
@@ -33,11 +33,13 @@ SSD quotas instead of destructively editing the pinned checkpoint. No specific
 extra quantization, expert deletion, routing change or derivative profile is
 adopted by this plan alone.
 
-## Quality and order
+## Quality and iteration
 
-Accuracy is first, speed second. Accelerate native execution using bounded
-numerical checks, then evaluate selected approximate candidates on fixed short
-direct-runtime comparisons. Include representative supported Japanese,
+Accuracy is first, speed second. Validation, improvement and revalidation
+repeat across S2/S3 work as findings require; milestones group required outcomes,
+not a mandatory task sequence. Native improvements use bounded numerical checks;
+selected approximate candidates require fixed short direct-runtime comparisons
+under the agreed quality protocol. Include representative supported Japanese,
 instruction following, reasoning and code behavior beyond simple arithmetic;
 record reference answers/scoring, held-out selection, critical regressions,
 numeric tolerances, repeats and budgets before the qualifying screen. The
@@ -49,11 +51,26 @@ long quality checks. Neither the proposed 1,200-second ordinary EOS budget nor
 the four-case, 192-call / three-hour quality-screen proposal was adopted. Their
 draft inputs/rubrics are not an accepted quality protocol. S2 remains open;
 finite numerical checks do not waive its selection/quality/readiness gates.
+The iterative methodology does not adopt those budgets or authorize deferred
+long quality checks. Every run still needs its actual technical prerequisites,
+current source-bound receipts, resource bounds and declared finite budget.
 
 Bit equality remains applicable to the native and lossless boundaries, not to
 every approximate product candidate. A recorded rejection and retention of native
 is a valid selection result if supported by evidence. Broader harness, tools and
-practical task quality remain S3 #21/#22, after S2 readiness in #20.
+practical task quality remain S3 #21/#22. Their prototypes and bounded checks
+are not blocked by blanket S2 closure; each result qualifies only its declared
+capability and conditions. Final integrated text/image acceptance still requires
+the relevant connection and required image evidence, not a text-only pass.
+
+Candidate or harness findings can return work to an affected implementation,
+protocol or readiness issue. Rerun affected previously passed checks and any
+freshness checks required by the runtime's source-identity gates. Preserve old
+passes for their exact source/profile/hardware/input scope and mark affected
+current claims as needing validation; do not restamp receipts or inherit a
+blanket pass. A revised protocol or candidate requires a separately declared
+trial, retaining earlier results rather than changing their passing criteria
+after inspection. This feedback is not a cyclic GitHub blocking dependency.
 
 ## The 20 tokens/s target
 

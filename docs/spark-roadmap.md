@@ -1,6 +1,6 @@
 # DGX Spark roadmap
 
-日本語案内: S0/S1の実績と原版基準を保持し、S2で準備・I/O改善に加え、圧縮・削減候補の品質差と速度・資源を比較して構成を選びます。20 tpsは挑戦目標であり必須の完了条件ではありません。S3でハーネス接続と広い実用精度を評価します。
+日本語案内: S0/S1の実績と原版基準を保持し、S2で準備・I/O改善に加え、圧縮・削減候補の品質差と速度・資源を比較して構成を選びます。S3はハーネス接続と広い実用精度を扱います。開発はマイルストーンをまたいで検証・改善・再検証を繰り返し、変更の影響を受ける既合格項目も再確認します。20 tpsは挑戦目標であり必須の完了条件ではありません。
 
 This is the Spark plan expanded by explicit user decision on 2026-10-21.
 It supersedes that day's earlier native-optimization-only S2 scope. GitHub Issues own task state and
@@ -20,29 +20,62 @@ reading or changing progress. PC progress and qualification remain separate.
 S0 and S1 retain their completed evidence and original acceptance scope. S1's
 ordinary answer establishes functional integration, not useful interactive
 speed or broad task accuracy. The previously unused milestone IDs 7 and 8 are
-retained with responsibilities matching the agreed execution order. Heavy
-practical evaluation follows acceleration and the bounded S2 quality screen;
-accuracy remains the first product priority throughout. Including a candidate
-authorizes evaluation, not adoption as the default model.
+retained as groups of required outcomes, not a mandatory one-way execution
+schedule. Accuracy remains the first product priority throughout. Including a
+candidate authorizes evaluation within its declared scope, not adoption as the
+default model. Long quality checks remain deferred by the user's decision.
+
+## Iterative development and evidence
+
+Development repeats validation, improvement and revalidation. Findings may
+return work to any affected issue, including across S2/S3 boundaries; no fixed
+sequence of implementation tasks is prescribed. S2 closure is not a blanket
+prerequisite for S3 prototyping or bounded checks.
+
+```mermaid
+flowchart LR
+    V["Validation within declared scope"] -->|findings| I["Affected implementation or evaluation work"]
+    I -->|revalidation, including affected previous passes| V
+```
+
+The feedback arrows describe development, not cyclic GitHub blockers. Issue
+dependencies retain their actual artifact and acceptance requirements. Before
+each run, establish its supported capabilities, required implementation and
+artifacts, current source-bound receipts, matched conditions, resource limits,
+cancellation and finite execution budget. An available component or prototype
+does not waive a missing prerequisite or qualify a whole milestone. This
+methodology change authorizes no additional run or deferred long quality check.
+
+For each change, record the affected contracts and capability claims, the
+previously passed checks that need revalidation, and the new evidence and open
+gaps. Also refresh any receipts required by the runtime's source-identity gates;
+impact analysis does not bypass those gates. Historical passes remain evidence
+for their original source/profile/hardware/input scope, not blanket passes for
+the current implementation. Preserve those records unchanged and mark affected
+current claims as needing validation. Unaffected history is not erased, and
+every iteration need not repeat the full practical-quality suite.
 
 ## Work breakdown and dependencies
 
-| Work | Dependency and outcome | Required evidence |
+| Work | Prerequisites and acceptance outcome | Required evidence |
 | --- | --- | --- |
-| [#18: Measure opening phases and reuse authenticated model metadata/indexes](https://github.com/shell-term/vesper/issues/18) | First S2 work, after completed #16. Separate catalog parsing, fixture checks, backend setup and uploads; reuse authenticated metadata within an explicitly owned runtime lifetime | Bounded retained bytes and lifetime; changed/corrupt input handling; unchanged relevant native numerical boundaries; measured setup breakdown |
-| [#19: Reuse bounded execution, transfer and projection preparation](https://github.com/shell-term/vesper/issues/19) | Follows #18. Retain only the preparation demonstrated useful by measurement, including backend handles or verified conversion state where appropriate | Native numerical boundaries, failed-switch/retry behavior, pressure refusal/eviction, cleanup and actual retained memory; no claim that every proposed cache must be built |
-| [#23: Inventory compression/reduction candidates and fix quality gates](https://github.com/shell-term/vesper/issues/23) | After completed #16; design can run alongside native improvements. Separate unused capability storage, lossless representation/cache work and lossy weight/expert changes | Source-derived bytes/use inventory, named profiles and agreed numerical/practical quality limits fixed before approximate experiments |
-| [#24: Compare candidates and select a configuration](https://github.com/shell-term/vesper/issues/24) | Follows #19 and #23. Implement bounded candidates and run short matched quality/latency/resource comparisons after acceleration | Quality differences, sustained accepted-token speed, I/O, resource bounds, failure cleanup and adoption/rejection; retaining native is valid if alternatives fail |
-| [#20: Verify selected end-to-end behavior and evaluation readiness](https://github.com/shell-term/vesper/issues/20) | Follows #18, #19 and #24. Fix inputs, selected profile, conditions and budgets before measurement; reconfirm ordinary EOS and report the 20tps target's status | Prompt processing, first output, sustained continuation, I/O/memory/cleanup, comparable diagnostic modes and a bounded S3 execution plan |
-| [#21: Connect and check the existing benchmark/harness](https://github.com/shell-term/vesper/issues/21) | Follows S2 measurement/readiness in #20. Choose the actual connection method and targets in the issue | Input/output, tools, cancellation, usage accounting and setting correspondence; supported and unsupported behavior recorded explicitly |
-| [#25: Implement and qualify bounded image input](https://github.com/shell-term/vesper/issues/25) | Required product capability requested by the user; follows #20 and initial text connection #21 | Original preprocessing/vision/aligner, image features/masks/routing/Engram, prefill semantics, real image-conditioned EOS responses, resource/time bounds and harness image transport |
-| [#22: Evaluate practical text/image, reasoning, coding and tool behavior](https://github.com/shell-term/vesper/issues/22) | Follows #21 and #25, using recorded budgets | Fixed common tasks, grading and settings; named-profile text/image comparisons; accuracy, time and resources separately; timeout, unsupported scope and task failure distinguished |
+| [#18: Measure opening phases and reuse authenticated model metadata/indexes](https://github.com/shell-term/vesper/issues/18) | Uses the native integration established by #16. Separate catalog parsing, fixture checks, backend setup and uploads; reuse authenticated metadata within an explicitly owned runtime lifetime | Bounded retained bytes and lifetime; changed/corrupt input handling; unchanged relevant native numerical boundaries; measured setup breakdown |
+| [#19: Reuse bounded execution, transfer and projection preparation](https://github.com/shell-term/vesper/issues/19) | Acceptance uses #18's qualified metadata preparation. Retain only preparation demonstrated useful by measurement, including backend handles or verified conversion state where appropriate | Native numerical boundaries, failed-switch/retry behavior, pressure refusal/eviction, cleanup and actual retained memory; no claim that every proposed cache must be built |
+| [#23: Inventory compression/reduction candidates and fix quality gates](https://github.com/shell-term/vesper/issues/23) | Uses #16's native reference; design can run alongside other improvements. Separate unused capability storage, lossless representation/cache work and lossy weight/expert changes | Source-derived bytes/use inventory, named profiles and agreed numerical/practical quality limits fixed before approximate experiments |
+| [#24: Compare candidates and select a configuration](https://github.com/shell-term/vesper/issues/24) | Selection uses #19's relevant qualified preparation and #23's protocol. Iterate bounded candidate implementation and matched quality/latency/resource comparisons within the declared scope | Quality differences, sustained accepted-token speed, I/O, resource bounds, failure cleanup and adoption/rejection; retaining native is valid if alternatives fail |
+| [#20: Verify selected end-to-end behavior and evaluation readiness](https://github.com/shell-term/vesper/issues/20) | Readiness acceptance uses #18, #19 and #24. Fix inputs, selected profile, conditions and budgets before measurement; reconfirm ordinary EOS and report the 20tps target's status | Prompt processing, first output, sustained continuation, I/O/memory/cleanup, comparable diagnostic modes and a bounded evaluation plan |
+| [#21: Connect and check the existing benchmark/harness](https://github.com/shell-term/vesper/issues/21) | Each check requires its actual runtime capabilities, artifacts, source-bound receipts and declared budget, not blanket S2 closure. Choose the connection method and supported targets in the issue | Input/output, tools, cancellation, usage accounting and setting correspondence; supported and unsupported behavior recorded explicitly |
+| [#25: Implement and qualify bounded image input](https://github.com/shell-term/vesper/issues/25) | Required product capability. Standalone checks use their actual vision/native prerequisites; final connected-image acceptance also requires #21's transport contract | Original preprocessing/vision/aligner, image features/masks/routing/Engram, prefill semantics, real image-conditioned EOS responses, resource/time bounds and harness image transport |
+| [#22: Evaluate practical text/image, reasoning, coding and tool behavior](https://github.com/shell-term/vesper/issues/22) | Final integrated acceptance requires #21 and #25 and recorded budgets. Earlier prototyping or bounded subset checks retain their explicit scope; long quality execution remains deferred | Fixed common tasks, grading and settings; named-profile text/image comparisons; accuracy, time and resources separately; timeout, unsupported scope and task failure distinguished |
 
 Implementation methods are hypotheses to test, not a commitment to build every
-cache or derivative. A phase is not accepted merely because code exists or a
+cache or derivative. An outcome is not accepted merely because code exists or a
 component passes. If the intended evaluation cannot fit its declared budget,
 record that unresolved readiness condition and revise the plan; do not invent
 an after-the-fact speed threshold or promote an unfinished run to a pass.
+Findings in #20, #21, #25 or #22 can require further work and revalidation in
+#18, #19, #23, #24 or another affected issue. Milestone closure still requires
+its stated acceptance outcomes; an earlier scoped check does not close it.
 
 ## Baseline and measurement policy
 
@@ -56,8 +89,8 @@ MoE opening includes catalog/fixture validation, setup and uploads; its time is
 not a catalog-only measurement. This diagnostic request is not a general model
 throughput benchmark.
 
-S2 first changes repeated reads, setup and reuse while preserving the original
-weights, scales, activation/KV rounding, trained routing and sampling baseline.
+Native S2 work improves repeated reads, setup and reuse while preserving the
+original weights, scales, activation/KV rounding, trained routing and sampling baseline.
 Changes need relevant exact-boundary checks against that baseline before long
 evaluation. Short probes establish numerical/ownership evidence; a complete
 ordinary response checks the integrated path after improvements. Component
@@ -69,8 +102,9 @@ source-bound preparation/component evidence, the inventory and bounded codec
 and audit comparisons. Its all-layer calibration stops after one call; it does
 not qualify ordinary EOS, sustained throughput, image behavior or S2 completion.
 
-After acceleration, #23/#24 evaluate selected compression/reduction candidates
-under separate named profiles. Their bounded direct-runtime quality screen
+Within the development loop, #23/#24 evaluate selected compression/reduction
+candidates under separate named profiles and predeclared criteria. Their
+bounded direct-runtime quality screen
 does not require the full S3 harness/tool suite to run first and does not
 qualify broad task quality.
 
