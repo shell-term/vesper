@@ -74,8 +74,9 @@ complete-model integration. S1's later ordinary response and cleanup are
 recorded in its separate report; they are not inferred from this tiny probe or
 from PC numerical evidence.
 
-The adopted next order is S2 native-baseline setup/I/O improvement and matched
-latency measurements, followed by S3 benchmark connection and practical-quality
-evaluation. Future expansion or compression candidates need their own scope
+The adopted next order is S2 native-baseline setup/I/O improvement, named
+compression/reduction candidate comparisons and measured configuration selection,
+followed by S3 benchmark connection and broader practical-quality evaluation.
+Expansion and approximate candidates need their own scope
 and evaluation; this historical report adopts none. The existing 32 GiB reserve
 and service-preservation rules continue to apply.

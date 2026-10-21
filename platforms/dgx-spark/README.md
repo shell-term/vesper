@@ -6,8 +6,10 @@ Read [workspace rules](../README.md). Use a separate checkout on a
 Do not infer Spark progress from the PC roadmap.
 
 Current plan: [Spark roadmap](../../docs/spark-roadmap.md). It keeps the S0/S1
-evidence, puts native-baseline latency work in S2, and follows with benchmark
-connection and practical-quality evaluation in S3. GitHub owns live task state.
+evidence, includes native latency work and compression/reduction candidate
+evaluation in S2, then follows with benchmark connection and broader practical
+quality in S3. Accuracy is first; 20 tokens/s is an aspirational continuation
+target, not a mandatory S2 completion threshold. GitHub owns live task state.
 
 Evidence: [S0 management and bounded hardware report](../../docs/spark-platform-validation.md).
 S1 execution evidence: [native integration report](../../docs/spark-native-integration.md).
@@ -21,19 +23,21 @@ The report separates short-text execution, component parity and practical-qualit
 - [Opening phases and authenticated metadata reuse #18](https://github.com/shell-term/vesper/issues/18).
 - [Bounded execution and projection preparation reuse #19](https://github.com/shell-term/vesper/issues/19).
 - [Matched end-to-end measurements and evaluation budget #20](https://github.com/shell-term/vesper/issues/20).
+- [Compression/reduction protocol and quality gates #23](https://github.com/shell-term/vesper/issues/23).
+- [Candidate comparisons and configuration selection #24](https://github.com/shell-term/vesper/issues/24).
 - [Benchmark/harness connection checks #21](https://github.com/shell-term/vesper/issues/21).
 - [Practical-quality evaluation #22](https://github.com/shell-term/vesper/issues/22).
 - [Spark issues](https://github.com/shell-term/vesper/issues?q=is%3Aissue+label%3Aplatform%3Adgx-spark).
 - [S0: Management and platform](https://github.com/shell-term/vesper/milestone/5).
 - [S1: Native model integration](https://github.com/shell-term/vesper/milestone/6).
-- [S2: Execution latency and measurement](https://github.com/shell-term/vesper/milestone/7).
+- [S2: Optimization candidates and measured selection](https://github.com/shell-term/vesper/milestone/7).
 - [S3: Benchmark connection and practical quality](https://github.com/shell-term/vesper/milestone/8).
 
 These are task links, not pass claims. Read current state using
 `python -m vesper.workspace read-progress --issue 13` or `--issue 14`.
 Use `--issue 16` for S1 implementation and validation progress.
-Start S2 with `--issue 18`; follow the roadmap's dependencies
-for the remaining work.
+Start native S2 execution with `--issue 18`; candidate inventory/protocol is
+`--issue 23`. Follow the roadmap's dependencies for the remaining work.
 Registry changes are required before additional task IDs become valid. Shared
 model source may be inspected, but PC progress/results do not qualify Spark.
 
@@ -45,10 +49,11 @@ available-memory floor; never add reported VRAM to host RAM. Context/compiler
 overhead is separate from explicit buffer caps. Store sanitized results under
 `results/dgx-spark/`, private
 data under `artifacts/dgx-spark/`. The reference profile uses original native
-weights. S2 preserves that baseline while reducing repeated setup and reads.
-Future compression/approximation requires a separately evaluated profile with
-quality tolerances and comparison methods defined before adoption; this plan
-adopts no additional quantization, expert removal or changed routing.
+weights. S2 preserves that baseline while reducing repeated setup and reads,
+then evaluates named compression/reduction profiles with quality tolerances
+and comparisons fixed before experiments. This plan adopts no specific extra
+quantization, expert removal or changed routing. See the
+[candidate and target policy](../../docs/spark-optimization-candidates.md).
 
 The completed S1 integration connected original expert and Engram storage with
 all 40 model blocks, the real vocabulary head and generated-token feedback.

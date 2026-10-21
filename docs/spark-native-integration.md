@@ -5,9 +5,10 @@ Completed integration task: [Spark #16](https://github.com/shell-term/vesper/iss
 This report records component evidence and a completed ordinary short text
 response on Spark. S1 functional integration passes; practical quality and
 general speed remain unqualified.
-The [current Spark roadmap](spark-roadmap.md) assigns subsequent native-baseline
-latency work to S2, then benchmark connection and practical-quality evaluation
-to S3. GitHub Issues own their live status; this report preserves S1 evidence.
+The [current Spark roadmap](spark-roadmap.md) assigns subsequent native latency
+work and compression/reduction candidate evaluation to S2, then benchmark
+connection and broader practical quality to S3. GitHub Issues own their live
+status; this report preserves S1 evidence.
 
 ## Completed ordinary text response: 2026-10-21
 
