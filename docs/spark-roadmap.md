@@ -105,6 +105,13 @@ gates. First-output latency is separate. The earlier 900s ordinary-response
 and 192 calls / 3 h proposal was not adopted and is withdrawn; numeric quality and
 execution-budget gates must be fixed before qualifying measurements.
 
+The user subsequently chose to continue short checks and acceleration and defer
+long quality checks. The later proposal of a 1,200-second ordinary EOS run and
+a four-case, 192-call / three-hour screen was not adopted either. Continue
+finite component/single-call checks; keep S2 open until its deferred quality,
+selection and readiness gates are actually met. This decision does not make
+required image input optional or qualify images from text-only evidence.
+
 Keep at least 32 GiB of physical memory available and preserve existing
 services. Spark has one physical CPU/GPU pool; reported VRAM is not additional
 RAM. Account for retained metadata, CPU/device weights, pinned staging, scratch

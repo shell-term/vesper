@@ -44,6 +44,12 @@ numeric tolerances, repeats and budgets before the qualifying screen. The
 specific tolerances are not yet agreed. A generic one-percent rule or a correct
 arithmetic answer is not a substitute.
 
+On 2026-10-21 the user chose further short checks and acceleration, deferring
+long quality checks. Neither the proposed 1,200-second ordinary EOS budget nor
+the four-case, 192-call / three-hour quality-screen proposal was adopted. Their
+draft inputs/rubrics are not an accepted quality protocol. S2 remains open;
+finite numerical checks do not waive its selection/quality/readiness gates.
+
 Bit equality remains applicable to the native and lossless boundaries, not to
 every approximate product candidate. A recorded rejection and retention of native
 is a valid selection result if supported by evidence. Broader harness, tools and

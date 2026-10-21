@@ -1,0 +1,86 @@
+{
+  "schema": "vesper.spark.existing-evidence-archive.v1",
+  "archive_is_new_execution": false,
+  "new_model_calls": 0,
+  "source_head": "5f35873c8a4c3a8754eb3915e22e5382dbbc4c46",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "records": [
+    {
+      "relative": "s1/attention/reference-s2-r04.json",
+      "sha256": "fb29f43f5d4c3853b9d29cf5aede423cb807dcc6c42b3dcc411707a3c34af24e",
+      "bytes": 277741,
+      "original_run_id": "s2-attention-reference-r04",
+      "status": "pass"
+    },
+    {
+      "relative": "s1/attention/native-validation-s2-r04.json",
+      "sha256": "db785935440e65ae0443c04d6adbe267546cae46c0e86962bfe3cae3addc6301",
+      "bytes": 181497,
+      "original_run_id": "s2-r04",
+      "status": "pass"
+    },
+    {
+      "relative": "s1/head/s2-head-native-r04.json",
+      "sha256": "7b7f876d910b8352cb28cb14f97734d3d4b0e2830487e6b2a9c91257d705e97a",
+      "bytes": 80674,
+      "original_run_id": "s2-head-native-r04",
+      "status": "native_execution_pass"
+    },
+    {
+      "relative": "s1/head/s2-head-reference-r04.json",
+      "sha256": "47fd54592dea71c249539139826c096965e8e2ec96aedf9fc29bc06bc65726b3",
+      "bytes": 148770,
+      "original_run_id": "s2-head-reference-r04",
+      "status": "reference_execution_pass"
+    },
+    {
+      "relative": "s1/head/s2-head-compare-r04.json",
+      "sha256": "0f9e9857ac0dc08fbc28cded754e2b9b608cd80493b6204958ed34724700bafe",
+      "bytes": 8240,
+      "original_run_id": "s2-head-compare-r04",
+      "status": "pass"
+    },
+    {
+      "relative": "s1/text/s2-call-s2-r04.json",
+      "sha256": "ea8581554182af46f946d0d504cbc84ea8fd8d14fbd578e0589d97afc2fe5f68",
+      "bytes": 439835,
+      "original_run_id": "s2-call-s2-r04",
+      "status": "partial_model_call_budget"
+    },
+    {
+      "relative": "s1/text/s2-call-baseline-r04.json",
+      "sha256": "2d1ca4dbc03535f769a9f229b5bec2be33fc49cd6c530e7e6c4aceffb7b6fb63",
+      "bytes": 442035,
+      "original_run_id": "s2-call-baseline-r04",
+      "status": "partial_model_call_budget"
+    },
+    {
+      "relative": "s2/calibration/s2-native-calibration-r04.json",
+      "sha256": "5693c4abb72f35e8e4fa1b4ec85bc591318d57284a5394ecbb88f7269c13cd47",
+      "bytes": 8198,
+      "original_run_id": "s2-native-calibration-r04",
+      "status": "finished"
+    },
+    {
+      "relative": "s2/calibration/s2-native-calibration-r02.json",
+      "sha256": "e83ad3fe9727dca2f3fc1c83f82f132380cd085f38fe9e39be2ce70206e06ffe",
+      "bytes": 1913,
+      "original_run_id": "s2-native-calibration-r02",
+      "status": "failed"
+    }
+  ],
+  "long_quality_checks_deferred_by_user": true,
+  "s2_complete": false,
+  "required_image_input_qualified": false,
+  "derived_array_audit": {
+    "relative": "cross-source-array-audit.json",
+    "sha256": "43c09bd26f676b3f89283f94163754e42cd78b1eb712fcddf46f13f26fd7f47a",
+    "new_model_calls": 0
+  },
+  "external_worker": {
+    "relative": "native-calibration-worker-r04.py",
+    "sha256": "72ea6fdabb035273fa82447bdd0912542561493e7ea2e670ba3f7012be1c7fec",
+    "bytes": 30135
+  }
+}
