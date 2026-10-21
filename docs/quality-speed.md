@@ -7,6 +7,11 @@ worthwhile. Exact intermediate equality is a reference tool rather than the
 acceptance rule for every candidate. This direction does not change Spark's
 qualification gates or retrospectively broaden existing results.
 
+The current PC stretch target is 20 accepted decode tokens/s for one conversation
+(batch 1), with measured quality differences and startup/prefill reported
+separately. It is an unachieved target; each M2 cycle retains its finite budget
+and evidence-backed adoption/rejection decision. See the [selected cycle](m2-placement.md).
+
 This is the canonical PC numerical policy. [Roadmap](roadmap.md) defines the
 milestones, [validation](validation.md) chooses checks, and GitHub PC Issues own
 live acceptance/state. Historical exact reports are comparator evidence, not

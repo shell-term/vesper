@@ -1,13 +1,45 @@
 from copy import deepcopy
+import json
+from pathlib import Path
 import unittest
 
 import numpy as np
 
 from vesper.attention_validation import array_digest
-from vesper.session_benchmark import compare_step, timing_summary
+from vesper.session_benchmark import benchmark_config, compare_step, timing_summary, validate_images
 
 
 class SessionBenchmarkTests(unittest.TestCase):
+    def test_placement_moves_two_helper_slots_to_ram_with_matched_total_capacity(self):
+        a, b = (benchmark_config(mode) for mode in ('retained', 'host-retained'))
+        self.assertEqual(a.host_cap_bytes, b.host_cap_bytes)
+        self.assertEqual(a.cache.host_cap_bytes, b.cache.host_cap_bytes)
+        self.assertEqual(a.cache.primary_slots, b.cache.primary_slots)
+        self.assertEqual(a.cache.ram_cache_bytes + 18800640 * a.cache.helper_slots,
+                         b.cache.ram_cache_bytes + 18800640 * b.cache.helper_slots)
+        self.assertEqual((b.cache.helper_device, b.cache.helper_slots), (None, 0))
+        self.assertEqual(a.cache.integrity_mode, b.cache.integrity_mode)
+        self.assertEqual(b.cache.integrity_mode, 'gpu-sha256')
+        self.assertEqual(a.cache.available_floor, b.cache.available_floor)
+
+    def test_host_only_requires_all_thirteen_qualified_primary_images(self):
+        path = Path(__file__).resolve().parents[1] / 'results/pc-heterogeneous/2026-10-21-session-lifetime/retained.json'
+        images = json.loads(path.read_bytes())['compiled_images']
+        primary = [i for i in images if i['compiler']['architecture'] == '89']
+        validate_images(images, 'retained')
+        validate_images(primary, 'host-retained')
+        for changed in (images, primary[:-1]):
+            with self.assertRaises(RuntimeError):
+                validate_images(changed, 'host-retained')
+        changed = deepcopy(primary)
+        changed[0]['sha256'] = '0' * 64
+        with self.assertRaises(RuntimeError):
+            validate_images(changed, 'host-retained')
+
+    def test_unknown_mode_is_refused_before_model_execution(self):
+        with self.assertRaises(ValueError):
+            benchmark_config('unknown')
+
     def test_decode_rate_excludes_prompt_and_first_generated_token(self):
         report = timing_summary([1, 2, 3, 4, 5], 3)
         self.assertEqual(report['prefill_forward_seconds'], 6)

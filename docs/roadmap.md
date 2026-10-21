@@ -35,6 +35,12 @@ synthetic cache result.
 
 ## Next execution order and time limits
 
+The operator's stretch target is **20 accepted decode tokens/s for one
+conversation (batch 1)**, with output-quality differences reported alongside
+speed. Startup and input prefill are measured separately. This target is not
+yet demonstrated and does not turn M2 into an unlimited run-until-20 search.
+The [selected first cycle](m2-placement.md) tests helper-versus-RAM placement.
+
 1. **M2 / #11:** choose one candidate from a measured bottleneck, declare its
    numerical profile and limits, then compare with a valid short reference.
    Staging/integrity work and helper transfers are measured candidates for

@@ -2,6 +2,7 @@
 
 import argparse
 from contextlib import ExitStack
+from dataclasses import asdict
 import gc
 import importlib.util
 import json
@@ -38,6 +39,30 @@ from .tokenizer import PinnedTokenizer
 from .topology_validation import state_digest
 from .trajectory_evidence import read
 from .workspace import Workspace
+
+
+MODES = ('baseline', 'retained', 'host-retained')
+# The thirteen already qualified sm_89 images, excluding only the sm_86
+# storage-helper SHA-256 image. No model kernel changes in host-retained.
+QUALIFIED_PRIMARY_IMAGES = '912e444e84fd225bba266eff0b8e6a95cc1d38ca1337d78d646b9dee5ec93f9b'
+
+
+def benchmark_config(mode):
+    if mode not in MODES:
+        raise ValueError('Unknown session benchmark mode')
+    host_only = mode == 'host-retained'
+    return ConnectedConfig(cache=CacheConfig(host_cap_bytes=256 * MiB,
+        ram_cache_bytes=(8 if host_only else 6) * 18800640,
+        primary_slots=2, helper_slots=0 if host_only else 2,
+        helper_device=None if host_only else 1, integrity_mode='gpu-sha256',
+        max_store_experts=48, profile=True), host_cap_bytes=448 * MiB)
+
+
+def validate_images(images, mode):
+    benchmark_config(mode)
+    expected = QUALIFIED_PRIMARY_IMAGES if mode == 'host-retained' else QUALIFIED_CUBIN_IMAGE_SET
+    if image_identity(images) != expected:
+        raise RuntimeError('Benchmark compiled images differ from the qualified native set')
 
 
 def timing_summary(durations, prompt_tokens):
@@ -100,10 +125,9 @@ def run(root, directory, original, raw, mode, budget_seconds, progress):
     if (plan_identity(plan) != original['plan_sha256'] or prepared['plan_sha256'] != original['plan_sha256']
             or prepared['reference_report_sha256'] != digest(raw)):
         raise ValueError('Different prepared short-reference input')
-    # Both variants use identical capacities. Only component lifetime changes.
-    config = ConnectedConfig(cache=CacheConfig(host_cap_bytes=256 * MiB, ram_cache_bytes=6 * 18800640,
-        primary_slots=2, helper_slots=2, integrity_mode='gpu-sha256', max_store_experts=48,
-        profile=True), host_cap_bytes=448 * MiB)
+    # Retained placement variants have ten resident payloads per layer. The
+    # host-only candidate moves two helper slots to RAM; audits/math stay intact.
+    config = benchmark_config(mode)
     providers, calls, durations = {}, [], []
     cache = session = engine = http = None
     setup = ttft = request_ttft = None
@@ -133,7 +157,7 @@ def run(root, directory, original, raw, mode, budget_seconds, progress):
                 rows = {l: stack.enter_context(EngramRows(story / f'rows/layer{l}', l)) for l in (1, 14)}
                 for layer in LAYERS:
                     p = stack.enter_context(SessionMoE(root, bindings, layer, plan['experts'][str(layer)],
-                        original['expert_provenance'], retain=mode == 'retained', config=config,
+                        original['expert_provenance'], retain=mode != 'baseline', config=config,
                         index_directory=directory / f'indices/layer{layer}', deadline=deadline))
                     providers[str(layer)] = p
                     if p.manifest_sha256 != prepared['indices'][str(layer)]['manifest_sha256']:
@@ -171,8 +195,7 @@ def run(root, directory, original, raw, mode, budget_seconds, progress):
                 if final_state != original['cases'][-1]['state_sha256']:
                     raise RuntimeError('Benchmark final model/hash/RNG state differs')
                 images, compiler = cache.manifest(), cache.stats()
-                if image_identity(images) != QUALIFIED_CUBIN_IMAGE_SET:
-                    raise RuntimeError('Benchmark compiled images differ from the qualified native set')
+                validate_images(images, mode)
         except TimeoutError:
             if time.perf_counter() < deadline:
                 raise
@@ -191,6 +214,7 @@ def run(root, directory, original, raw, mode, budget_seconds, progress):
     report = {'schema_version': 1, 'probe': 'pc_short_generation_session_benchmark',
         'status': 'resource_refused' if resource_refused else 'budget_exceeded' if timed_out else 'pass',
         'failure': failure, 'mode': mode,
+        'cache_policy': asdict(config.cache),
         'numerical_profile': 'released-fp4', 'additional_quantization': False,
         'changed_routing_or_sampling': False, 'native_frameworks': frameworks,
         'scope': {'case_id': 'raw-text-story-five-calls', 'request': original['scope']['request'],
@@ -207,7 +231,7 @@ def run(root, directory, original, raw, mode, budget_seconds, progress):
                          'per_call_output_checks_excluded_from_forward_durations': True,
                          'request_TTFT_includes_between_call_output_checks': True,
                          'cold_process_and_contexts': True, 'OS_or_driver_caches_reset': False,
-                         'within_request_cache_reuse': mode == 'retained', 'repeated_measurement_claim': False},
+                         'within_request_cache_reuse': mode != 'baseline', 'repeated_measurement_claim': False},
         'timing': {**timing_summary(durations, len(original['completion']['prompt_ids'])),
                    'setup_seconds': setup, 'engine_TTFT_seconds': ttft, 'request_TTFT_seconds': request_ttft,
                    'total_engine_wall_seconds_including_checks_and_cleanup': time.perf_counter() - started},
@@ -229,7 +253,7 @@ def run(root, directory, original, raw, mode, budget_seconds, progress):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode', choices=('prepare', 'baseline', 'retained'))
+    parser.add_argument('mode', choices=('prepare', *MODES))
     parser.add_argument('--artifacts', type=Path, default=Path('artifacts'))
     parser.add_argument('--run', default='session-smoke-v1')
     parser.add_argument('--budget-seconds', type=float, default=300)

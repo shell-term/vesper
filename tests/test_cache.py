@@ -175,6 +175,20 @@ class CacheTests(unittest.TestCase):
         cache, _, _, _ = self.make(helper=0)
         self.assertEqual([self.request(cache, k) for k in "ABA"], ["store", "store", "ram"])
 
+    def test_no_helper_gpu_audit_refuses_corrupt_ram_then_recovers_from_store(self):
+        cache, source, backend, _ = self.make(helper=0, gpu_verify=True)
+        for key in "AB":
+            self.request(cache, key)
+        cache.ram['A'][0] ^= 1
+        with self.assertRaisesRegex(ValueError, 'Corrupt'):
+            self.request(cache, 'A')
+        self.assertNotIn('A', cache.primary.entries)
+        self.assertFalse(cache.helper.entries)
+        self.assertEqual(cache.stats['integrity_failures'], 1)
+        self.assertEqual(self.request(cache, 'A'), 'store')
+        self.assertEqual(source.reads.count('A'), 2)
+        self.assertTrue(all(tier == 'primary' for tier, _ in backend.verify_calls))
+
     def test_unknown_identity_and_nested_requests_cannot_replace_live_slot(self):
         cache, source, _, _ = self.make()
         with cache.acquire("A") as (slot, _):
