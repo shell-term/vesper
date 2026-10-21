@@ -91,6 +91,27 @@ gain**. Fixed S2-first order and uncontrolled OS/driver/storage state remain
 limitations. Both requests stop before sampling any output; these are not
 accepted continuation tokens/s measurements.
 
+The current one-call record attributes **26.801 s** to opening layer operators
+(projection 13.010 s, MoE 12.809 s, HC 0.982 s; 40 opens each), about 59% of
+the 45.446 s call. These openings include preparation/authentication/uploads;
+they are not pure kernel time. The MoE forward/close region adds 14.758 s,
+including expert I/O, authentication, transfer and checks. It reads 240 experts,
+4.512 GB logical / 4.606 GB physical payload, in this single call. These are
+distinct recorded regions, not an exhaustive decomposition of all wall time.
+Next short studies should target repeated operator preparation and separate
+the MoE I/O/authentication/transfer/synchronization costs before choosing reuse
+within the same physical-memory floor. A small payload-copy improvement alone
+does not address these dominant costs.
+
+The GPQA proposal's **600 s/question is not demonstrated viable**. Current
+input processing calls the engine once per input token: the 162–475-token
+requests need that many calls before selecting their first output. Fitting
+input alone into 600 s would require a mean of at most 1.26–3.70 s/call,
+with startup and generation still extra. The one initial-call timing is not a
+measured GPQA prefill/continuation rate and must not be multiplied into an
+asserted completion forecast. Improve/recheck input processing and repeated
+preparation first; token admission does not establish time-budget feasibility.
+
 All seven phase children exited; own runtime charges/leases/monitors closed and
 the GPU lock was released. Minimum sampled available memory was 41,179,541,504
 bytes, above the 32 GiB floor. The [archive manifest](../results/dgx-spark/2026-10-21-short-loop/archive-manifest.json)

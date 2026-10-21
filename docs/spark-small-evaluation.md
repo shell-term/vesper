@@ -85,6 +85,14 @@ call. With a 768-token continuation and 1,152 positions, the input fits at most
 long reasoning or all later positions are hardware/quality-qualified. Keep
 the existing 32 GiB available-memory floor and existing services.
 
+The proposed 600 s/question is not demonstrated viable at the current speed.
+Input ingestion advances one engine call per token; admitting 162-475 input
+tokens does not establish that prompt processing or reasoning fits the time
+budget. The current 45.446 s initial-call observation is not a measured GPQA
+prefill/continuation rate. Improve and measure repeated preparation and input
+processing before deciding that these proposed budgets support a useful trial.
+See the [current measured scope](spark-short-loop-progress.md#fresh-spark-validation).
+
 The 768-token bound may truncate useful reasoning. A bounded stop is not an
 ordinary EOS answer and cannot qualify reasoning quality. Do not reinterpret
 length/time stops as wrong knowledge or relax the budget after seeing scores.
