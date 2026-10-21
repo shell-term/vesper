@@ -81,8 +81,12 @@ establish broad reasoning/coding/tool quality.
 
 Track generation/recovery and open task evaluations in [#10](https://github.com/shell-term/vesper/issues/10)
 and measured candidates in [#11](https://github.com/shell-term/vesper/issues/11).
-Scoped performance work can use already qualified short inputs while broader
-#10 evaluations remain open; this does not close #10 or M2.
+M2 now puts the bounded #11 optimization cycle before M3's remaining #10 task
+evaluations. Follow the [roadmap's execution order and time limits](roadmap.md#next-execution-order-and-time-limits):
+one candidate, two short baseline/candidate pairs and a declared stop. Additional
+approximate-quality evaluation needs its own declared time scope before adoption.
+Qualified short inputs support timing while broader #10 evaluations remain open;
+finishing that cycle does not close #10 or establish broad task quality.
 
 ## Initial session-lifetime experiment
 

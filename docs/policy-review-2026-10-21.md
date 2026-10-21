@@ -1,5 +1,9 @@
 # PC policy alignment, 2026-10-21
 
+This records the initial policy cleanup. The later [milestone-order revision](#milestone-order-revision)
+below supersedes its M2/M3 assignment; use the [roadmap](roadmap.md) for current
+order and acceptance. Earlier planning rows are retained as the decision history.
+
 The operator now permits quality variation for useful speed/memory gains while
 preserving as much output quality as practical. Earlier work prioritized exact
 original-model arithmetic. That work remains the released-precision comparator;
@@ -51,3 +55,30 @@ Documentation checks validate local links, platform/issue scope and privacy.
 The bodies of 36 recorded PC reports are preserved beneath their scope notices;
 all nine closed issues retain their original acceptance/evidence. This revision
 changes Markdown only, with no runtime, raw-result or model-execution change.
+
+## Milestone-order revision
+
+The operator subsequently asked to reduce elapsed development time and reconsider
+the milestone order. The initial cleanup allowed M3 optimization alongside M2,
+but still numbered long task-quality evaluation before speed work. That ordering
+did not reflect the recommended execution sequence. The measured retained path
+still generates only 0.0762 decode tokens/s on the short input, with substantial
+integrity/staging and helper-transfer costs; running long quality cases first
+would make the feedback loop expensive.
+
+- Milestone 3 becomes **M2 - Bounded quality/speed iteration**. Completed #7..#9
+  stay there, and active #11 moves in from milestone 4 at priority P0.
+- Milestone 4 becomes **M3 - Representative task quality**. #10 moves there at
+  priority P1 with its six checked items and two pending reasoning/tool cases.
+- #11 now bounds the next work to one candidate, two short baseline/candidate
+  pairs with 300-second cooperative budgets per timed process, and a documented
+  adoption/rejection decision. It is not an indefinite search for ideal speed.
+  The planned 20-minute model-run budget excludes implementation/preparation/CPU
+  checks and is not a hard deadline; setup/cleanup can overrun a checkpoint.
+- A promoted approximate profile still needs actual named task scores against a
+  valid comparator, with that evaluation budget declared separately. Short smoke
+  screening does not qualify broad quality. Timeouts do not pass required checks.
+- Original task prompts/budgets, prior raw evidence, stopped captures, completed
+  M0/M1, closed issue acceptance and deferred #12 stay intact. M2/M3 remain open.
+  No runtime change, new model execution or new numerical qualification is made
+  by this ordering revision.

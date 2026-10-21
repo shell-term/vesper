@@ -41,7 +41,11 @@ GPU・RAM・SSDを組み合わせ、大きなMoEモデルをローカルPCで動
 
 [PC用Issues](https://github.com/shell-term/vesper/issues?q=is%3Aissue+label%3Aplatform%3Apc-heterogeneous)
 を進捗の正本とし、[ロードマップ](docs/roadmap.md)に節目の目的をまとめています。
-完了済みのM0・M1は元の精度の比較基準、M2は生成・状態復元・課題の品質、M3は品質と速度の最適化を扱います。
+完了済みのM0・M1は元の精度の比較基準です。次のM2は高速化候補1つを短く比較して採否を決め、
+M3で残りの推論・ツール課題を評価する順にしています。高速化を際限なく続ける区切りにはしません。
+M2の標準計測は比較元と候補を2回ずつ、各実行の処理予算は300秒です。
+これは計測の予算で、実装や準備を含む完了時間の保証ではありません。
+未完了の品質評価は残し、[計測の区切りと停止条件](docs/roadmap.md#next-execution-order-and-time-limits)に従います。
 過去の検証レポートの「次に行うこと」は当時の記録として区別します。
 
 実行環境とCPU確認は[英語README](README.md#start)、部品の再現手順は[プローブ手順](docs/probes.md)、

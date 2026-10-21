@@ -48,7 +48,10 @@ without requiring exhaustive intermediate equality as the default quality method
 The [session-lifetime measurement](session-lifetime.md) records an actual
 five-call timing comparison and matching short outputs. Its single trial per
 variant, different admission ceilings and diagnostic overhead preclude a general
-or production speed claim. It does not complete M2 quality coverage or M3.
+or production speed claim. It does not complete the new M2 optimization cycle
+or M3 task-quality coverage. Follow the [bounded execution plan](roadmap.md#next-execution-order-and-time-limits)
+for the next timing cycle; budget exhaustion leaves required checks incomplete,
+and is not a reason to start an automatic longer retry.
 
 ## Reporting rules
 

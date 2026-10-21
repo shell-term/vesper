@@ -55,9 +55,14 @@ capture is unscored and does not resume automatically.
 [PC Issues](https://github.com/shell-term/vesper/issues?q=is%3Aissue+label%3Aplatform%3Apc-heterogeneous)
 own task state; the [roadmap](docs/roadmap.md) explains milestone scope.
 
-- [#10: generation, recovery and task quality](https://github.com/shell-term/vesper/issues/10)
-- [#11: measured quality/speed/memory optimization](https://github.com/shell-term/vesper/issues/11)
+- [M2 / #11: one bounded quality/speed optimization cycle](https://github.com/shell-term/vesper/issues/11)
+- [M3 / #10: remaining representative task-quality evaluation](https://github.com/shell-term/vesper/issues/10)
 - [#12: optional 3080 Ti compute investigation](https://github.com/shell-term/vesper/issues/12)
+
+Run the short optimization cycle before the remaining long reasoning/tool cases.
+The [bounded plan](docs/roadmap.md#next-execution-order-and-time-limits) specifies
+one candidate, repeated short comparisons and a stopping budget. Completing M2
+means a measured adoption/rejection decision, not finished production throughput.
 
 Use [validation](docs/validation.md) to choose checks and
 [architecture](docs/architecture.md) for implementation hypotheses. Individual
