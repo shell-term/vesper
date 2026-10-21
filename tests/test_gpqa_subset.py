@@ -52,7 +52,9 @@ class GPQASubsetTests(unittest.TestCase):
         self.assertEqual(report['native_attention_position_capacity'], 1152)
         self.assertEqual(report['native_maximum_decode_ids'], 4096)
         self.assertTrue(report['benchmark_attempt_controller_implemented'])
-        self.assertFalse(report['native_dynamic_asset_resolution_implemented'])
+        self.assertTrue(report['native_dynamic_asset_resolution_implemented'])
+        self.assertTrue(report['bounded_native_benchmark_backend_implemented'])
+        self.assertFalse(report['full_allowance_native_execution_qualified'])
         for case in report['cases']:
             self.assertEqual(case['maximum_model_calls'], 262243)
             self.assertFalse(case['ready_for_native_inference'])

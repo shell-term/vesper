@@ -21,6 +21,10 @@ from .session_benchmark import timing_summary
 MAX_JSON = 16 * 1024 * 1024
 
 
+class BackendScopeExhausted(RuntimeError):
+    """The declared backend scope ended before the request reached EOS."""
+
+
 def _write(path, value):
     raw = (json.dumps(value, allow_nan=False, indent=2) + '\n').encode()
     if len(raw) > MAX_JSON:
@@ -178,16 +182,23 @@ def run_subset(plan, candidate, directory, open_backend, *, budget_seconds, cloc
                 item_start = clock(); session = None; durations = []
                 stop, error, setup, ttft, text = None, None, None, None, None
                 first_ready = last_ready = None
+                capacity, partial = None, False
                 try:
                     with open_backend(case, deadline) as backend:
                         if clock() >= deadline: raise TimeoutError('Subset setup exhausted its cooperative budget')
                         session = TextGeneration(backend.tokenizer, backend.step, BenchmarkRequest(case))
                         calls = len(session.prompt_ids) + session.request.max_new_tokens - 1
-                        if type(backend.maximum_model_calls) is not int or calls > backend.maximum_model_calls:
+                        partial = getattr(backend, 'allow_partial_capacity', False)
+                        capacity = backend.maximum_model_calls
+                        if (type(backend.maximum_model_calls) is not int or backend.maximum_model_calls < 1
+                                or type(partial) is not bool
+                                or calls > backend.maximum_model_calls and not partial):
                             raise ValueError('Backend cannot admit the full prompt/generation allowance')
                         setup = clock() - item_start
                         while not session.done:
                             if clock() >= deadline: raise TimeoutError('Subset reached its cooperative time budget')
+                            if session.position >= backend.maximum_model_calls:
+                                raise BackendScopeExhausted('Native scope exhausted before request completion')
                             call_start = clock(); meta, result = session.advance()
                             elapsed = clock() - call_start
                             if not math.isfinite(elapsed) or elapsed <= 0:
@@ -202,6 +213,8 @@ def run_subset(plan, candidate, directory, open_backend, *, budget_seconds, cloc
                             result = None  # Do not retain diagnostic tensors between calls.
                         stop = session.stop_reason
                         text = backend.tokenizer.decode(list(session.generated))
+                except BackendScopeExhausted:
+                    stop = 'backend_scope_exhausted'
                 except TimeoutError:
                     stop = 'budget_exceeded' if clock() >= deadline else 'backend_timeout'
                 except KeyboardInterrupt:
@@ -211,6 +224,8 @@ def run_subset(plan, candidate, directory, open_backend, *, budget_seconds, cloc
                 decode_wall = None if first_ready is None else last_ready - first_ready
                 decode_count = max(0, len(session.generated) - 1) if session else 0
                 row = {'case_id': case['id'], 'identity_sha256': canonical(identity), 'stop_reason': stop,
+                       'declared_max_new_tokens': case['max_new_tokens'],
+                       'backend_maximum_model_calls': capacity, 'partial_capacity_attempt': partial,
                        'error_type': error, 'selected_ids_including_eos': list(session.generated) if session else [],
                        'decoded_selected_ids': text, 'score': score_response(case, text, stop_reason=stop),
                        'timing': timing_summary(durations, len(session.prompt_ids)) if session else None,

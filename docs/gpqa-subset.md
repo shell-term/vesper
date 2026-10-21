@@ -80,9 +80,35 @@ with a new attempt; KV/RNG state is not restored. Candidate/settings/resources
 must match to resume. Forward-only and wall decode timing (including journal
 writes) are distinct; accepted decode counts explicitly include a selected EOS.
 
-The controller is not yet connected to a native benchmark backend. Synthetic
-backend regression tests establish lifecycle behavior only. No new GPU execution,
-model answer, speedup, benchmark score or full-suite qualification is claimed.
+An opt-in native backend now connects this controller to the actual forty-layer
+engine. It computes its own routes and resolves original cached expert/input
+assets as needed, without a saved answer or full trajectory. It preserves the
+declared generation allowance while explicitly permitting partial-capacity
+attempts. The current attention, distinct-embedding and Engram-row bounds remain
+active. If EOS occurs within them, grade the actual answer; otherwise report
+`backend_scope_exhausted`, time/missing-asset/error interruption, never an
+invented completion. This improves on rejecting every request solely because its
+maximum allowance exceeds current capacity. It does not qualify full-allowance
+or long-context execution.
+
+```sh
+python -m vesper.gpqa_native --run gpqa-native-v1 --budget-seconds 180 --maximum-fetch-bytes 0
+```
+
+The command runs the same fixed three questions in their selected order, within
+one cooperative budget, saving each actual attempt. A zero import allowance is
+explicit offline mode: verified existing embedding/Engram ranges and original
+expert objects are reused; unavailable assets stop the attempt. An explicit
+nonzero allowance permits bounded original-range imports (at most 1 GiB per
+question). Preparation/import time is included. Existing transport retries and
+in-flight operations can overrun cooperative checks; this is not an OS deadline.
+No complete checkpoint download is part of this path. The source-root lease
+prevents cooperating storage migration during execution. Original math runs on
+the 4090, with temperature/top-p 1.0 and seed 2026; no approximation is promoted.
+
+Synthetic backend regression tests establish lifecycle behavior only. Actual
+execution receipts, answers and timing must be reported separately. The backend
+does not inherit the older task's exact qualification or establish broad quality.
 
 The next selected implementation work is an executable, bounded native path
 for these same inputs and time accounting, including honest interruption and

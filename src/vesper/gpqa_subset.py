@@ -118,9 +118,9 @@ def preflight(cases, tokenizer):
                 reasons.append('prompt_and_generation_budget_exceed_native_attention_capacity')
         if case['max_new_tokens'] > MAX_DECODE_IDS:
             reasons.append('completion_budget_exceeds_native_tokenizer_decode_capacity')
-        reasons.append('native_dynamic_benchmark_asset_provider_not_implemented')
+        reasons.append('complete_generation_asset_coverage_not_established')
         # Input admission alone cannot establish an executable benchmark path.
-        reasons.append('native_benchmark_inference_adapter_not_implemented')
+        reasons.append('native_full_allowance_execution_not_qualified')
         result.append({'id': case['id'], 'case_sha256': case['case_sha256'],
                        'source_record_id': case['source_record_id'],
                        'prompt_tokens': None if tokens is None else len(tokens),
@@ -130,7 +130,9 @@ def preflight(cases, tokenizer):
     return {'status': 'not_ready', 'cases': result, 'native_maximum_model_calls': MAX_CALLS,
             'native_attention_position_capacity': CAPACITY, 'native_maximum_decode_ids': MAX_DECODE_IDS,
             'benchmark_attempt_controller_implemented': True,
-            'native_dynamic_asset_resolution_implemented': False,
+            'native_dynamic_asset_resolution_implemented': True,
+            'bounded_native_benchmark_backend_implemented': True,
+            'full_allowance_native_execution_qualified': False,
             'model_execution_run': False, 'quality_scored': False,
             'official_score_reproduction': False, 'full_evaluation_run': False}
 

@@ -166,5 +166,20 @@ class BenchmarkAttemptTests(unittest.TestCase):
             self.candidate['resource_policy']['host_cap_bytes'] -= 1
             with self.assertRaisesRegex(ValueError, 'Cannot resume'): self.run_at(directory)
 
+    def test_opt_in_partial_capacity_preserves_allowance_and_has_no_quality_pass(self):
+        @contextmanager
+        def partial(case, deadline):
+            with self.backend(case, deadline) as backend:
+                backend.maximum_model_calls = 2; backend.allow_partial_capacity = True
+                yield backend
+        with tempfile.TemporaryDirectory() as directory:
+            result = run_subset(self.plan, self.candidate, directory, partial, budget_seconds=20, clock=self.clock)
+            row = result['results'][0]
+            self.assertEqual(row['stop_reason'], 'backend_scope_exhausted')
+            self.assertEqual(row['selected_ids_including_eos'], [42])
+            self.assertEqual(row['declared_max_new_tokens'], 20)
+            self.assertIsNone(row['score']['passed'])
+            self.assertEqual(result['completed_case_ids'], [])
+
 
 if __name__ == '__main__': unittest.main()
