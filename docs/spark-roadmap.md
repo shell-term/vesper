@@ -63,8 +63,12 @@ selected benchmark/version/split. The candidate list is not a commitment to
 run every benchmark discussed. Fix the selected list, splits, repeats,
 output/reasoning settings, tools, grading, criteria and budgets before execution;
 an all-question single pass does not by itself reproduce an official score.
-Long full-suite runs remain deferred until the optimized configuration and
-declared execution plan are ready. See the
+Before any final full-suite run, estimate its total duration from measured
+small development trials, including the relevant input/generation/image/tool/
+grading costs, repetitions and profiles. Present assumptions and uncertainty
+to the user and obtain their explicit decision to proceed. Optimization
+readiness or a declared budget alone does not start the run; deferred final
+coverage remains unqualified. See the
 [official-benchmark coverage policy](spark-optimization-candidates.md#official-benchmark-subsets-and-final-coverage).
 Findings still feed back into improvement and affected revalidation.
 

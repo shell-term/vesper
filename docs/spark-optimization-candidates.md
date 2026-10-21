@@ -96,9 +96,20 @@ and the [official evaluation instructions](https://huggingface.co/deepseek-ai/De
 to establish those conditions rather than assuming all candidate evaluations
 share one protocol.
 
-Long full-suite runs remain deferred until optimization and a declared execution
-plan are ready. This policy starts no benchmark run or dataset download and
-does not waive the existing quality, image, source-identity or resource gates.
+Before a final full-suite run, estimate total duration from measured small
+development trials of the relevant configuration. Use observed generation
+speed and thinking/output lengths, and include input/image processing, tool
+execution, grading, startup, question counts, repetitions and each comparison
+profile. State the assumptions, remaining unmeasured costs and uncertainty;
+an aspirational token rate is not a measured duration forecast. Present this
+estimate to the user and decide together whether to execute. An explicit user
+decision to proceed is required; optimization readiness and a declared plan
+alone must not trigger the full run. If it is deferred or its scope is revised,
+record that decision and leave unperformed final coverage unqualified.
+
+Long full-suite runs remain deferred pending that decision and the actual
+execution prerequisites. This policy starts no benchmark run or dataset
+download and does not waive existing quality, image, source-identity or resource gates.
 Final-test findings return to improvement and affected revalidation; final
 coverage is an acceptance scope, not a one-way development sequence.
 
