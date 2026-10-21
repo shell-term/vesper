@@ -17,11 +17,13 @@ and do not mark deferred checks passed.
 Deferred issues 12 and 26 explicitly have no milestone. Read allowed IDs through the
 helper; Spark S0..S3 are separate. No shared issue reads are currently allowlisted.
 
-The current order is M2's bounded optimization cycle (#11, alongside the completed
-#7..#9 foundation), then M3's remaining task-quality evaluations (#10). Milestone
-IDs 3/4 stay stable; their open issue assignments were exchanged on 2026-10-21.
-Use the roadmap's finite cycle and time limits rather than running long quality
-captures before every speed experiment.
+Development repeats a bounded quality/speed improvement loop. A changed candidate
+returns to existing evaluation coverage; quality and speed are checked together
+before coverage expands. Choose the actual cases, order and acceptance separately.
+M2/#11 preserves a completed finite experiment; M3/#10's pending task evaluations
+are coverage within the loop, not an automatic next stage. Milestone IDs 3/4 stay
+stable. Use the roadmap's budgets and save incomplete work; do not automatically
+restart long captures or replay models solely for planning edits.
 
 The [quality/speed policy](../../docs/quality-speed.md),
 [validation workflow](../../docs/validation.md) and [PC roadmap](../../docs/roadmap.md)

@@ -22,6 +22,21 @@ for every timing experiment. Full per-token/per-layer fingerprints are opt-in
 diagnostic evidence. Model execution still needs real source/hardware context;
 a format/unit test is not GPU or quality evidence.
 
+## Revalidation in the improvement loop
+
+Each changed candidate returns to existing evaluation coverage and is checked
+for quality and speed together. Passing a case once does not qualify later
+implementations automatically. If expanded coverage fails, improve the candidate
+and return through earlier coverage as well, rather than checking only the new
+case. Record the candidate/settings and which current checks actually completed.
+
+Select the concrete coverage, case order and acceptance criteria explicitly;
+the workflow does not prescribe categories or thresholds from an example.
+Use short checks first and reuse valid comparator evidence to control cost,
+without treating unexecuted required checks as passes. Declare elapsed-work and
+model-process budgets separately. At the boundary, save incomplete work and its
+next action; do not turn a time limit into an automatic longer retry.
+
 ## Quality and candidate selection
 
 Keep the original assets immutable. A numerical profile is separate from the
@@ -48,10 +63,11 @@ without requiring exhaustive intermediate equality as the default quality method
 The [session-lifetime measurement](session-lifetime.md) records an actual
 five-call timing comparison and matching short outputs. Its single trial per
 variant, different admission ceilings and diagnostic overhead preclude a general
-or production speed claim. It does not complete the new M2 optimization cycle
-or M3 task-quality coverage. Follow the [bounded execution plan](roadmap.md#next-execution-order-and-time-limits)
-for the next timing cycle; budget exhaustion leaves required checks incomplete,
-and is not a reason to start an automatic longer retry.
+or production speed claim. The later M2 placement experiment has its own report;
+neither result completes pending task-quality coverage. Follow the [bounded
+improvement loop](roadmap.md#next-execution-order-and-time-limits) rather than
+automatically advancing from a closed timing experiment to long task captures.
+Budget exhaustion leaves required checks incomplete.
 
 ## Reporting rules
 

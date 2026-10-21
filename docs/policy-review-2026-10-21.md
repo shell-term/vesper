@@ -1,8 +1,9 @@
 # PC policy alignment, 2026-10-21
 
-This records the initial policy cleanup. The later [milestone-order revision](#milestone-order-revision)
-below supersedes its M2/M3 assignment; use the [roadmap](roadmap.md) for current
-order and acceptance. Earlier planning rows are retained as the decision history.
+This records the initial policy cleanup, [milestone-order revision](#milestone-order-revision)
+and subsequent [loop clarification](#loop-clarification). The latter supersedes
+the one-way execution order. Use the [roadmap](roadmap.md) for current planning
+and acceptance. Earlier planning rows are retained as the decision history.
 
 The operator now permits quality variation for useful speed/memory gains while
 preserving as much output quality as practical. Earlier work prioritized exact
@@ -82,3 +83,23 @@ would make the feedback loop expensive.
   M0/M1, closed issue acceptance and deferred #12 stay intact. M2/M3 remain open.
   No runtime change, new model execution or new numerical qualification is made
   by this ordering revision.
+
+## Loop clarification
+
+The operator clarified that development should be a loop, rather than a one-way
+sequence of input categories or a speed phase followed by a quality phase.
+Measure quality and speed together, improve unmet criteria, and return to
+existing coverage after each change. Expansion that exposes a problem also
+returns the improved candidate through earlier coverage. A historical pass is
+not automatic qualification of a changed candidate.
+
+The illustrative categories, order and thresholds were explicitly not adopted
+as requirements. Choose concrete coverage and acceptance separately. The
+already accepted 20 tps objective remains unachieved; no new universal task
+threshold, quality tolerance or fixed evaluation ladder is created here.
+
+The completed M2/#11 experiment and all raw results retain their exact scope.
+M3/#10's unfinished evaluations remain open within the loop and are not
+automatically scheduled because M2 closed. Each iteration has an explicit work
+budget, saves incomplete checks, and avoids automatic long captures. This
+revision updates planning only, with no new model execution or quality pass.

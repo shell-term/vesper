@@ -9,13 +9,35 @@ qualification gates or retrospectively broaden existing results.
 
 The current PC stretch target is 20 accepted decode tokens/s for one conversation
 (batch 1), with measured quality differences and startup/prefill reported
-separately. It is an unachieved target; each M2 cycle retains its finite budget
-and evidence-backed adoption/rejection decision. See the [selected cycle](m2-placement.md).
+separately. It is an unachieved target. Each experiment has a finite budget
+and an evidence-backed adoption/rejection decision. The [completed placement
+cycle](m2-placement.md) is one recorded experiment, not completion of this target.
 
 This is the canonical PC numerical policy. [Roadmap](roadmap.md) defines the
 milestones, [validation](validation.md) chooses checks, and GitHub PC Issues own
 live acceptance/state. Historical exact reports are comparator evidence, not
 universal restrictions on new candidates. See the [policy alignment record](policy-review-2026-10-21.md).
+
+## Repeated improvement and validation
+
+Quality and speed are evaluated together in a repeating loop: measure the
+current candidate, identify unmet criteria, improve it, and return to the existing
+evaluation coverage. A pass is evidence for that candidate and scope. It does
+not permanently exempt an earlier check after the implementation changes.
+
+Expand coverage only after the current scope meets its declared criteria. If
+new coverage exposes a problem, improve the candidate and return to earlier
+coverage as well; passing only the newly failing case is insufficient. Choose
+the concrete cases, their order, quality criteria and measurement conditions
+explicitly. This policy does not prescribe a fixed sequence of input categories
+or derive acceptance thresholds from an illustrative example.
+
+Bound each iteration's elapsed work and model execution before starting. Use
+short checks first and reuse valid comparator evidence; expand checks within the
+declared coverage as the candidate warrants. A budget stop saves the candidate,
+results, outstanding checks and next action. It neither passes those checks nor
+automatically starts a longer run. A completed local experiment is progress in
+the loop, not proof that the product objective is satisfied.
 
 ## Comparator and candidate identity
 
@@ -84,14 +106,14 @@ on byte reduction. Introduce lossy transformations only as named experiments
 with their actual changes and measured effects. Small task scores do not
 establish broad reasoning/coding/tool quality.
 
-Track generation/recovery and open task evaluations in [#10](https://github.com/shell-term/vesper/issues/10)
-and measured candidates in [#11](https://github.com/shell-term/vesper/issues/11).
-M2 now puts the bounded #11 optimization cycle before M3's remaining #10 task
-evaluations. Follow the [roadmap's execution order and time limits](roadmap.md#next-execution-order-and-time-limits):
-one candidate, two short baseline/candidate pairs and a declared stop. Additional
-approximate-quality evaluation needs its own declared time scope before adoption.
-Qualified short inputs support timing while broader #10 evaluations remain open;
-finishing that cycle does not close #10 or establish broad task quality.
+Track generation/recovery and open task evaluations in [#10](https://github.com/shell-term/vesper/issues/10).
+[#11](https://github.com/shell-term/vesper/issues/11) records the completed M2
+experiment. Its closure does not automatically schedule long M3 captures.
+Follow the [roadmap's loop and time limits](roadmap.md#next-execution-order-and-time-limits):
+select a bounded change from measured problems, return to existing coverage,
+and assess quality/speed/memory together. Declare any additional approximate-quality
+evaluation's time scope before adoption. Qualified short inputs support timing
+while broader #10 evaluations remain open; they do not establish broad task quality.
 
 ## Initial session-lifetime experiment
 

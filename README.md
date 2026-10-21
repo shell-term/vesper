@@ -56,8 +56,8 @@ capture is unscored and does not resume automatically.
 [PC Issues](https://github.com/shell-term/vesper/issues?q=is%3Aissue+label%3Aplatform%3Apc-heterogeneous)
 own task state; the [roadmap](docs/roadmap.md) explains milestone scope.
 
-- [M2 / #11: one bounded quality/speed optimization cycle](https://github.com/shell-term/vesper/issues/11)
-- [M3 / #10: remaining representative task-quality evaluation](https://github.com/shell-term/vesper/issues/10)
+- [M2 / #11: completed bounded quality/speed experiment](https://github.com/shell-term/vesper/issues/11)
+- [M3 / #10: pending coverage within the quality/speed improvement loop](https://github.com/shell-term/vesper/issues/10)
 - [#12: optional 3080 Ti compute investigation](https://github.com/shell-term/vesper/issues/12)
 - [#26: planned real image-input support](https://github.com/shell-term/vesper/issues/26)
 
@@ -65,10 +65,11 @@ The PC stretch target is 20 accepted decode tokens/s for one conversation;
 it remains unachieved. Image input is a planned requirement: the current native
 message adapter rejects images and the vision path is not implemented or qualified.
 
-Run the short optimization cycle before the remaining long reasoning/tool cases.
-The [bounded plan](docs/roadmap.md#next-execution-order-and-time-limits) specifies
-one candidate, repeated short comparisons and a stopping budget. Completing M2
-means a measured adoption/rejection decision, not finished production throughput.
+Development repeats a [bounded quality/speed improvement loop](docs/roadmap.md#next-execution-order-and-time-limits).
+Improve unmet criteria and return to existing coverage after each change. Extend
+coverage deliberately; a failure there also sends the candidate back through
+earlier checks. Choose actual cases, order and acceptance explicitly. Completed
+experiments record scoped outcomes, rather than permanently passing a stage.
 
 Use [validation](docs/validation.md) to choose checks and
 [architecture](docs/architecture.md) for implementation hypotheses. Individual
