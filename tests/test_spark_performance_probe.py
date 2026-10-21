@@ -139,6 +139,7 @@ class SparkPerformanceProbeTests(unittest.TestCase):
         Pool.failure = Pool.mismatch = Pool.change_source = False; Assets.events = []
         for target, value in (("platform.system", "Linux"), ("platform.machine", "aarch64"),
                 ("vesper.resources.physical_memory", {"available": 128 * GiB}),
+                ("vesper.memory.physical_memory", {"available": 128 * GiB}),
                 ("vesper.memory.process_memory", {"resident_bytes": 1024})):
             patcher = patch(target, return_value=value); patcher.start(); self.addCleanup(patcher.stop)
         for name, value in (("SparkModelAssets", Assets), ("LayerOperatorPool", Pool)):
@@ -202,6 +203,20 @@ class SparkPerformanceProbeTests(unittest.TestCase):
             with patch.object(self.workspace, "context", return_value=context):
                 with self.assertRaises(ValueError): probe.collect(self.workspace, run_id="guard-r01")
         self.inventory.assert_not_called(); self.assertEqual(Assets.events, [])
+
+    def test_runtime_physical_reserve_refuses_before_assets_or_native_operations(self):
+        # Exercise the real unified policy's observer independently of the
+        # component observer. CPU CI hosts need not possess 32 GiB of RAM.
+        with patch("vesper.memory.physical_memory", return_value={"available": 31 * GiB}):
+            report = probe.collect(self.workspace, run_id="physical-floor-r01")
+        self.assertEqual(report["status"], "failed")
+        self.assertEqual(report["failure_type"], "MemoryError")
+        self.assertEqual(report["failure_stage"], "memory_runtime")
+        self.assertEqual(report["modes"], [])
+        self.assertEqual(Assets.events, [])
+        self.assertTrue(report["memory_runtime_closed"])
+        self.assertEqual(report["memory_after"]["charged_host_bytes"], 0)
+        self.assertIsNone(current_policy()); self.assertIsNone(_current_spark_kernel_cache())
 
     def test_source_change_rejects_publication_after_cleanup(self):
         Pool.change_source = True
