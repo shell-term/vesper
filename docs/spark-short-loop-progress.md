@@ -1,5 +1,9 @@
 # Spark short-loop implementation progress
 
+This report records the `226b6106` short loop. The next bounded iteration is
+[repeated preparation and nonfinal-input output work](spark-prefill-preparation.md);
+keep the source and evidence scopes distinct.
+
 日本語案内: 少量評価の準備、思考モード・長さの明示指定、認証付き読み出しの余分なコピー削減を実装しました。以下のCPU検査・入力適合確認と、Spark実機の数値・速度・品質の合格は区別します。S2は未完了です。
 
 ## Implemented scope

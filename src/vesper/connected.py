@@ -62,7 +62,8 @@ class ConnectedMoE:
     """
 
     def __init__(self, store: Path, gate_fixture: Path, router_fixture: Path, shared_fixture: Path,
-                 config: ConnectedConfig | None = None, *, cublas_library=None, layer=0, profile="qualified", source_factory=None):
+                 config: ConnectedConfig | None = None, *, cublas_library=None, layer=0, profile="qualified", source_factory=None,
+                 auxiliary_pool=None):
         from .prefix_profile import validate_layer
         validate_layer(layer, (0, 2, 3, 20, 21, 22, 23, 24, 25), profile)
         self.layer = layer
@@ -70,7 +71,11 @@ class ConnectedMoE:
         self.router_fixture, self.shared_fixture = Path(router_fixture), Path(shared_fixture)
         self.config, self.cublas_library = config or ConnectedConfig(), cublas_library
         if source_factory is not None and not callable(source_factory): raise ValueError("Expected an explicit expert source factory")
+        if auxiliary_pool is not None and any(not callable(getattr(auxiliary_pool, name, None))
+                for name in ('router', 'accumulator', 'invalidate', 'stats')):
+            raise ValueError("Expected an explicit router/accumulator owner")
         self.source_factory = source_factory
+        self.auxiliary_pool = auxiliary_pool
         self.stack, self.active = None, False
         self.lock = threading.RLock()
         self.stats = {"calls_started": 0, "calls_completed": 0, "calls_failed": 0}
@@ -105,11 +110,13 @@ class ConnectedMoE:
             ordinal = c.cache.primary_device
             self.gate = self.stack.enter_context(GateProjection(weight, ordinal, self.cublas_library, host_budget=self.budget))
             phase("gate_backend_upload")
-            self.router = self.stack.enter_context(RouterProbe(biases, ordinal))
+            self.router = self.stack.enter_context(RouterProbe(biases, ordinal) if self.auxiliary_pool is None
+                else self.auxiliary_pool.router(biases, ordinal))
             phase("router_backend_upload")
             self.shared = self.stack.enter_context(ResidentSharedExpert(shared, ordinal))
             phase("shared_backend_upload")
-            self.accumulator = self.stack.enter_context(MoEAccumulator(ordinal, max_tokens=1))
+            self.accumulator = self.stack.enter_context(MoEAccumulator(ordinal, max_tokens=1) if self.auxiliary_pool is None
+                else self.auxiliary_pool.accumulator(ordinal))
             phase("accumulator_backend")
             self.experts = self.stack.enter_context(TieredExpertRuntime(self.store_path, c.cache, source_factory=self.source_factory))
             phase("expert_runtime_including_catalog")
@@ -124,6 +131,8 @@ class ConnectedMoE:
             phase("post_open_checks")
             return self
         except BaseException:
+            if self.auxiliary_pool is not None:
+                self.auxiliary_pool.invalidate()
             self.stack.close()
             self.stack = None
             raise
@@ -189,6 +198,8 @@ class ConnectedMoE:
                         "expert_events": events, "shared": shared, "aggregation": stages,
                         "output_bf16": stages["output_bf16"].reshape(5120)}
             except BaseException as error:
+                if self.auxiliary_pool is not None:
+                    self.auxiliary_pool.invalidate()
                 self.stats["calls_failed"] += 1
                 attempt.update(status="failed", error_type=type(error).__name__)
                 raise
@@ -221,10 +232,18 @@ class ConnectedMoE:
             if self.active:
                 raise RuntimeError("Cannot close connected MoE during a live call")
             if self.stack is not None:
+                if _ and _[0] is not None and self.auxiliary_pool is not None:
+                    self.auxiliary_pool.invalidate()
                 self.stack.close()
                 self.stack = None
+            borrowed = ('router', 'accumulator') if self.auxiliary_pool is not None else ()
             self.cleanup = {"parent_reservation_bytes": self.budget.reserved,
-                            "accumulator_reservation_bytes": self.accumulator.budget.reserved,
+                            "accumulator_reservation_bytes": 0 if borrowed else self.accumulator.budget.reserved,
                             "cache_reservation_bytes": self.experts.budget.reserved,
-                            "primary_explicit_live_bytes": sum(sum(d.allocations.values()) for d in self.devices.values()),
+                            "primary_explicit_live_bytes": sum(sum(d.allocations.values()) for name,d in self.devices.items() if name not in borrowed),
                             "helper_explicit_live_bytes": 0 if self.helper_device is None else sum(self.helper_device.allocations.values())}
+            if borrowed:
+                self.cleanup.update(auxiliary_owner_scope='runtime_pool_retained_after_connected_close',
+                    pool_retained_accumulator_reservation_bytes=self.accumulator.budget.reserved,
+                    pool_retained_primary_explicit_live_bytes=sum(sum(self.devices[name].allocations.values()) for name in borrowed),
+                    pool_active_borrowers_after_connected_close=self.auxiliary_pool.stats()['borrowers'])

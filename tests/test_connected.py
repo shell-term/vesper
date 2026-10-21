@@ -136,6 +136,45 @@ class ConnectedTests(unittest.TestCase):
         self.assertEqual(runtime.budget.reserved, 0)
         self.assertIsNone(runtime.stack)
 
+    def test_opt_in_auxiliary_owner_is_invalidated_by_fixture_and_expert_failures(self):
+        owner = MagicMock()
+        runtime = ConnectedMoE(*[Path('unused')] * 4, ConnectedConfig(cache=CacheConfig(
+            host_cap_bytes=96 * MiB, available_floor=0)), auxiliary_pool=owner)
+        with patch('vesper.connected.load_gate_fixture', side_effect=ValueError('Fresh fixture failed')):
+            with self.assertRaisesRegex(ValueError, 'Fresh fixture'):
+                runtime.__enter__()
+        owner.invalidate.assert_called_once()
+        self.assertEqual(runtime.budget.reserved, 0)
+        self.assertIsNone(runtime.stack)
+        runtime = self.runtime()
+        runtime.auxiliary_pool = owner
+        runtime.experts.fail_fourth = True
+        owner.reset_mock()
+        with self.assertRaises(OSError):
+            runtime.forward(np.zeros(5120, np.float32))
+        owner.invalidate.assert_called_once()
+        self.assertFalse(runtime.active)
+
+    def test_borrower_cleanup_reports_runtime_pool_retention_separately(self):
+        runtime = self.runtime()
+        runtime.auxiliary_pool = MagicMock()
+        runtime.auxiliary_pool.stats.return_value = {'borrowers': 0}
+        runtime.budget = SimpleNamespace(reserved=0)
+        runtime.accumulator.budget = SimpleNamespace(reserved=4 * MiB)
+        runtime.experts.budget = SimpleNamespace(reserved=0)
+        runtime.devices = {name: SimpleNamespace(allocations={}) for name in ('gate', 'shared', 'cache_primary')}
+        runtime.devices.update(router=SimpleNamespace(allocations={1: 7760}),
+                               accumulator=SimpleNamespace(allocations={2: 40964}))
+        runtime.helper_device = None
+        runtime.stack = MagicMock()
+        runtime.__exit__()
+        self.assertEqual(runtime.cleanup['parent_reservation_bytes'], 0)
+        self.assertEqual(runtime.cleanup['accumulator_reservation_bytes'], 0)
+        self.assertEqual(runtime.cleanup['primary_explicit_live_bytes'], 0)
+        self.assertEqual(runtime.cleanup['pool_retained_accumulator_reservation_bytes'], 4 * MiB)
+        self.assertEqual(runtime.cleanup['pool_retained_primary_explicit_live_bytes'], 48724)
+        self.assertEqual(runtime.cleanup['pool_active_borrowers_after_connected_close'], 0)
+
     def test_parent_cap_covers_all_component_caps(self):
         with self.assertRaisesRegex(ValueError, "all component"):
             ConnectedConfig(host_cap_bytes=128 * MiB)

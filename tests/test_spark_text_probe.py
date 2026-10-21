@@ -158,6 +158,7 @@ class Engine:
             type(self).attention_mutation(self)
         self.tokenizer_identity = {"compressed_map_sha256": "b" * 64}
         self.calls, self.sampled, self.inputs = 0, 0, []
+        self.prefill_calls = 0
         self.budget = MemoryBudget(cap=32 * MiB, owner="test_engine")
         self.instances.append(self)
 
@@ -188,6 +189,14 @@ class Engine:
             self.sampled += 1
         if self.change_source:
             self.assets.workspace.changed = True
+        return result
+
+    def prefill_step(self, ids):
+        self.prefill_calls += 1
+        result = self.step(ids, sample=False)
+        result.pop("head")
+        result["sampling"] = {"offset_before": 2026, "offset_after": 2026}
+        result["output_tail"] = "skipped_nonfinal_input"
         return result
 
     def stats(self):
@@ -345,6 +354,60 @@ class TextProbeTests(unittest.TestCase):
         self.assertEqual(events[-1]["generated_tokens"],0)
         self.assertEqual(set(report["steps"][0]["engrams"]),{"1","14"})
         self.assertNotIn("first_selected_output",report["timing_marks_seconds_from_start"])
+
+    def test_opt_in_prefill_omits_only_nonfinal_input_tails_and_keeps_feedback(self):
+        baseline = self.generate()
+        report = self.generate(prefill_tail="skip_output_tail")
+        self.assertTrue(report["functional_acceptance"])
+        self.assertEqual(Engine.instances[-1].prefill_calls, 2)
+        self.assertEqual(Engine.instances[-1].inputs, [(10, False), (11, False), (12, True), (4, True)])
+        self.assertEqual(report["completion"], baseline["completion"])
+        self.assertEqual(report["prefill_tail_profile"], "skip_output_tail")
+        self.assertTrue(report["prefill_tail_changes_diagnostic_work"])
+        for index, step in enumerate(report["steps"]):
+            for boundary in ("layers", "engrams", "output_bf16"):
+                self.assertEqual(step[boundary], baseline["steps"][index][boundary])
+            if index < 2:
+                self.assertIsNone(step["logits_fp32"])
+                self.assertEqual(step["output_tail"], {"status": "skipped_nonfinal_input",
+                    "final_collapse_run": False, "final_norm_run": False, "vocabulary_projection_run": False,
+                    "sampling_requested": False, "sampler_offset_before": 2026, "sampler_offset_after": 2026})
+            else:
+                self.assertIsNotNone(step["logits_fp32"])
+                self.assertNotIn("output_tail", step)
+
+    def test_single_input_token_keeps_full_head_and_never_uses_prefill_skip(self):
+        Tokenizer.prompt_ids = (10,)
+        report = self.generate(prefill_tail="skip_output_tail")
+        self.assertTrue(report["functional_acceptance"])
+        self.assertEqual(Engine.instances[0].prefill_calls, 0)
+        self.assertTrue(all(step["sampling_requested"] and step["logits_fp32"] is not None for step in report["steps"]))
+
+    def test_prefill_skip_requires_exact_no_head_no_sampling_no_rng_marker(self):
+        original = Engine.prefill_step
+        def wrong_status(result): result["output_tail"] = "skipped"
+        def unexpected_head(result): result["head"] = {"logits_fp32": np.zeros((1, 129280), np.float32)}
+        def missing_marker(result): result.pop("output_tail")
+        def rng_changed(result): result["sampling"]["offset_after"] += 1
+        def extra_selection(result): result["sampling"]["ids_i64"] = np.array([4], np.int64)
+        for mutation in (wrong_status, unexpected_head, missing_marker, rng_changed, extra_selection):
+            with self.subTest(mutation=mutation.__name__):
+                def malformed(engine, ids):
+                    result = original(engine, ids)
+                    mutation(result)
+                    return result
+                with patch.object(Engine, "prefill_step", malformed):
+                    report = self.generate(prefill_tail="skip_output_tail")
+                self.assertEqual(report["status"], "failed")
+                self.assertFalse(report["functional_acceptance"])
+                self.assertTrue(report["memory_runtime_closed"])
+                self.assertEqual(report["steps"], [])
+
+    def test_bad_prefill_policy_refuses_before_opening_resources(self):
+        with self.assertRaises(ValueError):
+            self.generate(prefill_tail="skip")
+        self.assertEqual(Assets.events, [])
+        self.inventory.assert_not_called()
 
     def test_thinking_uses_original_prefix_effort_parser_and_feedback(self):
         Engine.selections = (7, 8, 4, 1)
@@ -796,6 +859,20 @@ class TextProbeTests(unittest.TestCase):
         self.assertEqual(report["request"]["admitted_limits"]["model_calls"], 1)
         self.assertEqual(report["request"]["admitted_limits"]["input_tokens"], 700)
         self.assertEqual(report["request"]["admitted_limits"]["context_tokens"], 1152)
+
+    def test_cli_prefill_tail_is_explicit_and_partial_prefix_does_not_claim_sampling(self):
+        Tokenizer.prompt_ids = tuple([10] * 18)
+        with patch("vesper.workspace.Workspace.open", return_value=self.ws), redirect_stdout(io.StringIO()):
+            code = probe.main(["generate", "--run-id", "prefill-cli-r01", "--prefill-tail", "skip_output_tail",
+                               "--max-model-calls", "2", "--max-duration-seconds", "60"])
+        self.assertEqual(code, 2)
+        report = self.ws.writes[0]
+        self.assertEqual(report["request"]["prefill_tail"], "skip_output_tail")
+        self.assertEqual(report["status"], "partial_model_call_budget")
+        self.assertEqual(report["completion"]["calls"], 2)
+        self.assertEqual(report["completion"]["selected_ids_including_eos"], [])
+        self.assertFalse(report["functional_acceptance"])
+        self.assertTrue(all(step["logits_fp32"] is None for step in report["steps"]))
 
 
 if __name__ == "__main__":

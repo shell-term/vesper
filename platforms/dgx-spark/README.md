@@ -21,6 +21,7 @@ The report separates short-text execution, component parity and practical-qualit
 S2 evidence: [measured preparation and candidate progress](../../docs/spark-s2-preparation.md).
 Current implementation: [short-loop progress](../../docs/spark-short-loop-progress.md)
 and [small official-benchmark protocol](../../docs/spark-small-evaluation.md).
+Current improvement study: [repeated preparation and nonfinal-input work](../../docs/spark-prefill-preparation.md).
 It records bounded component/all-layer partial checks and unadopted codec/audit
 experiments; S2, ordinary EOS requalification and image input remain open.
 

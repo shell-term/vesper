@@ -235,6 +235,49 @@ class StreamedPoolTests(unittest.TestCase):
             self.assertIs(source.call_args.kwargs["catalog"],catalog)
             self.assertEqual(source.call_args.kwargs["layer"],39)
 
+    def test_failed_s2_auxiliary_owner_is_replaced_after_healthy_cleanup_for_retry(self):
+        first = SimpleNamespace(poisoned=False, close=Mock())
+        second = SimpleNamespace(poisoned=False, close=Mock())
+        created = iter((first, second))
+        def auxiliary(*_):
+            owner = next(created)
+            return SimpleNamespace(__enter__=lambda: owner)
+        def connected(*_, layer, auxiliary_pool, **__):
+            operator = Operator(self.events, 'moe', layer)
+            if auxiliary_pool is first:
+                def fail(*_):
+                    first.poisoned = True
+                    raise OSError('Injected expert/store failure')
+                operator.forward = fail
+            return operator
+        self.assets.moe_paths = Mock(return_value=(Path('gate'), Path('router'), Path('shared')))
+        self.assets.metadata, self.assets.originals, self.assets.integrity = map(Path, ('metadata', 'originals', 'integrity'))
+        with patch('vesper.spark_moe_auxiliaries.SparkMoEAuxiliaries', side_effect=auxiliary), \
+             patch.object(runtime, 'ConnectedMoE', side_effect=connected):
+            with runtime.LayerOperatorPool(self.assets, backend_pool=object()) as pool:
+                with self.assertRaisesRegex(OSError, 'expert/store'):
+                    pool.proxy('moe', 0).forward('input', False)
+                first.close.assert_called_once()
+                self.assertIsNone(pool.moe_auxiliaries)
+                self.assertFalse(pool.poisoned)
+                self.assertEqual(pool.proxy('moe', 0).forward('retry', False)['layer'], 0)
+                self.assertIs(pool.moe_auxiliaries, second)
+            second.close.assert_called_once()
+
+    def test_failed_auxiliary_cleanup_keeps_owner_and_poison_until_explicit_close_retry(self):
+        owner = SimpleNamespace(poisoned=True, close=Mock(side_effect=RuntimeError('Auxiliary cleanup failed')))
+        self.pool.moe_auxiliaries = owner
+        self.pool.__enter__()
+        with self.assertRaisesRegex(RuntimeError, 'Auxiliary cleanup'):
+            self.pool._close_moe()
+        self.assertIs(self.pool.moe_auxiliaries, owner)
+        self.assertTrue(self.pool.poisoned)
+        with self.assertRaises(RuntimeError):
+            self.pool.proxy('moe', 0).forward('input', False)
+        owner.close.side_effect = None
+        self.pool.__exit__()
+        self.assertIsNone(self.pool.moe_auxiliaries)
+
 
 class EmbeddingTests(unittest.TestCase):
     def test_domain_is_lazy_and_actual_row_is_validated_at_each_lookup(self):

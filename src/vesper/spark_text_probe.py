@@ -210,7 +210,7 @@ class RouteObserver:
         self.pool.moe_factory = self.original
 
 
-def _step_summary(meta, result, routes, seconds):
+def _step_summary(meta, result, routes, seconds, *, expected_prefill_skip=False):
     diagnostics = _diagnostic_bytes(result)
     layers = {}
     if [row.get("layer") for row in routes] != list(range(40)):
@@ -232,13 +232,32 @@ def _step_summary(meta, result, routes, seconds):
             raise ValueError("Successful native route requires complete offline source-I/O evidence")
         layers[str(layer)] = {"indices": indices.tolist(), "weight_bits": weights.view(np.uint32).tolist(),
                               "output_bf16": _array_hash(part["output_bf16"])}
-    logits = result["head"]["logits_fp32"]
-    if logits.shape != (1, 129280) or logits.dtype != np.float32 or not np.isfinite(logits).all():
-        raise ValueError("Native text requires finite full-vocabulary logits")
-    return {**meta, "model_call_wall_seconds_including_native_diagnostics": seconds, "returned_array_owner_bytes": diagnostics,
-            "layers": layers, "route_io": routes.copy(), "logits_fp32": _array_hash(logits),
+    tail = result.get("output_tail")
+    if expected_prefill_skip:
+        sampling = result.get("sampling")
+        if (tail != "skipped_nonfinal_input" or "head" in result
+                or meta.get("sampling_requested") is not False or meta.get("selected_id") is not None
+                or type(sampling) is not dict or set(sampling) != {"offset_before", "offset_after"}
+                or type(sampling["offset_before"]) is not int or not 0 <= sampling["offset_before"] < 2**64
+                or type(sampling["offset_after"]) is not int or sampling["offset_after"] != sampling["offset_before"]):
+            raise ValueError("Expected an explicit nonfinal-input tail skip without sampling or RNG advancement")
+        logits_hash = None
+    else:
+        if tail is not None:
+            raise ValueError("Output-tail omission was not admitted for this input position")
+        logits = result["head"]["logits_fp32"]
+        if logits.shape != (1, 129280) or logits.dtype != np.float32 or not np.isfinite(logits).all():
+            raise ValueError("Native text requires finite full-vocabulary logits")
+        logits_hash = _array_hash(logits)
+    summary = {**meta, "model_call_wall_seconds_including_native_diagnostics": seconds, "returned_array_owner_bytes": diagnostics,
+            "layers": layers, "route_io": routes.copy(), "logits_fp32": logits_hash,
             "engrams": {str(layer):_array_hash(result[f"engram{layer}"]["output_bf16"]) for layer in (1,14)},
             "output_bf16": _array_hash(result["output_bf16"])}
+    if expected_prefill_skip:
+        summary["output_tail"] = {"status": tail, "final_collapse_run": False,
+            "final_norm_run": False, "vocabulary_projection_run": False, "sampling_requested": False,
+            "sampler_offset_before": sampling["offset_before"], "sampler_offset_after": sampling["offset_after"]}
+    return summary
 
 
 def _warning(workspace, run_id, error, stage, initial):
@@ -313,13 +332,16 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
             attention_receipt_result="s1/attention/native-validation-r01.json",
             prompt=DEFAULT_PROMPT, max_new_tokens=64, temperature=0., seed=2026, progress=None, max_model_calls=MAX_CALLS,
             reuse_profile="baseline", thinking_mode="chat", reasoning_effort=None,
-            max_input_tokens=MAX_CALLS, context_tokens=MAX_CALLS, max_duration_seconds=None):
+            max_input_tokens=MAX_CALLS, context_tokens=MAX_CALLS, max_duration_seconds=None,
+            prefill_tail="full"):
     """Return an unstamped report after resource cleanup; the CLI writes it."""
     initial = _guard(workspace, run_id)
     limits = SparkTextLimits(context_tokens, max_input_tokens, max_model_calls, max_duration_seconds)
     _validate(mode, prompt, max_new_tokens, temperature, seed, limits)
     if reuse_profile not in ("baseline", "s2"):
         raise ValueError("Expected baseline or s2 native preparation reuse")
+    if prefill_tail not in ("full", "skip_output_tail"):
+        raise ValueError("Expected an explicit full or skip_output_tail prefill policy")
     if (thinking_mode not in ("chat", "thinking") or
             (reasoning_effort is not None and (type(reasoning_effort) is not int or not 1 <= reasoning_effort <= 100))):
         raise ValueError("Expected chat/thinking and an optional reasoning effort in [1,100]")
@@ -343,6 +365,7 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
         "network_in_forward": False, "checkpoint_download_started": False, "automatic_retry": False,
         "request": {"messages": messages, "serialized_chat": serialized, "user_prompt": prompt,
             "thinking_mode": thinking_mode, "thinking_enabled": thinking_mode == "thinking",
+            "prefill_tail": prefill_tail,
             "reasoning_effort": (75 if reasoning_effort is None else reasoning_effort) if thinking_mode == "thinking" else None,
             "temperature": float(temperature), "seed": seed,
             "max_new_tokens": max_new_tokens, "maximum_model_calls": max_model_calls,
@@ -358,6 +381,8 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
         "memory_observations": [], "steps": [], "owned_resources_closed": False, "memory_runtime_closed": False,
         "attention_qualification": None}
     report["preparation_reuse_profile"] = reuse_profile
+    report["prefill_tail_profile"] = prefill_tail
+    report["prefill_tail_changes_diagnostic_work"] = prefill_tail != "full"
     report["timing_marks_seconds_from_start"] = {}
     memory, admission = None, None
     engine = assets = tokenizer = session = result = None
@@ -482,7 +507,13 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                         mark("model_open_complete")
                         stage = "model_attention_qualification"
                         _check_engine_receipt(engine, proof)
-                        session = TextGeneration(tokenizer, engine.step, request)
+                        def text_step(ids, *, sample):
+                            if prefill_tail == "skip_output_tail" and not sample:
+                                if session is None or session.position >= len(session.prompt_ids) - 1:
+                                    raise ValueError("Output-tail skip requires an actual nonfinal prompt position")
+                                return engine.prefill_step(ids)
+                            return engine.step(ids, sample=sample)
+                        session = TextGeneration(tokenizer, text_step, request)
                         report["tokenizer"]["compressed_identity"] = engine.tokenizer_identity
                         stage = "generation"
                         mark("generation_start")
@@ -504,7 +535,9 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                                     if meta.get("selected_id") is not None and "first_selected_output" not in report["timing_marks_seconds_from_start"]:
                                         mark("first_selected_output")
                                     report["steps"].append(_step_summary(meta, result, observer.current,
-                                        time.perf_counter() - step_start))
+                                        time.perf_counter() - step_start,
+                                        expected_prefill_skip=(prefill_tail == "skip_output_tail" and
+                                            meta["position"] < len(session.prompt_ids) - 1)))
                                     update({"phase":"model_call_complete", "last_model_call_seconds":time.perf_counter()-step_start})
                                     if meta.get("selected_id") is not None and len(tokenizer.decode(list(session.generated))) > MAX_COMPLETION_CHARS:
                                         report["completion_character_budget_exceeded"] = True
@@ -611,6 +644,7 @@ def main(argv=None):
     parser.add_argument("--max-duration-seconds", type=float)
     parser.add_argument("--thinking-mode", choices=("chat", "thinking"), default="chat")
     parser.add_argument("--reasoning-effort", type=int)
+    parser.add_argument("--prefill-tail", choices=("full", "skip_output_tail"), default="full")
     parser.add_argument("--reuse-profile", choices=("baseline", "s2"), default="baseline")
     args = parser.parse_args(argv)
     from .workspace import Workspace
@@ -626,7 +660,7 @@ def main(argv=None):
         progress=ProgressFile(workspace,args.run_id), max_model_calls=args.max_model_calls,
         reuse_profile=args.reuse_profile, thinking_mode=args.thinking_mode, reasoning_effort=args.reasoning_effort,
         max_input_tokens=args.max_input_tokens, context_tokens=args.context_tokens,
-        max_duration_seconds=args.max_duration_seconds)
+        max_duration_seconds=args.max_duration_seconds, prefill_tail=args.prefill_tail)
     path = workspace.write_result(relative, report, run_id=args.run_id, initial_context=initial)
     print(json.dumps({"mode": args.mode, "status": report["status"], "functional_acceptance": report["functional_acceptance"],
                       "result": path.relative_to(workspace.root).as_posix()}))

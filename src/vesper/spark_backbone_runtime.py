@@ -94,6 +94,8 @@ class LayerOperatorPool:
         self.backend_pool = backend_pool
         self.native_factories = {"hc": hc_factory is None, "projection": projection_factory is None}
         self.moe_factory = moe_factory or self._moe
+        self.native_moe_factory = moe_factory is None
+        self.moe_auxiliaries = None
         self.lock, self.opened, self.poisoned = threading.RLock(), False, False
         self.initialized, self.active = False, {}
         self.moe_owner = None
@@ -175,8 +177,14 @@ class LayerOperatorPool:
             reuse = {} if catalog is None else {"catalog": catalog}
             return OriginalShardExpertStore(self.assets.metadata, self.assets.originals,
                 self.assets.integrity, budget, layer=layer, workspace=self.assets.workspace, **reuse)
+        reuse = {}
+        if self.backend_pool is not None and self.native_moe_factory:
+            if self.moe_auxiliaries is None:
+                from .spark_moe_auxiliaries import SparkMoEAuxiliaries
+                self.moe_auxiliaries = SparkMoEAuxiliaries(self.assets.workspace, self.ordinal).__enter__()
+            reuse['auxiliary_pool'] = self.moe_auxiliaries
         return ConnectedMoE(self.assets.originals, gate, router, shared,
-            ConnectedConfig(cache=cache), layer=layer, profile="backbone_probe", source_factory=source_factory)
+            ConnectedConfig(cache=cache), layer=layer, profile="backbone_probe", source_factory=source_factory, **reuse)
 
     def _close_moe(self, error=None):
         if self.moe_owner is not None:
@@ -198,6 +206,19 @@ class LayerOperatorPool:
                 raise
             self.moe_owner = None
             self.moe_entered = False
+        self._retire_failed_auxiliaries()
+
+    def _retire_failed_auxiliaries(self):
+        # A restored token transaction may retry after healthy cleanup. Never
+        # return its failed mutable workspace to that retry: close/drop it and
+        # let the next attempt create a new source-checked owner instead.
+        if self.moe_auxiliaries is not None and self.moe_auxiliaries.poisoned:
+            try:
+                self.moe_auxiliaries.close()
+            except BaseException:
+                self.poisoned = True
+                raise
+            self.moe_auxiliaries = None
 
     def call(self, kind, layer, method, *args, **kwargs):
         _layer(layer)
@@ -221,6 +242,7 @@ class LayerOperatorPool:
                         self.poisoned = True
                     else:
                         self.moe_owner = None
+                        self._retire_failed_auxiliaries()
                     raise
                 error = None
                 started = time.perf_counter()
@@ -257,6 +279,7 @@ class LayerOperatorPool:
                 "moe_cleanup_owner_retained": self.moe_owner is not None,
                 "opened": self.opened, "poisoned": self.poisoned,
                 "expert_ram_cache_bytes": 0, "helper_device": None,
+                "moe_auxiliary_pool": None if self.moe_auxiliaries is None else self.moe_auxiliaries.stats(),
                 "host_wall_timings": {kind:dict(values) for kind,values in self.timings.items()},
                 "arithmetic_qualification": "not_run", "network_in_forward": False}
 
@@ -271,6 +294,12 @@ class LayerOperatorPool:
                 try:
                     self._close_kind(kind)
                 except BaseException as error:
+                    errors.append(error)
+            if self.moe_auxiliaries is not None:
+                try:
+                    self.moe_auxiliaries.close()
+                except BaseException as error:
+                    self.poisoned = True
                     errors.append(error)
             self.opened = False
             if errors:
@@ -320,6 +349,27 @@ class SparkBackboneCandidate(NativeBackbone):
                 "compiled_kernel_cache": (self.compilation_cache.stats() if hasattr(getattr(self,"compilation_cache",None),"stats") else None),
                 "preparation_backends": (self.preparation_backends.stats() if getattr(self,"preparation_backends",None) is not None else None),
                 "network_in_forward": False, "trajectory_replay": False}
+
+    def prefill_step(self, ids, *, start_pos=None, observe=None):
+        """Commit an explicitly identified nonfinal input without its output tail.
+
+        Every original block, KV/index state and both Engrams still execute.
+        The caller must identify a nonfinal prompt position; ordinary step(),
+        including step(sample=False), retains the complete output path.
+        """
+        self._validate_ids(ids)
+        ids = ids.copy()
+        if observe is not None and not callable(observe):
+            raise ValueError("Expected an optional prefill observer")
+        def compute(candidate):
+            result = self._evaluate(candidate, ids)
+            offset = self.transaction.sampler.offset
+            result["sampling"] = {"offset_before": offset, "offset_after": offset}
+            result["output_tail"] = "skipped_nonfinal_input"
+            if observe is not None:
+                observe(result)
+            return result
+        return self.transaction.step(ids, compute, start_pos=start_pos)
 
     def __exit__(self, *error):
         try:
