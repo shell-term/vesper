@@ -96,6 +96,13 @@ earlier coverage; additional full revalidation outside the approved plan also
 needs the user's decision. Deferral keeps full-suite qualification pending.
 See [benchmark validation](validation.md#public-benchmarks-and-final-degradation-measurement).
 
+The selected loop entry is [GPQA Diamond's fixed three-question development
+subset](gpqa-subset.md). Complete its native execution readiness and collect
+provenance-bound outputs before claiming benchmark quality. Existing short
+independent inputs remain supplementary checks; their timings do not replace
+this subset. Input preparation currently exposes the 512-call runtime limit
+and the missing native benchmark adapter; actual subset scores remain pending.
+
 ## Remaining quality and optional mechanisms
 
 [#10](https://github.com/shell-term/vesper/issues/10) separates already measured

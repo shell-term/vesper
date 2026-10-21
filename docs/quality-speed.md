@@ -47,6 +47,11 @@ the loop short. Fix the question identities and comparison settings before
 measuring a candidate; preserve each question's prompt and generation budget.
 Subset scores describe only that subset, not the benchmark's full score.
 
+The first selected development input is the [fixed three-question GPQA Diamond
+subset](gpqa-subset.md). Its input/scorer preflight is not a completed model
+evaluation. Build the executable benchmark path before returning to the
+quality/speed loop; independent raw-text timings remain supplementary checks.
+
 Once optimization produces a final candidate, prepare the full evaluation for
 the user's execution decision. An authorized final evaluation runs **all items
 in each selected benchmark's declared evaluation split**. Compare
@@ -56,8 +61,8 @@ coverage support the entire comparison. Record score degradation together with
 speed and memory, following the [benchmark reporting rules](validation.md#public-benchmarks-and-final-degradation-measurement).
 
 Select the benchmarks, versions/splits and acceptable quality/speed criteria
-before final testing. Earlier benchmark suggestions remain candidates, not an
-adopted suite or invented tolerance. Estimate the complete workload and give
+before final testing. Selecting the initial GPQA development subset does not
+settle the final full suite or its tolerances. Estimate the complete workload and give
 final testing its own budget; interrupted work retains pending item identities
 and cannot be reported as a completed full evaluation. A failed final criterion
 returns the candidate to the improvement loop, including earlier checks and a
