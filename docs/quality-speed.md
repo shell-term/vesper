@@ -80,10 +80,12 @@ to the bound PC workspace's `artifacts/pc-heterogeneous/performance/` tree.
 Run `python -m vesper.session_benchmark baseline` and then
 `python -m vesper.session_benchmark retained` in separate native processes.
 Both use the same request, six-expert RAM allowance per layer, two primary and
-two helper slots, GPU upload audits and the 64 GiB probe cap / 32 GiB floor.
+two helper slots, GPU upload audits and the 96 GiB engine admission cap / 32 GiB floor.
 The benchmark explicitly admits up to 2 GiB of pinned staging memory: forty
 retained layer owners currently have two buffers each (about 1.40 GiB total).
-These buffers count toward the host cap. A future serial staging pool could
+These buffers count toward the host cap. Retaining all forty owners also keeps
+their conservative legacy component allowances live; actual RSS and private
+commit are measured separately. A future serial staging pool could
 share them; the default runtime's 1 GiB pinned ceiling remains unchanged.
 Only context lifetime changes. The experimental retained path holds those
 bounded contexts across tokens; it is not the default trajectory provider.
@@ -92,6 +94,8 @@ Each process has a default **300-second cooperative budget**, checked before
 each MoE layer and model call. Setup/cleanup operations can overrun a checkpoint;
 this is not an OS execution deadline. An exhausted budget is reported as such,
 with no complete-reference match or completed quality claim.
+Resource admission refusals are likewise incomplete results with cleanup and
+memory observations, rather than completed output comparisons.
 
 The quick released-precision check compares every full-vocabulary logit hash,
 ordered routes/weights, selected-ID feedback and RNG offset, plus final complete

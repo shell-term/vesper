@@ -107,14 +107,16 @@ def run(root, directory, original, raw, mode, budget_seconds, progress):
     providers, calls, durations = {}, [], []
     cache = session = engine = http = None
     setup = ttft = request_ttft = None
-    timed_out, final_state = False, None
+    timed_out, resource_refused, failure, final_state = False, False, None, None
     hardware = []
     started = time.perf_counter()
     deadline = started + budget_seconds
     # Forty retained serial layer owners currently each have two staging
     # buffers (about 1.40 GiB together). Account for them explicitly without
-    # changing the total host cap or the system-available floor.
-    with RuntimeMemory(MemoryPolicy(host_cap_bytes=64 * GiB, pinned_cap_bytes=2 * GiB)) as policy:
+    # exceeding the engine's host cap or changing the system-available floor.
+    # Legacy per-component admissions overlap conservatively when all forty
+    # contexts coexist. Observe actual process memory separately from charges.
+    with RuntimeMemory(MemoryPolicy(host_cap_bytes=96 * GiB, pinned_cap_bytes=2 * GiB)) as policy:
         try:
             with ExitStack() as stack:
                 http = stack.enter_context(patch('urllib.request.urlopen', side_effect=RuntimeError('Benchmark must stay offline')))
@@ -176,13 +178,19 @@ def run(root, directory, original, raw, mode, budget_seconds, progress):
                 raise
             timed_out = True
             images, compiler = [], None
+        except MemoryError as error:
+            resource_refused = True
+            failure = {'type': 'MemoryError', 'reason': str(error)}
+            images, compiler = [], None
         result = None
         session = None
         engine = None
         gc.collect()
         before = policy.snapshot()
+    complete = not (timed_out or resource_refused)
     report = {'schema_version': 1, 'probe': 'pc_short_generation_session_benchmark',
-        'status': 'budget_exceeded' if timed_out else 'pass', 'mode': mode,
+        'status': 'resource_refused' if resource_refused else 'budget_exceeded' if timed_out else 'pass',
+        'failure': failure, 'mode': mode,
         'numerical_profile': 'released-fp4', 'additional_quantization': False,
         'changed_routing_or_sampling': False, 'native_frameworks': frameworks,
         'scope': {'case_id': 'raw-text-story-five-calls', 'request': original['scope']['request'],
@@ -203,14 +211,14 @@ def run(root, directory, original, raw, mode, budget_seconds, progress):
         'timing': {**timing_summary(durations, len(original['completion']['prompt_ids'])),
                    'setup_seconds': setup, 'engine_TTFT_seconds': ttft, 'request_TTFT_seconds': request_ttft,
                    'total_engine_wall_seconds_including_checks_and_cleanup': time.perf_counter() - started},
-        'calls': calls, 'completion': original['completion'] if not timed_out else None,
-        'final_state_sha256': final_state, 'complete_short_reference_match': not timed_out,
+        'calls': calls, 'completion': original['completion'] if complete else None,
+        'final_state_sha256': final_state, 'complete_short_reference_match': complete,
         'providers': {l: p.stats() for l, p in providers.items()},
         'compiler_cache': compiler, 'compiled_images': images,
         'compiler_cache_after_close': cache.stats() if cache is not None else None,
         'HTTP_calls': http.call_count if http is not None else 0, 'weight_payloads_fetched': 0,
         'memory_before_policy_close': before, 'memory_after_policy_close': policy.snapshot()}
-    validate_memory(report, 64 * GiB)
+    validate_memory(report, 96 * GiB)
     for p in report['providers'].values():
         if p['opened'] or p['context_opens'] != p['context_closes'] or any((p['last_cleanup'] or {}).values()):
             raise RuntimeError('Session benchmark retained unfinished component resources')
