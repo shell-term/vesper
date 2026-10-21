@@ -1,0 +1,195 @@
+{
+  "schema": "vesper.spark-s1-derived-evidence-audit.v1",
+  "status": "pass",
+  "scope": "Derived audit of byte-preserved S1 functional evidence; not a runtime result or quality qualification",
+  "runtime_source_head": "4b7e816ff7725b7b23b37ee65867231d85af64af",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "raw_runtime_contexts_preserved": true,
+  "observer_checkout_identity_replaces_runtime_identity": false,
+  "transport": {
+    "file": "transport-r02.json",
+    "sha256": "dad60954d205eb55fa382d86c9e30d4fd04d625795088b5d35e91057d1286ae7"
+  },
+  "worker_sha256": "31a8da5a85066b0c0b856662008498f09139472e1d0a5333a8e6196cdac12b79",
+  "plan_sha256": "a13550a365a1f94dc8ed44c6ee19d89a5581fc4f3a2b56589905909bd279fdea",
+  "inputs": [
+    {
+      "file": "attention-native-validation-r04.json",
+      "bytes": 181491,
+      "sha256": "f86c3604082d2c24a702de951ba59546ec146453814ad7a5a66323e423402ef5"
+    },
+    {
+      "file": "attention-reference-r05.json",
+      "bytes": 277741,
+      "sha256": "cc73b5bd4c8ab3e5f1ffb0e94cf2a7b94a536470bdd03dfb90322c358c221384"
+    },
+    {
+      "file": "generate-r04.json",
+      "bytes": 1439228,
+      "sha256": "e97cfbfff44d0be8c935b7a5de238bec8bf7d07b64bd3148678cb1ad35abec31"
+    },
+    {
+      "file": "head-compare-r05.json",
+      "bytes": 8240,
+      "sha256": "2828007da9efa70253ec9d640a9df5a883520a1dcf40d05d49c4749b60ab9f47"
+    },
+    {
+      "file": "head-native-r05.json",
+      "bytes": 103712,
+      "sha256": "d2260086151a62937f3ed10c640ac03b86254609c04c4098fa5a7dbf5afd6761"
+    },
+    {
+      "file": "head-reference-r05.json",
+      "bytes": 160699,
+      "sha256": "564fc296d8d6d12278dda4c4f7e71bf8801b9a3635c5c3df9e3c2b8f90638fd6"
+    },
+    {
+      "file": "layer-performance-layers-r01.json",
+      "bytes": 217235,
+      "sha256": "2e0e9d3bd9d1ac35c52f01d4c678070b92b12ec5488bfeba2765bfae8b33d6ed"
+    },
+    {
+      "file": "text-probe-r03.json",
+      "bytes": 400068,
+      "sha256": "3ba6dc94787cbcddaaaf9e9d9a669630fc347c879f46e9f5edf6b0502f60fa16"
+    }
+  ],
+  "spark_cpu_regressions": {
+    "status": "passed",
+    "sha256": "72c07de087308a883b91c17aba4572197f33b65ea2e573a1f4440de6a020bb59",
+    "bytes": 801,
+    "tests_run": 688,
+    "wall_seconds": 69.723,
+    "skipped": 1
+  },
+  "cpu_log_scope": "Bounded worker log summary and SHA-256 from transport; raw log is not one of the eight model reports",
+  "attention": {
+    "reference_cases": 36,
+    "native_cases": 36,
+    "native_faults": 2,
+    "healthy_retry_checks_per_fault": 6,
+    "official_arithmetic_memory_adapter_gate": "pass",
+    "unmodified_full_kernel_gate": "blocked"
+  },
+  "head": {
+    "execution_cases_per_process": 8,
+    "comparison_checks": 24,
+    "vocabulary_rows": 129280
+  },
+  "layer": {
+    "bit_exact_arrays": 104,
+    "cache_released": true,
+    "speedup_against_previous_reader_measured": false
+  },
+  "single_model_call": {
+    "calls": 1,
+    "sampled_ids_including_eos": [],
+    "generated_feedback_calls": 0,
+    "all_layers_per_call": 40,
+    "engram_layers_per_call": [
+      1,
+      14
+    ],
+    "logits_per_call": 129280
+  },
+  "full_generation": {
+    "calls": 19,
+    "sampled_ids_including_eos": [
+      22,
+      1
+    ],
+    "generated_feedback_calls": 1,
+    "all_layers_per_call": 40,
+    "engram_layers_per_call": [
+      1,
+      14
+    ],
+    "logits_per_call": 129280
+  },
+  "actual_request": {
+    "user_prompt": "What is 2 + 2? Answer with the number only.",
+    "temperature": 0.0,
+    "seed": 2026,
+    "max_new_tokens": 64
+  },
+  "actual_response": {
+    "parsed_content": "4",
+    "completion_text": "4",
+    "stop_reason": "eos"
+  },
+  "memory": {
+    "head": {
+      "native": {
+        "host_cap_bytes": 8589934592,
+        "charged_host_peak_bytes": 3140920128,
+        "device_peak_bytes": {
+          "0": 2657249280
+        },
+        "pinned_peak_bytes": 0,
+        "minimum_observed_available_bytes": 43095236608,
+        "available_floor_bytes": 34359738368
+      },
+      "reference": {
+        "host_cap_bytes": 8589934592,
+        "charged_host_peak_bytes": 7113539584,
+        "device_peak_bytes": {},
+        "pinned_peak_bytes": 0,
+        "minimum_observed_available_bytes": 42853715968,
+        "available_floor_bytes": 34359738368
+      }
+    },
+    "layer": {
+      "host_cap_bytes": 12884901888,
+      "charged_host_peak_bytes": 1963007804,
+      "device_peak_bytes": {
+        "0": 252117756
+      },
+      "pinned_peak_bytes": 37601280,
+      "minimum_observed_available_bytes": 44917821440,
+      "available_floor_bytes": 34359738368
+    },
+    "single_call": {
+      "host_cap_bytes": 12884901888,
+      "charged_host_peak_bytes": 8882961892,
+      "device_peak_bytes": {
+        "0": 3355523836
+      },
+      "pinned_peak_bytes": 37601280,
+      "minimum_observed_available_bytes": 41313849344,
+      "available_floor_bytes": 34359738368
+    },
+    "generation": {
+      "host_cap_bytes": 12884901888,
+      "charged_host_peak_bytes": 8882970212,
+      "device_peak_bytes": {
+        "0": 3355523836
+      },
+      "pinned_peak_bytes": 37601280,
+      "minimum_observed_available_bytes": 40924119040,
+      "available_floor_bytes": 34359738368
+    },
+    "accounting_scope": "Cooperative owned-buffer ledger plus conservative admissions; not an RSS or OS hard cap",
+    "physical_floor_scope": "Sampled available memory; not a continuous physical-memory guarantee",
+    "final_owned_charges_leases_reclaimers_devices_zero": true
+  },
+  "fault_evidence_scope": {
+    "real_spark_native": [
+      "Attention host-pressure refusal and cleanup",
+      "Attention fourth-device-allocation failure and cleanup",
+      "Healthy retry after each Attention fault"
+    ],
+    "cpu_or_mock_regressions": [
+      "cache capacity/pressure/refusal and healthy retry",
+      "corrupt/short source reads without partial publication",
+      "compile-cache key invalidation and failed-compile cleanup"
+    ],
+    "whole_model_hardware_corruption_injection": false
+  },
+  "full_model_quality_qualified": false,
+  "general_performance_claim": false,
+  "qualification_receipt_issued": false,
+  "issue_closed_or_updated": false,
+  "remaining_scope": "S2 practical quality, long context, reasoning, images and MTP remain unqualified",
+  "auditor_sha256": "72e59825d1e5647cd4f9a24494c0b02638ce450ee307a69c81e2208c4064d495"
+}

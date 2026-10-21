@@ -2,8 +2,57 @@
 
 Active task: [Spark #16](https://github.com/shell-term/vesper/issues/16),
 [S1 milestone](https://github.com/shell-term/vesper/milestone/6).
-This report records bounded component evidence. Complete-model text generation,
-practical quality and speed are not yet qualified on Spark.
+This report records component evidence and a completed ordinary short text
+response on Spark. S1 functional integration passes; practical quality and
+general speed remain unqualified.
+
+## Completed ordinary text response: 2026-10-21
+
+Runtime source: `4b7e816ff7725b7b23b37ee65867231d85af64af`.
+Pinned original model revision: `1bae0e1088993b9b82de08f59de5be5a34e42170`.
+The unchanged chat-mode request was:
+
+> What is 2 + 2? Answer with the number only.
+
+The real model returned **`4`**, then its original EOS. Eighteen original
+prompt tokens and one generated-token feedback call produced 19 complete
+model calls. Selected IDs were `[22, 1]`; token 22 was actually fed back before
+EOS 1 was selected. Every call traversed all 40 blocks, all six trained expert
+routes per block, both Engrams, the full 129,280-row head and the requested
+sampler schedule. There was no prerecorded route replay or checkpoint fetch
+in forward execution. The bounded one-call and full-run first-call semantic
+hashes also agree exactly.
+
+The full request took **1,268.294 seconds (21 minutes 8 seconds)**, including
+initialization, diagnostics and cleanup. This establishes functional execution,
+not practical throughput. Shared admission peak was 8,882,970,212 bytes within
+the 12 GiB cap; explicit device peak was 3,355,523,836 bytes within 5 GiB.
+Minimum sampled physical available memory was 40,924,119,040 bytes (38.11 GiB),
+above the 32 GiB floor. Final owned host/device charges, leases, reclaimers and
+in-flight operations were zero, and the memory monitor stopped. These are
+owned-buffer/cooperative admission observations, not an OS RSS cap or a
+continuous physical-memory guarantee.
+
+The [full generation record](../results/dgx-spark/2026-10-21-s1-optimized/generate-r04.json),
+[complete byte-preserving transport](../results/dgx-spark/2026-10-21-s1-optimized/transport-r02.json)
+and [derived acceptance audit](../results/dgx-spark/2026-10-21-s1-optimized/closure-audit.json)
+retain the actual input/output, every route and Engram/logit hash, original
+runtime context, memory/I/O observations and exact source/model identity.
+The audit is a derived record, not a new runtime or quality qualification.
+Separate read-only agent reviews checked upload/storage ownership, compiler
+identity/caching, cancellation handling, the published numerical/timing scope,
+and the final eight raw reports. The final review independently checked all
+760 layer-route records, 38 Engram records, selected-token feedback and cleanup,
+and found no S1 closure blocker. This review is not external model grading.
+
+S1 is the integration gate. This one arithmetic answer does not qualify
+practical task accuracy, long context/reasoning, images or MTP. Those remain
+later work, along with useful interactive speed. Native fault evidence covers
+the real Attention pressure/allocation failures and healthy retries; cache
+corruption/short-read and compiler-failure cases are CPU/mock regressions.
+No whole-model hardware corruption injection is claimed. The original weights,
+scales, activation/KV rounding, trained routing and sampling algorithm were
+preserved; no lossy profile was introduced.
 
 ## S1 integration memory correction: 2026-10-21
 
@@ -42,7 +91,7 @@ retain the original remote context and exact byte hashes. The ordinary text
 retry was explicitly stopped by the user before it completed; its private
 worker recorded cancellation and no immutable generation result was produced.
 A successful answer is still unconfirmed. A subsequent test-only correction makes CPU regression
-observers independent of CI host RAM; it does not change the running source.
+observers independent of CI host RAM; it did not alter that attempt's runtime.
 
 ## Bounded S1 latency correction: 2026-10-21
 
@@ -59,11 +108,59 @@ The layer-zero probe compares exact returned-array bits with and without upload
 reuse, including original six-expert routing. Both modes use the bulk reader;
 their fixed cold/warm order means their timings cannot isolate each change's
 speedup. Fresh Attention and full-vocabulary head gates, a one-call all-40-layer
-probe, and the unchanged ordinary EOS text request remain required on hardware.
+probe, and the unchanged ordinary EOS text request were then run on hardware.
 The local CPU suite passed 679 tests with two environment-dependent skips.
 Private progress snapshots record completed calls and current layer without
-substituting partial progress for immutable acceptance evidence. S1 stays open
-until an actual complete response and owned cleanup are verified.
+substituting partial progress for immutable acceptance evidence. The completed
+response and owned-cleanup evidence are recorded above.
+
+### Measured optimized checks
+
+At runtime source `4b7e816ff7725b7b23b37ee65867231d85af64af`, the new
+[byte-preserved records](../results/dgx-spark/2026-10-21-s1-optimized/transport-r01.json)
+establish the following scopes:
+
+| Check | Measured result |
+| --- | --- |
+| Spark CPU regressions | 688 tests, one environment skip |
+| Fresh Attention reference/native | 36 exact cases; two native fault/healthy-retry cases |
+| Fresh full-vocabulary head | 24 exact checks across eight inputs in separate processes |
+| Layer-zero upload modes | 104 diagnostic arrays match exactly |
+| One complete native model call | All 40 layers, both Engrams and 129,280 logits; 60.79 seconds for the call, 71.91 seconds including initialization/cleanup |
+
+The layer comparison's dense-tensor logical reads fell from 54 to 27, and
+logical bytes from 261,343,152 to 130,671,576. The two modes took 1.925 and
+1.261 seconds, respectively, with the explicit cold/warm ordering limitation
+above. Both use the bulk reader; this is not a measured speedup against the
+previous 4 KiB reader. The scoped compiler cache produced reuse without
+retaining modules or a qualification receipt, and released all entries at exit.
+
+The one-call probe deliberately stopped before output sampling. Its shared
+ledger peak was 8,882,961,892 bytes; minimum sampled available memory was
+41,313,849,344 bytes, above the 32 GiB floor. Owned bytes, leases, reclaimers
+and device charges reached zero after runtime shutdown. Its all-layer/Engram
+hashes are functional intermediate evidence, not a complete response.
+The Attention comparison qualifies the pinned original-arithmetic memory
+adapter. The untouched full reference kernel remains blocked by its shared
+memory requirement; that limitation is not promoted to a pass.
+
+A test-only follow-up, `8fff4f9`, mocks both imported memory observers and
+checks refusal below the physical reserve. It changes no runtime source. All
+four Ubuntu/Windows, Python 3.11/3.13
+[CI environments passed](../results/dgx-spark/2026-10-21-s1-optimized/ci-test-followup.json).
+The prior user-cancelled attempt has a separate
+[derived controller summary](../results/dgx-spark/2026-10-21-s1-optimized/prior-user-stop.json),
+not an invented runtime or cleanup receipt.
+
+These timings identify further optimization work after S1. In the single call,
+opening MoE operators took 27.36 seconds and opening projections 10.69 seconds;
+HC and projection arithmetic together took 0.79 seconds. MoE opening includes
+catalog/fixture validation, setup and uploads, so 27.36 seconds cannot be
+attributed to catalog parsing alone. The 15.23-second MoE forward measurement
+includes storage, verification, transfers and cleanup. Qualified immutable
+metadata reuse, bounded operator/backend reuse, and verified projection
+derivatives are hypotheses for S3. They are not implemented or measured speedup
+claims. Practical quality, long context, images and MTP remain unqualified.
 
 ## Original expert: measured on 2026-10-20
 
@@ -213,7 +310,8 @@ and the PC receipt cannot replace this gate.
   passing cached-head comparison. The
   [current native receipt](../results/dgx-spark/2026-10-20-s1-components/attention/native-validation-r02.json)
   binds the [current reference](../results/dgx-spark/2026-10-20-s1-components/attention/reference-r03.json)
-  and all six actual loaded binaries. Full-model generation remains pending.
+  and all six actual loaded binaries. That earlier source had not yet completed
+  full-model generation; the optimized S1 response above is separate evidence.
 
 CPU/mock tests check bounds, failure/refusal, cleanup, corruption rejection and
 control flow. At `ca352867b8e7c511016a35fad4c665b977d3686e`, all four

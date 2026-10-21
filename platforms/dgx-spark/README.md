@@ -6,8 +6,8 @@ Read [workspace rules](../README.md). Use a separate checkout on a
 Do not infer Spark progress from the PC roadmap.
 
 Evidence: [S0 management and bounded hardware report](../../docs/spark-platform-validation.md).
-S1 component evidence: [native integration report](../../docs/spark-native-integration.md).
-This report is scoped platform evidence; model integration/quality remain open.
+S1 execution evidence: [native integration report](../../docs/spark-native-integration.md).
+The report separates short-text execution, component parity and practical-quality gates.
 
 ## Progress entry
 
