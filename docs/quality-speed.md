@@ -81,6 +81,10 @@ Run `python -m vesper.session_benchmark baseline` and then
 `python -m vesper.session_benchmark retained` in separate native processes.
 Both use the same request, six-expert RAM allowance per layer, two primary and
 two helper slots, GPU upload audits and the 64 GiB probe cap / 32 GiB floor.
+The benchmark explicitly admits up to 2 GiB of pinned staging memory: forty
+retained layer owners currently have two buffers each (about 1.40 GiB total).
+These buffers count toward the host cap. A future serial staging pool could
+share them; the default runtime's 1 GiB pinned ceiling remains unchanged.
 Only context lifetime changes. The experimental retained path holds those
 bounded contexts across tokens; it is not the default trajectory provider.
 

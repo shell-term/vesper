@@ -111,7 +111,10 @@ def run(root, directory, original, raw, mode, budget_seconds, progress):
     hardware = []
     started = time.perf_counter()
     deadline = started + budget_seconds
-    with RuntimeMemory(MemoryPolicy(host_cap_bytes=64 * GiB)) as policy:
+    # Forty retained serial layer owners currently each have two staging
+    # buffers (about 1.40 GiB together). Account for them explicitly without
+    # changing the total host cap or the system-available floor.
+    with RuntimeMemory(MemoryPolicy(host_cap_bytes=64 * GiB, pinned_cap_bytes=2 * GiB)) as policy:
         try:
             with ExitStack() as stack:
                 http = stack.enter_context(patch('urllib.request.urlopen', side_effect=RuntimeError('Benchmark must stay offline')))
