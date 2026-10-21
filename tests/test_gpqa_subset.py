@@ -49,10 +49,16 @@ class GPQASubsetTests(unittest.TestCase):
         report = preflight(cases, Tokenizer())
         self.assertFalse(report['model_execution_run'])
         self.assertFalse(report['quality_scored'])
+        self.assertEqual(report['native_attention_position_capacity'], 1152)
+        self.assertEqual(report['native_maximum_decode_ids'], 4096)
+        self.assertTrue(report['benchmark_attempt_controller_implemented'])
+        self.assertFalse(report['native_dynamic_asset_resolution_implemented'])
         for case in report['cases']:
             self.assertEqual(case['maximum_model_calls'], 262243)
             self.assertFalse(case['ready_for_native_inference'])
             self.assertIn('prompt_and_generation_budget_exceed_native_512_call_scope', case['reasons'])
+            self.assertIn('prompt_and_generation_budget_exceed_native_attention_capacity', case['reasons'])
+            self.assertIn('completion_budget_exceeds_native_tokenizer_decode_capacity', case['reasons'])
 
     def test_oversized_question_is_preserved_and_refused_not_shortened(self):
         rows = self.rows()

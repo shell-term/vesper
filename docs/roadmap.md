@@ -100,8 +100,10 @@ The selected loop entry is [GPQA Diamond's fixed three-question development
 subset](gpqa-subset.md). Complete its native execution readiness and collect
 provenance-bound outputs before claiming benchmark quality. Existing short
 independent inputs remain supplementary checks; their timings do not replace
-this subset. Input preparation currently exposes the 512-call runtime limit
-and the missing native benchmark adapter; actual subset scores remain pending.
+this subset. The [improvement worklist](pc-improvement-plan.md) separates measured
+bottlenecks from unproven mechanisms. Input readiness exposes request, attention,
+decode and dynamic-asset/backend limits. The attempt controller implements
+question persistence/restart, but actual native subset scores remain pending.
 
 ## Remaining quality and optional mechanisms
 

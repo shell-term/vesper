@@ -8,6 +8,7 @@ from .resources import MemoryBudget, MiB
 
 TOKENIZERS_VERSION = "0.23.3"
 COMPRESSED_MAP_SHA256 = "26b9be2936d236a124ba318a998c417bc7032e3e92a3107fe98deee49f1dc496"
+MAX_DECODE_IDS = 4096
 
 
 class PinnedTokenizer:
@@ -27,7 +28,7 @@ class PinnedTokenizer:
         return self.backend_tokenizer.encode(text, add_special_tokens=False).ids
 
     def decode(self, ids):
-        if len(ids)>4096 or any(type(i) is not int or not 0<=i<self.size for i in ids): raise ValueError("Invalid tokenizer IDs")
+        if len(ids)>MAX_DECODE_IDS or any(type(i) is not int or not 0<=i<self.size for i in ids): raise ValueError("Invalid tokenizer IDs")
         return self.backend_tokenizer.decode(ids, skip_special_tokens=False)
 
 

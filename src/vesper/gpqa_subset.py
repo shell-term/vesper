@@ -100,6 +100,8 @@ def make_cases(rows, count, *, seed, max_new_tokens):
 
 
 def preflight(cases, tokenizer):
+    from .shared_attention import CAPACITY
+    from .tokenizer import MAX_DECODE_IDS
     result = []
     for case in cases:
         reasons = []
@@ -112,6 +114,11 @@ def preflight(cases, tokenizer):
             tokens = tokenizer.encode(prompt)
             if len(tokens) + case['max_new_tokens'] - 1 > MAX_CALLS:
                 reasons.append('prompt_and_generation_budget_exceed_native_512_call_scope')
+            if len(tokens) + case['max_new_tokens'] - 1 > CAPACITY:
+                reasons.append('prompt_and_generation_budget_exceed_native_attention_capacity')
+        if case['max_new_tokens'] > MAX_DECODE_IDS:
+            reasons.append('completion_budget_exceeds_native_tokenizer_decode_capacity')
+        reasons.append('native_dynamic_benchmark_asset_provider_not_implemented')
         # Input admission alone cannot establish an executable benchmark path.
         reasons.append('native_benchmark_inference_adapter_not_implemented')
         result.append({'id': case['id'], 'case_sha256': case['case_sha256'],
@@ -121,6 +128,9 @@ def preflight(cases, tokenizer):
                        'maximum_model_calls': None if tokens is None else len(tokens) + case['max_new_tokens'] - 1,
                        'ready_for_native_inference': False, 'reasons': reasons})
     return {'status': 'not_ready', 'cases': result, 'native_maximum_model_calls': MAX_CALLS,
+            'native_attention_position_capacity': CAPACITY, 'native_maximum_decode_ids': MAX_DECODE_IDS,
+            'benchmark_attempt_controller_implemented': True,
+            'native_dynamic_asset_resolution_implemented': False,
             'model_execution_run': False, 'quality_scored': False,
             'official_score_reproduction': False, 'full_evaluation_run': False}
 

@@ -51,6 +51,8 @@ The first selected development input is the [fixed three-question GPQA Diamond
 subset](gpqa-subset.md). Its input/scorer preflight is not a completed model
 evaluation. Build the executable benchmark path before returning to the
 quality/speed loop; independent raw-text timings remain supplementary checks.
+The [PC improvement worklist](pc-improvement-plan.md) separates measured costs,
+candidate mechanisms and adoption checks; it does not prescribe a new stage ladder.
 
 Once optimization produces a final candidate, prepare the full evaluation for
 the user's execution decision. An authorized final evaluation runs **all items

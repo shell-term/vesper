@@ -53,10 +53,34 @@ retains the source identities and explicit not-ready reasons, without
 redistributing question text or claiming model execution.
 
 The current native serial request is capped at 512 model calls, including both
-input and generation. It cannot admit the declared benchmark budget. A native
-benchmark inference adapter is also still required. Preflight reports both
-limits without truncating the prompt/budget or pretending preparation was
-inference. No new GPU execution, speedup or full-suite qualification is claimed.
+input and generation. Its attention state has 1,152 positions and tokenizer
+decoding admits 4,096 IDs. It cannot admit the declared benchmark allowance.
+A dynamic benchmark asset provider and native inference adapter are also still
+required. Request admission alone cannot extend attention state, prepare future
+expert routes or qualify long-context execution. No constants were increased.
+
+`python -m vesper.gpqa_readiness --record NEW-RECORD-NAME` rechecks the immutable
+prepared plan and pinned source selection. It computes prompt embedding/Engram
+requirements on CPU, writes a new bound private record, and never fetches
+payloads or runs a model. The fixed prompts need 192/72/125 distinct embedding
+rows and 6,768/2,720/4,712 Engram rows **per Engram layer**, respectively. Combined
+logical prompt embedding/Engram bytes are about 5.28/2.07/3.59 MiB. These are
+not physical reads, future expert requirements, generation requirements or proof
+that all needed assets are cached. Other historical input caches are not audited.
+
+`benchmark_attempt.run_subset` now implements cooperative elapsed budgets,
+exclusive attempt writing, successful-call journals, completed-question reuse
+and immutable incomplete attempts. Its backend interface receives the deadline
+and must enforce it inside long operations. Wrong completed answers are retained
+and not rerun until correct. A context-capacity refusal never clips the prompt
+or declared allowance. An interrupted question restarts from its original prompt
+with a new attempt; KV/RNG state is not restored. Candidate/settings/resources
+must match to resume. Forward-only and wall decode timing (including journal
+writes) are distinct; accepted decode counts explicitly include a selected EOS.
+
+The controller is not yet connected to a native benchmark backend. Synthetic
+backend regression tests establish lifecycle behavior only. No new GPU execution,
+model answer, speedup, benchmark score or full-suite qualification is claimed.
 
 The next selected implementation work is an executable, bounded native path
 for these same inputs and time accounting, including honest interruption and
