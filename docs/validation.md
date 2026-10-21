@@ -69,6 +69,41 @@ improvement loop](roadmap.md#next-execution-order-and-time-limits) rather than
 automatically advancing from a closed timing experiment to long task captures.
 Budget exhaustion leaves required checks incomplete.
 
+## Public benchmarks and final degradation measurement
+
+Development uses fixed subsets of selected public benchmarks. Final testing of
+the optimized candidate covers every item in each selected, versioned evaluation
+split. Define the suite and acceptance criteria in advance. Final testing is
+part of the improvement loop: a failed criterion requires improvement and
+revalidation, not a permanent pass for the preceding candidate.
+
+Bind both comparator and candidate outputs to question IDs, dataset/version,
+the same model release/revision, prompt format, thinking/sampling settings,
+generation budgets and scoring/harness versions. Tool or image evaluations
+also retain their environment and preprocessing configuration. Reuse cached
+comparator outputs only with matching provenance and coverage. A published
+aggregate score alone is not a paired comparator; a different model revision
+or altered protocol must not be presented as an official-score reproduction.
+
+Publish the following for each selected benchmark separately:
+
+- Comparator and final-candidate scores in the benchmark's native metric.
+- For higher-is-better scores, degradation = comparator score minus candidate
+  score; use percentage points for accuracy/success percentages. For other
+  metrics, preserve their units and state which direction is better.
+- Total planned and completed items, item-level outcomes, and failures,
+  invalid outputs and timeouts under the declared scoring protocol. For binary
+  tasks, report correct-to-incorrect and incorrect-to-correct counts as well as
+  the aggregate difference, so improvements cannot hide individual regressions.
+- Repetition/seed settings and variability where sampling is involved, following
+  the declared protocol; timing, throughput and memory retain their own scope.
+
+Do not drop difficult, failed or slow items from the final denominator. Preserve
+partial results and pending item IDs on an interrupted run; claim full coverage
+only when the declared evaluation and scoring have completed. Benchmark runners
+and the concrete suite remain implementation/selection work; this policy adds
+no new benchmark execution or quality qualification.
+
 ## Reporting rules
 
 - Identify source revision, platform/hardware/toolchain, numerical profile,

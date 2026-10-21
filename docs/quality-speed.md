@@ -39,6 +39,30 @@ results, outstanding checks and next action. It neither passes those checks nor
 automatically starts a longer run. A completed local experiment is progress in
 the loop, not proof that the product objective is satisfied.
 
+## Benchmark coverage during development and final testing
+
+Use selected public benchmarks with their supported scoring protocols. Routine
+iterations use a small, fixed subset to detect quality changes while keeping
+the loop short. Fix the question identities and comparison settings before
+measuring a candidate; preserve each question's prompt and generation budget.
+Subset scores describe only that subset, not the benchmark's full score.
+
+Once optimization produces a final candidate, part of final testing is to run
+**all items in each selected benchmark's declared evaluation split**. Compare
+with the same model release/revision under released precision and matched
+evaluation conditions. Reuse valid reference outputs when their provenance and
+coverage support the entire comparison. Record score degradation together with
+speed and memory, following the [benchmark reporting rules](validation.md#public-benchmarks-and-final-degradation-measurement).
+
+Select the benchmarks, versions/splits and acceptable quality/speed criteria
+before final testing. Earlier benchmark suggestions remain candidates, not an
+adopted suite or invented tolerance. Estimate the complete workload and give
+final testing its own budget; interrupted work retains pending item identities
+and cannot be reported as a completed full evaluation. A failed final criterion
+returns the candidate to the improvement loop, including earlier checks and a
+new complete final evaluation after changes. Full question coverage does not
+require routine per-layer/per-token intermediate tracing.
+
 ## Comparator and candidate identity
 
 Keep original tensor bytes immutable and retain a released-precision comparator.

@@ -16,7 +16,7 @@ records why this plan changed.
 | [M0: Verified component baseline](https://github.com/shell-term/vesper/milestone/1) | Historical released-precision expert, bounded byte cache and integrity baseline. Original exact gates remain scoped evidence. | [#1](https://github.com/shell-term/vesper/issues/1), [#2](https://github.com/shell-term/vesper/issues/2) |
 | [M1: Exact routed MoE sublayer](https://github.com/shell-term/vesper/milestone/2) | Historical original gate/routing/accumulation/shared-expert baseline. A MoE sublayer is not a whole Transformer model. | [#3](https://github.com/shell-term/vesper/issues/3)..[#6](https://github.com/shell-term/vesper/issues/6) |
 | [M2: Bounded quality/speed iteration](https://github.com/shell-term/vesper/milestone/3) | Keep the integrated model/assets/memory foundation from #7..#9; finish one measured optimization cycle and an evidence-backed adoption/rejection decision. This is not a practical-throughput promise. | [#7](https://github.com/shell-term/vesper/issues/7)..[#9](https://github.com/shell-term/vesper/issues/9), [#11](https://github.com/shell-term/vesper/issues/11) |
-| [M3: Representative task quality](https://github.com/shell-term/vesper/milestone/4) | Track pending task-quality coverage within the repeated quality/speed loop. Preserve existing evidence and reuse valid comparators; changed candidates return to earlier coverage. | [#10](https://github.com/shell-term/vesper/issues/10) |
+| [M3: Representative task quality](https://github.com/shell-term/vesper/milestone/4) | Track pending task-quality coverage, fixed development subsets and final full evaluations of selected benchmarks within the quality/speed loop. Preserve existing evidence; changed candidates return to earlier coverage. | [#10](https://github.com/shell-term/vesper/issues/10) |
 
 M0/M1's completed exact-comparison scopes remain unchanged. They do not require
 every new candidate to preserve original precision or routing. The 2026-10-21
@@ -83,6 +83,15 @@ can screen a candidate but cannot qualify its task quality. Broader #10 tasks
 stay open. Missing required evidence leaves the relevant issue/milestone open;
 a budget stop is not an automatic pass. Closing a scoped issue records its
 declared outcome; later changes still return to the improvement/validation loop.
+
+Use fixed subsets of selected public benchmarks during development. After
+optimization, run the complete declared evaluation split of each selected
+benchmark as part of final testing, with matched released-precision reference
+outputs and per-benchmark degradation metrics. Select the suite and quality
+tolerances separately and estimate its cost before running it; it does not run
+automatically during current optimization or policy editing. A final failure
+returns work through earlier coverage and final revalidation after improvement.
+See [benchmark validation](validation.md#public-benchmarks-and-final-degradation-measurement).
 
 ## Remaining quality and optional mechanisms
 
