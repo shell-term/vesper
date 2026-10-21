@@ -48,6 +48,10 @@ encoded prompts contain 286, 123 and 256 tokens in the fixed selection order.
 All are within the text adapter's character bound. None has a model answer or
 quality score from this work.
 
+The [CPU preflight record](../results/pc-heterogeneous/2026-10-21-gpqa-subset/preflight.json)
+retains the source identities and explicit not-ready reasons, without
+redistributing question text or claiming model execution.
+
 The current native serial request is capped at 512 model calls, including both
 input and generation. It cannot admit the declared benchmark budget. A native
 benchmark inference adapter is also still required. Preflight reports both
