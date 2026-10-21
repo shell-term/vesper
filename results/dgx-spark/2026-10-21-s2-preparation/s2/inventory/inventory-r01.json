@@ -1,0 +1,630 @@
+{
+  "catalog_sha256": "f2595189d8a80ca4e1245a3cbfbaa32920ee1a8daee71376f81c3ac8f4d7e4b9",
+  "checkpoint_downloads": 0,
+  "classification_is_runtime_dependency_proof": false,
+  "classification_rules": "MTP and vision prefixes precede text-layer groups; each tensor appears in exactly one group",
+  "desired_capabilities": [
+    "text",
+    "image_input"
+  ],
+  "dtypes": {
+    "BF16": {
+      "bytes": 3952883712,
+      "tensor_count": 520
+    },
+    "F32": {
+      "bytes": 169229128,
+      "tensor_count": 387
+    },
+    "F8_E4M3": {
+      "bytes": 204015223296,
+      "tensor_count": 357
+    },
+    "F8_E8M0": {
+      "bytes": 23563015184,
+      "tensor_count": 47589
+    },
+    "I8": {
+      "bytes": 278585671680,
+      "tensor_count": 47232
+    }
+  },
+  "full_model_quality_qualified": false,
+  "general_performance_claim": false,
+  "gpu_work": false,
+  "groups": {
+    "aligner": {
+      "bytes": 146821120,
+      "dtypes": {
+        "BF16": {
+          "bytes": 146821120,
+          "tensor_count": 4
+        }
+      },
+      "roles": {
+        "other_storage": {
+          "bytes": 20480,
+          "tensor_count": 2
+        },
+        "quantization_scale_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "weight_named_storage": {
+          "bytes": 146800640,
+          "tensor_count": 2
+        }
+      },
+      "tensor_count": 4
+    },
+    "core_layers": {
+      "bytes": 5467080128,
+      "dtypes": {
+        "BF16": {
+          "bytes": 198099968,
+          "tensor_count": 227
+        },
+        "F32": {
+          "bytes": 157428160,
+          "tensor_count": 360
+        },
+        "F8_E4M3": {
+          "bytes": 5106565120,
+          "tensor_count": 208
+        },
+        "F8_E8M0": {
+          "bytes": 4986880,
+          "tensor_count": 208
+        }
+      },
+      "roles": {
+        "other_storage": {
+          "bytes": 157428160,
+          "tensor_count": 360
+        },
+        "quantization_scale_storage": {
+          "bytes": 4986880,
+          "tensor_count": 208
+        },
+        "weight_named_storage": {
+          "bytes": 5304665088,
+          "tensor_count": 435
+        }
+      },
+      "tensor_count": 1003
+    },
+    "embedding": {
+      "bytes": 1323827200,
+      "dtypes": {
+        "BF16": {
+          "bytes": 1323827200,
+          "tensor_count": 1
+        }
+      },
+      "roles": {
+        "other_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "quantization_scale_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "weight_named_storage": {
+          "bytes": 1323827200,
+          "tensor_count": 1
+        }
+      },
+      "tensor_count": 1
+    },
+    "engram_other": {
+      "bytes": 315043840,
+      "dtypes": {
+        "BF16": {
+          "bytes": 163840,
+          "tensor_count": 4
+        },
+        "F8_E4M3": {
+          "bytes": 314572800,
+          "tensor_count": 2
+        },
+        "F8_E8M0": {
+          "bytes": 307200,
+          "tensor_count": 2
+        }
+      },
+      "roles": {
+        "other_storage": {
+          "bytes": 163840,
+          "tensor_count": 4
+        },
+        "quantization_scale_storage": {
+          "bytes": 307200,
+          "tensor_count": 2
+        },
+        "weight_named_storage": {
+          "bytes": 314572800,
+          "tensor_count": 2
+        }
+      },
+      "tensor_count": 8
+    },
+    "engram_tables": {
+      "bytes": 202758032400,
+      "dtypes": {
+        "F8_E4M3": {
+          "bytes": 196613849600,
+          "tensor_count": 2
+        },
+        "F8_E8M0": {
+          "bytes": 6144182800,
+          "tensor_count": 2
+        }
+      },
+      "roles": {
+        "other_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "quantization_scale_storage": {
+          "bytes": 6144182800,
+          "tensor_count": 2
+        },
+        "weight_named_storage": {
+          "bytes": 196613849600,
+          "tensor_count": 2
+        }
+      },
+      "tensor_count": 4
+    },
+    "final_norm": {
+      "bytes": 10240,
+      "dtypes": {
+        "BF16": {
+          "bytes": 10240,
+          "tensor_count": 1
+        }
+      },
+      "roles": {
+        "other_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "quantization_scale_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "weight_named_storage": {
+          "bytes": 10240,
+          "tensor_count": 1
+        }
+      },
+      "tensor_count": 1
+    },
+    "head": {
+      "bytes": 1323827200,
+      "dtypes": {
+        "BF16": {
+          "bytes": 1323827200,
+          "tensor_count": 1
+        }
+      },
+      "roles": {
+        "other_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "quantization_scale_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "weight_named_storage": {
+          "bytes": 1323827200,
+          "tensor_count": 1
+        }
+      },
+      "tensor_count": 1
+    },
+    "image_markers": {
+      "bytes": 30720,
+      "dtypes": {
+        "BF16": {
+          "bytes": 30720,
+          "tensor_count": 3
+        }
+      },
+      "roles": {
+        "other_storage": {
+          "bytes": 30720,
+          "tensor_count": 3
+        },
+        "quantization_scale_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "weight_named_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        }
+      },
+      "tensor_count": 3
+    },
+    "mtp": {
+      "bytes": 7932874632,
+      "dtypes": {
+        "BF16": {
+          "bytes": 136418304,
+          "tensor_count": 20
+        },
+        "F32": {
+          "bytes": 11800968,
+          "tensor_count": 27
+        },
+        "F8_E4M3": {
+          "bytes": 564658176,
+          "tensor_count": 25
+        },
+        "F8_E8M0": {
+          "bytes": 425224704,
+          "tensor_count": 1177
+        },
+        "I8": {
+          "bytes": 6794772480,
+          "tensor_count": 1152
+        }
+      },
+      "roles": {
+        "other_storage": {
+          "bytes": 11800968,
+          "tensor_count": 27
+        },
+        "quantization_scale_storage": {
+          "bytes": 425224704,
+          "tensor_count": 1177
+        },
+        "weight_named_storage": {
+          "bytes": 7495848960,
+          "tensor_count": 1197
+        }
+      },
+      "tensor_count": 2401
+    },
+    "other": {
+      "bytes": 0,
+      "dtypes": {},
+      "roles": {
+        "other_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "quantization_scale_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "weight_named_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        }
+      },
+      "tensor_count": 0
+    },
+    "routed_experts": {
+      "bytes": 288777830400,
+      "dtypes": {
+        "F8_E8M0": {
+          "bytes": 16986931200,
+          "tensor_count": 46080
+        },
+        "I8": {
+          "bytes": 271790899200,
+          "tensor_count": 46080
+        }
+      },
+      "roles": {
+        "other_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "quantization_scale_storage": {
+          "bytes": 16986931200,
+          "tensor_count": 46080
+        },
+        "weight_named_storage": {
+          "bytes": 271790899200,
+          "tensor_count": 46080
+        }
+      },
+      "tensor_count": 92160
+    },
+    "shared_experts": {
+      "bytes": 1416960000,
+      "dtypes": {
+        "F8_E4M3": {
+          "bytes": 1415577600,
+          "tensor_count": 120
+        },
+        "F8_E8M0": {
+          "bytes": 1382400,
+          "tensor_count": 120
+        }
+      },
+      "roles": {
+        "other_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "quantization_scale_storage": {
+          "bytes": 1382400,
+          "tensor_count": 120
+        },
+        "weight_named_storage": {
+          "bytes": 1415577600,
+          "tensor_count": 120
+        }
+      },
+      "tensor_count": 240
+    },
+    "vision": {
+      "bytes": 823685120,
+      "dtypes": {
+        "BF16": {
+          "bytes": 823685120,
+          "tensor_count": 259
+        }
+      },
+      "roles": {
+        "other_storage": {
+          "bytes": 264192,
+          "tensor_count": 65
+        },
+        "quantization_scale_storage": {
+          "bytes": 0,
+          "tensor_count": 0
+        },
+        "weight_named_storage": {
+          "bytes": 823420928,
+          "tensor_count": 194
+        }
+      },
+      "tensor_count": 259
+    }
+  },
+  "image_artifact_policy": "Preserve vision, aligner and image-marker artifacts for the required desired image-input capability; this census does not qualify image execution or prove use/absence.",
+  "image_input_qualified_by_this_probe": false,
+  "limits": {
+    "available_floor_bytes": 34359738368,
+    "device_and_pinned_budget_bytes": 1,
+    "device_budget_is_unused_policy_sentinel": true,
+    "host_cap_bytes": 2147483648,
+    "loader_transient_admission_bytes": 536870912,
+    "maximum_report_bytes": 1048576,
+    "report_admission_bytes": 16777216,
+    "reservation_is_RSS_or_OS_limit": false,
+    "retained_catalog_admission_bytes": 536870912
+  },
+  "memory_after_owned_close": {
+    "accounting": "explicit buffers plus conservative existing component admissions; overlapping admissions may overestimate payload bytes",
+    "accounting_kinds": {
+      "control_admission": 67108864
+    },
+    "available_floor_bytes": 34359738368,
+    "cancelled": false,
+    "categories": {
+      "activations": 0,
+      "admission": 0,
+      "cache": 0,
+      "diagnostics": 0,
+      "engram": 0,
+      "integrity": 0,
+      "kv": 0,
+      "metadata": 67108864,
+      "pinned": 0,
+      "scratch": 0,
+      "weights": 0
+    },
+    "charged_host_bytes": 67108864,
+    "charged_host_peak_bytes": 1157627904,
+    "control_metadata_admission_bytes": 67108864,
+    "device_caps": {
+      "0": 1
+    },
+    "device_peak_bytes": {},
+    "device_used_bytes": {},
+    "explicit_host_bytes": 0,
+    "explicit_host_peak_bytes": 0,
+    "external_phase_counts": {},
+    "external_phase_samples": [],
+    "host_cap_bytes": 2147483648,
+    "inflight_operations": 0,
+    "last_refusal": null,
+    "live_leases": 1,
+    "live_reclaimers": 0,
+    "maximum_live_allocation_records": 16384,
+    "maximum_reclaimers": 512,
+    "minimum_observed_available_bytes": 46180687872,
+    "monitor_checks": 1,
+    "monitor_error": null,
+    "monitor_interval_seconds": 0.25,
+    "monitor_pressure_refusals": 0,
+    "monitor_thread_stopped": false,
+    "owners": {
+      "memory_policy_control": 67108864
+    },
+    "pinned_bytes": 0,
+    "pinned_cap_bytes": 1,
+    "pinned_peak_bytes": 0,
+    "process_baseline": {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 38162432,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 27287552,
+      "resident_bytes": 38162432,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 923226112
+    },
+    "reclaim_events": 0,
+    "reclaimed_charge_bytes": 0,
+    "refusals": 0,
+    "reservation_is_RSS_or_OS_limit": false,
+    "sampled_process_peaks": {
+      "private_resident_bytes": 27287552,
+      "resident_bytes": 38162432
+    },
+    "samples": [
+      {
+        "available_bytes": 46314938368,
+        "charged_host_bytes": 67108864,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "runtime_entry",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 38162432,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 27287552,
+          "resident_bytes": 38162432,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 923226112
+        }
+      }
+    ],
+    "unified_device_memory": true
+  },
+  "memory_after_runtime_close": {
+    "accounting": "explicit buffers plus conservative existing component admissions; overlapping admissions may overestimate payload bytes",
+    "accounting_kinds": {},
+    "available_floor_bytes": 34359738368,
+    "cancelled": false,
+    "categories": {
+      "activations": 0,
+      "admission": 0,
+      "cache": 0,
+      "diagnostics": 0,
+      "engram": 0,
+      "integrity": 0,
+      "kv": 0,
+      "metadata": 0,
+      "pinned": 0,
+      "scratch": 0,
+      "weights": 0
+    },
+    "charged_host_bytes": 0,
+    "charged_host_peak_bytes": 1157627904,
+    "control_metadata_admission_bytes": 67108864,
+    "device_caps": {
+      "0": 1
+    },
+    "device_peak_bytes": {},
+    "device_used_bytes": {},
+    "explicit_host_bytes": 0,
+    "explicit_host_peak_bytes": 0,
+    "external_phase_counts": {},
+    "external_phase_samples": [],
+    "host_cap_bytes": 2147483648,
+    "inflight_operations": 0,
+    "last_refusal": null,
+    "live_leases": 0,
+    "live_reclaimers": 0,
+    "maximum_live_allocation_records": 16384,
+    "maximum_reclaimers": 512,
+    "minimum_observed_available_bytes": 46180687872,
+    "monitor_checks": 1,
+    "monitor_error": null,
+    "monitor_interval_seconds": 0.25,
+    "monitor_pressure_refusals": 0,
+    "monitor_thread_stopped": true,
+    "owners": {},
+    "pinned_bytes": 0,
+    "pinned_cap_bytes": 1,
+    "pinned_peak_bytes": 0,
+    "process_baseline": {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 38162432,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 27287552,
+      "resident_bytes": 38162432,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 923226112
+    },
+    "reclaim_events": 0,
+    "reclaimed_charge_bytes": 0,
+    "refusals": 0,
+    "reservation_is_RSS_or_OS_limit": false,
+    "sampled_process_peaks": {
+      "private_resident_bytes": 27287552,
+      "resident_bytes": 38162432
+    },
+    "samples": [
+      {
+        "available_bytes": 46314938368,
+        "charged_host_bytes": 67108864,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "runtime_entry",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 38162432,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 27287552,
+          "resident_bytes": 38162432,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 923226112
+        }
+      }
+    ],
+    "unified_device_memory": true
+  },
+  "memory_runtime_closed": true,
+  "metadata_file_count": 56,
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "model_data_removal_authorized": false,
+  "model_generations": 0,
+  "new_profile_adopted": false,
+  "original_kernel_parity_qualified": false,
+  "original_shard_file_bytes": 510296708312,
+  "owned_resources_closed": true,
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "schema": "vesper.spark-metadata-inventory.v1",
+  "scope": "Authenticated metadata-only structural census; neither runtime dependency nor safe-removal evidence",
+  "shard_count": 48,
+  "shard_header_and_container_overhead_bytes": 10685312,
+  "shard_inventory_sha256": "3b5f61a86843940821622cc825b942be51eca3a2bae4b3167c75b5ec870a6406",
+  "status": "authenticated_metadata_inventory",
+  "storage_dtype_notes": "I8 routed-expert storage contains original packed FP4 codes. F8_E8M0 identifies scale storage; storage dtype is not a new precision profile.",
+  "tensor_bytes": 510286023000,
+  "tensor_count": 96085,
+  "tensor_payload_bytes_read": 0,
+  "timings_seconds": {
+    "catalog_load_including_authentication": 0.34987862315028906,
+    "classification": 0.16000003227964044,
+    "collect_including_cleanup": 0.5274358978495002
+  },
+  "workspace_context": {
+    "binding_id": "3d0125e54ffa4f8b957908e1446c0c0b",
+    "created_at": "2026-10-21T03:59:27.922171+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "c0439df8cf6961461f052a21be2d3e715cadb16f",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "b79171b8acaddb28d0238bd994ecfdf938c9adf6a9c73105058ea12c7fb1acb8",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "inventory-r01",
+    "schema_version": 1
+  }
+}

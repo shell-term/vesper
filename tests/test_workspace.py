@@ -54,6 +54,118 @@ class WorkspaceTests(unittest.TestCase):
     def bind(self):
         return Workspace.bind(self.root, platform="dgx-spark")
 
+    def artifact_scope_fixture(self):
+        directory = self.root / "src/vesper"
+        directory.mkdir(parents=True)
+        modules = []
+        for name in ("spark_artifacts.py", "workspace.py"):
+            path = directory / name
+            path.write_text("VALUE = 1\n")
+            modules.append((path, "src/vesper/" + name))
+        paths = tuple(self.root / "artifacts/dgx-spark" / name for name in ("metadata", "originals", "integrity"))
+        identity = ("dgx-spark", "native", "deepseek-ai/DeepSeek-V4.1-Flash-1017", REVISION)
+        return modules, paths, identity
+
+    def test_artifact_batch_runs_one_fresh_check_without_unused_git_context(self):
+        from vesper import spark_artifacts, workspace as workspace_module
+        workspace = self.bind()
+        modules, paths, identity = self.artifact_scope_fixture()
+        with patch.object(workspace, "check", wraps=workspace.check) as check, \
+                patch.object(workspace, "context", side_effect=AssertionError("No unused source context")), \
+                patch.object(workspace_module, "_git", wraps=workspace_module._git) as git_calls:
+            for _ in range(2):
+                workspace.validate_artifact_scope(paths, runtime_modules=modules, expected_identity=identity)
+            self.assertEqual(check.call_count, 2)
+            self.assertEqual(git_calls.call_count, 10)
+        with patch.object(spark_artifacts, "__file__", str(modules[0][0])), \
+                patch.object(workspace_module, "__file__", str(modules[1][0])), \
+                patch.object(workspace, "check", wraps=workspace.check) as check, \
+                patch.object(workspace, "context", side_effect=AssertionError("No unused source context")):
+            self.assertIs(spark_artifacts._scope(workspace, *paths), workspace)
+            check.assert_called_once_with()
+
+    def test_artifact_batch_refuses_binding_branch_origin_registry_changes_and_allows_recovery(self):
+        workspace = self.bind()
+        modules, paths, identity = self.artifact_scope_fixture()
+        def validate():
+            workspace.validate_artifact_scope(paths, runtime_modules=modules, expected_identity=identity)
+        validate()
+        binding = self.root / BINDING
+        original_binding = binding.read_bytes()
+        changed = json.loads(original_binding); changed["binding_id"] = "0" * 32
+        binding.write_text(json.dumps(changed))
+        with self.assertRaises(WorkspaceError): validate()
+        binding.write_bytes(original_binding); validate()
+        git(self.root, "switch", "-c", "feature/dgx-spark-batch-other")
+        with self.assertRaises(WorkspaceError): validate()
+        git(self.root, "switch", "feature/dgx-spark-isolation"); validate()
+        git(self.root, "remote", "set-url", "origin", "https://github.com/someone/other.git")
+        with self.assertRaises(WorkspaceError): validate()
+        git(self.root, "remote", "set-url", "origin", "https://github.com/shell-term/vesper.git"); validate()
+        original_registry = self.registry_file.read_bytes()
+        changed = deepcopy(self.registry); changed["platforms"]["dgx-spark"]["profiles"]["native"]["revision"] = "f" * 40
+        self.registry_file.write_text(json.dumps(changed))
+        with self.assertRaises(WorkspaceError): validate()
+        self.registry_file.write_bytes(original_registry); validate()
+
+    def test_artifact_batch_pins_identity_and_retains_module_namespace_path_rules(self):
+        workspace = self.bind()
+        modules, paths, identity = self.artifact_scope_fixture()
+        def validate(test_paths=paths, test_modules=modules, expected=identity):
+            return workspace.validate_artifact_scope(test_paths, runtime_modules=test_modules, expected_identity=expected)
+        for index, value in enumerate(("pc-heterogeneous", "other", "other/model", "f" * 40)):
+            wrong = list(identity); wrong[index] = value
+            with self.subTest(identity=index), self.assertRaises(WorkspaceError): validate(expected=tuple(wrong))
+        outside = Path(self.temp.name) / "foreign.py"; outside.write_text("VALUE = 1\n")
+        for entry in ((outside, modules[0][1]), (modules[0][0], "../outside.py"),
+                (modules[0][0], "src/vesper/other.py")):
+            with self.subTest(module=entry), self.assertRaises(WorkspaceError): validate(test_modules=[entry])
+        for path in (self.root / "artifacts/pc-heterogeneous/input", self.root / "outside",
+                paths[0] / "../escape", self.root / "artifacts/dgx-spark/a:stream"):
+            with self.subTest(path=path), self.assertRaises(WorkspaceError): validate(test_paths=[path])
+        validate()
+
+    def test_artifact_batch_rejects_symlink_reparse_paths_and_modules_without_link_privilege(self):
+        from types import SimpleNamespace
+        workspace = self.bind()
+        modules, paths, identity = self.artifact_scope_fixture()
+        original = Path.lstat
+        for forbidden in (paths[0], modules[0][0]):
+            for mode, flags in ((0o120777, 0), (0o40755, 0x400)):
+                def attributes(path, *args, **kwargs):
+                    if path == forbidden:
+                        return SimpleNamespace(st_mode=mode, st_file_attributes=flags)
+                    return original(path, *args, **kwargs)
+                with self.subTest(forbidden=forbidden, mode=mode), patch.object(Path, "lstat", attributes):
+                    with self.assertRaises(WorkspaceError):
+                        workspace.validate_artifact_scope(paths, runtime_modules=modules, expected_identity=identity)
+        workspace.validate_artifact_scope(paths, runtime_modules=modules, expected_identity=identity)
+
+    def test_artifact_batch_does_not_replace_entry_or_result_source_context_checks(self):
+        workspace = self.bind()
+        modules, paths, identity = self.artifact_scope_fixture()
+        initial = workspace.context("batch-source-run")
+        workspace.validate_artifact_scope(paths, runtime_modules=modules, expected_identity=identity)
+        (self.root / "source.py").write_text("VALUE = 9\n")
+        # The batch checks namespace/model identity, not HEAD/dirty state. The
+        # unchanged publication gate must still reject the changed source.
+        workspace.validate_artifact_scope(paths, runtime_modules=modules, expected_identity=identity)
+        with self.assertRaises(WorkspaceError):
+            workspace.write_result("batch-source.json", {"status": "pass"}, initial_context=initial)
+        self.assertFalse((self.root / "results/dgx-spark/batch-source.json").exists())
+
+    def test_artifact_batch_cancellation_is_not_cached_and_retry_checks_again(self):
+        from vesper.memory import RuntimeCancelled
+        workspace = self.bind()
+        modules, paths, identity = self.artifact_scope_fixture()
+        for error in (KeyboardInterrupt("stop"), RuntimeCancelled("stop")):
+            with self.subTest(error=type(error).__name__), patch.object(workspace, "check", side_effect=error):
+                with self.assertRaises(type(error)):
+                    workspace.validate_artifact_scope(paths, runtime_modules=modules, expected_identity=identity)
+        with patch.object(workspace, "check", wraps=workspace.check) as check:
+            workspace.validate_artifact_scope(paths, runtime_modules=modules, expected_identity=identity)
+            check.assert_called_once_with()
+
     def issue(self, number=13, label="platform:dgx-spark", milestone=5, body="current"):
         return {"number": number, "labels": [{"name": label}], "milestone": None if milestone is None else {"number": milestone},
                 "pull_request": None, "body": body, "title": "Scoped progress", "state": "open",

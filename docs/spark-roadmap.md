@@ -64,6 +64,11 @@ ordinary response checks the integrated path after improvements. Component
 parity, full-model functional execution, practical quality and speed remain
 separate claims. A compiler-cache hit never grants numerical qualification.
 
+The [S2 measured-progress report](spark-s2-preparation.md) archives exact
+source-bound preparation/component evidence, the inventory and bounded codec
+and audit comparisons. Its all-layer calibration stops after one call; it does
+not qualify ordinary EOS, sustained throughput, image behavior or S2 completion.
+
 After acceleration, #23/#24 evaluate selected compression/reduction candidates
 under separate named profiles. Their bounded direct-runtime quality screen
 does not require the full S3 harness/tool suite to run first and does not

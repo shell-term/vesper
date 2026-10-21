@@ -52,9 +52,19 @@ def _json(value):
 
 
 def _scope(workspace, *paths):
+    from . import workspace as workspace_module
     if workspace is None:
-        from .workspace import Workspace
-        workspace = Workspace.open()
+        workspace = workspace_module.Workspace.open()
+    if isinstance(workspace, workspace_module.Workspace):
+        # One synchronous batch, with no cached authorization between calls.
+        # Only the four checked registry fields are needed here. Source HEAD
+        # and dirty-diff identity remain checked by public entry/result contexts.
+        workspace.validate_artifact_scope(paths, runtime_modules=(
+            (__file__, "src/vesper/spark_artifacts.py"),
+            (workspace_module.__file__, "src/vesper/workspace.py")),
+            expected_identity=("dgx-spark", "native", MODEL, REVISION))
+        return workspace
+    # Preserve the existing duck-typed provider seam used by CPU fixtures.
     workspace.check()
     context = workspace.context()
     if context["platform"] != "dgx-spark" or context["profile"] != "native":
@@ -62,7 +72,6 @@ def _scope(workspace, *paths):
     if context.get("model") != MODEL or context.get("revision") != REVISION:
         raise ValueError("Original acquisition requires the pinned original model and revision")
     workspace.check_runtime_module(__file__, "src/vesper/spark_artifacts.py")
-    from . import workspace as workspace_module
     workspace.check_runtime_module(workspace_module.__file__, "src/vesper/workspace.py")
     base = workspace.artifact_path("namespace-check").parent.resolve()
     for value in paths:

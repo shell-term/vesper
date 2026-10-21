@@ -261,6 +261,10 @@ class Workspace:
 
     def _path(self, relative, kind, create_parent=False):
         self.check()
+        return self._checked_path(relative, kind, create_parent)
+
+    def _checked_path(self, relative, kind, create_parent=False):
+        """Path rules after a check in this same synchronous helper call."""
         value = str(relative)
         if "\\" in value or ":" in value or "\x00" in value:
             raise WorkspaceError("Evidence paths must use plain relative POSIX components")
@@ -290,6 +294,37 @@ class Workspace:
 
     def artifact_path(self, relative, create_parent=False):
         return self._path(relative, "artifact", create_parent)
+
+    def validate_artifact_scope(self, paths, *, runtime_modules, expected_identity):
+        """Validate one bounded artifact/module batch after one fresh check.
+
+        No authorization or source snapshot is retained or returned. The model
+        identity comes from the binding/registry validated by this call; it
+        needs no unused HEAD/worktree diff. Public context() and result/update
+        publication keep their full source-context checks unchanged. Every
+        later batch starts with a new full binding/checkout/registry check.
+        """
+        self.check()
+        if (not isinstance(paths, (tuple, list)) or len(paths) > 16
+                or not isinstance(runtime_modules, (tuple, list)) or not 1 <= len(runtime_modules) <= 16
+                or any(not isinstance(item, (tuple, list)) or len(item) != 2 for item in runtime_modules)
+                or not isinstance(expected_identity, tuple) or len(expected_identity) != 4
+                or any(not isinstance(value, str) or not value for value in expected_identity)):
+            raise WorkspaceError("Invalid bounded artifact/module validation batch")
+        profile = self.config["profiles"][self.profile]
+        if (self.platform, self.profile, profile["model"], profile["revision"]) != expected_identity:
+            raise WorkspaceError("Artifact scope belongs to another platform, profile or pinned model")
+        for module_file, relative in runtime_modules:
+            _runtime_module(self.root, module_file, relative)
+        base = self._checked_path("namespace-check", "artifact").parent.resolve()
+        for value in paths:
+            path = Path(value).absolute()
+            try:
+                relative = path.relative_to(base).as_posix()
+            except ValueError as error:
+                raise WorkspaceError("Artifact paths must stay in the bound platform namespace") from error
+            if self._checked_path(relative, "artifact").absolute() != path:
+                raise WorkspaceError("Artifact path differs from its bound namespace")
 
     def check_runtime_module(self, module_file, relative):
         self.check()

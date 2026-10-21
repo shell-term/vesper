@@ -14,6 +14,9 @@ target, not a mandatory S2 completion threshold. GitHub owns live task state.
 Evidence: [S0 management and bounded hardware report](../../docs/spark-platform-validation.md).
 S1 execution evidence: [native integration report](../../docs/spark-native-integration.md).
 The report separates short-text execution, component parity and practical-quality gates.
+S2 evidence: [measured preparation and candidate progress](../../docs/spark-s2-preparation.md).
+It records bounded component/all-layer partial checks and unadopted codec/audit
+experiments; S2, ordinary EOS requalification and image input remain open.
 
 ## Progress entry
 

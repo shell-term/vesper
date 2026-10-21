@@ -25,10 +25,24 @@ def physical_memory() -> dict[str, int]:
         if not ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(status)):
             raise OSError("Cannot read physical memory status")
         return {"total": status.total, "available": status.available}
+    # Observe the kernel afresh for every admission/checkpoint. Parsing only
+    # the two required fields avoids work without reusing a stale observation.
     fields = {}
-    for line in Path("/proc/meminfo").read_text().splitlines():
-        name, value = line.split(":", 1)
-        fields[name] = int(value.split()[0]) * 1024
+    with Path("/proc/meminfo").open("r", encoding="ascii") as stream:
+        for line in stream:
+            name, separator, value = line.partition(":")
+            if name not in ("MemTotal", "MemAvailable"):
+                continue
+            parts = value.split()
+            if (not separator or name in fields or len(parts) != 2 or parts[1] != "kB"
+                    or not parts[0].isascii() or not parts[0].isdecimal()):
+                raise ValueError("Invalid required physical-memory field")
+            fields[name] = int(parts[0]) * 1024
+            if len(fields) == 2:
+                break
+    if (len(fields) != 2 or fields["MemTotal"] <= 0
+            or not 0 <= fields["MemAvailable"] <= fields["MemTotal"]):
+        raise ValueError("Incomplete or inconsistent physical-memory observation")
     return {"total": fields["MemTotal"], "available": fields["MemAvailable"]}
 
 
