@@ -1,10 +1,13 @@
 # DGX Spark S1 native integration
 
-Active task: [Spark #16](https://github.com/shell-term/vesper/issues/16),
+Completed integration task: [Spark #16](https://github.com/shell-term/vesper/issues/16),
 [S1 milestone](https://github.com/shell-term/vesper/milestone/6).
 This report records component evidence and a completed ordinary short text
 response on Spark. S1 functional integration passes; practical quality and
 general speed remain unqualified.
+The [current Spark roadmap](spark-roadmap.md) assigns subsequent native-baseline
+latency work to S2, then benchmark connection and practical-quality evaluation
+to S3. GitHub Issues own their live status; this report preserves S1 evidence.
 
 ## Completed ordinary text response: 2026-10-21
 
@@ -78,8 +81,9 @@ or an OS memory limit. Every allocation still passes the shared cap, pinned
 cap and 32 GiB physical available-memory reserve. A bounded refusal record
 distinguishes cap and physical-pressure failures and survives owned cleanup.
 The change does not cache an unauthenticated catalog, alter model arithmetic,
-or qualify a complete response. Fresh source-bound checks and generation
-remain required after this correction.
+or qualify a complete response by itself. At that point fresh source-bound
+checks and generation remained required; the later completed response above
+records their separate integrated outcome.
 
 At the fixed corrected runtime source `0fcb7fdbb9ec41aed6de7d831d803f20279b29e7`,
 the Spark CPU suite passed 660 tests (one environment skip). Fresh original
@@ -90,8 +94,9 @@ comparisons across eight inputs, with owned cleanup. The
 retain the original remote context and exact byte hashes. The ordinary text
 retry was explicitly stopped by the user before it completed; its private
 worker recorded cancellation and no immutable generation result was produced.
-A successful answer is still unconfirmed. A subsequent test-only correction makes CPU regression
-observers independent of CI host RAM; it did not alter that attempt's runtime.
+A successful answer was still unconfirmed for that attempt. A subsequent
+test-only correction made CPU regression observers independent of CI host RAM;
+it did not alter that attempt's runtime.
 
 ## Bounded S1 latency correction: 2026-10-21
 
@@ -159,8 +164,9 @@ catalog/fixture validation, setup and uploads, so 27.36 seconds cannot be
 attributed to catalog parsing alone. The 15.23-second MoE forward measurement
 includes storage, verification, transfers and cleanup. Qualified immutable
 metadata reuse, bounded operator/backend reuse, and verified projection
-derivatives are hypotheses for S3. They are not implemented or measured speedup
-claims. Practical quality, long context, images and MTP remain unqualified.
+derivatives are hypotheses for the subsequent S2 latency phase. They are not
+implemented or measured speedup claims. Practical quality, long context,
+images and MTP remain unqualified.
 
 ## Original expert: measured on 2026-10-20
 
@@ -264,8 +270,9 @@ and the PC receipt cannot replace this gate.
   device using 512-row host chunks, then uses the original full `M=129280`
   SGEMM shape. Forward execution rereads no head rows. The component ceiling
   is 3 GiB, within the full backbone's 5 GiB device ceiling, which in turn is
-  inside the 8 GiB shared host/device pool; the physical 32 GiB reserve still
-  applies. At `ca352867b8e7c511016a35fad4c665b977d3686e`, its fresh
+  inside the then-current 8 GiB shared host/device pool; the physical 32 GiB
+  reserve still applied. The later S1 composition used the 12 GiB ledger
+  described above. At `ca352867b8e7c511016a35fad4c665b977d3686e`, its fresh
   [24 exact comparisons](../results/dgx-spark/2026-10-20-s1-components/head/compare-r03.json)
   all passed, across eight generated inputs and the complete vocabulary.
   Native peak owned device memory was 2,657,249,280 bytes. Minimum sampled
@@ -293,9 +300,9 @@ and the PC receipt cannot replace this gate.
   fetch from the network during forward execution.
 - Acquisition supports one, two or four bounded streams, with immutable shard
   priorities, checked resume, and all workers joined before a completion or
-  failure result. Four streams reserve 256 MiB for transfer work. The active
-  acquisition uses its own fixed-source Spark checkout, so integration edits
-  cannot silently change the code identity of an in-flight import.
+  failure result. Four streams reserve 256 MiB for transfer work. The completed
+  acquisition used its own fixed-source Spark checkout, so integration edits
+  could not silently change the code identity of that in-flight import.
 - All 40 blocks, both original Engram tables, the streamed head and generated
   token feedback are connected through a lazy runtime. The explicit text probe
   prepares small local dense derivatives, then requires a complete EOS response
@@ -308,8 +315,8 @@ and the PC receipt cannot replace this gate.
   Both Attention reference and native numerical gates were rerun successfully
   at the same `ca352867b8e7c511016a35fad4c665b977d3686e` source used by the
   passing cached-head comparison. The
-  [current native receipt](../results/dgx-spark/2026-10-20-s1-components/attention/native-validation-r02.json)
-  binds the [current reference](../results/dgx-spark/2026-10-20-s1-components/attention/reference-r03.json)
+  [native receipt for that source](../results/dgx-spark/2026-10-20-s1-components/attention/native-validation-r02.json)
+  binds the [reference for that source](../results/dgx-spark/2026-10-20-s1-components/attention/reference-r03.json)
   and all six actual loaded binaries. That earlier source had not yet completed
   full-model generation; the optimized S1 response above is separate evidence.
 
@@ -317,6 +324,7 @@ CPU/mock tests check bounds, failure/refusal, cleanup, corruption rejection and
 control flow. At `ca352867b8e7c511016a35fad4c665b977d3686e`, all four
 [CI environments](https://github.com/shell-term/vesper/actions/runs/39369617214)
 passed 681 tests: Ubuntu/Windows with Python 3.11/3.13, with one environment
-dependent skip on Linux. These tests do not qualify GB10 arithmetic. Current
-acceptance and pending gates belong to #16; component evidence alone cannot
-close S1.
+dependent skip on Linux. Those tests did not qualify GB10 arithmetic or close
+S1 by themselves. The later complete-response evidence and accepted integration
+scope are recorded above and in #16. Subsequent work belongs to the separate
+S2/S3 issues in the [Spark roadmap](spark-roadmap.md).

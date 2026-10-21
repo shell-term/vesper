@@ -3,15 +3,19 @@
 Observed 2026-10-20. This report covers management isolation and a tiny CUDA
 compatibility check. It does **not** qualify DeepSeek model arithmetic, model
 quality, full-checkpoint loading, long contexts, or generation speed.
+The [Spark roadmap](spark-roadmap.md) defines subsequent work. This is the
+historical S0 report; later S1 execution evidence is recorded separately in
+the [native integration report](spark-native-integration.md).
 
 ## Management before hardware execution
 
 Management code was recorded first in `2582243bde0887197d34a386febed638206fb5f5`,
 followed by the probe in `0e329db4e398f16e634f521017ab56d46cc99f80`.
-The [registry](../platforms/registry.json) separates PC issues 1..12 / milestones
-1..4 from Spark issues 13..14 / milestones 5..8. Existing PC issue bodies, states
-and milestones were compared before/after setup and did not change; only a
-platform label was appended. The active PC checkout was not modified.
+At that S0 setup, the [registry](../platforms/registry.json) separated PC issues
+1..12 / milestones 1..4 from Spark issues 13..14 / milestones 5..8. Existing PC
+issue bodies, states and milestones were compared before/after setup and did
+not change; only a platform label was appended. The active PC checkout was not
+modified.
 
 The local binding checks real checkout/Git directory, origin, branch, platform,
 profile and registry identity. Guarded CLI operations also verify the imported
@@ -62,11 +66,16 @@ succeeded and the previous context was restored. No GPU reset, existing service
 stop/load/unload, swap change, model inference, or large disk benchmark occurred.
 The tiny integer-kernel duration is not a model-performance estimate.
 
-## Remaining work
+## Subsequent work
 
-Spark S1 still needs original FP4 expert execution, bounded expert/Engram stores,
-one physical-memory ledger for CPU/GPU state and complete-model integration.
-PC numerical results can guide implementation but do not qualify those Spark
-paths. Practical quality and real prefill/decode/I/O measurements remain S2/S3.
-Native semantics and existing reserve rules are unchanged; no lossy profile is
-adopted by this report.
+After this S0 probe, Spark S1 still required original FP4 expert execution,
+bounded expert/Engram stores, one physical-memory ledger for CPU/GPU state and
+complete-model integration. S1's later ordinary response and cleanup are
+recorded in its separate report; they are not inferred from this tiny probe or
+from PC numerical evidence.
+
+The adopted next order is S2 native-baseline setup/I/O improvement and matched
+latency measurements, followed by S3 benchmark connection and practical-quality
+evaluation. Future expansion or compression candidates need their own scope
+and evaluation; this historical report adopts none. The existing 32 GiB reserve
+and service-preservation rules continue to apply.

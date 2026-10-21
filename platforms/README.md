@@ -42,3 +42,7 @@ identities and credentials out of public results and the registry.
 Existing native model semantics and the 32 GiB reserve remain in force.
 Imperfect numerical agreement being acceptable to a user does not itself adopt
 a lossy model profile. Name and evaluate such proposals separately.
+Spark's current work order and candidate-quality policy are defined in
+[its roadmap](../docs/spark-roadmap.md). Keep the original native baseline
+and its evidence distinct from any future explicitly evaluated candidate.
+This does not change PC's native-profile acceptance rules.
