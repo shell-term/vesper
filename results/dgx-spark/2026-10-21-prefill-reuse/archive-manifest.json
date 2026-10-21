@@ -1,0 +1,190 @@
+{
+  "S2_complete": false,
+  "auxiliary_runtime_records": [
+    {
+      "path": "candidate/runtime/s2/prepare-reuse/native-cpu-r01.json",
+      "scope": "CPU subset overlapping local 213",
+      "sha256": "fd6d4190f7a1da44b1a0a1211b2de29d36af25efa10dcda8f6017b87282cc285",
+      "source_head": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+      "status": "pass",
+      "tests": 101
+    }
+  ],
+  "candidate": {
+    "prefill_tail_modes": [
+      "full",
+      "skip_output_tail"
+    ],
+    "run_tag": "candidate-r01",
+    "source_head": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+    "whole_model_calls": 4
+  },
+  "kind": "exact evidence archive; original bytes and workspace contexts retained",
+  "local_derived_audit": {
+    "path": "cross-source-derived-audit.json",
+    "sha256": "7e739f7675c9c0bb548d4f2f1c97358100121646f1af2b09551c74f0f7bc1ea6"
+  },
+  "measurement_summary": {
+    "path": "measurement-summary.json",
+    "scope": "local derivation, not a runtime receipt",
+    "sha256": "79805e46ff2d3390bde7187ea1a55e5c6567c6183db328270e83d94afbee499a"
+  },
+  "new_model_or_GPU_calls_by_archiving": 0,
+  "old_control": {
+    "prefill_tail_modes": [
+      "full"
+    ],
+    "run_tag": "old-control-r02",
+    "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+    "whole_model_calls": 2
+  },
+  "ordinary_EOS_or_quality_runs": 0,
+  "original_raw_bytes_preserved": true,
+  "original_workspace_contexts_preserved": true,
+  "raw_record_count": 15,
+  "runtime_records": [
+    {
+      "bytes": 277759,
+      "originating_relative_path": "s1/attention/reference-s2-reuse-old-control-r02.json",
+      "path": "old-control/runtime/s1/attention/reference-s2-reuse-old-control-r02.json",
+      "sha256": "de7779a813fb8978804635ffb31074ff036eab8774dcd45b4107d65067302a3f",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "pass",
+      "workspace_context_sha256": "5c08e66e8c5f26b1ed7a78f04ced916096aaf8ac3153e76132480e1a6f381571"
+    },
+    {
+      "bytes": 181533,
+      "originating_relative_path": "s1/attention/native-validation-s2-reuse-old-control-r02.json",
+      "path": "old-control/runtime/s1/attention/native-validation-s2-reuse-old-control-r02.json",
+      "sha256": "061d9f08eb380f191f28c748db6163ec58372db9bad02cfaae82e6754dd76559",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "pass",
+      "workspace_context_sha256": "932a095859d7b575ce11b1f38ebc9617c39c7c80d6a196d61d75db2273e202f7"
+    },
+    {
+      "bytes": 80617,
+      "originating_relative_path": "s1/head/s2-reuse-head-native-old-control-r02.json",
+      "path": "old-control/runtime/s1/head/s2-reuse-head-native-old-control-r02.json",
+      "sha256": "00e3dc8a8e255f3848443466970082f766a2a7e3218d674babc97c3f146b1942",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "native_execution_pass",
+      "workspace_context_sha256": "5ae6d86427a3bcb4c3583953e0bb79e853c3f110fdfc9d2d8c725f389a8a0a2d"
+    },
+    {
+      "bytes": 148805,
+      "originating_relative_path": "s1/head/s2-reuse-head-reference-old-control-r02.json",
+      "path": "old-control/runtime/s1/head/s2-reuse-head-reference-old-control-r02.json",
+      "sha256": "785c8d3627d590e19498c5998d9cbd03f2dcbf840197b916782d6a53164f0945",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "reference_execution_pass",
+      "workspace_context_sha256": "e7e0ea803f9d3bfce2eda0da34b1a6ade38bc45772854b35b93be6d099221d29"
+    },
+    {
+      "bytes": 8258,
+      "originating_relative_path": "s1/head/s2-reuse-head-compare-old-control-r02.json",
+      "path": "old-control/runtime/s1/head/s2-reuse-head-compare-old-control-r02.json",
+      "sha256": "ce1cc258a4a08c760e7011fa59f25299944fbb334e0e53e45e53e3d6a0a8f831",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "pass",
+      "workspace_context_sha256": "c2e58af979f6cf60908316a40467fd3f010290a5376c2f75749cb32da73a8601"
+    },
+    {
+      "bytes": 531468,
+      "originating_relative_path": "s1/text/s2-reuse-two-call-full-old-control-r02.json",
+      "path": "old-control/runtime/s1/text/s2-reuse-two-call-full-old-control-r02.json",
+      "sha256": "cc211d82e87ff67b2ef26cf9adebbddd1372b57bfcfa46cc16366f83ceb81b80",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "partial_model_call_budget",
+      "workspace_context_sha256": "a370ecdac876384cc6822282d96f2a73fa246080e04cc524a305f3136188f116"
+    },
+    {
+      "bytes": 22918,
+      "originating_relative_path": "s2/calibration/s2-prepare-reuse-old-control-r02.json",
+      "path": "old-control/runtime/s2/calibration/s2-prepare-reuse-old-control-r02.json",
+      "sha256": "93d774ffaaa6d6583d7533d4d8fb740d24ebf678c68c3b6d48724dbb95131ee1",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "finished",
+      "workspace_context_sha256": "af6ae00810296f95b00567dbfe931fcc7a3b2bd44dc0ac3e89d3c98bba2f892f"
+    },
+    {
+      "bytes": 277757,
+      "originating_relative_path": "s1/attention/reference-s2-reuse-candidate-r01.json",
+      "path": "candidate/runtime/s1/attention/reference-s2-reuse-candidate-r01.json",
+      "sha256": "d09c80e139d3fac2bd299df303b81829b2045b5277c1875d6083fb1ddeb018a8",
+      "source_head": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+      "status": "pass",
+      "workspace_context_sha256": "826bb57075ea162d0034cbe6b929056bf409a7632a6ef5a359063bbd18d6cefd"
+    },
+    {
+      "bytes": 181529,
+      "originating_relative_path": "s1/attention/native-validation-s2-reuse-candidate-r01.json",
+      "path": "candidate/runtime/s1/attention/native-validation-s2-reuse-candidate-r01.json",
+      "sha256": "11e7eecb67fba67f584ae941ccae0adcf192e3f26f7dfc9bc2312de354c942f2",
+      "source_head": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+      "status": "pass",
+      "workspace_context_sha256": "c9bc49eb7f2cf47ecabc4ebb919ca3e43134aea40e13a2f34650102c37828a93"
+    },
+    {
+      "bytes": 79477,
+      "originating_relative_path": "s1/head/s2-reuse-head-native-candidate-r01.json",
+      "path": "candidate/runtime/s1/head/s2-reuse-head-native-candidate-r01.json",
+      "sha256": "46f718cbcc7ebd597a12bfd941ee08d5232b3ce389aa15d0649aa1511b074ac0",
+      "source_head": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+      "status": "native_execution_pass",
+      "workspace_context_sha256": "e0ca01cbd29033c98055877d95394bd6790a3fdc08ea6cabc145f326cd5412bf"
+    },
+    {
+      "bytes": 139520,
+      "originating_relative_path": "s1/head/s2-reuse-head-reference-candidate-r01.json",
+      "path": "candidate/runtime/s1/head/s2-reuse-head-reference-candidate-r01.json",
+      "sha256": "e711e7cb20488affd1856bd2b75af4e92bc85b5a43d224d06f8f5555ac16ba5c",
+      "source_head": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+      "status": "reference_execution_pass",
+      "workspace_context_sha256": "3e04f767802f56dbd5bdcd38b60ade36d1335d557d233bd41b765c30674b8018"
+    },
+    {
+      "bytes": 8256,
+      "originating_relative_path": "s1/head/s2-reuse-head-compare-candidate-r01.json",
+      "path": "candidate/runtime/s1/head/s2-reuse-head-compare-candidate-r01.json",
+      "sha256": "e12aa6a4ba530807476794b66c7ee0658c3f8dc5698882830c9958d8fdfd84c7",
+      "source_head": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+      "status": "pass",
+      "workspace_context_sha256": "7d535efc9d0d30d1fddb63d7bf00bb5dd0e6ecebe8571f6ec2d56786ec3f2aa7"
+    },
+    {
+      "bytes": 535120,
+      "originating_relative_path": "s1/text/s2-reuse-two-call-full-candidate-r01.json",
+      "path": "candidate/runtime/s1/text/s2-reuse-two-call-full-candidate-r01.json",
+      "sha256": "d7ee00dbff358810b7b03b739b800aeb2400e3abc9c7efb3fc4a8046b9dd7276",
+      "source_head": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+      "status": "partial_model_call_budget",
+      "workspace_context_sha256": "7df05ffe61c86e4d120943d37020ec3f86e817e8964fc0caa274b48f4a841172"
+    },
+    {
+      "bytes": 535282,
+      "originating_relative_path": "s1/text/s2-reuse-two-call-skip-candidate-r01.json",
+      "path": "candidate/runtime/s1/text/s2-reuse-two-call-skip-candidate-r01.json",
+      "sha256": "64441581a96dd7354ae4fef25a82671b7cd3733ea8b20a646fe3eb14fd4764d4",
+      "source_head": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+      "status": "partial_model_call_budget",
+      "workspace_context_sha256": "1a2a19a371f93e223e43a8faf960beaf4887a7658f5f2e026916aac5c695b8ac"
+    },
+    {
+      "bytes": 47255,
+      "originating_relative_path": "s2/calibration/s2-prepare-reuse-candidate-r01.json",
+      "path": "candidate/runtime/s2/calibration/s2-prepare-reuse-candidate-r01.json",
+      "sha256": "4c8cfa2bbf134493857d2ffb7bf04376033658c55fd7287a6f2867b2ae489286",
+      "source_head": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+      "status": "finished",
+      "workspace_context_sha256": "62a1b46808c9b2840e6bbff152611082e088ec60e095a34ca34c4872abf8fa1e"
+    }
+  ],
+  "sustained_continuation_qualified": false,
+  "total_source_bound_raw_records_including_auxiliary": 16,
+  "whole_model_calls_in_archived_runs": 6,
+  "worker": {
+    "bytes": 35234,
+    "path": "native-prepare-reuse-worker-r02.py",
+    "sha256": "ad17a7fbb2c298bca5018b77796760779e450f1d561237f05a2b28145832b589"
+  }
+}

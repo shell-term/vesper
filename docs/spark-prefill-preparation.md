@@ -1,6 +1,6 @@
 # Spark repeated preparation and nonfinal-input output work
 
-日本語案内: 補助演算器の再利用と、入力途中だけ不要な出力計算を省く経路を実装しました。統合CPU検査213件は合格。実機の速度・数値・解放の確認は、以下の有限比較で別途記録します。S2・長い品質確認・画像対応は未完了です。
+日本語案内: 補助演算器の再利用と、入力途中だけ不要な出力計算を省く経路を実装しました。統合CPU213件・実機CPU101件と、6回のモデル計算による数値一致・解放を確認。対象部分は短縮しましたが、全体速度は別の準備処理の変動が大きく、安定した改善は未確認です。S2・長い品質確認・画像対応は未完了です。
 
 This iteration follows the [previous measured short loop](spark-short-loop-progress.md)
 under #20/#21/#24. Accuracy is first. It does not adopt approximate weights,
@@ -94,7 +94,68 @@ score, broad quality or a reliable GPQA completion estimate from two positions.
 
 ## Hardware results
 
-Pending the finite old/new comparison. A token-admissible request is not proof
+The completed comparison used old source
+`226b6106ff372fbddb1699d82084b4a75776388a` and deployed candidate source
+`0b4f64d8366b8c467478920db8c61b1ccadf2731`. The candidate's native Spark
+environment passed **101 CPU tests**, an overlapping subset of the local 213,
+not another 101 distinct contracts. Both sources passed the five fresh gates.
+Exactly six text model calls consumed only the first two BOS/User input
+positions; they selected no output. The full-head comparison matches at both
+positions, and skipped-tail execution matches the retained boundaries exactly.
+The preserved previous `226b6106` one-call arrays also match position zero.
+
+| Observation | Total including initialization/cleanup | Call at position 0 | Call at position 1 |
+| --- | ---: | ---: | ---: |
+| Old S2, full tail | 92.342 s | 41.029 s | 40.858 s |
+| Candidate S2, full tail | 104.667 s | 46.245 s | 47.854 s |
+| Candidate S2, skipped nonfinal tail | 88.195 s | 39.810 s | 38.095 s |
+
+The targeted router-plus-accumulator opening region decreased, over two calls,
+from **6.773 s** to **2.607 s** with full tail and **2.739 s** with skipped tail.
+Each candidate process opened only two auxiliary owners, recorded 158 reuse
+hits/160 borrows and 80 complete trained-bias uploads. Its ledger peak increased
+by one metadata MiB, not an additional whole-model weight cache. Native sum
+zeroing and original routed outputs remain exact within this two-position scope.
+
+However, **same-work whole-model improvement is not established**. Total
+candidate full-tail time increased by 13.35% in this observation. Projection
+opening time over two calls was **16.404 / 33.228 / 16.510 s** for old full,
+candidate full and candidate skip, respectively. MoE opening decreased from
+26.064 s to 21.513/21.816 s, while MoE forward/close was 29.793/29.540/29.887 s.
+The full-to-skip wall reduction of 16.472 s coincides with 16.718 s less
+projection-opening time; do not attribute it to head omission alone. Candidate
+skip's 4.49% shorter total than old full is a fixed-order observation with
+different work, not an isolated, stable or sustained speedup result.
+
+A separate post-run 12-pair alternating CPU guard check measured median full
+source-context lookup **12.292 ms** (ten Git children) versus binding/module
+batch validation **5.474 ms** (five). Multiplying their median difference by
+80 borrows gives only about 0.545 s; this component check does not explain the
+observed whole-run variation or measure the same cost inside inference. No new
+guard-policy change is adopted from that comparison. The next priority is to
+split projection opening into authenticated reads, validation, conversion,
+allocation/upload and synchronization, with matched order/cache conditions.
+
+All owned workers exited and the GPU lock was released after each job. Every runtime ended
+with zero owned charges/leases/reclaimers/device allocations and stopped
+monitors. Minimum sampled physical availability was **41,044,447,232 bytes**,
+above the unchanged 32 GiB floor. Existing services and checkpoint files were
+unchanged. Deployment's strict guard initially stopped on an intended prior
+archive-index expansion; the original index was retained, all 100 previously
+tracked evidence files remained byte exact, and 113 published historical Git blobs
+plus the seven new old-source records were verified. Legacy Windows working
+tree line endings were not misrepresented as cross-platform raw byte identity.
+
+The [exact archive manifest](../results/dgx-spark/2026-10-21-prefill-reuse/archive-manifest.json),
+[cross-source audit](../results/dgx-spark/2026-10-21-prefill-reuse/cross-source-derived-audit.json)
+and [compact measurements](../results/dgx-spark/2026-10-21-prefill-reuse/measurement-summary.json)
+retain the original sources, all 15 model/gate records, the exact native CPU
+record, frozen worker and separate derived evidence. Publication-only commits
+do not update the deployed runtime or restamp historical results.
+
+No current-source ordinary EOS, thinking/extended-input behavior, practical
+quality, image input or accepted continuation tps is qualified by this loop.
+The 20 tps aspiration remains unmeasured. A token-admissible request is not proof
 that the proposed 600 s/question GPQA budget is viable. Further improvement and
 small measured checks precede quality inference; any final all-question trial
 still requires a measured total-duration estimate and the user's decision.

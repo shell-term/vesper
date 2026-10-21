@@ -1,0 +1,90 @@
+{
+  "S2_complete": false,
+  "guard_cpu_only": {
+    "eighty_borrow_median_difference_seconds": 0.5454819649457932,
+    "git_children_per_guard": {
+      "binding_module_batch": 5,
+      "full_context": 10
+    },
+    "median_seconds": {
+      "binding_module_batch": 0.005473932484164834,
+      "full_context": 0.012292457045987248
+    },
+    "not_an_in_model_time_measurement": true,
+    "pairs": 12,
+    "source": "0b4f64d8366b8c467478920db8c61b1ccadf2731"
+  },
+  "headskip_causal_speedup_established": false,
+  "kind": "local derived bounded observations; no new execution",
+  "local_cpu_tests": 213,
+  "minimum_available_bytes": 41044447232,
+  "native_cpu_subset_tests": 101,
+  "observations": [
+    {
+      "auxiliary_reuse": null,
+      "final_owned_charges_zero": true,
+      "minimum_available_bytes": 41044447232,
+      "model_call_seconds": [
+        41.02854574797675,
+        40.85788699472323
+      ],
+      "moe_open_seconds": 26.06400529621169,
+      "peak_charged_host_bytes": 8948018028,
+      "prefill_tail": "full",
+      "projection_open_seconds": 16.403772455174476,
+      "router_plus_accumulator_open_seconds": 6.772941538132727,
+      "source": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "total_seconds": 92.34182702982798
+    },
+    {
+      "auxiliary_reuse": {
+        "borrows": 160,
+        "device_owned_bytes": 48724,
+        "opens": 2,
+        "reuse_hits": 158,
+        "trained_bias_full_uploads": 80
+      },
+      "final_owned_charges_zero": true,
+      "minimum_available_bytes": 41109094400,
+      "model_call_seconds": [
+        46.24539217585698,
+        47.85419403901324
+      ],
+      "moe_open_seconds": 21.512572823558003,
+      "peak_charged_host_bytes": 8949066604,
+      "prefill_tail": "full",
+      "projection_open_seconds": 33.228352228645235,
+      "router_plus_accumulator_open_seconds": 2.606529943179339,
+      "source": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+      "total_seconds": 104.66698429826647
+    },
+    {
+      "auxiliary_reuse": {
+        "borrows": 160,
+        "device_owned_bytes": 48724,
+        "opens": 2,
+        "reuse_hits": 158,
+        "trained_bias_full_uploads": 80
+      },
+      "final_owned_charges_zero": true,
+      "minimum_available_bytes": 41110466560,
+      "model_call_seconds": [
+        39.80953941587359,
+        38.09525951463729
+      ],
+      "moe_open_seconds": 21.81631306000054,
+      "peak_charged_host_bytes": 8949066604,
+      "prefill_tail": "skip_output_tail",
+      "projection_open_seconds": 16.51049577537924,
+      "router_plus_accumulator_open_seconds": 2.739299595821649,
+      "source": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+      "total_seconds": 88.19495035801083
+    }
+  ],
+  "ordinary_eos_or_quality_runs": 0,
+  "projection_open_variation_confounds_overall_comparison": true,
+  "subset_overlaps_local": true,
+  "sustained_tps_qualified": false,
+  "total_actual_model_calls": 6,
+  "whole_model_stable_gain_established": false
+}

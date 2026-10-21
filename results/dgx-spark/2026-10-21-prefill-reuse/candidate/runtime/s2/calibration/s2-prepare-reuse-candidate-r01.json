@@ -1,0 +1,1286 @@
+{
+  "all40_layers_both_engrams_recorded": true,
+  "automatic_retry": false,
+  "cross_source_equality_qualified": false,
+  "eos_qualified": false,
+  "finished_unix": 1792566788.8127184,
+  "full_head_boundaries_recorded": true,
+  "full_model_eos_qualified": false,
+  "full_model_quality_qualified": false,
+  "general_performance_claim": false,
+  "iteration_purpose": "Bounded two-call initial/repeated preparation observation; old/new same-position comparison is separate; prior records preserved",
+  "maximum_model_calls": 4,
+  "mode_order": [
+    "s2"
+  ],
+  "new_model_calls_maximum": 4,
+  "old_results_restamped": false,
+  "overall_timeout_seconds": 900,
+  "owned_children_exited": true,
+  "phases": {
+    "attention-native-reuse-candidate-r01": {
+      "args": [
+        "native",
+        "--bundle",
+        "s1/attention-bundle-r02",
+        "--reference-result",
+        "s1/attention/reference-s2-reuse-candidate-r01.json",
+        "--run-id",
+        "s2-reuse-candidate-r01"
+      ],
+      "child_pid": 1566473,
+      "exit_code": 0,
+      "expected_exit": 0,
+      "interpreter_identity_sha256": "4c0729de8e55af003890b6403fea86efa4a25fb95e561b5bab89b6623972af75",
+      "launch_state": "launched",
+      "launched": true,
+      "module": "vesper.spark_attention_validation",
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 1.3273941013030708
+    },
+    "attention-reference-reuse-candidate-r01": {
+      "args": [],
+      "child_pid": 1564072,
+      "exit_code": 0,
+      "expected_exit": 0,
+      "interpreter_identity_sha256": "c3312b2c9644aa6bb4b6f53507a2c970a8a1d4cfa0534aad60fc8d4e2eb7b9e8",
+      "launch_state": "launched",
+      "launched": true,
+      "module": null,
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 6.813552582170814
+    },
+    "head-compare-reuse-candidate-r01": {
+      "args": [
+        "compare",
+        "--run-id",
+        "s2-reuse-head-compare-candidate-r01",
+        "--native-result",
+        "s1/head/s2-reuse-head-native-candidate-r01.json",
+        "--reference-result",
+        "s1/head/s2-reuse-head-reference-candidate-r01.json"
+      ],
+      "child_pid": 1569165,
+      "exit_code": 0,
+      "expected_exit": 0,
+      "interpreter_identity_sha256": "4c0729de8e55af003890b6403fea86efa4a25fb95e561b5bab89b6623972af75",
+      "launch_state": "launched",
+      "launched": true,
+      "module": "vesper.spark_head_probe",
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 0.8603254528716207
+    },
+    "head-native-reuse-candidate-r01": {
+      "args": [
+        "native",
+        "--run-id",
+        "s2-reuse-head-native-candidate-r01"
+      ],
+      "child_pid": 1566968,
+      "exit_code": 0,
+      "expected_exit": 0,
+      "interpreter_identity_sha256": "4c0729de8e55af003890b6403fea86efa4a25fb95e561b5bab89b6623972af75",
+      "launch_state": "launched",
+      "launched": true,
+      "module": "vesper.spark_head_probe",
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 51.680023912806064
+    },
+    "head-reference-reuse-candidate-r01": {
+      "args": [
+        "reference",
+        "--run-id",
+        "s2-reuse-head-reference-candidate-r01"
+      ],
+      "child_pid": 1567301,
+      "exit_code": 0,
+      "expected_exit": 0,
+      "interpreter_identity_sha256": "c3312b2c9644aa6bb4b6f53507a2c970a8a1d4cfa0534aad60fc8d4e2eb7b9e8",
+      "launch_state": "launched",
+      "launched": true,
+      "module": "vesper.spark_head_probe",
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 54.7722159367986
+    },
+    "s2-reuse-two-call-full-candidate-r01": {
+      "args": [
+        "generate",
+        "--run-id",
+        "s2-reuse-two-call-full-candidate-r01",
+        "--bundle",
+        "s1/attention-bundle-r02",
+        "--attention-reference-result",
+        "s1/attention/reference-s2-reuse-candidate-r01.json",
+        "--attention-receipt-result",
+        "s1/attention/native-validation-s2-reuse-candidate-r01.json",
+        "--max-new-tokens",
+        "64",
+        "--temperature",
+        "0",
+        "--seed",
+        "2026",
+        "--max-model-calls",
+        "2",
+        "--reuse-profile",
+        "s2"
+      ],
+      "child_pid": 1569457,
+      "exit_code": 2,
+      "expected_exit": 2,
+      "interpreter_identity_sha256": "4c0729de8e55af003890b6403fea86efa4a25fb95e561b5bab89b6623972af75",
+      "launch_state": "launched",
+      "launched": true,
+      "module": "vesper.spark_text_probe",
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 105.3512696144171
+    },
+    "s2-reuse-two-call-skip-candidate-r01": {
+      "args": [
+        "generate",
+        "--run-id",
+        "s2-reuse-two-call-skip-candidate-r01",
+        "--bundle",
+        "s1/attention-bundle-r02",
+        "--attention-reference-result",
+        "s1/attention/reference-s2-reuse-candidate-r01.json",
+        "--attention-receipt-result",
+        "s1/attention/native-validation-s2-reuse-candidate-r01.json",
+        "--max-new-tokens",
+        "64",
+        "--temperature",
+        "0",
+        "--seed",
+        "2026",
+        "--max-model-calls",
+        "2",
+        "--reuse-profile",
+        "s2",
+        "--prefill-tail",
+        "skip_output_tail"
+      ],
+      "child_pid": 1581593,
+      "exit_code": 2,
+      "expected_exit": 2,
+      "interpreter_identity_sha256": "4c0729de8e55af003890b6403fea86efa4a25fb95e561b5bab89b6623972af75",
+      "launch_state": "launched",
+      "launched": true,
+      "module": "vesper.spark_text_probe",
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 88.85486106202006
+    }
+  },
+  "plan_sha256": "f272de3b6f3edd50cdf90c75b7ad4020cafc29580c6b90f4ab829bd2b12b4ab6",
+  "practical_quality_qualified": false,
+  "prefill_tail_modes": [
+    "full",
+    "skip_output_tail"
+  ],
+  "results": {
+    "s1/attention/native-validation-s2-reuse-candidate-r01.json": {
+      "sha256": "11e7eecb67fba67f584ae941ccae0adcf192e3f26f7dfc9bc2312de354c942f2",
+      "status": "pass"
+    },
+    "s1/attention/reference-s2-reuse-candidate-r01.json": {
+      "sha256": "d09c80e139d3fac2bd299df303b81829b2045b5277c1875d6083fb1ddeb018a8",
+      "status": "pass"
+    },
+    "s1/head/s2-reuse-head-compare-candidate-r01.json": {
+      "sha256": "e12aa6a4ba530807476794b66c7ee0658c3f8dc5698882830c9958d8fdfd84c7",
+      "status": "pass"
+    },
+    "s1/head/s2-reuse-head-native-candidate-r01.json": {
+      "sha256": "46f718cbcc7ebd597a12bfd941ee08d5232b3ce389aa15d0649aa1511b074ac0",
+      "status": "native_execution_pass"
+    },
+    "s1/head/s2-reuse-head-reference-candidate-r01.json": {
+      "sha256": "e711e7cb20488affd1856bd2b75af4e92bc85b5a43d224d06f8f5555ac16ba5c",
+      "status": "reference_execution_pass"
+    },
+    "s1/text/s2-reuse-two-call-full-candidate-r01.json": {
+      "sha256": "d7ee00dbff358810b7b03b739b800aeb2400e3abc9c7efb3fc4a8046b9dd7276",
+      "status": "partial_model_call_budget"
+    },
+    "s1/text/s2-reuse-two-call-skip-candidate-r01.json": {
+      "sha256": "64441581a96dd7354ae4fef25a82671b7cd3733ea8b20a646fe3eb14fd4764d4",
+      "status": "partial_model_call_budget"
+    }
+  },
+  "run_tag": "candidate-r01",
+  "same_source_full_skip_backbone_exact": true,
+  "schema": "vesper.private-native-prepare-reuse-worker.v1",
+  "source_head": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+  "stage": "finished",
+  "started_unix": 1792566478.4935634,
+  "status": "finished",
+  "sustained_throughput_qualified": false,
+  "two_call_backbone_boundaries_recorded": true,
+  "two_call_timings": [
+    {
+      "engine_stats": {
+        "all_backbone_layers": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39
+        ],
+        "compiled_kernel_cache": {
+          "capacity_bytes": 67108864,
+          "charged_bytes": 1433456,
+          "closed": false,
+          "entries": 12,
+          "evictions": 0,
+          "hits": 244,
+          "misses": 12,
+          "qualification_receipt_issued": false
+        },
+        "engram_layers": [
+          1,
+          14
+        ],
+        "engram_operators": {
+          "1": {
+            "calls_completed": 2,
+            "calls_started": 2,
+            "device_owned_bytes": 157521920,
+            "device_peak_owned_bytes": 158405233,
+            "execution": {
+              "compiler": {
+                "architecture": "121",
+                "concatenated_source_sha256": "33d244ed75e86a5f7fafb2497e28c23ea49158bd49cdcab9409c650c219bfebd",
+                "include_path_redacted": true,
+                "nvrtc_version": [
+                  13,
+                  0
+                ],
+                "options": [
+                  "--gpu-architecture=sm_121",
+                  "--std=c++17",
+                  "--fmad=false",
+                  "--ftz=false",
+                  "--include-path=<CUDA>/include"
+                ]
+              },
+              "cubin_sha256": "96c76445316c3cacc4c1ab253c9e2ee4192a5a6e3cc7914961ddab5bd90e0b9b",
+              "device": {
+                "compute_capability": "12.1",
+                "driver_api_version": 13000,
+                "name": "NVIDIA GB10",
+                "ordinal": 0,
+                "total_bytes": 130661142528
+              },
+              "execution_target": "spark-sm121-candidate",
+              "kernel_flags": [
+                "engram"
+              ],
+              "qualification": "unqualified_candidate",
+              "qualification_receipt_issued": false,
+              "source_rounding_adaptations": [
+                "SM121 original complex multiply: imaginary-first fused product"
+              ],
+              "spark_reference_qualification": "not_run",
+              "target_selection_changes_model_arithmetic": false
+            },
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 536870912,
+            "owned_context_active": true,
+            "reservation_is_RSS_limit": false
+          },
+          "14": {
+            "calls_completed": 2,
+            "calls_started": 2,
+            "device_owned_bytes": 157521920,
+            "device_peak_owned_bytes": 158405233,
+            "execution": {
+              "compiler": {
+                "architecture": "121",
+                "concatenated_source_sha256": "33d244ed75e86a5f7fafb2497e28c23ea49158bd49cdcab9409c650c219bfebd",
+                "include_path_redacted": true,
+                "nvrtc_version": [
+                  13,
+                  0
+                ],
+                "options": [
+                  "--gpu-architecture=sm_121",
+                  "--std=c++17",
+                  "--fmad=false",
+                  "--ftz=false",
+                  "--include-path=<CUDA>/include"
+                ]
+              },
+              "cubin_sha256": "96c76445316c3cacc4c1ab253c9e2ee4192a5a6e3cc7914961ddab5bd90e0b9b",
+              "device": {
+                "compute_capability": "12.1",
+                "driver_api_version": 13000,
+                "name": "NVIDIA GB10",
+                "ordinal": 0,
+                "total_bytes": 130661142528
+              },
+              "execution_target": "spark-sm121-candidate",
+              "kernel_flags": [
+                "engram"
+              ],
+              "qualification": "unqualified_candidate",
+              "qualification_receipt_issued": false,
+              "source_rounding_adaptations": [
+                "SM121 original complex multiply: imaginary-first fused product"
+              ],
+              "spark_reference_qualification": "not_run",
+              "target_selection_changes_model_arithmetic": false
+            },
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 536870912,
+            "owned_context_active": true,
+            "reservation_is_RSS_limit": false
+          }
+        },
+        "execution_target": "spark-sm121-candidate",
+        "full_model_quality_qualified": false,
+        "head_operator": {
+          "TF32_enabled": false,
+          "block_rows": 512,
+          "calls": 2,
+          "device_cap_bytes": 3221225472,
+          "device_owned_bytes": 2657249280,
+          "device_peak_owned_bytes": 2657249280,
+          "execution_target": "spark-sm121-candidate",
+          "full_vocabulary_rows": 129280,
+          "head_compute_dtype": "float32",
+          "head_device_bytes": 2647654400,
+          "host_allowance_bytes": 67108864,
+          "host_reserved_bytes": 67108864,
+          "qualification": "unqualified_candidate",
+          "qualification_receipt_issued": false,
+          "reservation_is_RSS_limit": false,
+          "retained_head": true,
+          "rows_read": 129280,
+          "spark_reference_qualification": "not_run",
+          "target_selection_changes_model_arithmetic": false,
+          "weight_reads_in_forward": false,
+          "whole_host_head_materialized": false
+        },
+        "layer_pool": {
+          "active_layers": {
+            "hc": 39,
+            "projection": 39
+          },
+          "arithmetic_qualification": "not_run",
+          "calls": 1038,
+          "expert_ram_cache_bytes": 0,
+          "hc_opened": 80,
+          "helper_device": null,
+          "host_wall_timings": {
+            "hc": {
+              "compute_seconds": 0.4622062696143985,
+              "open_calls": 80,
+              "open_seconds": 1.856897121295333
+            },
+            "moe": {
+              "compute_seconds": 29.54011945798993,
+              "open_calls": 80,
+              "open_seconds": 21.512572823558003
+            },
+            "projection": {
+              "compute_seconds": 0.9083432387560606,
+              "open_calls": 80,
+              "open_seconds": 33.228352228645235
+            }
+          },
+          "maximum_resident_operators": {
+            "hc": 1,
+            "projection": 1
+          },
+          "moe_auxiliary_pool": {
+            "accumulator_host_reserved_bytes": 4194304,
+            "backends": {
+              "accumulator": {
+                "compiler": {
+                  "architecture": "121",
+                  "concatenated_source_sha256": "d41933a49862c91b3ec75919127ea19a0d058b07d7bc8427c1d03ff3cae637f4",
+                  "include_path_redacted": true,
+                  "nvrtc_version": [
+                    13,
+                    0
+                  ],
+                  "options": [
+                    "--gpu-architecture=sm_121",
+                    "--std=c++17",
+                    "--fmad=false",
+                    "--ftz=false",
+                    "--include-path=<CUDA>/include"
+                  ]
+                },
+                "compiler_library_identity_sha256": "ba6fd73b3163181c8698669fafca4e1b789a18469a017261682415552310aeb7",
+                "cubin_sha256": "485e1d54dceb9a143f14e4ba2166968fa2d65033f4af652e05dea507d2d6c61a",
+                "kernel_source_sha256": "d41933a49862c91b3ec75919127ea19a0d058b07d7bc8427c1d03ff3cae637f4",
+                "last_trained_bias_sha256": {}
+              },
+              "router": {
+                "compiler": {
+                  "architecture": "121",
+                  "concatenated_source_sha256": "e5cf9c6defa9807e74355b93ac7a46f8faed4f4a0cf3a557d7dd53c59f39dabb",
+                  "include_path_redacted": true,
+                  "nvrtc_version": [
+                    13,
+                    0
+                  ],
+                  "options": [
+                    "--gpu-architecture=sm_121",
+                    "--std=c++17",
+                    "--fmad=false",
+                    "--ftz=false",
+                    "--include-path=<CUDA>/include"
+                  ]
+                },
+                "compiler_library_identity_sha256": "ba6fd73b3163181c8698669fafca4e1b789a18469a017261682415552310aeb7",
+                "cubin_sha256": "8c981a435f8e54a59c33bcf89b233c8822d754b9eb198e8372a074be16e1f920",
+                "kernel_source_sha256": "e5cf9c6defa9807e74355b93ac7a46f8faed4f4a0cf3a557d7dd53c59f39dabb",
+                "last_trained_bias_sha256": {
+                  "bias": "9cc9b7d189ccee24df1f06a3afda88fb4a5e77feddcfbb32773cf4cfbf1d8c8c",
+                  "bias_vl": "f369e60a3151f2b43fdd244d7d5c1bbfafe0e90abe034e849a334c352f696525"
+                }
+              }
+            },
+            "borrowers": 0,
+            "borrows": 160,
+            "closed": false,
+            "device_owned_bytes": 48724,
+            "entries": 2,
+            "evictions": 0,
+            "failed_cleanup_owners": 0,
+            "host_metadata_reserved_bytes": 1048576,
+            "maximum_entries": 2,
+            "maximum_explicit_device_bytes": 48724,
+            "opened": true,
+            "opens": 2,
+            "poisoned": false,
+            "qualification_receipt_issued": false,
+            "reservation_is_RSS_limit": false,
+            "retained_expert_gate_shared_weights": false,
+            "reuse_hits": 158,
+            "source_sha256": {
+              "connected.py": "dd1350cc196aaaa90a780d40c58460e3dd4e8901cc177959d36b12b8dfb04f94",
+              "cuda.py": "e238a01530f3e0ff86b98a192474eb9400edd399c4c7f8781dc23b1845d246c0",
+              "execution_target.py": "04052944c38e5ced5ea6951a96d56d3d23c8f61f7c3fb2948a3fa61ee0bf325f",
+              "moe.py": "09d8c12498ba59689bc6bb3edb066f3a3bc251e389ce14c2047aeb97416beb6e",
+              "router.py": "5fcc243318ca246f7bb46a48c44c2494a2cca9d4e93300fe1ed2a684d5a1b497",
+              "spark_moe_auxiliaries.py": "3f1fae574d03d33b5ce07f6e9390aef063cfd3b20ad89b9023b86f9bfa473476"
+            },
+            "trained_bias_full_uploads": 80
+          },
+          "moe_cleanup_owner_retained": false,
+          "moe_opened": 80,
+          "network_in_forward": false,
+          "opened": true,
+          "poisoned": false,
+          "projection_opened": 80
+        },
+        "network_in_forward": false,
+        "original_kernel_parity_qualified": false,
+        "preparation_backends": {
+          "backends": {
+            "hc": {
+              "compiler": {
+                "architecture": "121",
+                "concatenated_source_sha256": "1b1efde07714d4cc7510fba84c973e080df271483ff9f71e7dfbff0f3dd62d1c",
+                "include_path_redacted": true,
+                "nvrtc_version": [
+                  13,
+                  0
+                ],
+                "options": [
+                  "--gpu-architecture=sm_121",
+                  "--std=c++17",
+                  "--fmad=false",
+                  "--ftz=false",
+                  "--include-path=<CUDA>/include"
+                ]
+              },
+              "compiler_library_identity_sha256": "ba6fd73b3163181c8698669fafca4e1b789a18469a017261682415552310aeb7",
+              "execution": {
+                "compiler": {
+                  "architecture": "121",
+                  "concatenated_source_sha256": "1b1efde07714d4cc7510fba84c973e080df271483ff9f71e7dfbff0f3dd62d1c",
+                  "include_path_redacted": true,
+                  "nvrtc_version": [
+                    13,
+                    0
+                  ],
+                  "options": [
+                    "--gpu-architecture=sm_121",
+                    "--std=c++17",
+                    "--fmad=false",
+                    "--ftz=false",
+                    "--include-path=<CUDA>/include"
+                  ]
+                },
+                "cubin_sha256": "d1bea692481bb182cf608c884b518c1c73191ae794938249d53d06a4086ec976",
+                "cublas": {
+                  "TF32_enabled": false,
+                  "math_mode": 0,
+                  "qualification": "unqualified_candidate",
+                  "version": 130101
+                },
+                "device": {
+                  "compute_capability": "12.1",
+                  "driver_api_version": 13000,
+                  "name": "NVIDIA GB10",
+                  "ordinal": 0,
+                  "total_bytes": 130661142528
+                },
+                "execution_target": "spark-sm121-candidate",
+                "kernel_flags": [
+                  "hc"
+                ],
+                "qualification": "unqualified_candidate",
+                "qualification_receipt_issued": false,
+                "source_rounding_adaptations": [
+                  "SM121 original complex multiply: imaginary-first fused product"
+                ],
+                "spark_reference_qualification": "not_run",
+                "target_selection_changes_model_arithmetic": false
+              }
+            },
+            "projection": {
+              "compiler": {
+                "architecture": "121",
+                "concatenated_source_sha256": "56ca03fb20f1208b226ddf810f2d508f4b35037e4ecb45b4e91a9c7384397262",
+                "include_path_redacted": true,
+                "nvrtc_version": [
+                  13,
+                  0
+                ],
+                "options": [
+                  "--gpu-architecture=sm_121",
+                  "--std=c++17",
+                  "--fmad=false",
+                  "--ftz=false",
+                  "--include-path=<CUDA>/include"
+                ]
+              },
+              "compiler_library_identity_sha256": "ba6fd73b3163181c8698669fafca4e1b789a18469a017261682415552310aeb7",
+              "execution": {
+                "compiler": {
+                  "architecture": "121",
+                  "concatenated_source_sha256": "56ca03fb20f1208b226ddf810f2d508f4b35037e4ecb45b4e91a9c7384397262",
+                  "include_path_redacted": true,
+                  "nvrtc_version": [
+                    13,
+                    0
+                  ],
+                  "options": [
+                    "--gpu-architecture=sm_121",
+                    "--std=c++17",
+                    "--fmad=false",
+                    "--ftz=false",
+                    "--include-path=<CUDA>/include"
+                  ]
+                },
+                "cubin_sha256": "a2fa673b7a351e099f35d76d836547e8b32e492f058fdd5b1cfd119c39277cf9",
+                "cublas": {
+                  "TF32_enabled": false,
+                  "math_mode": 0,
+                  "qualification": "unqualified_candidate",
+                  "version": 130101
+                },
+                "device": {
+                  "compute_capability": "12.1",
+                  "driver_api_version": 13000,
+                  "name": "NVIDIA GB10",
+                  "ordinal": 0,
+                  "total_bytes": 130661142528
+                },
+                "execution_target": "spark-sm121-candidate",
+                "kernel_flags": [
+                  "projections"
+                ],
+                "qualification": "unqualified_candidate",
+                "qualification_receipt_issued": false,
+                "source_rounding_adaptations": [],
+                "spark_reference_qualification": "not_run",
+                "target_selection_changes_model_arithmetic": false
+              }
+            }
+          },
+          "borrowers": 2,
+          "borrows": 160,
+          "closed": false,
+          "device_owned_bytes": 181232600,
+          "entries": 2,
+          "evictions": 0,
+          "failed_cleanup_owners": 0,
+          "host_admission_bytes": 671088640,
+          "maximum_device_workspace_bytes": 17039360,
+          "maximum_entries": 2,
+          "open_seconds": 0.1282005524262786,
+          "opened": true,
+          "opens": 2,
+          "poisoned": false,
+          "qualification_receipt_issued": false,
+          "retained_layer_weights": false,
+          "reuse_hits": 158,
+          "source_sha256": {
+            "hc.py": "20fa3c0d830ceaeb2987a6b143332b0d53e2cd2de4a911a8c9df72a479a3e300",
+            "projections.py": "da2e5a9b0dd46dae1eb17e8bddaaef5bb5ad9d8bc3939f0af72261d048112854",
+            "spark_operator_backends.py": "309405b51ab2e9b5dddd0bf7e75ad8894d6a6107c4311d4413daabe3818006a1"
+          }
+        },
+        "qualification": "unqualified_candidate",
+        "sampler_operator": {
+          "calls": 0,
+          "device_owned_bytes": 0,
+          "device_peak_owned_bytes": 0,
+          "execution": {
+            "compiler": {
+              "architecture": "121",
+              "concatenated_source_sha256": "cb5f201efd8bea887151a8b7f78cd6d928bb530fe8236c4b4cbf4db12e3abd7f",
+              "include_path_redacted": true,
+              "nvrtc_version": [
+                13,
+                0
+              ],
+              "options": [
+                "--gpu-architecture=sm_121",
+                "--std=c++17",
+                "--fmad=false",
+                "--ftz=false",
+                "--include-path=<CUDA>/include",
+                "--include-path=<CUDA>/include/cccl"
+              ]
+            },
+            "cubin_sha256": "0b14f5fabf4f39ccbd9defda01f2d7739612fc31c3c1a4a34a4a2ec7331bc84a",
+            "device": {
+              "compute_capability": "12.1",
+              "driver_api_version": 13000,
+              "name": "NVIDIA GB10",
+              "ordinal": 0,
+              "total_bytes": 130661142528
+            },
+            "execution_target": "spark-sm121-candidate",
+            "kernel_flags": [
+              "sampling"
+            ],
+            "qualification": "unqualified_candidate",
+            "qualification_receipt_issued": false,
+            "sampling_policy": {
+              "multiprocessors": 48,
+              "policy_source": "observed_cuda_device",
+              "qualification": "unqualified_candidate",
+              "threads_per_sm": 1536
+            },
+            "source_rounding_adaptations": [],
+            "spark_reference_qualification": "not_run",
+            "target_selection_changes_model_arithmetic": false
+          },
+          "host_reserved_bytes": 134217728,
+          "opened": true
+        },
+        "state": {
+          "committed_tokens": 2,
+          "explicit_recoveries": 0,
+          "failed_attempts": 0,
+          "host_allowance_bytes": 33554432,
+          "host_reserved_bytes": 33554432,
+          "pending_cleanup_owners": [],
+          "pending_recovery_owners": [],
+          "position": 2,
+          "reservation_is_RSS_limit": false
+        },
+        "trajectory_replay": false
+      },
+      "minimum_available_bytes": 41109094400,
+      "mode": "s2",
+      "model_call_seconds": [
+        46.24539217585698,
+        47.85419403901324
+      ],
+      "peak_charged_host_bytes": 8949066604,
+      "prefill_tail": "full",
+      "result": "s1/text/s2-reuse-two-call-full-candidate-r01.json",
+      "total_seconds": 104.66698429826647
+    },
+    {
+      "engine_stats": {
+        "all_backbone_layers": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39
+        ],
+        "compiled_kernel_cache": {
+          "capacity_bytes": 67108864,
+          "charged_bytes": 1433456,
+          "closed": false,
+          "entries": 12,
+          "evictions": 0,
+          "hits": 244,
+          "misses": 12,
+          "qualification_receipt_issued": false
+        },
+        "engram_layers": [
+          1,
+          14
+        ],
+        "engram_operators": {
+          "1": {
+            "calls_completed": 2,
+            "calls_started": 2,
+            "device_owned_bytes": 157521920,
+            "device_peak_owned_bytes": 158405233,
+            "execution": {
+              "compiler": {
+                "architecture": "121",
+                "concatenated_source_sha256": "33d244ed75e86a5f7fafb2497e28c23ea49158bd49cdcab9409c650c219bfebd",
+                "include_path_redacted": true,
+                "nvrtc_version": [
+                  13,
+                  0
+                ],
+                "options": [
+                  "--gpu-architecture=sm_121",
+                  "--std=c++17",
+                  "--fmad=false",
+                  "--ftz=false",
+                  "--include-path=<CUDA>/include"
+                ]
+              },
+              "cubin_sha256": "96c76445316c3cacc4c1ab253c9e2ee4192a5a6e3cc7914961ddab5bd90e0b9b",
+              "device": {
+                "compute_capability": "12.1",
+                "driver_api_version": 13000,
+                "name": "NVIDIA GB10",
+                "ordinal": 0,
+                "total_bytes": 130661142528
+              },
+              "execution_target": "spark-sm121-candidate",
+              "kernel_flags": [
+                "engram"
+              ],
+              "qualification": "unqualified_candidate",
+              "qualification_receipt_issued": false,
+              "source_rounding_adaptations": [
+                "SM121 original complex multiply: imaginary-first fused product"
+              ],
+              "spark_reference_qualification": "not_run",
+              "target_selection_changes_model_arithmetic": false
+            },
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 536870912,
+            "owned_context_active": true,
+            "reservation_is_RSS_limit": false
+          },
+          "14": {
+            "calls_completed": 2,
+            "calls_started": 2,
+            "device_owned_bytes": 157521920,
+            "device_peak_owned_bytes": 158405233,
+            "execution": {
+              "compiler": {
+                "architecture": "121",
+                "concatenated_source_sha256": "33d244ed75e86a5f7fafb2497e28c23ea49158bd49cdcab9409c650c219bfebd",
+                "include_path_redacted": true,
+                "nvrtc_version": [
+                  13,
+                  0
+                ],
+                "options": [
+                  "--gpu-architecture=sm_121",
+                  "--std=c++17",
+                  "--fmad=false",
+                  "--ftz=false",
+                  "--include-path=<CUDA>/include"
+                ]
+              },
+              "cubin_sha256": "96c76445316c3cacc4c1ab253c9e2ee4192a5a6e3cc7914961ddab5bd90e0b9b",
+              "device": {
+                "compute_capability": "12.1",
+                "driver_api_version": 13000,
+                "name": "NVIDIA GB10",
+                "ordinal": 0,
+                "total_bytes": 130661142528
+              },
+              "execution_target": "spark-sm121-candidate",
+              "kernel_flags": [
+                "engram"
+              ],
+              "qualification": "unqualified_candidate",
+              "qualification_receipt_issued": false,
+              "source_rounding_adaptations": [
+                "SM121 original complex multiply: imaginary-first fused product"
+              ],
+              "spark_reference_qualification": "not_run",
+              "target_selection_changes_model_arithmetic": false
+            },
+            "host_allowance_bytes": 536870912,
+            "host_reserved_bytes": 536870912,
+            "owned_context_active": true,
+            "reservation_is_RSS_limit": false
+          }
+        },
+        "execution_target": "spark-sm121-candidate",
+        "full_model_quality_qualified": false,
+        "head_operator": {
+          "TF32_enabled": false,
+          "block_rows": 512,
+          "calls": 0,
+          "device_cap_bytes": 3221225472,
+          "device_owned_bytes": 2657249280,
+          "device_peak_owned_bytes": 2657249280,
+          "execution_target": "spark-sm121-candidate",
+          "full_vocabulary_rows": 129280,
+          "head_compute_dtype": "float32",
+          "head_device_bytes": 2647654400,
+          "host_allowance_bytes": 67108864,
+          "host_reserved_bytes": 67108864,
+          "qualification": "unqualified_candidate",
+          "qualification_receipt_issued": false,
+          "reservation_is_RSS_limit": false,
+          "retained_head": true,
+          "rows_read": 129280,
+          "spark_reference_qualification": "not_run",
+          "target_selection_changes_model_arithmetic": false,
+          "weight_reads_in_forward": false,
+          "whole_host_head_materialized": false
+        },
+        "layer_pool": {
+          "active_layers": {
+            "hc": 39,
+            "projection": 39
+          },
+          "arithmetic_qualification": "not_run",
+          "calls": 1036,
+          "expert_ram_cache_bytes": 0,
+          "hc_opened": 80,
+          "helper_device": null,
+          "host_wall_timings": {
+            "hc": {
+              "compute_seconds": 0.45932272356003523,
+              "open_calls": 80,
+              "open_seconds": 1.8975175190716982
+            },
+            "moe": {
+              "compute_seconds": 29.887085535097867,
+              "open_calls": 80,
+              "open_seconds": 21.81631306000054
+            },
+            "projection": {
+              "compute_seconds": 0.5358979562297463,
+              "open_calls": 80,
+              "open_seconds": 16.51049577537924
+            }
+          },
+          "maximum_resident_operators": {
+            "hc": 1,
+            "projection": 1
+          },
+          "moe_auxiliary_pool": {
+            "accumulator_host_reserved_bytes": 4194304,
+            "backends": {
+              "accumulator": {
+                "compiler": {
+                  "architecture": "121",
+                  "concatenated_source_sha256": "d41933a49862c91b3ec75919127ea19a0d058b07d7bc8427c1d03ff3cae637f4",
+                  "include_path_redacted": true,
+                  "nvrtc_version": [
+                    13,
+                    0
+                  ],
+                  "options": [
+                    "--gpu-architecture=sm_121",
+                    "--std=c++17",
+                    "--fmad=false",
+                    "--ftz=false",
+                    "--include-path=<CUDA>/include"
+                  ]
+                },
+                "compiler_library_identity_sha256": "18ebbcf8cb8f2f918cbc09008cbceebe18b6695306b7acbc35ada04d0331162c",
+                "cubin_sha256": "485e1d54dceb9a143f14e4ba2166968fa2d65033f4af652e05dea507d2d6c61a",
+                "kernel_source_sha256": "d41933a49862c91b3ec75919127ea19a0d058b07d7bc8427c1d03ff3cae637f4",
+                "last_trained_bias_sha256": {}
+              },
+              "router": {
+                "compiler": {
+                  "architecture": "121",
+                  "concatenated_source_sha256": "e5cf9c6defa9807e74355b93ac7a46f8faed4f4a0cf3a557d7dd53c59f39dabb",
+                  "include_path_redacted": true,
+                  "nvrtc_version": [
+                    13,
+                    0
+                  ],
+                  "options": [
+                    "--gpu-architecture=sm_121",
+                    "--std=c++17",
+                    "--fmad=false",
+                    "--ftz=false",
+                    "--include-path=<CUDA>/include"
+                  ]
+                },
+                "compiler_library_identity_sha256": "18ebbcf8cb8f2f918cbc09008cbceebe18b6695306b7acbc35ada04d0331162c",
+                "cubin_sha256": "8c981a435f8e54a59c33bcf89b233c8822d754b9eb198e8372a074be16e1f920",
+                "kernel_source_sha256": "e5cf9c6defa9807e74355b93ac7a46f8faed4f4a0cf3a557d7dd53c59f39dabb",
+                "last_trained_bias_sha256": {
+                  "bias": "9cc9b7d189ccee24df1f06a3afda88fb4a5e77feddcfbb32773cf4cfbf1d8c8c",
+                  "bias_vl": "f369e60a3151f2b43fdd244d7d5c1bbfafe0e90abe034e849a334c352f696525"
+                }
+              }
+            },
+            "borrowers": 0,
+            "borrows": 160,
+            "closed": false,
+            "device_owned_bytes": 48724,
+            "entries": 2,
+            "evictions": 0,
+            "failed_cleanup_owners": 0,
+            "host_metadata_reserved_bytes": 1048576,
+            "maximum_entries": 2,
+            "maximum_explicit_device_bytes": 48724,
+            "opened": true,
+            "opens": 2,
+            "poisoned": false,
+            "qualification_receipt_issued": false,
+            "reservation_is_RSS_limit": false,
+            "retained_expert_gate_shared_weights": false,
+            "reuse_hits": 158,
+            "source_sha256": {
+              "connected.py": "dd1350cc196aaaa90a780d40c58460e3dd4e8901cc177959d36b12b8dfb04f94",
+              "cuda.py": "e238a01530f3e0ff86b98a192474eb9400edd399c4c7f8781dc23b1845d246c0",
+              "execution_target.py": "04052944c38e5ced5ea6951a96d56d3d23c8f61f7c3fb2948a3fa61ee0bf325f",
+              "moe.py": "09d8c12498ba59689bc6bb3edb066f3a3bc251e389ce14c2047aeb97416beb6e",
+              "router.py": "5fcc243318ca246f7bb46a48c44c2494a2cca9d4e93300fe1ed2a684d5a1b497",
+              "spark_moe_auxiliaries.py": "3f1fae574d03d33b5ce07f6e9390aef063cfd3b20ad89b9023b86f9bfa473476"
+            },
+            "trained_bias_full_uploads": 80
+          },
+          "moe_cleanup_owner_retained": false,
+          "moe_opened": 80,
+          "network_in_forward": false,
+          "opened": true,
+          "poisoned": false,
+          "projection_opened": 80
+        },
+        "network_in_forward": false,
+        "original_kernel_parity_qualified": false,
+        "preparation_backends": {
+          "backends": {
+            "hc": {
+              "compiler": {
+                "architecture": "121",
+                "concatenated_source_sha256": "1b1efde07714d4cc7510fba84c973e080df271483ff9f71e7dfbff0f3dd62d1c",
+                "include_path_redacted": true,
+                "nvrtc_version": [
+                  13,
+                  0
+                ],
+                "options": [
+                  "--gpu-architecture=sm_121",
+                  "--std=c++17",
+                  "--fmad=false",
+                  "--ftz=false",
+                  "--include-path=<CUDA>/include"
+                ]
+              },
+              "compiler_library_identity_sha256": "18ebbcf8cb8f2f918cbc09008cbceebe18b6695306b7acbc35ada04d0331162c",
+              "execution": {
+                "compiler": {
+                  "architecture": "121",
+                  "concatenated_source_sha256": "1b1efde07714d4cc7510fba84c973e080df271483ff9f71e7dfbff0f3dd62d1c",
+                  "include_path_redacted": true,
+                  "nvrtc_version": [
+                    13,
+                    0
+                  ],
+                  "options": [
+                    "--gpu-architecture=sm_121",
+                    "--std=c++17",
+                    "--fmad=false",
+                    "--ftz=false",
+                    "--include-path=<CUDA>/include"
+                  ]
+                },
+                "cubin_sha256": "d1bea692481bb182cf608c884b518c1c73191ae794938249d53d06a4086ec976",
+                "cublas": {
+                  "TF32_enabled": false,
+                  "math_mode": 0,
+                  "qualification": "unqualified_candidate",
+                  "version": 130101
+                },
+                "device": {
+                  "compute_capability": "12.1",
+                  "driver_api_version": 13000,
+                  "name": "NVIDIA GB10",
+                  "ordinal": 0,
+                  "total_bytes": 130661142528
+                },
+                "execution_target": "spark-sm121-candidate",
+                "kernel_flags": [
+                  "hc"
+                ],
+                "qualification": "unqualified_candidate",
+                "qualification_receipt_issued": false,
+                "source_rounding_adaptations": [
+                  "SM121 original complex multiply: imaginary-first fused product"
+                ],
+                "spark_reference_qualification": "not_run",
+                "target_selection_changes_model_arithmetic": false
+              }
+            },
+            "projection": {
+              "compiler": {
+                "architecture": "121",
+                "concatenated_source_sha256": "56ca03fb20f1208b226ddf810f2d508f4b35037e4ecb45b4e91a9c7384397262",
+                "include_path_redacted": true,
+                "nvrtc_version": [
+                  13,
+                  0
+                ],
+                "options": [
+                  "--gpu-architecture=sm_121",
+                  "--std=c++17",
+                  "--fmad=false",
+                  "--ftz=false",
+                  "--include-path=<CUDA>/include"
+                ]
+              },
+              "compiler_library_identity_sha256": "18ebbcf8cb8f2f918cbc09008cbceebe18b6695306b7acbc35ada04d0331162c",
+              "execution": {
+                "compiler": {
+                  "architecture": "121",
+                  "concatenated_source_sha256": "56ca03fb20f1208b226ddf810f2d508f4b35037e4ecb45b4e91a9c7384397262",
+                  "include_path_redacted": true,
+                  "nvrtc_version": [
+                    13,
+                    0
+                  ],
+                  "options": [
+                    "--gpu-architecture=sm_121",
+                    "--std=c++17",
+                    "--fmad=false",
+                    "--ftz=false",
+                    "--include-path=<CUDA>/include"
+                  ]
+                },
+                "cubin_sha256": "a2fa673b7a351e099f35d76d836547e8b32e492f058fdd5b1cfd119c39277cf9",
+                "cublas": {
+                  "TF32_enabled": false,
+                  "math_mode": 0,
+                  "qualification": "unqualified_candidate",
+                  "version": 130101
+                },
+                "device": {
+                  "compute_capability": "12.1",
+                  "driver_api_version": 13000,
+                  "name": "NVIDIA GB10",
+                  "ordinal": 0,
+                  "total_bytes": 130661142528
+                },
+                "execution_target": "spark-sm121-candidate",
+                "kernel_flags": [
+                  "projections"
+                ],
+                "qualification": "unqualified_candidate",
+                "qualification_receipt_issued": false,
+                "source_rounding_adaptations": [],
+                "spark_reference_qualification": "not_run",
+                "target_selection_changes_model_arithmetic": false
+              }
+            }
+          },
+          "borrowers": 2,
+          "borrows": 160,
+          "closed": false,
+          "device_owned_bytes": 181232600,
+          "entries": 2,
+          "evictions": 0,
+          "failed_cleanup_owners": 0,
+          "host_admission_bytes": 671088640,
+          "maximum_device_workspace_bytes": 17039360,
+          "maximum_entries": 2,
+          "open_seconds": 0.13396285008639097,
+          "opened": true,
+          "opens": 2,
+          "poisoned": false,
+          "qualification_receipt_issued": false,
+          "retained_layer_weights": false,
+          "reuse_hits": 158,
+          "source_sha256": {
+            "hc.py": "20fa3c0d830ceaeb2987a6b143332b0d53e2cd2de4a911a8c9df72a479a3e300",
+            "projections.py": "da2e5a9b0dd46dae1eb17e8bddaaef5bb5ad9d8bc3939f0af72261d048112854",
+            "spark_operator_backends.py": "309405b51ab2e9b5dddd0bf7e75ad8894d6a6107c4311d4413daabe3818006a1"
+          }
+        },
+        "qualification": "unqualified_candidate",
+        "sampler_operator": {
+          "calls": 0,
+          "device_owned_bytes": 0,
+          "device_peak_owned_bytes": 0,
+          "execution": {
+            "compiler": {
+              "architecture": "121",
+              "concatenated_source_sha256": "cb5f201efd8bea887151a8b7f78cd6d928bb530fe8236c4b4cbf4db12e3abd7f",
+              "include_path_redacted": true,
+              "nvrtc_version": [
+                13,
+                0
+              ],
+              "options": [
+                "--gpu-architecture=sm_121",
+                "--std=c++17",
+                "--fmad=false",
+                "--ftz=false",
+                "--include-path=<CUDA>/include",
+                "--include-path=<CUDA>/include/cccl"
+              ]
+            },
+            "cubin_sha256": "0b14f5fabf4f39ccbd9defda01f2d7739612fc31c3c1a4a34a4a2ec7331bc84a",
+            "device": {
+              "compute_capability": "12.1",
+              "driver_api_version": 13000,
+              "name": "NVIDIA GB10",
+              "ordinal": 0,
+              "total_bytes": 130661142528
+            },
+            "execution_target": "spark-sm121-candidate",
+            "kernel_flags": [
+              "sampling"
+            ],
+            "qualification": "unqualified_candidate",
+            "qualification_receipt_issued": false,
+            "sampling_policy": {
+              "multiprocessors": 48,
+              "policy_source": "observed_cuda_device",
+              "qualification": "unqualified_candidate",
+              "threads_per_sm": 1536
+            },
+            "source_rounding_adaptations": [],
+            "spark_reference_qualification": "not_run",
+            "target_selection_changes_model_arithmetic": false
+          },
+          "host_reserved_bytes": 134217728,
+          "opened": true
+        },
+        "state": {
+          "committed_tokens": 2,
+          "explicit_recoveries": 0,
+          "failed_attempts": 0,
+          "host_allowance_bytes": 33554432,
+          "host_reserved_bytes": 33554432,
+          "pending_cleanup_owners": [],
+          "pending_recovery_owners": [],
+          "position": 2,
+          "reservation_is_RSS_limit": false
+        },
+        "trajectory_replay": false
+      },
+      "minimum_available_bytes": 41110466560,
+      "mode": "s2",
+      "model_call_seconds": [
+        39.80953941587359,
+        38.09525951463729
+      ],
+      "peak_charged_host_bytes": 8949066604,
+      "prefill_tail": "skip_output_tail",
+      "result": "s1/text/s2-reuse-two-call-skip-candidate-r01.json",
+      "total_seconds": 88.19495035801083
+    }
+  ],
+  "worker_sha256": "ad17a7fbb2c298bca5018b77796760779e450f1d561237f05a2b28145832b589",
+  "workspace_context": {
+    "binding_id": "3d0125e54ffa4f8b957908e1446c0c0b",
+    "created_at": "2026-10-21T07:07:58.493546+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "0b4f64d8366b8c467478920db8c61b1ccadf2731",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "b79171b8acaddb28d0238bd994ecfdf938c9adf6a9c73105058ea12c7fb1acb8",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "s2-prepare-reuse-candidate-r01",
+    "schema_version": 1
+  }
+}
