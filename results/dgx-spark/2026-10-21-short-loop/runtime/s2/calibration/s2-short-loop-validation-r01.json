@@ -1,0 +1,247 @@
+{
+  "all40_layers_both_engrams_full_head_compared": true,
+  "automatic_retry": false,
+  "eos_qualified": false,
+  "finished_unix": 1792563437.4818368,
+  "full_model_eos_qualified": false,
+  "full_model_quality_qualified": false,
+  "general_performance_claim": false,
+  "iteration_purpose": "Fresh current-source native validation after bounded source improvements; prior calibration evidence is preserved at its original source",
+  "maximum_model_calls": 2,
+  "mode_order": [
+    "s2",
+    "baseline"
+  ],
+  "new_model_calls_maximum": 2,
+  "old_results_restamped": false,
+  "one_call_semantic_arrays_exact": true,
+  "overall_timeout_seconds": 900,
+  "owned_children_exited": true,
+  "phases": {
+    "attention-native-loop-r01": {
+      "args": [
+        "native",
+        "--bundle",
+        "s1/attention-bundle-r02",
+        "--reference-result",
+        "s1/attention/reference-s2-loop-r01.json",
+        "--run-id",
+        "s2-loop-r01"
+      ],
+      "exit_code": 0,
+      "expected_exit": 0,
+      "interpreter_identity_sha256": "4c0729de8e55af003890b6403fea86efa4a25fb95e561b5bab89b6623972af75",
+      "launch_state": "launched",
+      "launched": true,
+      "module": "vesper.spark_attention_validation",
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 1.36678914912045
+    },
+    "attention-reference-loop-r01": {
+      "args": [],
+      "exit_code": 0,
+      "expected_exit": 0,
+      "interpreter_identity_sha256": "c3312b2c9644aa6bb4b6f53507a2c970a8a1d4cfa0534aad60fc8d4e2eb7b9e8",
+      "launch_state": "launched",
+      "launched": true,
+      "module": null,
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 6.963426451198757
+    },
+    "head-compare-loop-r01": {
+      "args": [
+        "compare",
+        "--run-id",
+        "s2-head-compare-loop-r01",
+        "--native-result",
+        "s1/head/s2-head-native-loop-r01.json",
+        "--reference-result",
+        "s1/head/s2-head-reference-loop-r01.json"
+      ],
+      "exit_code": 0,
+      "expected_exit": 0,
+      "interpreter_identity_sha256": "4c0729de8e55af003890b6403fea86efa4a25fb95e561b5bab89b6623972af75",
+      "launch_state": "launched",
+      "launched": true,
+      "module": "vesper.spark_head_probe",
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 0.812265926040709
+    },
+    "head-native-loop-r01": {
+      "args": [
+        "native",
+        "--run-id",
+        "s2-head-native-loop-r01"
+      ],
+      "exit_code": 0,
+      "expected_exit": 0,
+      "interpreter_identity_sha256": "4c0729de8e55af003890b6403fea86efa4a25fb95e561b5bab89b6623972af75",
+      "launch_state": "launched",
+      "launched": true,
+      "module": "vesper.spark_head_probe",
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 51.20267257001251
+    },
+    "head-reference-loop-r01": {
+      "args": [
+        "reference",
+        "--run-id",
+        "s2-head-reference-loop-r01"
+      ],
+      "exit_code": 0,
+      "expected_exit": 0,
+      "interpreter_identity_sha256": "c3312b2c9644aa6bb4b6f53507a2c970a8a1d4cfa0534aad60fc8d4e2eb7b9e8",
+      "launch_state": "launched",
+      "launched": true,
+      "module": "vesper.spark_head_probe",
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 54.56274886382744
+    },
+    "s2-call-baseline-loop-r01": {
+      "args": [
+        "generate",
+        "--run-id",
+        "s2-call-baseline-loop-r01",
+        "--bundle",
+        "s1/attention-bundle-r02",
+        "--attention-reference-result",
+        "s1/attention/reference-s2-loop-r01.json",
+        "--attention-receipt-result",
+        "s1/attention/native-validation-s2-loop-r01.json",
+        "--max-new-tokens",
+        "64",
+        "--temperature",
+        "0",
+        "--seed",
+        "2026",
+        "--max-model-calls",
+        "1",
+        "--reuse-profile",
+        "baseline"
+      ],
+      "exit_code": 2,
+      "expected_exit": 2,
+      "interpreter_identity_sha256": "4c0729de8e55af003890b6403fea86efa4a25fb95e561b5bab89b6623972af75",
+      "launch_state": "launched",
+      "launched": true,
+      "module": "vesper.spark_text_probe",
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 70.7095714751631
+    },
+    "s2-call-s2-loop-r01": {
+      "args": [
+        "generate",
+        "--run-id",
+        "s2-call-s2-loop-r01",
+        "--bundle",
+        "s1/attention-bundle-r02",
+        "--attention-reference-result",
+        "s1/attention/reference-s2-loop-r01.json",
+        "--attention-receipt-result",
+        "s1/attention/native-validation-s2-loop-r01.json",
+        "--max-new-tokens",
+        "64",
+        "--temperature",
+        "0",
+        "--seed",
+        "2026",
+        "--max-model-calls",
+        "1",
+        "--reuse-profile",
+        "s2"
+      ],
+      "exit_code": 2,
+      "expected_exit": 2,
+      "interpreter_identity_sha256": "4c0729de8e55af003890b6403fea86efa4a25fb95e561b5bab89b6623972af75",
+      "launch_state": "launched",
+      "launched": true,
+      "module": "vesper.spark_text_probe",
+      "owned_child_exited": true,
+      "status": "finished",
+      "timeout_seconds": 300,
+      "wall_seconds": 56.42670194618404
+    }
+  },
+  "plan_sha256": "4a207e04da4c020f65b7e13d0ef48225f02f68a5763b153fc8ad663465620f8e",
+  "practical_quality_qualified": false,
+  "results": {
+    "s1/attention/native-validation-s2-loop-r01.json": {
+      "sha256": "767161daaa4e208887358e7543e8bc8e68af382ea9fb135eed267baf6001874c",
+      "status": "pass"
+    },
+    "s1/attention/reference-s2-loop-r01.json": {
+      "sha256": "edc0872942eef91b765e5ef69139a1a668c077e1c507233e9ca950b088fc7d70",
+      "status": "pass"
+    },
+    "s1/head/s2-head-compare-loop-r01.json": {
+      "sha256": "746138ae5cec1cb9ad2e6aa321627155829bf716ad979afbd648334c3abd7093",
+      "status": "pass"
+    },
+    "s1/head/s2-head-native-loop-r01.json": {
+      "sha256": "6a74561037af4d332d4e6be34d9baed26eb371392bc8143f694f042f0d90e2b3",
+      "status": "native_execution_pass"
+    },
+    "s1/head/s2-head-reference-loop-r01.json": {
+      "sha256": "64880a6b8ea3f95345f4ff7c676c63300a57faac0e87b8a73c5465e438a63ab1",
+      "status": "reference_execution_pass"
+    },
+    "s1/text/s2-call-baseline-loop-r01.json": {
+      "sha256": "c9ca867cb4f5dfc72267390c963a8a96443dbaa52402bd26482c6b4d3e62e1ca",
+      "status": "partial_model_call_budget"
+    },
+    "s1/text/s2-call-s2-loop-r01.json": {
+      "sha256": "2b3b75916c9b6521dabed957b87eb7781ff5e3766fbe26fb44137bad2701eb70",
+      "status": "partial_model_call_budget"
+    }
+  },
+  "schema": "vesper.private-native-short-loop-worker.v1",
+  "single_call_timings": [
+    {
+      "minimum_available_bytes": 41179541504,
+      "mode": "s2",
+      "model_call_seconds": 45.44617654476315,
+      "peak_charged_host_bytes": 8948009708,
+      "result": "s1/text/s2-call-s2-loop-r01.json",
+      "total_seconds": 55.68743934389204
+    },
+    {
+      "minimum_available_bytes": 41179836416,
+      "mode": "baseline",
+      "model_call_seconds": 60.01216464722529,
+      "peak_charged_host_bytes": 8882961892,
+      "result": "s1/text/s2-call-baseline-loop-r01.json",
+      "total_seconds": 70.0451156180352
+    }
+  ],
+  "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+  "stage": "finished",
+  "started_unix": 1792563194.78212,
+  "status": "finished",
+  "worker_sha256": "9a8a15867c13c5183f48381b3ef97875ce95ad767d2a2fd2ed79bef8cd08b021",
+  "workspace_context": {
+    "binding_id": "3d0125e54ffa4f8b957908e1446c0c0b",
+    "created_at": "2026-10-21T06:13:14.782106+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "b79171b8acaddb28d0238bd994ecfdf938c9adf6a9c73105058ea12c7fb1acb8",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "s2-short-loop-validation-r01",
+    "schema_version": 1
+  }
+}

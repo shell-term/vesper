@@ -54,14 +54,57 @@ calls**: inputs occupy 162–475 tokens. Seventeen fit the proposed 1,152-positi
 context with a 768-token continuation; one needs 1,242 model calls and remains
 unsupported. It is retained, not replaced or given a smaller hidden output cap.
 No answers, question text or gold key are published with this report.
+Fresh private `development-proposal-r04` plans bind the committed runtime
+`226b6106ff372fbddb1699d82084b4a75776388a`; prior draft plans and the
+historical tokenizer receipt keep their original identities. Plan preparation
+does not qualify extended positions or start any quality inference.
 
-## Open qualification
+## Fresh Spark validation
 
-Fresh Spark component/all-layer partial revalidation of the new runtime is
-pending. The deployed preceding source was `5f35873`; its historical records
-remain bound to that source. Thinking-mode ordinary EOS, extended-context
-positions, sustained continuation speed, practical quality and image input are
-not qualified by the CPU checks or tokenization. Current execution is text-only.
+Runtime source `226b6106ff372fbddb1699d82084b4a75776388a` is deployed with the
+existing workspace binding and registry unchanged. All prior remote result
+files were preserved. The Spark native environment passed **82 CPU tests**
+(a platform subset of the local checks, not 82 additional distinct contracts).
+
+The same alternating 12-pair synthetic reader comparison on Linux/aarch64
+measured baseline/new medians of **4.997/4.698 ms**, an observed 5.99% reduction.
+Both modes verified the same 8,392,704 bytes through 129 SHA calls and returned
+identical data. The ledger's per-span peak decreased by 8 MiB, all charges
+returned to zero and sampled available memory remained above 32 GiB. This is
+CPU component evidence, not model throughput. See the
+[source-bound CPU record](../results/dgx-spark/2026-10-21-short-loop/runtime/s2/short-loop/native-cpu-r02.json).
+
+Fresh Attention reference/native, full-head native/reference/comparison and
+exactly two chat one-call partials passed. The two modes agree across all 40
+layers, both Engrams and the full head; a separate local
+[cross-source audit](../results/dgx-spark/2026-10-21-short-loop/cross-source-array-audit.json)
+also matches the preserved `5f35873` S2 partial. It does not restamp that history.
+
+| Current source mode | Total including initialization/cleanup | One model-call time |
+| --- | ---: | ---: |
+| S2 reuse | 55.687 s | 45.446 s |
+| Baseline | 70.045 s | 60.012 s |
+
+The earlier `5f35873` S2 observation was 56.356 s total / 45.907 s per model call.
+The small change does **not establish a material or isolated whole-model speed
+gain**. Fixed S2-first order and uncontrolled OS/driver/storage state remain
+limitations. Both requests stop before sampling any output; these are not
+accepted continuation tokens/s measurements.
+
+All seven phase children exited; own runtime charges/leases/monitors closed and
+the GPU lock was released. Minimum sampled available memory was 41,179,541,504
+bytes, above the 32 GiB floor. The [archive manifest](../results/dgx-spark/2026-10-21-short-loop/archive-manifest.json)
+lists ten exact source-bound raw records, the prior external Windows CPU record,
+the frozen finite worker and the separate derived audit. The tokenizer-only
+record retains its original `5f35873` source. A CPU launch-path refusal occurred
+before any child/model/GPU work; its staging was retained, and the corrected
+CPU launch uses the already validated bounded executable-link policy without
+changing artifact path protection.
+
+Thinking-mode ordinary EOS, extended-context positions, sustained continuation
+speed, practical quality and image input remain unqualified. Current execution
+is text-only. The finite validation made two model calls, no EOS or practical
+quality run, and changed no model file or existing service.
 
 The concrete subset counts and time/token budgets are a reviewable development
 proposal, not an adopted approximate-quality tolerance. Longer quality runs

@@ -1,10 +1,86 @@
 {
-  "kind": "external CPU evidence archive, not Spark model execution",
-  "record": "windows-reader-cpu.json",
-  "sha256": "a9fdec95d715a6f93793fefd68e288f12d7230404160955174ccf28fad90195f",
-  "baseline_commit": "370c2e6d3d4ec9f1e6eeb9414c442f03cc8814c5",
-  "candidate_source_sha256": "dad6e4e996cc2696d00819371fe9ce1eeadcd546cbf93f7f333c7bc179132011",
-  "model_calls": 0,
-  "gpu_calls": 0,
-  "raw_bytes_preserved": true
+  "kind": "exact evidence archive; scopes and originating source retained",
+  "windows_external_cpu": {
+    "kind": "external CPU evidence archive, not Spark model execution",
+    "record": "windows-reader-cpu.json",
+    "sha256": "a9fdec95d715a6f93793fefd68e288f12d7230404160955174ccf28fad90195f",
+    "baseline_commit": "370c2e6d3d4ec9f1e6eeb9414c442f03cc8814c5",
+    "candidate_source_sha256": "dad6e4e996cc2696d00819371fe9ce1eeadcd546cbf93f7f333c7bc179132011",
+    "model_calls": 0,
+    "gpu_calls": 0,
+    "raw_bytes_preserved": true
+  },
+  "runtime_records": [
+    {
+      "path": "runtime/s1/attention/reference-s2-loop-r01.json",
+      "sha256": "edc0872942eef91b765e5ef69139a1a668c077e1c507233e9ca950b088fc7d70",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "pass"
+    },
+    {
+      "path": "runtime/s1/attention/native-validation-s2-loop-r01.json",
+      "sha256": "767161daaa4e208887358e7543e8bc8e68af382ea9fb135eed267baf6001874c",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "pass"
+    },
+    {
+      "path": "runtime/s1/head/s2-head-native-loop-r01.json",
+      "sha256": "6a74561037af4d332d4e6be34d9baed26eb371392bc8143f694f042f0d90e2b3",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "native_execution_pass"
+    },
+    {
+      "path": "runtime/s1/head/s2-head-reference-loop-r01.json",
+      "sha256": "64880a6b8ea3f95345f4ff7c676c63300a57faac0e87b8a73c5465e438a63ab1",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "reference_execution_pass"
+    },
+    {
+      "path": "runtime/s1/head/s2-head-compare-loop-r01.json",
+      "sha256": "746138ae5cec1cb9ad2e6aa321627155829bf716ad979afbd648334c3abd7093",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "pass"
+    },
+    {
+      "path": "runtime/s1/text/s2-call-s2-loop-r01.json",
+      "sha256": "2b3b75916c9b6521dabed957b87eb7781ff5e3766fbe26fb44137bad2701eb70",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "partial_model_call_budget"
+    },
+    {
+      "path": "runtime/s1/text/s2-call-baseline-loop-r01.json",
+      "sha256": "c9ca867cb4f5dfc72267390c963a8a96443dbaa52402bd26482c6b4d3e62e1ca",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "partial_model_call_budget"
+    },
+    {
+      "path": "runtime/s2/calibration/s2-short-loop-validation-r01.json",
+      "sha256": "7a627ec472667015a70dc3a49844d0d65cd8ca25c99781ffba649ce0c422328e",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "finished"
+    },
+    {
+      "path": "runtime/s2/short-loop/native-cpu-r02.json",
+      "sha256": "1b8045d318e0e28cf6328cf6cdd8297b0367d17fdae31edc0c62079cb31bafae",
+      "source_head": "226b6106ff372fbddb1699d82084b4a75776388a",
+      "status": "pass"
+    },
+    {
+      "path": "runtime/s2/short-loop/gpqa-tokenizer-r01.json",
+      "sha256": "c5e5b559b86eec83edca5f6ba97e2e131333078a07d49df8e8eb649b0bc2252f",
+      "source_head": "5f35873c8a4c3a8754eb3915e22e5382dbbc4c46",
+      "status": "fixed_gpqa_tokenized_only"
+    }
+  ],
+  "worker": {
+    "path": "native-short-loop-worker-r01.py",
+    "sha256": "9a8a15867c13c5183f48381b3ef97875ce95ad767d2a2fd2ed79bef8cd08b021"
+  },
+  "local_derived_audit": "cross-source-array-audit.json",
+  "local_derived_audit_sha256": "704e3bc44f53a1fbaff9d0d370e632203aab2c3241c1581f7efc95400f7ae9aa",
+  "source_runtime": "226b6106ff372fbddb1699d82084b4a75776388a",
+  "source_tokenization_historical": "5f35873c8a4c3a8754eb3915e22e5382dbbc4c46",
+  "new_full_model_calls": 2,
+  "ordinary_eos_or_quality_runs": 0,
+  "original_raw_bytes_preserved": true
 }
