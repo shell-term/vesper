@@ -1,5 +1,9 @@
 # Vesper（ヴェスパー）
 
+DGX Spark版の[S1検証記録](docs/spark-native-integration.md)を追加しました。
+元の専門家1個の16条件・144検査で公式参照との一致を確認しました。
+Sparkでの全40層の文章生成と品質・速度の評価は、別の未完了条件です。
+
 **機種別の入口：** [PC版](platforms/pc-heterogeneous/README.md)・
 [DGX Spark版](platforms/dgx-spark/README.md)。進捗・結果は機種別に管理します。
 以下の既存報告はPC版の検証記録で、Spark版の合格を示しません。

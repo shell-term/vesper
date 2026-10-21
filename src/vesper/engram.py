@@ -1,6 +1,7 @@
 """Original Engram arithmetic with the native CUDA Driver and bounded rows."""
 
 from contextlib import ExitStack
+from copy import deepcopy
 import ctypes as C
 import hashlib
 import threading
@@ -8,6 +9,7 @@ import threading
 import numpy as np
 
 from .cuda import Driver,Device,compile_probe
+from .execution_target import resolve_execution_target, compile_execution_kernel
 from .engram_assets import CONTROL_LAYOUT
 from .normalization import mean_threads
 from .resources import MemoryBudget,MiB,GiB
@@ -29,7 +31,9 @@ def validate_input(hidden,ids,mask):
 
 
 class NativeEngram:
-    def __init__(self,arrays,rows,ordinal=0):
+    def __init__(self,arrays,rows,ordinal=0,*,execution_target=None):
+        self.execution_target = resolve_execution_target(execution_target)
+        self.execution_provenance = self.execution_target.describe()
         self.arrays,self.rows,self.ordinal=arrays,rows,ordinal
         self.budget=MemoryBudget(cap=512*MiB); self.stack=ExitStack(); self.lock=threading.RLock(); self.opened=False
         self.calls_started=0; self.calls_completed=0
@@ -43,12 +47,14 @@ class NativeEngram:
                     a=self.arrays.get(name)
                     if not isinstance(a,np.ndarray) or a.shape!=tuple(shape) or a.dtype!=(np.uint16 if dtype=='BF16' else np.uint8) or not a.flags.c_contiguous:
                         raise ValueError("Original Engram arithmetic control layout differs")
-                self.driver=Driver(); self.device=self.stack.enter_context(Device(self.driver,self.ordinal,cap=256*MiB,free_floor=2*GiB))
-                info=next(d for d in self.driver.inventory()['devices'] if d['ordinal']==self.ordinal)
-                if info['compute_capability']!='8.9': raise ValueError("Engram arithmetic requires the registered SM89 profile")
-                self.compiler={}; binary=compile_probe('89',engram=True,compiler_info=self.compiler); self.cubin_sha256=hashlib.sha256(binary).hexdigest()
-                if self.compiler['nvrtc_version']!=[12,4] or self.cubin_sha256!=ENGRAM_CUBIN_SHA256:
-                    raise ValueError("Unregistered native Engram compiler or binary")
+                self.driver=Driver()
+                inventory=self.driver.inventory(); info=next(d for d in inventory['devices'] if d['ordinal']==self.ordinal)
+                self.execution_provenance['device']=self.execution_target.validate_device(info,inventory)
+                self.device=self.stack.enter_context(Device(self.driver,self.ordinal,cap=256*MiB,free_floor=2*GiB))
+                self.compiler={}
+                binary,provenance=compile_execution_kernel(compile_probe,self.execution_target,
+                    engram=True,compiler_info=self.compiler,pc_cubin_sha256=ENGRAM_CUBIN_SHA256)
+                self.execution_provenance.update(provenance); self.cubin_sha256=provenance['cubin_sha256']
                 self.module=self.device.load(binary)
                 self.weights={n:self._upload(self.stack,a) for n,a in self.arrays.items()}
                 self.opened=True; return self
@@ -108,7 +114,8 @@ class NativeEngram:
 
     def stats(self):
         d=getattr(self,'device',None)
-        return {'host_allowance_bytes':self.budget.cap,'host_reserved_bytes':self.budget.reserved,
+        return {'execution':deepcopy(self.execution_provenance),
+            'host_allowance_bytes':self.budget.cap,'host_reserved_bytes':self.budget.reserved,
             'device_peak_owned_bytes':d.peak if d else 0,'device_owned_bytes':sum(d.allocations.values()) if d else 0,
             'owned_context_active':bool(d.context) if d else False,'reservation_is_RSS_limit':False,
             'calls_started':self.calls_started,'calls_completed':self.calls_completed}

@@ -1,0 +1,4813 @@
+{
+  "blas": {
+    "TF32_enabled": false,
+    "handle_source": "torch.cuda.current_blas_handle",
+    "math_mode": 0,
+    "preferred_backend": "Cublas",
+    "qualification": "unqualified_candidate",
+    "version": 130101
+  },
+  "case_identity": [
+    {
+      "batch": 1,
+      "dtype": "<u2",
+      "input_sha256": "84ff92691f909a05b224e1c56abb4864f01b4f8e3c854e4bb4c7baf1d3f6d652",
+      "pattern": "zero",
+      "seed": null,
+      "shape": [
+        1,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 1,
+      "dtype": "<u2",
+      "input_sha256": "3a997bb1bdb0bc18454993bc32d3b99afe130373ca8f3fbf066b308bbe1df71e",
+      "pattern": "pattern",
+      "seed": null,
+      "shape": [
+        1,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 1,
+      "dtype": "<u2",
+      "input_sha256": "f0a06b4e9f068f5d7b6f035634eba112ce80ceba013c0813513f02dfa9be2a0d",
+      "pattern": "random",
+      "seed": 17,
+      "shape": [
+        1,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 1,
+      "dtype": "<u2",
+      "input_sha256": "451bcf50a9b05655379ccffab4c9896219b9cf8a1c9d1cd6d4f68d124dd40f17",
+      "pattern": "random",
+      "seed": 2026,
+      "shape": [
+        1,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 2,
+      "dtype": "<u2",
+      "input_sha256": "cc61635da46b2c9974335ea37e0b5fd660a5c8a42a89b271fa7ec2ac4b8b26f6",
+      "pattern": "zero",
+      "seed": null,
+      "shape": [
+        2,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 2,
+      "dtype": "<u2",
+      "input_sha256": "74ecf9d87f13172e665c83113550137c263658e710a7d6d22dfe8f9e65d97cfd",
+      "pattern": "pattern",
+      "seed": null,
+      "shape": [
+        2,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 2,
+      "dtype": "<u2",
+      "input_sha256": "5d604d1338b3381338835dd592561ef73d7a786f058af0a181bab5ac2cf0a47b",
+      "pattern": "random",
+      "seed": 17,
+      "shape": [
+        2,
+        1,
+        5120
+      ]
+    },
+    {
+      "batch": 2,
+      "dtype": "<u2",
+      "input_sha256": "9d2f3671d5ec5a66123923e98f55d62a906fcd6e2d62cdb8e3dabf1ced207ec5",
+      "pattern": "random",
+      "seed": 2026,
+      "shape": [
+        2,
+        1,
+        5120
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": 0,
+      "wall_seconds": 0.15468689799308777
+    },
+    {
+      "id": 1,
+      "wall_seconds": 0.016591469757258892
+    },
+    {
+      "id": 2,
+      "wall_seconds": 0.017049810849130154
+    },
+    {
+      "id": 3,
+      "wall_seconds": 0.01514017442241311
+    },
+    {
+      "id": 4,
+      "wall_seconds": 0.021173080895096064
+    },
+    {
+      "id": 5,
+      "wall_seconds": 0.014457227662205696
+    },
+    {
+      "id": 6,
+      "wall_seconds": 0.0144803486764431
+    },
+    {
+      "id": 7,
+      "wall_seconds": 0.014449992217123508
+    }
+  ],
+  "component": {
+    "catalog_sha256": "f2595189d8a80ca4e1245a3cbfbaa32920ee1a8daee71376f81c3ac8f4d7e4b9",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "receipt": {
+      "block_bytes": 65536,
+      "blocks": 20201,
+      "bytes": 1323837624,
+      "file": "model-00043-of-00048.safetensors",
+      "index_bytes": 647168,
+      "index_file": "model-00043-of-00048.safetensors.sha256",
+      "index_sha256": "9ba964c4bae922917d90d4234aae1b239b7aad099e7df38d8022b940e92a3d20",
+      "sha256": "4ae12b941c3facf8616ce62dd45bc6868076c2aeb82106f98123ea6c5bb64182"
+    },
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "tensor": {
+      "bytes": 1323827200,
+      "dtype": "BF16",
+      "name": "head.weight",
+      "shape": [
+        129280,
+        5120
+      ],
+      "shard": "model-00043-of-00048.safetensors",
+      "shard_byte_offset": 184
+    },
+    "tensor_sha256": "12f45f83b1a1cd9f440f48f2d5a8b7b38b0a71fc9b35b7f9b7de7c4d81673508"
+  },
+  "diagnostic_cap_bytes": 67108864,
+  "diagnostics": {
+    "artifact": "s1/head/s1-head-reference-r05/diagnostics.npz",
+    "bytes": 6457686,
+    "sha256": "2bc2b8588f0232252e312061b55caeefe2f5e045b2055311f617ef78c84d3fde"
+  },
+  "execution_process_instance": "5b22230a201343b0a7c02773fc1b49ef",
+  "framework_and_context_memory_not_hard_capped": true,
+  "full_checkpoint_available_or_registered": false,
+  "full_model_quality_qualified": false,
+  "full_vocabulary": 129280,
+  "general_performance_claim": false,
+  "head_compute_dtype": "float32",
+  "head_storage_dtype": "BF16",
+  "initialization_wall_seconds": 43.968441030941904,
+  "memory_after_owned_close": {
+    "accounting": "explicit buffers plus conservative existing component admissions; overlapping admissions may overestimate payload bytes",
+    "accounting_kinds": {
+      "control_admission": 67108864
+    },
+    "available_floor_bytes": 34359738368,
+    "cancelled": false,
+    "categories": {
+      "activations": 0,
+      "admission": 0,
+      "cache": 0,
+      "diagnostics": 0,
+      "engram": 0,
+      "integrity": 0,
+      "kv": 0,
+      "metadata": 67108864,
+      "pinned": 0,
+      "scratch": 0,
+      "weights": 0
+    },
+    "charged_host_bytes": 67108864,
+    "charged_host_peak_bytes": 7113539584,
+    "control_metadata_admission_bytes": 67108864,
+    "device_caps": {
+      "0": 3221225472
+    },
+    "device_peak_bytes": {},
+    "device_used_bytes": {},
+    "explicit_host_bytes": 0,
+    "explicit_host_peak_bytes": 0,
+    "external_phase_counts": {},
+    "external_phase_samples": [],
+    "host_cap_bytes": 8589934592,
+    "inflight_operations": 0,
+    "last_refusal": null,
+    "live_leases": 1,
+    "live_reclaimers": 0,
+    "maximum_live_allocation_records": 16384,
+    "maximum_reclaimers": 512,
+    "minimum_observed_available_bytes": 42853715968,
+    "monitor_checks": 113,
+    "monitor_error": null,
+    "monitor_interval_seconds": 0.25,
+    "monitor_pressure_refusals": 0,
+    "monitor_thread_stopped": false,
+    "owners": {
+      "memory_policy_control": 67108864
+    },
+    "pinned_bytes": 0,
+    "pinned_cap_bytes": 134217728,
+    "pinned_peak_bytes": 0,
+    "process_baseline": {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 43184128,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 31911936,
+      "resident_bytes": 43184128,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 929681408
+    },
+    "reclaim_events": 0,
+    "reclaimed_charge_bytes": 0,
+    "refusals": 0,
+    "reservation_is_RSS_or_OS_limit": false,
+    "sampled_process_peaks": {
+      "private_resident_bytes": 729796608,
+      "resident_bytes": 741326848
+    },
+    "samples": [
+      {
+        "available_bytes": 46343008256,
+        "charged_host_bytes": 67108864,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "runtime_entry",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 43184128,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 31911936,
+          "resident_bytes": 43184128,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 929681408
+        }
+      },
+      {
+        "available_bytes": 46202638336,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77524992,
+          "resident_bytes": 88866816,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46208569344,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77529088,
+          "resident_bytes": 88870912,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46209044480,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77529088,
+          "resident_bytes": 88870912,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46209867776,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77529088,
+          "resident_bytes": 88870912,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46218125312,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77533184,
+          "resident_bytes": 88875008,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46226780160,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77533184,
+          "resident_bytes": 88875008,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46226632704,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77533184,
+          "resident_bytes": 88875008,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46234890240,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77533184,
+          "resident_bytes": 88875008,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46234255360,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77533184,
+          "resident_bytes": 88875008,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46244397056,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77537280,
+          "resident_bytes": 88879104,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46244270080,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77537280,
+          "resident_bytes": 88879104,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46259666944,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77537280,
+          "resident_bytes": 88879104,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46259666944,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77537280,
+          "resident_bytes": 88879104,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46265982976,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77537280,
+          "resident_bytes": 88879104,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46266826752,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77537280,
+          "resident_bytes": 88879104,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46266826752,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46275751936,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46276599808,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46280683520,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46281064448,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46279081984,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46282252288,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46282735616,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46286880768,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46286880768,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46285447168,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46190387200,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 240144384,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 228741120,
+          "resident_bytes": 240144384,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14914301952
+        }
+      },
+      {
+        "available_bytes": 43066437632,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664629248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653099008,
+          "resident_bytes": 664629248,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43057778688,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 663465984,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640552960,
+          "resident_bytes": 652083200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43040276480,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664690688,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653160448,
+          "resident_bytes": 664690688,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43050094592,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664698880,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653168640,
+          "resident_bytes": 664698880,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43039793152,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664711168,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653180928,
+          "resident_bytes": 664711168,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43061231616,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 663998464,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640614400,
+          "resident_bytes": 652144640,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43059814400,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664072192,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640634880,
+          "resident_bytes": 652165120,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43045998592,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664752128,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653221888,
+          "resident_bytes": 664752128,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43060793344,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664784896,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653254656,
+          "resident_bytes": 664784896,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43075665920,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664125440,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640688128,
+          "resident_bytes": 652218368,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43088289792,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664813568,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653283328,
+          "resident_bytes": 664813568,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43116015616,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664166400,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640733184,
+          "resident_bytes": 652263424,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43128770560,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664178688,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640741376,
+          "resident_bytes": 652271616,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43114569728,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664190976,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640757760,
+          "resident_bytes": 652288000,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43116826624,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664887296,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653357056,
+          "resident_bytes": 664887296,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43106672640,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664895488,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653365248,
+          "resident_bytes": 664895488,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43124965376,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664231936,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640794624,
+          "resident_bytes": 652324864,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43119472640,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664240128,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640802816,
+          "resident_bytes": 652333056,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43112247296,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664248320,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640815104,
+          "resident_bytes": 652345344,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43116212224,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664969216,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653438976,
+          "resident_bytes": 664969216,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43110490112,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664297472,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640864256,
+          "resident_bytes": 652394496,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43116814336,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664309760,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640876544,
+          "resident_bytes": 652406784,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149219840
+        }
+      },
+      {
+        "available_bytes": 43115466752,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664330240,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653492224,
+          "resident_bytes": 665022464,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149219840
+        }
+      },
+      {
+        "available_bytes": 43129884672,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664346624,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640917504,
+          "resident_bytes": 652447744,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149219840
+        }
+      },
+      {
+        "available_bytes": 43123027968,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664371200,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640937984,
+          "resident_bytes": 652468224,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149219840
+        }
+      },
+      {
+        "available_bytes": 43111694336,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664375296,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640954368,
+          "resident_bytes": 652484608,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149219840
+        }
+      },
+      {
+        "available_bytes": 42947710976,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 741134336,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 729796608,
+          "resident_bytes": 741326848,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23231406080
+        }
+      }
+    ],
+    "unified_device_memory": true
+  },
+  "memory_after_runtime_close": {
+    "accounting": "explicit buffers plus conservative existing component admissions; overlapping admissions may overestimate payload bytes",
+    "accounting_kinds": {},
+    "available_floor_bytes": 34359738368,
+    "cancelled": false,
+    "categories": {
+      "activations": 0,
+      "admission": 0,
+      "cache": 0,
+      "diagnostics": 0,
+      "engram": 0,
+      "integrity": 0,
+      "kv": 0,
+      "metadata": 0,
+      "pinned": 0,
+      "scratch": 0,
+      "weights": 0
+    },
+    "charged_host_bytes": 0,
+    "charged_host_peak_bytes": 7113539584,
+    "control_metadata_admission_bytes": 67108864,
+    "device_caps": {
+      "0": 3221225472
+    },
+    "device_peak_bytes": {},
+    "device_used_bytes": {},
+    "explicit_host_bytes": 0,
+    "explicit_host_peak_bytes": 0,
+    "external_phase_counts": {},
+    "external_phase_samples": [],
+    "host_cap_bytes": 8589934592,
+    "inflight_operations": 0,
+    "last_refusal": null,
+    "live_leases": 0,
+    "live_reclaimers": 0,
+    "maximum_live_allocation_records": 16384,
+    "maximum_reclaimers": 512,
+    "minimum_observed_available_bytes": 42853715968,
+    "monitor_checks": 113,
+    "monitor_error": null,
+    "monitor_interval_seconds": 0.25,
+    "monitor_pressure_refusals": 0,
+    "monitor_thread_stopped": true,
+    "owners": {},
+    "pinned_bytes": 0,
+    "pinned_cap_bytes": 134217728,
+    "pinned_peak_bytes": 0,
+    "process_baseline": {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 43184128,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 31911936,
+      "resident_bytes": 43184128,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 929681408
+    },
+    "reclaim_events": 0,
+    "reclaimed_charge_bytes": 0,
+    "refusals": 0,
+    "reservation_is_RSS_or_OS_limit": false,
+    "sampled_process_peaks": {
+      "private_resident_bytes": 729796608,
+      "resident_bytes": 741326848
+    },
+    "samples": [
+      {
+        "available_bytes": 46343008256,
+        "charged_host_bytes": 67108864,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "runtime_entry",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 43184128,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 31911936,
+          "resident_bytes": 43184128,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 929681408
+        }
+      },
+      {
+        "available_bytes": 46202638336,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77524992,
+          "resident_bytes": 88866816,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46208569344,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77529088,
+          "resident_bytes": 88870912,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46209044480,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77529088,
+          "resident_bytes": 88870912,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46209867776,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77529088,
+          "resident_bytes": 88870912,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46218125312,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77533184,
+          "resident_bytes": 88875008,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46226780160,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77533184,
+          "resident_bytes": 88875008,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46226632704,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77533184,
+          "resident_bytes": 88875008,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46234890240,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77533184,
+          "resident_bytes": 88875008,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46234255360,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77533184,
+          "resident_bytes": 88875008,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46244397056,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77537280,
+          "resident_bytes": 88879104,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46244270080,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77537280,
+          "resident_bytes": 88879104,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46259666944,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77537280,
+          "resident_bytes": 88879104,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46259666944,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77537280,
+          "resident_bytes": 88879104,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46265982976,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77537280,
+          "resident_bytes": 88879104,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46266826752,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77537280,
+          "resident_bytes": 88879104,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46266826752,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46275751936,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46276599808,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46280683520,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46281064448,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46279081984,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46282252288,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46282735616,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46286880768,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46286880768,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46285447168,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 184885248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 77541376,
+          "resident_bytes": 88883200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14194958336
+        }
+      },
+      {
+        "available_bytes": 46190387200,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 240144384,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 228741120,
+          "resident_bytes": 240144384,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 14914301952
+        }
+      },
+      {
+        "available_bytes": 43066437632,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664629248,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653099008,
+          "resident_bytes": 664629248,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43057778688,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 663465984,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640552960,
+          "resident_bytes": 652083200,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43040276480,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664690688,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653160448,
+          "resident_bytes": 664690688,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43050094592,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664698880,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653168640,
+          "resident_bytes": 664698880,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43039793152,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664711168,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653180928,
+          "resident_bytes": 664711168,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43061231616,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 663998464,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640614400,
+          "resident_bytes": 652144640,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43059814400,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664072192,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640634880,
+          "resident_bytes": 652165120,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43045998592,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664752128,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653221888,
+          "resident_bytes": 664752128,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43060793344,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664784896,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653254656,
+          "resident_bytes": 664784896,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43075665920,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664125440,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640688128,
+          "resident_bytes": 652218368,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43088289792,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664813568,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653283328,
+          "resident_bytes": 664813568,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43116015616,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664166400,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640733184,
+          "resident_bytes": 652263424,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43128770560,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664178688,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640741376,
+          "resident_bytes": 652271616,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43114569728,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664190976,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640757760,
+          "resident_bytes": 652288000,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43116826624,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664887296,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653357056,
+          "resident_bytes": 664887296,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43106672640,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664895488,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653365248,
+          "resident_bytes": 664895488,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43124965376,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664231936,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640794624,
+          "resident_bytes": 652324864,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43119472640,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664240128,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640802816,
+          "resident_bytes": 652333056,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43112247296,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664248320,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640815104,
+          "resident_bytes": 652345344,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43116212224,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664969216,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653438976,
+          "resident_bytes": 664969216,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43110490112,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664297472,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640864256,
+          "resident_bytes": 652394496,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149084672
+        }
+      },
+      {
+        "available_bytes": 43116814336,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664309760,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640876544,
+          "resident_bytes": 652406784,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149219840
+        }
+      },
+      {
+        "available_bytes": 43115466752,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664330240,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 653492224,
+          "resident_bytes": 665022464,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149219840
+        }
+      },
+      {
+        "available_bytes": 43129884672,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664346624,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640917504,
+          "resident_bytes": 652447744,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149219840
+        }
+      },
+      {
+        "available_bytes": 43123027968,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664371200,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640937984,
+          "resident_bytes": 652468224,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149219840
+        }
+      },
+      {
+        "available_bytes": 43111694336,
+        "charged_host_bytes": 6590577472,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 664375296,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 640954368,
+          "resident_bytes": 652484608,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23149219840
+        }
+      },
+      {
+        "available_bytes": 42947710976,
+        "charged_host_bytes": 6585334592,
+        "device_bytes": {},
+        "explicit_buffer_bytes": 0,
+        "phase": "memory_watch",
+        "pinned_bytes": 0,
+        "process": {
+          "locked_bytes": 0,
+          "measurement": "proc status/smaps_rollup",
+          "peak_resident_bytes": 741134336,
+          "platform": "Linux",
+          "private_commit_bytes": null,
+          "private_hugetlb_bytes": 0,
+          "private_resident_bytes": 729796608,
+          "resident_bytes": 741326848,
+          "resident_measurement": "smaps_rollup",
+          "virtual_bytes": 23231406080
+        }
+      }
+    ],
+    "unified_device_memory": true
+  },
+  "memory_observations": [
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 46343008256,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 46054469632,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43095420928,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43066437632,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43078201344,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43064246272,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43072778240,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43061460992,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43082665984,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43063484416,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43078729728,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43074215936,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43074215936,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43057778688,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43057778688,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43042639872,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43065417728,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43062214656,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43061760000,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43048796160,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43065573376,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43056898048,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43074129920,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43049697280,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43049439232,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43040595968,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43050401792,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43041820672,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43042537472,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43047940096,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43063799808,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43050352640,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43050094592,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43037741056,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43053150208,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43040145408,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43054739456,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43039793152,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43054886912,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43041468416,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43071913984,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43063226368,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43062996992,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43046219776,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43046219776,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43046219776,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43061489664,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43044454400,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43057491968,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43044380672,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43058135040,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43053600768,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43070017536,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43057324032,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43066306560,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43053158400,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43068530688,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43060060160,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43059814400,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43055104000,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43063701504,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43054862336,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43067666432,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43046244352,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43050090496,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43043373056,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43056222208,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43038867456,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43051536384,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43038842880,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43074527232,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43066396672,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43085750272,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43072847872,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43091169280,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43082670080,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43087032320,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43070455808,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43078615040,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43070226432,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43080802304,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43060793344,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43070005248,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43065393152,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43084410880,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43079503872,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43087708160,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43083452416,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43092750336,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43067154432,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43076022272,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43071471616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43102175232,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43088957440,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43098632192,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43090292736,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43101192192,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43088289792,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43107065856,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43098554368,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43107368960,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43091017728,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43102814208,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43094315008,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43104989184,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43089305600,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43110518784,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43098980352,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43107373056,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43094642688,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43103793152,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43096170496,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43106566144,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43093176320,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43114479616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43105771520,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43116580864,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43112194048,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43123064832,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43118551040,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43137007616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43120230400,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43128619008,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43115978752,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43124666368,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43107569664,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43118157824,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43118047232,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43126820864,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43105648640,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43114569728,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43101954048,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43111636992,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43102928896,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43113545728,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43100233728,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43121340416,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43116826624,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43126124544,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43100831744,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43109146624,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43100119040,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43111186432,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43106672640,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43115061248,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43102306304,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43110985728,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43106471936,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43116777472,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43108249600,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43119087616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43106185216,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43125026816,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43112382464,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43123290112,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43101999104,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43111317504,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43111272448,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43119583232,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43106889728,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43115565056,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43094441984,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43108450304,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43103936512,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43112566784,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43104251904,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43124953088,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43107201024,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43116634112,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43112439808,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43120947200,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43103395840,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43111854080,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43103145984,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43111923712,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43100418048,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43109859328,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43104964608,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43113570304,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43104862208,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43113574400,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43100782592,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43109625856,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43105308672,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43113709568,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43105243136,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43116040192,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43107430400,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43118182400,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43116212224,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43127054336,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43105763328,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43114733568,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43102027776,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43110809600,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43110490112,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43119325184,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43097788416,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43106377728,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43106058240,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43117002752,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43103985664,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43113963520,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43105255424,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43115008000,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43110699008,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43119677440,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43119554560,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43130359808,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43112550400,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43120623616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43112206336,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43121037312,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43116277760,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43124674560,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43120418816,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43128627200,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43115466752,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43134214144,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43125727232,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43136454656,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43111038976,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43129466880,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43120709632,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43129884672,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43121041408,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43129569280,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43125227520,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43133968384,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43108356096,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43116904448,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43104002048,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43114708992,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43110195200,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43121352704,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43104247808,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43123335168,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43114946560,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43123605504,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43110125568,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43118460928,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43110010880,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43120779264,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43112071168,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43120988160,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43103891456,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43111776256,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43111694336,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43120832512,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43116183552,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43127353344,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43114835968,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43123818496,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43115110400,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43125932032,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43057848320,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 43057848320,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42865135616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42865135616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42865135616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42865135616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42865135616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42865135616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42863771648,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42863771648,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42855084032,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42855084032,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42855084032,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42855084032,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42853715968,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 42853715968,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45557190656,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    }
+  ],
+  "memory_runtime_closed": true,
+  "mode": "reference",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "native_block_rows": 512,
+  "native_device_cap_bytes": 3221225472,
+  "native_head_retained_on_device": true,
+  "network_payload_bytes": 0,
+  "observed_hardware": {
+    "attributes": {
+      "concurrent_managed_access": 1,
+      "host_page_tables": 1,
+      "integrated": 1,
+      "managed_memory": 1,
+      "pageable_memory_access": 1,
+      "unified_addressing": 1
+    },
+    "compute_capability": [
+      12,
+      1
+    ],
+    "cuda_capacity_added_to_physical_ram": false,
+    "device_count": 1,
+    "driver_api_version": 13000,
+    "library": {
+      "absolute_path_redacted": true,
+      "basename": "libcuda.so.580.178.04",
+      "elf_architecture": "aarch64",
+      "file_bytes": 96460560,
+      "kind": "driver",
+      "layout": "system_aarch64"
+    },
+    "name": "NVIDIA GB10",
+    "ordinal": 0,
+    "reported_cuda_total_bytes": 130661142528
+  },
+  "original_kernel_parity_qualified": false,
+  "owned_resources_closed": true,
+  "physical_available_floor_bytes": 34359738368,
+  "process_after_cleanup": {
+    "locked_bytes": 0,
+    "measurement": "proc status/smaps_rollup",
+    "peak_resident_bytes": 851095552,
+    "platform": "Linux",
+    "private_commit_bytes": null,
+    "private_hugetlb_bytes": 0,
+    "private_resident_bytes": 839499776,
+    "resident_bytes": 851095552,
+    "resident_measurement": "smaps_rollup",
+    "virtual_bytes": 23338950656
+  },
+  "reference": {
+    "full_device_fp32_head_bytes": 2647654400,
+    "license_sha256": "f2c6c602815669d292889e5be8c802f2ed950653b77999b1584e8e6aed25d040",
+    "maximum_host_weight_rows": 512,
+    "method": "ParallelHead.forward",
+    "method_ast_sha256": "c14e04c82764a284101367328d11321662d026de116e03e4a655c5f431d512ed",
+    "method_body_modified": false,
+    "model_source_sha256": "e5decd76fe70fd56ef2f10124d245c6f64fb6a0003cc9068a1d3182a168b8d2d",
+    "torch_cuda_version": "13.0",
+    "torch_revision": "5c4886908584029761b579af026dcfb627c84070",
+    "torch_version": "2.14.1+cu130",
+    "whole_host_head_materialized": false,
+    "world_size": 1
+  },
+  "reference_admission_bytes": 6442450944,
+  "reference_framework_memory": {
+    "CUDA_context_released_on_process_exit": true,
+    "allocated_bytes_after_weight_close": 33554432,
+    "not_added_to_physical_capacity": true,
+    "peak_allocated_bytes": 2683353088,
+    "peak_reserved_bytes": 2694840320,
+    "reserved_bytes_after_weight_close": 33554432
+  },
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "rows": {
+    "full_checkpoint_available_or_registered": false,
+    "head_only_component": true,
+    "host_reserved_bytes": 8665920,
+    "logical_requested_row_bytes": 1323827200,
+    "manifest_sha256": "07f5d23989b604aa1ef452abc4e048fbea95fbf8ca615dbf3349894df822a2d4",
+    "maximum_rows_per_call": 512,
+    "maximum_verified_source_span_bytes": 4096,
+    "network_payload_bytes": 0,
+    "required_complete_original_shards": 1,
+    "row_calls": 253,
+    "whole_host_head_materialized": false
+  },
+  "schema": "vesper.spark-head-probe.v1",
+  "scope": "original BF16 full-vocabulary head lifted exactly to FP32; generated BF16 hidden inputs",
+  "separate_process_mode": true,
+  "status": "reference_execution_pass",
+  "workspace_context": {
+    "binding_id": "8480a267191e4fafab923ad834fd976c",
+    "created_at": "2026-10-21T01:26:57.321076+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "4b7e816ff7725b7b23b37ee65867231d85af64af",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "cb94348f9dbcccb8aca04b379b3cc2637e3c5ca2385236d2078336469a9a7baf",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "s1-head-reference-r05",
+    "schema_version": 1
+  }
+}

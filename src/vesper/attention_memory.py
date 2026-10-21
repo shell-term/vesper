@@ -25,20 +25,26 @@ DECLARATION = re.compile(r"  void\* (\w+) = \(\(void\*\)\(\(char\*\)buf_dyn_shme
 
 def validate_qualification(report):
     """Reject incomplete/failed adapter evidence before accepting real inputs."""
+    return _validate_qualification_for(report, profiles=CODEGEN_PROFILES,
+        probe="official_attention_PTX_memory_adapter", nvrtc=(13, 4), capability="8.9")
+
+
+def _validate_qualification_for(report, *, profiles, probe, nvrtc, capability):
+    """Shared coverage checks; public platform validators supply strict pins."""
     from .attention_storage import STAGES
-    required = {"probe": "official_attention_PTX_memory_adapter", "status": "pass", "model": MODEL, "revision": REVISION,
+    required = {"probe": probe, "status": "pass", "model": MODEL, "revision": REVISION,
                 "official_arithmetic_memory_adapter_gate": "pass", "negative_control_detected": True, "tilelang_version": "0.1.12"}
     if (not isinstance(report, dict) or any(report.get(k) != v for k, v in required.items())
-            or tuple(report.get("nvrtc_version", ())) != (13, 4)
+            or tuple(report.get("nvrtc_version", ())) != nvrtc
             or report.get("reference", {}).get("files", {}).get("kernel.py") != REFERENCE_HASHES["kernel.py"]
-            or report.get("device", {}).get("compute_capability") != "8.9"):
+            or report.get("device", {}).get("compute_capability") != capability):
         raise ValueError("Missing passing qualified Attention memory provenance")
-    profiles = report.get("profiles", [])
-    if len(profiles) != 6 or {p.get("original_generated_cuda_sha256") for p in profiles} != set(CODEGEN_PROFILES):
+    expected_profiles, observed_profiles = profiles, report.get("profiles", [])
+    if len(observed_profiles) != 6 or {p.get("original_generated_cuda_sha256") for p in observed_profiles} != set(expected_profiles):
         raise ValueError("Attention qualification does not cover all six code-generation profiles")
-    for p in profiles:
+    for p in observed_profiles:
         audit = p.get("ptx_audit", {})
-        expected_profile = CODEGEN_PROFILES[p["original_generated_cuda_sha256"]]
+        expected_profile = expected_profiles[p["original_generated_cuda_sha256"]]
         if (tuple(p.get(k) for k in ("heads", "dimension", "diagnostics", "original_shared_bytes")) != expected_profile
                 or p.get("original_binary_reproduction") is not True or p.get("query_slab_inspection") != "pass"
                 or audit.get("inverse_ptx_recovery") != "pass" or audit.get("floating_point_instructions_unchanged") is not True
@@ -72,12 +78,17 @@ def validate_qualification(report):
 
 
 def _profile(source):
+    return _profile_for(source, CODEGEN_PROFILES)
+
+
+def _profile_for(source, profiles):
+    """Policy-independent lookup; platform entry points supply pinned maps."""
     if not isinstance(source, str) or len(source) > 128 * 1024:
         raise ValueError("Excessive or invalid generated Attention CUDA")
     digest = hashlib.sha256(source.encode()).hexdigest()
-    if digest not in CODEGEN_PROFILES:
+    if digest not in profiles:
         raise ValueError("Unqualified generated CUDA profile; refusing memory edits")
-    return digest, CODEGEN_PROFILES[digest]
+    return digest, profiles[digest]
 
 
 def _edit(source, edits):
@@ -103,7 +114,11 @@ def _edit(source, edits):
 
 
 def inspect_codegen(source):
-    digest, (heads, dimension, diagnostics, required) = _profile(source)
+    return _inspect_codegen_for(source, CODEGEN_PROFILES)
+
+
+def _inspect_codegen_for(source, profiles, *, output_alias=False):
+    digest, (heads, dimension, diagnostics, required) = _profile_for(source, profiles)
     q_bytes = heads * dimension * 2
     declarations = list(DECLARATION.finditer(source))
     expected_names = {"q_shared", "kv_shared", "o_shared", "acc_s_cast", "workspace", "workspace_1"}
@@ -115,6 +130,8 @@ def inspect_codegen(source):
         if name == "q_shared":
             if offset != 0:
                 raise ValueError("Query must occupy the first shared-memory slab")
+        elif output_alias and name == "o_shared" and offset == 0:
+            continue
         else:
             if offset < q_bytes or offset % 1024:
                 raise ValueError("A live allocation overlaps the removed Query slab")
@@ -135,8 +152,12 @@ def inspect_codegen(source):
 
 
 def loader_check_cuda(source):
+    return _loader_check_cuda_for(source, CODEGEN_PROFILES)
+
+
+def _loader_check_cuda_for(source, profiles):
     from .attention_ptx import qualification_helper
-    digest, (heads, dimension, diagnostics, _) = _profile(source)
+    digest, (heads, dimension, diagnostics, _) = _profile_for(source, profiles)
     if (heads, dimension, diagnostics) != (64, 512, False):
         raise ValueError("The load qualification probe requires the full uninstrumented profile")
     header = source[:source.index('extern "C"')]

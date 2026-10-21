@@ -1,0 +1,993 @@
+{
+  "case_identity": [
+    {
+      "input_dtype": "<u2",
+      "input_sha256": "7472726de903d2b3a33f9fb2daa46f5ba2f9e5dd66d0ea8f37baf9dfed7fe95e",
+      "input_shape": [
+        1,
+        128
+      ],
+      "operation": "norm",
+      "pattern": "near_eps",
+      "weight": "control-w128",
+      "weight_sha256": "eee8aed21757eef953f330343e160d8f40a08eca3f193acd074364f407f5e775"
+    },
+    {
+      "input_dtype": "<u2",
+      "input_sha256": "98de08b2e5fc8e74afb6e336bab09ac67ed1cdc80434dd516913bb1f074a6f69",
+      "input_shape": [
+        17,
+        128
+      ],
+      "operation": "norm",
+      "pattern": "normal",
+      "weight": "control-w128",
+      "weight_sha256": "eee8aed21757eef953f330343e160d8f40a08eca3f193acd074364f407f5e775"
+    },
+    {
+      "input_dtype": "<u2",
+      "input_sha256": "eaec5b30eabe77409c2652719018f40af8f8c623cb647faf011c2f9852b7b884",
+      "input_shape": [
+        1,
+        512
+      ],
+      "operation": "norm",
+      "pattern": "near_eps",
+      "weight": "control-w512",
+      "weight_sha256": "06c6123520a0954b2b693c2fe42edb6ad3f90aa923e62eb1927adff18fbbecaf"
+    },
+    {
+      "input_dtype": "<u2",
+      "input_sha256": "757f5ddee77688fcb37c219102e7ffdbabc009b46bf6cc341b28dd1c95639898",
+      "input_shape": [
+        17,
+        512
+      ],
+      "operation": "norm",
+      "pattern": "normal",
+      "weight": "control-w512",
+      "weight_sha256": "06c6123520a0954b2b693c2fe42edb6ad3f90aa923e62eb1927adff18fbbecaf"
+    },
+    {
+      "input_dtype": "<u2",
+      "input_sha256": "43f61ccc7adc0e3eb14c95a0c60422059d7664172fd9ae84a74f5a3729aeb159",
+      "input_shape": [
+        1,
+        1280
+      ],
+      "operation": "norm",
+      "pattern": "near_eps",
+      "weight": "control-w1280",
+      "weight_sha256": "6fb1f4e860b36519f4858986bc3c84c469a828cdfc7a3dc8dee9417069836e01"
+    },
+    {
+      "input_dtype": "<u2",
+      "input_sha256": "15afa4c263b8ef170f10b754e7bbe1bace11d85abb26d1eaf7f51bbac6eb03a1",
+      "input_shape": [
+        17,
+        1280
+      ],
+      "operation": "norm",
+      "pattern": "normal",
+      "weight": "control-w1280",
+      "weight_sha256": "6fb1f4e860b36519f4858986bc3c84c469a828cdfc7a3dc8dee9417069836e01"
+    },
+    {
+      "input_dtype": "<u2",
+      "input_sha256": "73dc2f37c946e02c8dc2bf492ee30165d3c0ab16bb642f4dc853f58e86a3b7e6",
+      "input_shape": [
+        1,
+        5120
+      ],
+      "operation": "norm",
+      "pattern": "near_eps",
+      "weight": "control-w5120",
+      "weight_sha256": "678560fe3550a0b5d51b87707fd9ec22d491a540775a6f0a332439b5984a17f3"
+    },
+    {
+      "input_dtype": "<u2",
+      "input_sha256": "8efd935438bf89d85a6b0188a6fec1969a88e2daa67aec50e97b362c3c4ed64d",
+      "input_shape": [
+        17,
+        5120
+      ],
+      "operation": "norm",
+      "pattern": "normal",
+      "weight": "control-w5120",
+      "weight_sha256": "678560fe3550a0b5d51b87707fd9ec22d491a540775a6f0a332439b5984a17f3"
+    },
+    {
+      "input_dtype": "<i4",
+      "input_sha256": "c769b20a5cf1dcfc1222c1551dad60652b951ca63bfaa0f1a24483f2f5807ce5",
+      "input_shape": [
+        7
+      ],
+      "operation": "frequencies",
+      "profile": "window"
+    },
+    {
+      "input_dtype": "<u2",
+      "input_sha256": "630dbf5a98a48fb4c72500d539354e18405b6e3438e7958b234a2e5a2ba75c64",
+      "input_shape": [
+        1,
+        2,
+        16,
+        512
+      ],
+      "inverse": false,
+      "operation": "rope",
+      "profile": "window",
+      "start": 65535
+    },
+    {
+      "input_dtype": "<u2",
+      "input_sha256": "f5d5d0b2c89d36e277f118458dd51743cb5ca21ab9d2b23b6cdb799762f8bf1d",
+      "input_shape": [
+        1,
+        2,
+        16,
+        512
+      ],
+      "inverse": true,
+      "operation": "rope",
+      "profile": "window",
+      "start": 65535
+    },
+    {
+      "input_dtype": "<i4",
+      "input_sha256": "c769b20a5cf1dcfc1222c1551dad60652b951ca63bfaa0f1a24483f2f5807ce5",
+      "input_shape": [
+        7
+      ],
+      "operation": "frequencies",
+      "profile": "compressed-yarn"
+    },
+    {
+      "input_dtype": "<u2",
+      "input_sha256": "630dbf5a98a48fb4c72500d539354e18405b6e3438e7958b234a2e5a2ba75c64",
+      "input_shape": [
+        1,
+        2,
+        16,
+        512
+      ],
+      "inverse": false,
+      "operation": "rope",
+      "profile": "compressed-yarn",
+      "start": 65535
+    },
+    {
+      "input_dtype": "<u2",
+      "input_sha256": "f5d5d0b2c89d36e277f118458dd51743cb5ca21ab9d2b23b6cdb799762f8bf1d",
+      "input_shape": [
+        1,
+        2,
+        16,
+        512
+      ],
+      "inverse": true,
+      "operation": "rope",
+      "profile": "compressed-yarn",
+      "start": 65535
+    }
+  ],
+  "cases": [
+    {
+      "id": 0,
+      "wall_seconds_including_diagnostics": 0.0012790069449692965
+    },
+    {
+      "id": 1,
+      "wall_seconds_including_diagnostics": 0.0006281191017478704
+    },
+    {
+      "id": 2,
+      "wall_seconds_including_diagnostics": 0.0005441028624773026
+    },
+    {
+      "id": 3,
+      "wall_seconds_including_diagnostics": 0.000553749967366457
+    },
+    {
+      "id": 4,
+      "wall_seconds_including_diagnostics": 0.0005558619741350412
+    },
+    {
+      "id": 5,
+      "wall_seconds_including_diagnostics": 0.0008264731150120497
+    },
+    {
+      "id": 6,
+      "wall_seconds_including_diagnostics": 0.0010569558944553137
+    },
+    {
+      "id": 7,
+      "wall_seconds_including_diagnostics": 0.0011739169713109732
+    },
+    {
+      "id": 8,
+      "wall_seconds_including_diagnostics": 0.0016823399346321821
+    },
+    {
+      "id": 9,
+      "wall_seconds_including_diagnostics": 0.0010310199577361345
+    },
+    {
+      "id": 10,
+      "wall_seconds_including_diagnostics": 0.0009966199286282063
+    },
+    {
+      "id": 11,
+      "wall_seconds_including_diagnostics": 0.0007167761214077473
+    },
+    {
+      "id": 12,
+      "wall_seconds_including_diagnostics": 0.0010171961039304733
+    },
+    {
+      "id": 13,
+      "wall_seconds_including_diagnostics": 0.0009910350199788809
+    }
+  ],
+  "diagnostics": {
+    "array_bytes": 1946464,
+    "artifact": "s1/operators/norm/s1-norm-native-r02/diagnostics.npz",
+    "file_bytes": 1966022,
+    "sha256": "a360b5e358dbbea969f5125c1dd6da2a30179c5f336d56f83cb1f534046c3fb0"
+  },
+  "exclusions": [
+    "learned coefficient provenance",
+    "HC",
+    "attention integration",
+    "compressed/shared KV",
+    "rollback/fault recovery",
+    "all model layers",
+    "model forward",
+    "full-model quality",
+    "generation speed"
+  ],
+  "execution_process_instance": "81104c77ceb046f9b4f7435af0ac4c6f",
+  "full_model_quality_qualified": false,
+  "general_performance_claim": false,
+  "initialization_wall_seconds": 0.4108577019069344,
+  "limits": {
+    "diagnostic_cap_bytes": 67108864,
+    "floor_enforcement": "stage observation, not an OS reservation",
+    "framework_and_context_memory_not_hard_capped": true,
+    "native_explicit_device_cap_bytes": 67108864,
+    "native_phase_admission_bytes": 268435456,
+    "physical_available_floor_bytes": 34359738368,
+    "reference_phase_admission_bytes": 3221225472
+  },
+  "math": {
+    "BLAS": "not used by this corpus",
+    "comparison": "exact diagnostic storage/FP32 bits",
+    "native_fmad": false,
+    "native_ftz": false
+  },
+  "memory_observations": [
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 46224441344,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45937201152,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45936742400,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45936803840,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45936754688,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45936754688,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45936705536,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45936705536,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45936705536,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45936705536,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45936541696,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45936709632,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45936201728,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45936201728,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935693824,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935693824,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935693824,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935693824,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935906816,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935906816,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935464448,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935464448,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935464448,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935464448,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935415296,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935415296,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935415296,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45935415296,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45934907392,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 46142615552,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    }
+  ],
+  "mode": "native",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "native_phases_after_close": [
+    {
+      "device_owned_bytes": 0,
+      "device_peak_owned_bytes": 1403084,
+      "driver_module_memory_excluded": true,
+      "execution": {
+        "compiler": {
+          "architecture": "121",
+          "concatenated_source_sha256": "2543ab53807068272e0179eebf77ce64e128309a2d4b1874a18d1d697805d25f",
+          "include_path_redacted": true,
+          "nvrtc_version": [
+            13,
+            0
+          ],
+          "options": [
+            "--gpu-architecture=sm_121",
+            "--std=c++17",
+            "--fmad=false",
+            "--ftz=false",
+            "--include-path=<CUDA>/include"
+          ]
+        },
+        "cubin_sha256": "4c385ed9c894250011e66a304ea83835b70555e03c7c92ee060181d2960fa126",
+        "device": {
+          "compute_capability": "12.1",
+          "driver_api_version": 13000,
+          "name": "NVIDIA GB10",
+          "ordinal": 0,
+          "total_bytes": 130661142528
+        },
+        "execution_target": "spark-sm121-candidate",
+        "kernel_flags": [
+          "normalization"
+        ],
+        "qualification": "unqualified_candidate",
+        "qualification_receipt_issued": false,
+        "source_rounding_adaptations": [
+          "SM121 original complex multiply: imaginary-first fused product"
+        ],
+        "spark_reference_qualification": "not_run",
+        "target_selection_changes_model_arithmetic": false
+      },
+      "host_allowance_bytes": 100663296,
+      "host_reserved_bytes": 0,
+      "owned_context_active": false,
+      "reservation_is_RSS_limit": false
+    }
+  ],
+  "observed_hardware": {
+    "attributes": {
+      "concurrent_managed_access": 1,
+      "host_page_tables": 1,
+      "integrated": 1,
+      "managed_memory": 1,
+      "pageable_memory_access": 1,
+      "unified_addressing": 1
+    },
+    "compute_capability": [
+      12,
+      1
+    ],
+    "cuda_capacity_added_to_physical_ram": false,
+    "device_count": 1,
+    "driver_api_version": 13000,
+    "library": {
+      "absolute_path_redacted": true,
+      "basename": "libcuda.so.580.178.04",
+      "elf_architecture": "aarch64",
+      "file_bytes": 96460560,
+      "kind": "driver",
+      "layout": "system_aarch64"
+    },
+    "name": "NVIDIA GB10",
+    "ordinal": 0,
+    "reported_cuda_total_bytes": 130661142528
+  },
+  "operator": "norm",
+  "original_kernel_parity_qualified": false,
+  "owned_native_resources_closed": true,
+  "preflight_compiler": {
+    "architecture": "sm_121",
+    "library": {
+      "absolute_path_redacted": true,
+      "basename": "libnvrtc.so.13.0.88",
+      "elf_architecture": "aarch64",
+      "file_bytes": 99505944,
+      "kind": "nvrtc",
+      "layout": "targets/sbsa-linux/lib"
+    },
+    "nvrtc_version": [
+      13,
+      0
+    ],
+    "options": [
+      "--gpu-architecture=sm_121",
+      "--std=c++17",
+      "--fmad=false"
+    ],
+    "source_sha256": "5bc57eda007faa91ad4367192d8ffb025931f38107f8f92e6648b2fc3dea5d9b"
+  },
+  "process_memory_observations": [
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 42901504,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 24961024,
+      "resident_bytes": 41660416,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 926908416
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206536704,
+      "resident_bytes": 223305728,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206864384,
+      "resident_bytes": 223633408,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206938112,
+      "resident_bytes": 223707136,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206938112,
+      "resident_bytes": 223707136,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206938112,
+      "resident_bytes": 223707136,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206938112,
+      "resident_bytes": 223707136,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206938112,
+      "resident_bytes": 223707136,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206938112,
+      "resident_bytes": 223707136,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206938112,
+      "resident_bytes": 223707136,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206938112,
+      "resident_bytes": 223707136,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206938112,
+      "resident_bytes": 223707136,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206938112,
+      "resident_bytes": 223707136,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 206938112,
+      "resident_bytes": 223707136,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14851219456
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 232894464,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 132390912,
+      "resident_bytes": 149225472,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 14285725696
+    }
+  ],
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "schema": "vesper.spark-operator-probe.v1",
+  "scope": "Generated BF16 coefficients; fixed RMS reductions, both original RoPE frequency profiles and rotations",
+  "separate_process_mode": true,
+  "status": "native_execution_pass",
+  "workspace_context": {
+    "binding_id": "8480a267191e4fafab923ad834fd976c",
+    "created_at": "2026-10-20T03:43:00.537634+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "4de28456167aafe1440145f362883ab9140e629c",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "cb94348f9dbcccb8aca04b379b3cc2637e3c5ca2385236d2078336469a9a7baf",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "s1-norm-native-r02",
+    "schema_version": 1
+  }
+}

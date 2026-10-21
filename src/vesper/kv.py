@@ -6,6 +6,7 @@ the original per-32 FP8 quantize/dequantize result, not a new quantization schem
 """
 
 from contextlib import ExitStack
+from copy import deepcopy
 import ctypes as C
 from dataclasses import dataclass
 import hashlib
@@ -16,6 +17,7 @@ import numpy as np
 
 from .memory import runtime_operation
 from .cuda import Device, Driver, compile_probe
+from .execution_target import resolve_execution_target, compile_execution_kernel
 from .resources import GiB, MiB, MemoryBudget
 
 WIDTH, WINDOW, MAX_PREFILL, MAX_POSITION = 512, 128, 257, 4096
@@ -65,7 +67,9 @@ class WindowCheckpoint:
 class NativeWindowKV:
     """One sequence batch, two publication buffers and one bounded snapshot slot."""
 
-    def __init__(self, batch=1, ordinal=0):
+    def __init__(self, batch=1, ordinal=0, *, execution_target=None):
+        self.execution_target = resolve_execution_target(execution_target)
+        self.execution_provenance = self.execution_target.describe()
         if type(batch) is not int or batch not in (1, 2):
             raise ValueError("Window KV supports bounded batches of one or two")
         self.batch, self.ordinal = batch, ordinal
@@ -84,17 +88,15 @@ class NativeWindowKV:
                 self.budget.acquire(16 * MiB)
                 self.stack.callback(self.budget.release, 16 * MiB)
                 self.driver = Driver()
-                self.device_info = next(d for d in self.driver.inventory()["devices"] if d["ordinal"] == self.ordinal)
-                if self.device_info["compute_capability"] != "8.9":
-                    raise ValueError("Window KV arithmetic is currently qualified only for SM89")
+                inventory = self.driver.inventory()
+                self.device_info = next(d for d in inventory["devices"] if d["ordinal"] == self.ordinal)
+                self.execution_provenance["device"] = self.execution_target.validate_device(self.device_info, inventory)
                 self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=8 * MiB, free_floor=2 * GiB))
                 self.compiler = {}
-                binary = compile_probe("89", kv=True, compiler_info=self.compiler)
-                if self.compiler["nvrtc_version"] != [12, 4]:
-                    raise ValueError("Window KV requires the qualified NVRTC 12.4 compiler profile")
-                self.cubin_sha256 = hashlib.sha256(binary).hexdigest()
-                if self.cubin_sha256 != KV_CUBIN_SHA256:
-                    raise ValueError("Unregistered Window KV compiler binary; requalification required")
+                binary, provenance = compile_execution_kernel(compile_probe, self.execution_target,
+                    kv=True, compiler_info=self.compiler, pc_cubin_sha256=KV_CUBIN_SHA256)
+                self.execution_provenance.update(provenance)
+                self.cubin_sha256 = provenance["cubin_sha256"]
                 self.kernel_source_sha256 = hashlib.sha256((Path(__file__).parent / "kernels/kv_probe.cu").read_bytes().replace(b"\r\n", b"\n")).hexdigest()
                 self.module = self.device.load(binary)
                 self.buffers = [self.device.allocate(self.cache_bytes) for _ in range(3)]
@@ -248,7 +250,8 @@ class NativeWindowKV:
 
     def stats(self):
         device = getattr(self, "device", None)
-        return {"host_allowance_bytes": self.budget.peak, "host_reserved_bytes": self.budget.reserved,
+        return {"execution": deepcopy(self.execution_provenance),
+                "host_allowance_bytes": self.budget.peak, "host_reserved_bytes": self.budget.reserved,
                 "device_peak_owned_bytes": device.peak if device else 0,
                 "device_owned_bytes": sum(device.allocations.values()) if device else 0,
                 "persistent_cache_and_snapshot_bytes": self.cache_bytes * 3,

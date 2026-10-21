@@ -1,6 +1,7 @@
 """Bounded native RMS normalization and original rotary-position arithmetic."""
 
 from contextlib import ExitStack
+from copy import deepcopy
 import ctypes as C
 import hashlib
 import math
@@ -10,6 +11,7 @@ import threading
 import numpy as np
 
 from .cuda import Device, Driver, compile_probe
+from .execution_target import resolve_execution_target, compile_execution_kernel
 from .resources import GiB, MiB, MemoryBudget
 
 WIDTHS, MAX_ROWS, MAX_POSITION, MAX_FREQUENCIES = (128, 512, 1280, 5120), 514, 131072, 4096
@@ -64,7 +66,9 @@ def validate_rope(values, start_pos, profile, inverse):
 class NativeNormRoPE:
     """Serialized NumPy/Driver boundary; all GPU call buffers have scoped cleanup."""
 
-    def __init__(self, ordinal=0):
+    def __init__(self, ordinal=0, *, execution_target=None):
+        self.execution_target = resolve_execution_target(execution_target)
+        self.execution_provenance = self.execution_target.describe()
         self.ordinal, self.opened = ordinal, False
         self.lock, self.stack = threading.Lock(), ExitStack()
         self.budget = MemoryBudget(cap=96 * MiB)
@@ -77,15 +81,15 @@ class NativeNormRoPE:
                 self.budget.acquire(96 * MiB)
                 self.stack.callback(self.budget.release, 96 * MiB)
                 self.driver = Driver()
-                self.device_info = next(d for d in self.driver.inventory()["devices"] if d["ordinal"] == self.ordinal)
-                if self.device_info["compute_capability"] != "8.9":
-                    raise ValueError("Normalization/rotary arithmetic is qualified only for SM89")
+                inventory = self.driver.inventory()
+                self.device_info = next(d for d in inventory["devices"] if d["ordinal"] == self.ordinal)
+                self.execution_provenance["device"] = self.execution_target.validate_device(self.device_info, inventory)
                 self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=64 * MiB, free_floor=2 * GiB))
                 self.compiler = {}
-                binary = compile_probe("89", normalization=True, compiler_info=self.compiler)
-                self.cubin_sha256 = hashlib.sha256(binary).hexdigest()
-                if self.compiler["nvrtc_version"] != [12, 4] or self.cubin_sha256 != NORM_CUBIN_SHA256:
-                    raise ValueError("Unregistered normalization compiler/binary profile; requalification required")
+                binary, provenance = compile_execution_kernel(compile_probe, self.execution_target,
+                    normalization=True, compiler_info=self.compiler, pc_cubin_sha256=NORM_CUBIN_SHA256)
+                self.execution_provenance.update(provenance)
+                self.cubin_sha256 = provenance["cubin_sha256"]
                 source = (Path(__file__).parent / "kernels/normalization_probe.cu").read_bytes().replace(b"\r\n", b"\n")
                 self.kernel_source_sha256 = hashlib.sha256(source).hexdigest()
                 self.module = self.device.load(binary)
@@ -182,7 +186,8 @@ class NativeNormRoPE:
 
     def stats(self):
         device = getattr(self, "device", None)
-        return {"host_allowance_bytes": self.budget.peak, "host_reserved_bytes": self.budget.reserved,
+        return {"execution": deepcopy(self.execution_provenance),
+                "host_allowance_bytes": self.budget.peak, "host_reserved_bytes": self.budget.reserved,
                 "device_peak_owned_bytes": device.peak if device else 0,
                 "device_owned_bytes": sum(device.allocations.values()) if device else 0,
                 "owned_context_active": bool(device.context) if device else False,

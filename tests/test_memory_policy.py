@@ -49,6 +49,119 @@ class MemoryPolicyTests(unittest.TestCase):
             for lease in leases: lease.release(); lease.release()
             self.assertEqual(policy.host,0); self.assertEqual(policy.explicit_host,0)
 
+    def test_host_refusal_samples_physical_memory_after_cap_short_circuit(self):
+        observations=[]
+        def available(): observations.append(1); return 128*GiB
+        with self.make(100,available=available) as policy:
+            budget=MemoryBudget(cap=100,available_floor=0,owner='component')
+            budget.acquire(90,category='metadata'); before=len(observations)
+            with self.assertRaisesRegex(MemoryError,'cannot be restored'):
+                policy.reserve(11,'weights','pending')
+            self.assertEqual(len(observations),before+1)
+            refusal=policy.snapshot()['last_refusal']
+            self.assertEqual(refusal['causes'],['host_cap'])
+            self.assertEqual((refusal['requested_bytes'],refusal['category']),(11,'weights'))
+            self.assertEqual((refusal['charged_host_bytes'],refusal['host_cap_bytes']),(90,100))
+            self.assertEqual((refusal['component_admission_bytes'],refusal['explicit_host_bytes']),(90,0))
+            self.assertEqual(refusal['physical_available_bytes'],128*GiB)
+            self.assertEqual(refusal['available_floor_bytes'],32*GiB)
+            self.assertEqual(refusal['physical_observation'],'after_admission_refusal')
+            self.assertIsNone(refusal['observation_error'])
+            self.assertEqual((budget.reserved,policy.host),(90,90))
+            budget.release(90,category='metadata')
+
+    def test_refusal_distinguishes_physical_and_simultaneous_constraints_and_survives_cleanup(self):
+        for used,causes in ((0,['physical_reserve']),(90,['host_cap','physical_reserve'])):
+            with self.subTest(used=used):
+                state={'available':128*GiB}
+                with self.make(100,available=lambda:state['available']) as policy:
+                    lease=policy.reserve(used,'weights','existing') if used else None
+                    state['available']=32*GiB+10
+                    with self.assertRaises(MemoryError): policy.reserve(11,'scratch','pending')
+                    refusal=policy.snapshot()['last_refusal']
+                    self.assertEqual(refusal['causes'],causes)
+                    self.assertEqual(refusal['physical_available_bytes'],32*GiB+10)
+                    self.assertEqual(refusal['physical_pending_bytes'],11)
+                    # The monitor or an unwinding checkpoint cannot replace the
+                    # allocation evidence with a subsequent zero-byte refusal.
+                    state['available']=32*GiB-1
+                    with self.assertRaises(MemoryError): policy.checkpoint()
+                    self.assertEqual(policy.snapshot()['last_refusal'],refusal)
+                    if lease is not None: lease.release()
+                    state['available']=128*GiB; policy.checkpoint()
+                closed=policy.snapshot()
+                self.assertEqual(closed['charged_host_bytes'],0)
+                self.assertEqual(closed['live_leases'],0)
+                self.assertEqual(closed['last_refusal'],refusal)
+                closed['last_refusal']['causes'].append('caller_mutation')
+                self.assertEqual(policy.snapshot()['last_refusal']['causes'],causes)
+
+    def test_early_host_and_pinned_refusals_retain_requested_and_existing_bytes(self):
+        with self.make(100) as policy:
+            with self.assertRaisesRegex(MemoryError,'host or pinned ceiling'):
+                policy.reserve(101,'scratch','oversize')
+            refusal=policy.snapshot()['last_refusal']
+            self.assertEqual(refusal['causes'],['host_cap'])
+            self.assertEqual((refusal['requested_bytes'],refusal['charged_host_bytes']),(101,0))
+        with self.make(1024) as policy:
+            lease=policy.reserve(100,'pinned','existing')
+            with self.assertRaises(MemoryError): policy.reserve(29,'pinned','pending')
+            refusal=policy.snapshot()['last_refusal']
+            self.assertEqual(refusal['causes'],['pinned_cap'])
+            self.assertEqual((refusal['pinned_bytes'],refusal['pinned_cap_bytes']),(100,128))
+            self.assertEqual(refusal['physical_available_bytes'],128*GiB)
+            self.assertEqual(policy.host,100); lease.release()
+
+    def test_device_refusal_records_device_limit_and_shared_host_usage_without_spending(self):
+        config=MemoryPolicy(host_cap_bytes=2048,pinned_cap_bytes=128,device_caps={0:1024},unified_device_memory=True)
+        with RuntimeMemory(config,available=lambda:128*GiB) as policy:
+            policy.reserve_device(0,600)
+            with self.assertRaisesRegex(MemoryError,'device allocation cap'): policy.reserve_device(0,425)
+            refusal=policy.snapshot()['last_refusal']
+            self.assertEqual(refusal['causes'],['device_cap'])
+            self.assertEqual((refusal['device_ordinal'],refusal['device_used_bytes'],refusal['device_cap_bytes']),(0,600,1024))
+            self.assertEqual((refusal['charged_host_bytes'],refusal['explicit_host_bytes'],refusal['unified_device_bytes']),(600,600,600))
+            self.assertEqual(refusal['physical_available_bytes'],128*GiB)
+            self.assertEqual(policy.device_used,{0:600}); self.assertEqual(policy.host,600)
+            policy.release_device(0,600)
+            for ordinal in (1,None):
+                with self.assertRaises(MemoryError): policy.reserve_device(ordinal,1)
+                missing=policy.snapshot()['last_refusal']
+                self.assertEqual(missing['stage'],'device_admission')
+                self.assertEqual(missing['causes'],['device_not_configured'])
+                self.assertIsNone(missing['device_cap_bytes'])
+            self.assertEqual((policy.host,policy.device_used[0]),(0,0))
+
+    def test_refusal_observation_failure_does_not_replace_the_original_memory_error(self):
+        state={'failed':False}
+        def available():
+            if state['failed']: raise OSError('Physical observation unavailable')
+            return 128*GiB
+        with self.make(100,available=available) as policy:
+            lease=policy.reserve(90,'weights','existing'); state['failed']=True
+            with self.assertRaisesRegex(MemoryError,'cannot be restored'):
+                policy.reserve(11,'scratch','pending')
+            refusal=policy.snapshot()['last_refusal']
+            self.assertEqual(refusal['causes'],['host_cap'])
+            self.assertIsNone(refusal['physical_available_bytes'])
+            self.assertEqual(refusal['observation_error'],'OSError')
+            self.assertEqual(policy.host,90); lease.release()
+
+    def test_device_refusal_reports_shared_pool_constraints_only_for_unified_memory(self):
+        for unified in (False,True):
+            with self.subTest(unified=unified):
+                state={'available':128*GiB}
+                config=MemoryPolicy(host_cap_bytes=1024,pinned_cap_bytes=128,device_caps={0:1024},unified_device_memory=unified)
+                with RuntimeMemory(config,available=lambda:state['available']) as policy:
+                    policy.reserve_device(0,600); state['available']=32*GiB+400
+                    with self.assertRaises(MemoryError): policy.reserve_device(0,425)
+                    refusal=policy.snapshot()['last_refusal']
+                    expected=['host_cap','device_cap','physical_reserve'] if unified else ['device_cap']
+                    self.assertEqual(refusal['causes'],expected)
+                    self.assertEqual(refusal['physical_pending_bytes'],425 if unified else 0)
+                    self.assertEqual(policy.host,600 if unified else 0)
+                    self.assertEqual(policy.device_used,{0:600}); policy.release_device(0,600)
+
     def test_existing_component_budgets_cannot_each_spend_the_full_cap(self):
         with self.make(100) as policy:
             a,b=MemoryBudget(cap=100,available_floor=0,owner='a'),MemoryBudget(cap=100,available_floor=0,owner='b')

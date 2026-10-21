@@ -1,0 +1,127 @@
+{
+  "status": "archived",
+  "scope": "byte-preserved optimized Spark evidence; no local restamping",
+  "source_head": "4b7e816ff7725b7b23b37ee65867231d85af64af",
+  "worker_sha256": "31a8da5a85066b0c0b856662008498f09139472e1d0a5333a8e6196cdac12b79",
+  "plan_sha256": "a13550a365a1f94dc8ed44c6ee19d89a5581fc4f3a2b56589905909bd279fdea",
+  "export_sha256": "8a7eb7849e9df3f899976de9e8f522110fabeaf9dde9f413f3c1cff09b965884",
+  "work_state": {
+    "job_id": "s1-optimized-r01",
+    "status": "running",
+    "stage": "generate",
+    "source_head": "4b7e816ff7725b7b23b37ee65867231d85af64af",
+    "worker_sha256": "31a8da5a85066b0c0b856662008498f09139472e1d0a5333a8e6196cdac12b79",
+    "phases": {
+      "cpu-regressions": {
+        "status": "finished",
+        "exit_code": 0,
+        "expected_exit_code": 0
+      },
+      "attention-reference": {
+        "status": "finished",
+        "exit_code": 0,
+        "expected_exit_code": 0
+      },
+      "attention-native": {
+        "status": "finished",
+        "exit_code": 0,
+        "expected_exit_code": 0
+      },
+      "head-native": {
+        "status": "finished",
+        "exit_code": 0,
+        "expected_exit_code": 0
+      },
+      "head-reference": {
+        "status": "finished",
+        "exit_code": 0,
+        "expected_exit_code": 0
+      },
+      "head-compare": {
+        "status": "finished",
+        "exit_code": 0,
+        "expected_exit_code": 0
+      },
+      "layer-performance": {
+        "status": "finished",
+        "exit_code": 0,
+        "expected_exit_code": 0
+      },
+      "single-model-call": {
+        "status": "finished",
+        "exit_code": 2,
+        "expected_exit_code": 2
+      },
+      "generate": {
+        "status": "running",
+        "expected_exit_code": 0
+      }
+    }
+  },
+  "cpu_regression_summary": {
+    "status": "passed",
+    "sha256": "72c07de087308a883b91c17aba4572197f33b65ea2e573a1f4440de6a020bb59",
+    "bytes": 801,
+    "tests_run": 688,
+    "wall_seconds": 69.723,
+    "skipped": 1
+  },
+  "complete": false,
+  "files": [
+    {
+      "original_result": "s1/attention/reference-r05.json",
+      "destination": "attention-reference-r05.json",
+      "sha256": "cc73b5bd4c8ab3e5f1ffb0e94cf2a7b94a536470bdd03dfb90322c358c221384",
+      "bytes": 277741,
+      "preserved_remote_workspace_context": true
+    },
+    {
+      "original_result": "s1/attention/native-validation-r04.json",
+      "destination": "attention-native-validation-r04.json",
+      "sha256": "f86c3604082d2c24a702de951ba59546ec146453814ad7a5a66323e423402ef5",
+      "bytes": 181491,
+      "preserved_remote_workspace_context": true
+    },
+    {
+      "original_result": "s1/head/s1-head-native-r05.json",
+      "destination": "head-native-r05.json",
+      "sha256": "d2260086151a62937f3ed10c640ac03b86254609c04c4098fa5a7dbf5afd6761",
+      "bytes": 103712,
+      "preserved_remote_workspace_context": true
+    },
+    {
+      "original_result": "s1/head/s1-head-reference-r05.json",
+      "destination": "head-reference-r05.json",
+      "sha256": "564fc296d8d6d12278dda4c4f7e71bf8801b9a3635c5c3df9e3c2b8f90638fd6",
+      "bytes": 160699,
+      "preserved_remote_workspace_context": true
+    },
+    {
+      "original_result": "s1/head/s1-head-compare-r05.json",
+      "destination": "head-compare-r05.json",
+      "sha256": "2828007da9efa70253ec9d640a9df5a883520a1dcf40d05d49c4749b60ab9f47",
+      "bytes": 8240,
+      "preserved_remote_workspace_context": true
+    },
+    {
+      "original_result": "s1/performance/layers-r01.json",
+      "destination": "layer-performance-layers-r01.json",
+      "sha256": "2e0e9d3bd9d1ac35c52f01d4c678070b92b12ec5488bfeba2765bfae8b33d6ed",
+      "bytes": 217235,
+      "preserved_remote_workspace_context": true
+    },
+    {
+      "original_result": "s1/text/s1-text-probe-r03.json",
+      "destination": "text-probe-r03.json",
+      "sha256": "3ba6dc94787cbcddaaaf9e9d9a669630fc347c879f46e9f5edf6b0502f60fa16",
+      "bytes": 400068,
+      "preserved_remote_workspace_context": true
+    }
+  ],
+  "missing_files": [
+    {
+      "relative": "s1/text/s1-text-generate-r04.json",
+      "reason": "not_present"
+    }
+  ]
+}

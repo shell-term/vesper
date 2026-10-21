@@ -1,6 +1,7 @@
 """Bounded original indexer arithmetic with explicit BF16 and FP4 boundaries."""
 
 from contextlib import ExitStack
+from copy import deepcopy
 import ctypes as C
 import hashlib
 import math
@@ -12,6 +13,7 @@ import numpy as np
 from .blas import Cublas, GATE_BLAS_WORKSPACE
 from .attention_topology import indexer_layout, role
 from .cuda import Device, Driver, _bind, compile_probe
+from .execution_target import resolve_execution_target, compile_execution_kernel
 from .indexer_fixture import DTYPES, INDEXER_LAYOUT
 from .normalization import NativeNormRoPE, validate_positions
 from .resources import GiB, MiB, MemoryBudget
@@ -51,7 +53,9 @@ def validate_selection(scores, lengths, offset, source, candidates):
 
 
 class NativeIndexer:
-    def __init__(self, arrays, ordinal=0, *, layers=(2, 20, 24)):
+    def __init__(self, arrays, ordinal=0, *, layers=(2, 20, 24), execution_target=None):
+        self.execution_target = resolve_execution_target(execution_target)
+        self.execution_provenance = self.execution_target.describe()
         self.layout, self.layers = indexer_layout(layers), layers
         self.arrays, self.ordinal = arrays, ordinal
         for name, (dtype, shape) in self.layout.items():
@@ -87,21 +91,20 @@ class NativeIndexer:
                 self.budget.acquire(256 * MiB)
                 self.stack.callback(self.budget.release, 256 * MiB)
                 self.driver = Driver()
-                self.info = next(d for d in self.driver.inventory()["devices"] if d["ordinal"] == self.ordinal)
-                if self.info["compute_capability"] != "8.9":
-                    raise ValueError("Indexer qualification requires SM89")
+                inventory = self.driver.inventory()
+                self.info = next(d for d in inventory["devices"] if d["ordinal"] == self.ordinal)
+                self.execution_provenance["device"] = self.execution_target.validate_device(self.info, inventory)
                 device_cap = (256 if len(self.layers) > 3 else 128) * MiB
                 self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=device_cap, free_floor=2 * GiB))
                 self.compiler = {}
-                binary = compile_probe("89", indexer=True, compiler_info=self.compiler)
-                self.cubin_sha256 = hashlib.sha256(binary).hexdigest()
-                if self.compiler["nvrtc_version"] != [12, 4] or self.cubin_sha256 != INDEXER_CUBIN_SHA256:
-                    raise ValueError("Unregistered native indexer binary/compiler")
+                binary, provenance = compile_execution_kernel(compile_probe, self.execution_target,
+                    indexer=True, compiler_info=self.compiler, pc_cubin_sha256=INDEXER_CUBIN_SHA256)
+                self.execution_provenance.update(provenance)
+                self.cubin_sha256 = provenance["cubin_sha256"]
                 self.module = self.device.load(binary)
                 self.blas = Cublas()
                 self.stack.callback(self.blas.close)
-                if self.blas.version != 120402 or self.blas.math_mode != 0:
-                    raise ValueError("Unregistered native indexer cuBLAS profile")
+                self.execution_provenance["cublas"] = self.execution_target.validate_blas(self.blas.version, self.blas.math_mode)
                 self.gemm = _bind(self.blas.lib, "cublasGemmEx", [C.c_void_p, *([C.c_int] * 5),
                     C.c_void_p, C.c_void_p, C.c_int, C.c_int, C.c_void_p, C.c_int, C.c_int,
                     C.c_void_p, C.c_void_p, C.c_int, C.c_int, C.c_int, C.c_int])
@@ -110,7 +113,7 @@ class NativeIndexer:
                     C.c_void_p, C.c_void_p, C.c_int, C.c_int, C.c_longlong, C.c_int, C.c_int, C.c_int])
                 self.blas.workspace(self._allocate(self.stack, GATE_BLAS_WORKSPACE), GATE_BLAS_WORKSPACE)
                 self.weights = {n: self._upload(self.stack, self.arrays[n]) for n in self.layout if not n.endswith("k_norm.weight")}
-                self.norm = self.stack.enter_context(NativeNormRoPE(ordinal=self.ordinal))
+                self.norm = self.stack.enter_context(NativeNormRoPE(ordinal=self.ordinal, execution_target=self.execution_target))
                 self.resident_bytes = sum(self.device.allocations.values())
                 self.opened = True
                 return self
@@ -261,7 +264,8 @@ class NativeIndexer:
 
     def stats(self):
         device = getattr(self, "device", None)
-        return {"host_allowance_bytes": self.budget.peak, "host_reserved_bytes": self.budget.reserved,
+        return {"execution": deepcopy(self.execution_provenance),
+                "host_allowance_bytes": self.budget.peak, "host_reserved_bytes": self.budget.reserved,
                 "device_owned_bytes": sum(device.allocations.values()) if device else 0,
                 "device_peak_owned_bytes": device.peak if device else 0,
                 "owned_context_active": bool(device.context) if device else False,

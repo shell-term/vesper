@@ -5,7 +5,7 @@ import ctypes.util
 import os
 from pathlib import Path
 
-from .cuda import CudaError, _bind
+from .cuda import CudaError, _bind, load_toolkit_library
 
 GATE_BLAS_WORKSPACE = 4096 * 1024 * 2 + 16 * 1024 * 8
 
@@ -34,7 +34,8 @@ class Cublas:
         self.directory = os.add_dll_directory(str(Path(self.library).parent)) if os.name == "nt" else None
         self.handle = C.c_void_p()
         try:
-            self.lib = C.CDLL(self.library)
+            self.lib = (load_toolkit_library('cublas') if os.name!='nt' and library is None
+                        else C.CDLL(self.library))
             ptr, integer = C.c_void_p, C.c_int
             signatures = {
                 "cublasCreate_v2": [C.POINTER(ptr)], "cublasDestroy_v2": [ptr],

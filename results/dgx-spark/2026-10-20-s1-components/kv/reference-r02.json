@@ -1,0 +1,925 @@
+{
+  "case_identity": [
+    {
+      "batch": 1,
+      "input_dtype": "<u2",
+      "input_sha256": "718461a671a54d63d41cf84bebad4fb7a148a3b9ed878fcad0f732eb9fe76aff",
+      "input_shape": [
+        1,
+        127,
+        512
+      ],
+      "operation": "append",
+      "pattern": "mixed_scales",
+      "position": 0,
+      "sequence": 127,
+      "stream": 0
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<u2",
+      "input_sha256": "c84ed39198af7fdf49c89bace4e2d389762d52c966b0ab57f125083e7dab23d6",
+      "input_shape": [
+        1,
+        1,
+        512
+      ],
+      "operation": "append",
+      "pattern": "mixed_scales",
+      "position": 127,
+      "sequence": 1,
+      "stream": 0
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<u2",
+      "input_sha256": "c9184a2a947e10680227ee05d2cdb3bacaf8468c45a85d1d5baf8159d31de3ae",
+      "input_shape": [
+        1,
+        1,
+        512
+      ],
+      "operation": "append",
+      "pattern": "mixed_scales",
+      "position": 128,
+      "sequence": 1,
+      "stream": 0
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<u2",
+      "input_sha256": "9b909a3f1309591432883733bf8d1affb25c2861f4e2c09fd69e5d3936bd03f0",
+      "input_shape": [
+        1,
+        129,
+        512
+      ],
+      "operation": "append",
+      "pattern": "random",
+      "position": 0,
+      "sequence": 129,
+      "stream": 1
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<u2",
+      "input_sha256": "30cdef054f8d67488601ecb857fc2aa4a8bad07bd34859363b0925feb81ae70d",
+      "input_shape": [
+        1,
+        1,
+        512
+      ],
+      "operation": "append",
+      "pattern": "random",
+      "position": 129,
+      "sequence": 1,
+      "stream": 1
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<u2",
+      "input_sha256": "bb496e5d9b4ba6ea3305fd17d9b560cba65f97b766e111e6a85620ee6cecc9d4",
+      "input_shape": [
+        1,
+        1,
+        512
+      ],
+      "operation": "append",
+      "pattern": "random",
+      "position": 130,
+      "sequence": 1,
+      "stream": 1
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<u2",
+      "input_sha256": "6cf8429a124ef631e7c88fc4864ebfe81aebf12f5e09620af306e519364e23e0",
+      "input_shape": [
+        1,
+        32,
+        512
+      ],
+      "operation": "append",
+      "pattern": "signed_zeros",
+      "position": 0,
+      "sequence": 32,
+      "stream": 2
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<u2",
+      "input_sha256": "d8cc0513f8841dd76fc138a155aa5623d275007dd58ed73fb44006e9d0991747",
+      "input_shape": [
+        1,
+        1,
+        512
+      ],
+      "operation": "append",
+      "pattern": "signed_zeros",
+      "position": 32,
+      "sequence": 1,
+      "stream": 2
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<u2",
+      "input_sha256": "d8cc0513f8841dd76fc138a155aa5623d275007dd58ed73fb44006e9d0991747",
+      "input_shape": [
+        1,
+        1,
+        512
+      ],
+      "operation": "append",
+      "pattern": "signed_zeros",
+      "position": 33,
+      "sequence": 1,
+      "stream": 2
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<u2",
+      "input_sha256": "f4d494502d7e47ef0cdbebcc2db47e194c8e32f3bd67835da0d977bc3de6ba1e",
+      "input_shape": [
+        2,
+        128,
+        512
+      ],
+      "operation": "append",
+      "pattern": "mixed_scales",
+      "position": 0,
+      "sequence": 128,
+      "stream": 3
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<u2",
+      "input_sha256": "da81fa026641c553569721142f3c74dfa07b9335a82d66a40fcd5e0662cde8e7",
+      "input_shape": [
+        2,
+        1,
+        512
+      ],
+      "operation": "append",
+      "pattern": "mixed_scales",
+      "position": 128,
+      "sequence": 1,
+      "stream": 3
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<u2",
+      "input_sha256": "3d32a90aebf5579dff94f29aaa5bae6285de6cf497fa77be0a53a852c4b08f7e",
+      "input_shape": [
+        2,
+        1,
+        512
+      ],
+      "operation": "append",
+      "pattern": "mixed_scales",
+      "position": 129,
+      "sequence": 1,
+      "stream": 3
+    }
+  ],
+  "cases": [
+    {
+      "id": 0,
+      "wall_seconds_including_diagnostics": 0.9719369160011411
+    },
+    {
+      "id": 1,
+      "wall_seconds_including_diagnostics": 0.006258550798520446
+    },
+    {
+      "id": 2,
+      "wall_seconds_including_diagnostics": 0.0007557529024779797
+    },
+    {
+      "id": 3,
+      "wall_seconds_including_diagnostics": 0.1400277519132942
+    },
+    {
+      "id": 4,
+      "wall_seconds_including_diagnostics": 0.0006925519555807114
+    },
+    {
+      "id": 5,
+      "wall_seconds_including_diagnostics": 0.0005108220502734184
+    },
+    {
+      "id": 6,
+      "wall_seconds_including_diagnostics": 0.1693116209935397
+    },
+    {
+      "id": 7,
+      "wall_seconds_including_diagnostics": 0.0007401839829981327
+    },
+    {
+      "id": 8,
+      "wall_seconds_including_diagnostics": 0.0006672551389783621
+    },
+    {
+      "id": 9,
+      "wall_seconds_including_diagnostics": 0.12604029686190188
+    },
+    {
+      "id": 10,
+      "wall_seconds_including_diagnostics": 0.0007606479339301586
+    },
+    {
+      "id": 11,
+      "wall_seconds_including_diagnostics": 0.000676856143400073
+    }
+  ],
+  "diagnostics": {
+    "array_bytes": 4964516,
+    "artifact": "s1/operators/kv/s1-kv-reference-r02/diagnostics.npz",
+    "file_bytes": 4983354,
+    "sha256": "16f7ddedc1b5ad8b9777069c2b9c9604e79d0a83058b091b37ed5f3404ff831f"
+  },
+  "exclusions": [
+    "learned coefficient provenance",
+    "HC",
+    "attention integration",
+    "compressed/shared KV",
+    "rollback/fault recovery",
+    "all model layers",
+    "model forward",
+    "full-model quality",
+    "generation speed"
+  ],
+  "execution_process_instance": "62c38f25c9964ec684fa0164553ad72b",
+  "full_model_quality_qualified": false,
+  "general_performance_claim": false,
+  "initialization_wall_seconds": 1.1173309839796275,
+  "limits": {
+    "diagnostic_cap_bytes": 67108864,
+    "floor_enforcement": "stage observation, not an OS reservation",
+    "framework_and_context_memory_not_hard_capped": true,
+    "native_explicit_device_cap_bytes": 67108864,
+    "native_phase_admission_bytes": 268435456,
+    "physical_available_floor_bytes": 34359738368,
+    "reference_phase_admission_bytes": 3221225472
+  },
+  "math": {
+    "BLAS": "not used by this corpus",
+    "comparison": "exact diagnostic storage/FP32 bits",
+    "native_fmad": false,
+    "native_ftz": false
+  },
+  "memory_observations": [
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 46171500544,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45663453184,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45626228736,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45469069312,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45469069312,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45465432064,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45465051136,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45464670208,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45464322048,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45455540224,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45455204352,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45454397440,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45454016512,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45453635584,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45452574720,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45462859776,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45462859776,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45462773760,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45462773760,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45462781952,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45461741568,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45460402176,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45459640320,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45460463616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45460463616,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45460205568,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    },
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45459824640,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    }
+  ],
+  "mode": "reference",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "observed_hardware": {
+    "attributes": {
+      "concurrent_managed_access": 1,
+      "host_page_tables": 1,
+      "integrated": 1,
+      "managed_memory": 1,
+      "pageable_memory_access": 1,
+      "unified_addressing": 1
+    },
+    "compute_capability": [
+      12,
+      1
+    ],
+    "cuda_capacity_added_to_physical_ram": false,
+    "device_count": 1,
+    "driver_api_version": 13000,
+    "library": {
+      "absolute_path_redacted": true,
+      "basename": "libcuda.so.580.178.04",
+      "elf_architecture": "aarch64",
+      "file_bytes": 96460560,
+      "kind": "driver",
+      "layout": "system_aarch64"
+    },
+    "name": "NVIDIA GB10",
+    "ordinal": 0,
+    "reported_cuda_total_bytes": 130661142528
+  },
+  "operator": "kv",
+  "original_kernel_parity_qualified": false,
+  "preflight_compiler": {
+    "architecture": "sm_121",
+    "library": {
+      "absolute_path_redacted": true,
+      "basename": "libnvrtc.so.13.0.88",
+      "elf_architecture": "aarch64",
+      "file_bytes": 99505944,
+      "kind": "nvrtc",
+      "layout": "targets/sbsa-linux/lib"
+    },
+    "nvrtc_version": [
+      13,
+      0
+    ],
+    "options": [
+      "--gpu-architecture=sm_121",
+      "--std=c++17",
+      "--fmad=false"
+    ],
+    "source_sha256": "5bc57eda007faa91ad4367192d8ffb025931f38107f8f92e6648b2fc3dea5d9b"
+  },
+  "process_memory_observations": [
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 44146688,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 29863936,
+      "resident_bytes": 41705472,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 926932992
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 657395712,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 645316608,
+      "resident_bytes": 657395712,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 17967792128
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 754126848,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 741744640,
+      "resident_bytes": 754126848,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 18112237568
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 892395520,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 878886912,
+      "resident_bytes": 892395520,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19341848576
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 892399616,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 878891008,
+      "resident_bytes": 892399616,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19341848576
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 903008256,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 889499648,
+      "resident_bytes": 903008256,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19357388800
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 903024640,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 889516032,
+      "resident_bytes": 903024640,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19357388800
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 903352320,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 889843712,
+      "resident_bytes": 903352320,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19357663232
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 904925184,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 891416576,
+      "resident_bytes": 904925184,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19359252480
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 908267520,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 894758912,
+      "resident_bytes": 908267520,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19361611776
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 908267520,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 894758912,
+      "resident_bytes": 908267520,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19361611776
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 908271616,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 894763008,
+      "resident_bytes": 908271616,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19361611776
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 908271616,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 894763008,
+      "resident_bytes": 908271616,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19361611776
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 908271616,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 894763008,
+      "resident_bytes": 908271616,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19361611776
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 908271616,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 894763008,
+      "resident_bytes": 908271616,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19361611776
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 909524992,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 896016384,
+      "resident_bytes": 909524992,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19362795520
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 909524992,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 896016384,
+      "resident_bytes": 909524992,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19362795520
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 909524992,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 896016384,
+      "resident_bytes": 909524992,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19362795520
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 909524992,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 896016384,
+      "resident_bytes": 909524992,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19362795520
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 909524992,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 896016384,
+      "resident_bytes": 909524992,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19362795520
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 911073280,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 897564672,
+      "resident_bytes": 911073280,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19364327424
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 911142912,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 897634304,
+      "resident_bytes": 911142912,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19364327424
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 911142912,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 897634304,
+      "resident_bytes": 911142912,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19364327424
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 911208448,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 897699840,
+      "resident_bytes": 911208448,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19364327424
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 911208448,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 897699840,
+      "resident_bytes": 911208448,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19364327424
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 911208448,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 897699840,
+      "resident_bytes": 911208448,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19364327424
+    },
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 911208448,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 897699840,
+      "resident_bytes": 911208448,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 19364327424
+    }
+  ],
+  "reference": {
+    "BLAS": "not used by this corpus; no BLAS version qualification",
+    "boundary": "projection, RMS and RoPE identity stand-ins; input is already post-RoPE",
+    "compute_capability": [
+      12,
+      1
+    ],
+    "device_name": "NVIDIA GB10",
+    "float32_matmul_precision": "highest",
+    "framework_and_runtime_memory_not_hard_capped": true,
+    "matmul_allow_tf32": false,
+    "methods_ast_sha256": {
+      "_window_kv": "f171b157abc6910b0b70c6cd1eb1a41c03941b6d64b35b0fcba5d2150bc9d834",
+      "get_window_topk_idxs": "11ba7fff2d0ab9a809f9a626ba651768e5ff3a1aea9bb46c2c74d3393ae815c6"
+    },
+    "ordinal": 0,
+    "runtime_workarounds": [
+      "TileLang 0.1.12 NVRTC: isolate launch handles per compiled specialization; arithmetic unchanged"
+    ],
+    "source": {
+      "files": {
+        "LICENSE": "f2c6c602815669d292889e5be8c802f2ed950653b77999b1584e8e6aed25d040",
+        "kernel.py": "1236c3507019ed176f5dba5e04bcea58867cf654818c6cf138ed4845398c2455",
+        "model.py": "e5decd76fe70fd56ef2f10124d245c6f64fb6a0003cc9068a1d3182a168b8d2d"
+      },
+      "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+      "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170"
+    },
+    "tilelang_version": "0.1.12",
+    "torch_cuda_version": "13.0",
+    "torch_revision": "5c4886908584029761b579af026dcfb627c84070",
+    "torch_version": "2.14.1+cu130"
+  },
+  "reference_framework_memory": {
+    "not_added_to_physical_capacity": true,
+    "peak_allocated_bytes": 988672,
+    "peak_reserved_bytes": 2097152,
+    "process_exit_releases_reference_runtime": true
+  },
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "schema": "vesper.spark-operator-probe.v1",
+  "scope": "Post-RoPE per-32 quant/dequant and 128-row window; fixed batch-1/2 prefill, decode and wrap transitions",
+  "separate_process_mode": true,
+  "status": "reference_execution_pass",
+  "workspace_context": {
+    "binding_id": "8480a267191e4fafab923ad834fd976c",
+    "created_at": "2026-10-20T03:43:09.701464+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "4de28456167aafe1440145f362883ab9140e629c",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "cb94348f9dbcccb8aca04b379b3cc2637e3c5ca2385236d2078336469a9a7baf",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "s1-kv-reference-r02",
+    "schema_version": 1
+  }
+}

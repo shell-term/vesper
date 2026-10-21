@@ -24,6 +24,7 @@ from .resources import GiB,MiB,physical_memory
 CATEGORIES=('cache','weights','activations','kv','engram','metadata','pinned','integrity','scratch','diagnostics','admission')
 _active=None
 _active_lock=threading.RLock()
+_NO_DEVICE=object()
 
 
 class _ProcessCounters(C.Structure):
@@ -82,6 +83,7 @@ class MemoryPolicy:
     device_caps:dict=field(default_factory=lambda:{0:20*GiB,1:10*GiB})
     device_free_floor_bytes:int=2*GiB
     monitor_interval_seconds:float=.25
+    unified_device_memory:bool=False
 
     def __post_init__(self):
         if (type(self.host_cap_bytes) is not int or not 0<self.host_cap_bytes<=96*GiB
@@ -89,6 +91,7 @@ class MemoryPolicy:
                 or type(self.pinned_cap_bytes) is not int or not 0<self.pinned_cap_bytes<=self.host_cap_bytes
                 or type(self.device_free_floor_bytes) is not int or self.device_free_floor_bytes<GiB
                 or not .05<=self.monitor_interval_seconds<=5
+                or type(self.unified_device_memory) is not bool
                 or not isinstance(self.device_caps,dict) or not self.device_caps
                 or any(type(k) is not int or k<0 or type(v) is not int or v<=0 for k,v in self.device_caps.items())):
             raise ValueError('Invalid explicit runtime memory policy')
@@ -123,12 +126,14 @@ class RuntimeMemory:
         self.leases={}; self.budgets={}; self.reclaimers=OrderedDict(); self.devices={}; self.sequence=0
         self.host=0; self.host_peak=0; self.explicit_host=0; self.explicit_peak=0; self.pinned=0; self.pinned_peak=0
         self.device_used={}; self.device_peaks={}; self.refusals=0; self.reclaims=0; self.reclaimed_bytes=0; self.inflight=0
+        self.unified_device_leases={}
         self.minimum_available=None; self.samples=deque(maxlen=128); self.external=deque(maxlen=64)
         self._reclaiming=False; self.last_process_sample=0; self.baseline=None
         self.control_lease=None
         self.process_peaks={}; self.external_counts={}
         self.stop_monitor=threading.Event(); self.monitor=None; self.monitor_checks=0; self.monitor_pressure_refusals=0
         self.monitor_error=None; self.local=threading.local()
+        self.last_refusal=None
 
     def __enter__(self):
         global _active
@@ -189,9 +194,53 @@ class RuntimeMemory:
         return (self.host+size<=self.config.host_cap_bytes
             and (category!='pinned' or self.pinned+size<=self.config.pinned_cap_bytes) and self._floor(size))
 
+    def _record_refusal(self,size,category,*,device=_NO_DEVICE):
+        """Retain bounded evidence without replacing the original admission error.
+
+        `_fits` can short circuit before its physical observation. This fresh
+        sample describes the refusal aftermath, not an atomic OS allocation
+        failure. Idle checkpoints must not hide the failed allocation during
+        unwinding or while the pressure monitor is still running.
+        """
+        if not size and self.last_refusal is not None: return
+        available=observation_error=None
+        try:
+            available=self.available()
+            if type(available) is not int or available<0: raise ValueError('Invalid available-memory observation')
+            self.minimum_available=available if self.minimum_available is None else min(self.minimum_available,available)
+        except Exception as error:
+            available=None; observation_error=type(error).__name__[:80]
+        device_admission=device is not _NO_DEVICE
+        charges_host=not device_admission or self.config.unified_device_memory
+        causes=[]; pending=size if charges_host else 0
+        if charges_host and self.host+pending>self.config.host_cap_bytes: causes.append('host_cap')
+        if not device_admission and category=='pinned' and self.pinned+size>self.config.pinned_cap_bytes: causes.append('pinned_cap')
+        if device_admission:
+            if device not in self.config.device_caps: causes.append('device_not_configured')
+            elif self.device_used.get(device,0)+size>self.config.device_caps[device]: causes.append('device_cap')
+        if available is not None and available-pending<self.config.available_floor_bytes: causes.append('physical_reserve')
+        if not causes: causes.append('physical_observation_failed' if observation_error else 'constraints_changed_before_observation')
+        kinds={kind:0 for kind in ('component_admission','control_admission','boundary_admission_only')}
+        for lease in self.leases.values():
+            if lease.kind in kinds: kinds[lease.kind]+=lease.size
+        self.last_refusal={'stage':'device_admission' if device_admission else 'host_admission',
+            'causes':causes,'requested_bytes':size,'category':category,
+            'charged_host_bytes':self.host,'host_cap_bytes':self.config.host_cap_bytes,
+            'explicit_host_bytes':self.explicit_host,
+            **{kind+'_bytes':value for kind,value in kinds.items()},
+            'unified_device_bytes':sum(self.device_used.values()) if self.config.unified_device_memory else 0,
+            'pinned_bytes':self.pinned,'pinned_cap_bytes':self.config.pinned_cap_bytes,
+            'physical_available_bytes':available,'physical_pending_bytes':pending,
+            'available_floor_bytes':self.config.available_floor_bytes,
+            'physical_observation':'after_admission_refusal','observation_error':observation_error,
+            'device_ordinal':device if device_admission and type(device) is int else None,
+            'device_used_bytes':self.device_used.get(device,0) if device_admission else None,
+            'device_cap_bytes':self.config.device_caps.get(device) if device_admission else None}
+
     def _recover(self,size,category):
         if self._fits(size,category): return
         if size>self.config.host_cap_bytes or category=='pinned' and self.pinned+size>self.config.pinned_cap_bytes:
+            self._record_refusal(size,category)
             self.refusals+=1; raise MemoryError('Allocation cannot fit the runtime host or pinned ceiling')
         if not self._reclaiming:
             self._reclaiming=True
@@ -208,6 +257,7 @@ class RuntimeMemory:
                     if self._fits(size,category): break
             finally: self._reclaiming=False
         if not self._fits(size,category):
+            self._record_refusal(size,category)
             self.refusals+=1; raise MemoryError('Runtime host/pinned cap or available-memory reserve cannot be restored')
 
     def reserve(self,size,category,owner,*,kind='explicit'):
@@ -298,15 +348,28 @@ class RuntimeMemory:
 
     def reserve_device(self,ordinal,size):
         with self.lock:
+            if type(size) is not int or size<=0: raise ValueError('Invalid runtime device byte count')
             self._ready(); self._recover(0,'admission')
             if ordinal not in self.config.device_caps or self.device_used.get(ordinal,0)+size>self.config.device_caps[ordinal]:
+                self._record_refusal(size,'weights',device=ordinal)
                 self.refusals+=1; raise MemoryError('Combined runtime device allocation cap')
+            if self.config.unified_device_memory:
+                # GB10 device allocations consume the same physical pool as
+                # host, pinned, retained state and scratch. Never add VRAM.
+                lease=self.reserve(size,'weights',f'unified_device_{ordinal}')
+                self.unified_device_leases.setdefault(ordinal,[]).append(lease)
             self.device_used[ordinal]=self.device_used.get(ordinal,0)+size
             self.device_peaks[ordinal]=max(self.device_peaks.get(ordinal,0),self.device_used[ordinal])
 
     def release_device(self,ordinal,size):
         with self.lock:
-            if not 0<=size<=self.device_used.get(ordinal,0): raise ValueError('Foreign runtime device release')
+            if type(size) is not int or not 0<size<=self.device_used.get(ordinal,0): raise ValueError('Foreign runtime device release')
+            if self.config.unified_device_memory:
+                rows=self.unified_device_leases.get(ordinal,[])
+                lease=next((row for row in rows if row.size==size),None)
+                if lease is None: raise ValueError('Unified device release must match an owned allocation')
+                lease.release(); rows.remove(lease)
+                if not rows: self.unified_device_leases.pop(ordinal,None)
             self.device_used[ordinal]-=size
 
     def sample(self,label):
@@ -325,11 +388,13 @@ class RuntimeMemory:
             for l in self.leases.values():
                 by_category[l.category]+=l.size; kinds[l.kind]=kinds.get(l.kind,0)+l.size; owners[l.owner]=owners.get(l.owner,0)+l.size
             return {'host_cap_bytes':self.config.host_cap_bytes,'available_floor_bytes':self.config.available_floor_bytes,
+                'unified_device_memory':self.config.unified_device_memory,
                 'charged_host_bytes':self.host,'charged_host_peak_bytes':self.host_peak,'explicit_host_bytes':self.explicit_host,
                 'explicit_host_peak_bytes':self.explicit_peak,'pinned_bytes':self.pinned,'pinned_peak_bytes':self.pinned_peak,
                 'pinned_cap_bytes':self.config.pinned_cap_bytes,'categories':by_category,'accounting_kinds':kinds,'owners':owners,
                 'device_caps':dict(self.config.device_caps),'device_used_bytes':dict(self.device_used),'device_peak_bytes':dict(self.device_peaks),
                 'minimum_observed_available_bytes':self.minimum_available,'refusals':self.refusals,'reclaim_events':self.reclaims,
+                'last_refusal':None if self.last_refusal is None else {**self.last_refusal,'causes':list(self.last_refusal['causes'])},
                 'reclaimed_charge_bytes':self.reclaimed_bytes,'live_leases':len(self.leases),'live_reclaimers':len(self.reclaimers),
                 'inflight_operations':self.inflight,'cancelled':self.cancelled,'process_baseline':self.baseline,'samples':list(self.samples),
                 'external_phase_samples':list(self.external),'reservation_is_RSS_or_OS_limit':False,

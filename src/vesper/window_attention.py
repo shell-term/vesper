@@ -25,13 +25,14 @@ class NativeWindowAttention:
     Diagnostic arrays cross the host API; this is not a resident speed path.
     """
 
-    def __init__(self, arrays, projections, normalization, attention, batch=1, *, profile="qualified"):
+    def __init__(self, arrays, projections, normalization, attention, batch=1, *, profile="qualified", execution_target=None):
         from .prefix_profile import validate_layer
         if type(projections.layer) is not int or projections.layer not in (0, 1):
             raise ValueError("Window Attention belongs only to original layers zero and one")
         self.layer = validate_layer(projections.layer, (0,), profile)
         self.arrays, self.projections, self.norm, self.attention = arrays, projections, normalization, attention
-        self.kv = NativeWindowKV(batch, projections.ordinal)
+        self.kv = (NativeWindowKV(batch, projections.ordinal) if execution_target is None else
+                   NativeWindowKV(batch, projections.ordinal, execution_target=execution_target))
         self.batch, self.position, self.pending = batch, 0, None
         self.opened, self.stack, self.lock = False, ExitStack(), threading.Lock()
 

@@ -5,6 +5,7 @@ This fidelity probe is not a resident high-throughput compression executor.
 """
 
 from contextlib import ExitStack
+from copy import deepcopy
 import ctypes as C
 from dataclasses import dataclass
 import hashlib
@@ -18,6 +19,7 @@ from .blas import Cublas, GATE_BLAS_WORKSPACE
 from .attention_topology import compression_layout, role
 from .compression_fixture import COMPRESSION_LAYOUT
 from .cuda import Device, Driver, _bind, compile_probe
+from .execution_target import resolve_execution_target, compile_execution_kernel
 from .formats import bf16_values
 from .normalization import NativeNormRoPE
 from .resources import GiB, MiB, MemoryBudget
@@ -48,7 +50,9 @@ def validate_quantized_kv(values):
 
 
 class NativeCompression:
-    def __init__(self, arrays, ordinal=0, *, layers=(2, 20)):
+    def __init__(self, arrays, ordinal=0, *, layers=(2, 20), execution_target=None):
+        self.execution_target = resolve_execution_target(execution_target)
+        self.execution_provenance = self.execution_target.describe()
         self.layout = compression_layout(layers)
         self.layers = {l: role(l).ratio for l in layers}
         self.arrays, self.ordinal = arrays, ordinal
@@ -80,23 +84,22 @@ class NativeCompression:
                 self.budget.acquire(128 * MiB)
                 self.stack.callback(self.budget.release, 128 * MiB)
                 self.driver = Driver()
-                self.info = next(d for d in self.driver.inventory()["devices"] if d["ordinal"] == self.ordinal)
-                if self.info["compute_capability"] != "8.9":
-                    raise ValueError("Compression profile is qualified only for SM89")
+                inventory = self.driver.inventory()
+                self.info = next(d for d in inventory["devices"] if d["ordinal"] == self.ordinal)
+                self.execution_provenance["device"] = self.execution_target.validate_device(self.info, inventory)
                 # The all-layer probe binds four source owners at once. The
                 # original two-owner qualification retains its smaller cap.
                 device_cap = (192 if len(self.layers) > 2 else 64) * MiB
                 self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=device_cap, free_floor=2 * GiB))
                 self.compiler = {}
-                binary = compile_probe("89", compression=True, compiler_info=self.compiler)
-                self.cubin_sha256 = hashlib.sha256(binary).hexdigest()
-                if self.compiler["nvrtc_version"] != [12, 4] or self.cubin_sha256 != COMPRESSION_CUBIN_SHA256:
-                    raise ValueError("Unregistered compression compiler/binary; qualification required")
+                binary, provenance = compile_execution_kernel(compile_probe, self.execution_target,
+                    compression=True, compiler_info=self.compiler, pc_cubin_sha256=COMPRESSION_CUBIN_SHA256)
+                self.execution_provenance.update(provenance)
+                self.cubin_sha256 = provenance["cubin_sha256"]
                 self.module = self.device.load(binary)
                 self.blas = Cublas()
                 self.stack.callback(self.blas.close)
-                if self.blas.version != 120402 or self.blas.math_mode != 0:
-                    raise ValueError("Unregistered compression cuBLAS profile")
+                self.execution_provenance["cublas"] = self.execution_target.validate_blas(self.blas.version, self.blas.math_mode)
                 self.gemm_ex = _bind(self.blas.lib, "cublasGemmEx", [C.c_void_p, *([C.c_int] * 5),
                     C.c_void_p, C.c_void_p, C.c_int, C.c_int, C.c_void_p, C.c_int, C.c_int,
                     C.c_void_p, C.c_void_p, C.c_int, C.c_int, C.c_int, C.c_int])
@@ -107,7 +110,7 @@ class NativeCompression:
                         a = self.arrays[f"layers.{layer}.attn.compressor.{part}.weight"]
                         # The original ratio-2 module loads these BF16 bytes into FP32 parameters.
                         self.weights[layer, part] = self._upload(self.stack, bf16_values(a) if ratio == 2 else a)
-                self.norm = self.stack.enter_context(NativeNormRoPE(self.ordinal))
+                self.norm = self.stack.enter_context(NativeNormRoPE(self.ordinal, execution_target=self.execution_target))
                 self.resident_bytes = sum(self.device.allocations.values())
                 self.opened = True
                 return self
@@ -189,7 +192,8 @@ class NativeCompression:
 
     def stats(self):
         device = getattr(self, "device", None)
-        return {"host_allowance_bytes": self.budget.peak, "host_reserved_bytes": self.budget.reserved,
+        return {"execution": deepcopy(self.execution_provenance),
+                "host_allowance_bytes": self.budget.peak, "host_reserved_bytes": self.budget.reserved,
                 "device_owned_bytes": sum(device.allocations.values()) if device else 0,
                 "device_peak_owned_bytes": device.peak if device else 0,
                 "owned_context_active": bool(device.context) if device else False,

@@ -1,0 +1,292 @@
+{
+  "case_identity": [
+    {
+      "batch": 1,
+      "input_dtype": "<f4",
+      "input_sha256": "6c9f0d98cf37000cade942eb7f01dfebfa50da0f5e078082655513cd940df091",
+      "input_shape": [
+        1,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "flat",
+      "seed": 0,
+      "temperature": 0.0
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<f4",
+      "input_sha256": "6c9f0d98cf37000cade942eb7f01dfebfa50da0f5e078082655513cd940df091",
+      "input_shape": [
+        1,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "flat",
+      "seed": 0,
+      "temperature": 1.0
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<f4",
+      "input_sha256": "150502f65adf70a3df4451057e60769fb6954aed917292146d1fe5e8a9862a35",
+      "input_shape": [
+        1,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "banded",
+      "seed": 0,
+      "temperature": 0.7
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<f4",
+      "input_sha256": "150502f65adf70a3df4451057e60769fb6954aed917292146d1fe5e8a9862a35",
+      "input_shape": [
+        1,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "banded",
+      "seed": 0,
+      "temperature": 1e-06
+    },
+    {
+      "batch": 1,
+      "input_dtype": "<f4",
+      "input_sha256": "d571dc75f4648444e2bfca95c58f747dab3a9afc03472f3ca9c5a7f5ae6d2ce6",
+      "input_shape": [
+        1,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "large",
+      "seed": 0,
+      "temperature": 2.0
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<f4",
+      "input_sha256": "82b08f74b64f69a4e1c99733f40bdc29ae83950733b2c0479139b62854892bb1",
+      "input_shape": [
+        2,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "flat",
+      "seed": 2026,
+      "temperature": 0.0
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<f4",
+      "input_sha256": "82b08f74b64f69a4e1c99733f40bdc29ae83950733b2c0479139b62854892bb1",
+      "input_shape": [
+        2,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "flat",
+      "seed": 2026,
+      "temperature": 1.0
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<f4",
+      "input_sha256": "52bcb3e15bf5674b0002f9a5fffa84e59d078e82578704b647407e763c7ecdab",
+      "input_shape": [
+        2,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "banded",
+      "seed": 2026,
+      "temperature": 0.7
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<f4",
+      "input_sha256": "52bcb3e15bf5674b0002f9a5fffa84e59d078e82578704b647407e763c7ecdab",
+      "input_shape": [
+        2,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "banded",
+      "seed": 2026,
+      "temperature": 1e-06
+    },
+    {
+      "batch": 2,
+      "input_dtype": "<f4",
+      "input_sha256": "488a5948a858aafc1195b5b24854c9442441b03342b54f02b2508d88f1a05d1c",
+      "input_shape": [
+        2,
+        129280
+      ],
+      "operation": "sample",
+      "pattern": "large",
+      "seed": 2026,
+      "temperature": 2.0
+    }
+  ],
+  "cases": [],
+  "exclusions": [
+    "learned coefficient provenance",
+    "HC",
+    "attention integration",
+    "compressed/shared KV",
+    "rollback/fault recovery",
+    "all model layers",
+    "model forward",
+    "full-model quality",
+    "generation speed"
+  ],
+  "execution_process_instance": "bcc3169e9d5a44e2bafb52f518bafddd",
+  "failure_type": "CudaError",
+  "full_model_quality_qualified": false,
+  "general_performance_claim": false,
+  "limits": {
+    "diagnostic_cap_bytes": 67108864,
+    "floor_enforcement": "stage observation, not an OS reservation",
+    "framework_and_context_memory_not_hard_capped": true,
+    "native_explicit_device_cap_bytes": 67108864,
+    "native_phase_admission_bytes": 268435456,
+    "physical_available_floor_bytes": 34359738368,
+    "reference_phase_admission_bytes": 3221225472
+  },
+  "math": {
+    "BLAS": "not used by this corpus",
+    "comparison": "exact diagnostic storage/FP32 bits",
+    "native_fmad": false,
+    "native_ftz": false
+  },
+  "memory_observations": [
+    {
+      "available_floor_bytes": 34359738368,
+      "cgroup_headroom_bytes": null,
+      "physical_available_bytes": 45017567232,
+      "physical_total_bytes": 130661142528,
+      "ram_plus_vram_is_not_capacity": true,
+      "shared_pool_budget_bytes": 96301404160
+    }
+  ],
+  "mode": "native",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "native_phases_after_close": [
+    {
+      "calls": 0,
+      "device_owned_bytes": 0,
+      "device_peak_owned_bytes": 0,
+      "execution": {
+        "device": {
+          "compute_capability": "12.1",
+          "driver_api_version": 13000,
+          "name": "NVIDIA GB10",
+          "ordinal": 0,
+          "total_bytes": 130661142528
+        },
+        "execution_target": "spark-sm121-candidate",
+        "qualification": "unqualified_candidate",
+        "qualification_receipt_issued": false,
+        "sampling_policy": {
+          "multiprocessors": 48,
+          "policy_source": "observed_cuda_device",
+          "qualification": "unqualified_candidate",
+          "threads_per_sm": 1536
+        },
+        "spark_reference_qualification": "not_run",
+        "target_selection_changes_model_arithmetic": false
+      },
+      "host_reserved_bytes": 0,
+      "opened": false
+    }
+  ],
+  "observed_hardware": {
+    "attributes": {
+      "concurrent_managed_access": 1,
+      "host_page_tables": 1,
+      "integrated": 1,
+      "managed_memory": 1,
+      "pageable_memory_access": 1,
+      "unified_addressing": 1
+    },
+    "compute_capability": [
+      12,
+      1
+    ],
+    "cuda_capacity_added_to_physical_ram": false,
+    "device_count": 1,
+    "driver_api_version": 13000,
+    "library": {
+      "absolute_path_redacted": true,
+      "basename": "libcuda.so.580.178.04",
+      "elf_architecture": "aarch64",
+      "file_bytes": 96460560,
+      "kind": "driver",
+      "layout": "system_aarch64"
+    },
+    "name": "NVIDIA GB10",
+    "ordinal": 0,
+    "reported_cuda_total_bytes": 130661142528
+  },
+  "operator": "sampling",
+  "original_kernel_parity_qualified": false,
+  "owned_native_resources_closed": true,
+  "preflight_compiler": {
+    "architecture": "sm_121",
+    "library": {
+      "absolute_path_redacted": true,
+      "basename": "libnvrtc.so.13.0.88",
+      "elf_architecture": "aarch64",
+      "file_bytes": 99505944,
+      "kind": "nvrtc",
+      "layout": "targets/sbsa-linux/lib"
+    },
+    "nvrtc_version": [
+      13,
+      0
+    ],
+    "options": [
+      "--gpu-architecture=sm_121",
+      "--std=c++17",
+      "--fmad=false"
+    ],
+    "source_sha256": "5bc57eda007faa91ad4367192d8ffb025931f38107f8f92e6648b2fc3dea5d9b"
+  },
+  "process_memory_observations": [
+    {
+      "locked_bytes": 0,
+      "measurement": "proc status/smaps_rollup",
+      "peak_resident_bytes": 46510080,
+      "platform": "Linux",
+      "private_commit_bytes": null,
+      "private_hugetlb_bytes": 0,
+      "private_resident_bytes": 22224896,
+      "resident_bytes": 39231488,
+      "resident_measurement": "smaps_rollup",
+      "virtual_bytes": 924000256
+    }
+  ],
+  "reason": "Operator qualification could not complete; no parity or model-quality claim",
+  "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+  "schema": "vesper.spark-operator-probe.v1",
+  "scope": "Generated finite complete 129280-token logits; original greedy/stochastic sampling and Philox offsets",
+  "separate_process_mode": true,
+  "status": "unsupported",
+  "workspace_context": {
+    "binding_id": "8480a267191e4fafab923ad834fd976c",
+    "created_at": "2026-10-20T03:33:44.022095+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "19ebfdf37a0db6dfa8f38f13398a4881ebe0621f",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "dgx-spark",
+    "profile": "native",
+    "registry_sha256": "cb94348f9dbcccb8aca04b379b3cc2637e3c5ca2385236d2078336469a9a7baf",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "s1-sampling-native-r01",
+    "schema_version": 1
+  }
+}
