@@ -14,7 +14,7 @@ measurements. No quality degradation threshold or deadline is invented here.
 
 | Problem | Evidence and limits | Improvement hypothesis | Check before adoption |
 | --- | --- | --- | --- |
-| The selected benchmark cannot execute through the current native path | [Fixed GPQA 3-question inputs](gpqa-subset.md) and scoring exist; actual answers do not. The serial request admits 512 calls, attention state 1,152 positions, and tokenizer decoding 4,096 IDs. Dynamic benchmark assets/backend are missing. | Connect bounded execution/persistence to a native backend that resolves actual input assets; implement explicit capacity/resource handling. Raising request constants alone is insufficient. | Preserve full questions, sampling and generation allowance. Save real outputs, genuine EOS or interruption, quality, timing and resources. Never qualify synthetic backend tests as model results. |
+| Native benchmark execution is connected but incomplete | [Fixed GPQA inputs and the first actual attempt](gpqa-subset.md) exist; no answers are scored. The opt-in backend supports explicit partial-capacity attempts and dynamic original assets; full-allowance/context coverage is not qualified. | Retain layer/operator contexts in the actual benchmark path, then address remaining capacity/assets as required. The first partial input records 1,464 driver/context initializations. Raising request constants alone is insufficient. | Preserve full questions, sampling and generation allowance. Save real outputs, genuine EOS or interruption, quality, timing and resources. Never qualify synthetic backend tests or partial prefill as model task quality. |
 | CPU integrity work is expensive | [M2](m2-placement.md) records 24.5..24.8 seconds of hashing/chunk preparation across five calls, with existing GPU upload audits. This is scoped host time, not a complete profile. | Reuse immutable, source-bound digest metadata and reduce repeated preparation/copies, retaining payload/corruption checks. Inspect `storage.NativeStore.read_into` and its indexed-store use before selecting a concrete change. | Short released-precision output/state and corruption checks, actual stage timings, bounded metadata, then return to the selected benchmark. No unverified cache entry becomes trusted. |
 | Too many expert bytes cross the storage/host/device tiers | M2 still reads 843 selected payloads / 14.7605 GiB across five calls. Host-retained avoids helper transfers but keeps only a small expert cache. Actual RSS and conservative reservations differ. | Share staging ownership and use available cache capacity more effectively; measure locality and eviction before changing placement. | Actual bytes/read counts, transfer time, setup, TTFT, accepted decode rate, RSS/private commit/pinned/device peaks and cleanup under the same reserve policy. Cache-hit rate alone is insufficient. |
 | Diagnostic execution is used for timing | Current operators return diagnostic intermediate arrays and use synchronous calls. The measured 0.10972 tps is a short prototype result. | Separate an inference return path from detailed diagnostics; retain detailed tracing for mismatches and selected qualification. Consider fused/resident GPU work where measured copies/launches dominate. | Declare changed math/rounding when applicable. Compare actual outputs and state/quality under the appropriate numerical profile, including wall time between accepted tokens. |
@@ -46,13 +46,15 @@ model-execution attestation.
 
 The CPU-only readiness recheck preserves the original plan and computes exact
 prompt embedding/Engram requirements without running model layers or fetching
-weights. The full native benchmark path remains **not ready**. It still needs
-dynamic source-asset resolution, sufficient attention/decode capacity and a
-backend connected to the controller. A large declared generation allowance is
-a ceiling, not a required response length; silently reducing it is not a fix.
+weights. A separate opt-in native backend now resolves original cached assets
+and executes bounded attempts. Its first actual run completes 4 input calls,
+then saves a budget interruption, with no answer or task score. Full-allowance
+and long-context execution remain **unqualified**. A large declared allowance
+is a ceiling, not a required response length; partial capacity is explicitly
+reported rather than silently reducing that allowance.
 
-Complete that executable path within bounded work sessions, then select the
-next performance experiment from the measured costs above. Backend integration
+Improve that executable path within bounded work sessions, starting with the
+repeated context/operator setup observed in the actual GPQA attempt. Integration
 must not turn into another exhaustive reference-capture prerequisite. Existing
 raw-text/component tests are supplementary checks. If native capacity or asset
 preparation would make the next session impractical, record the cost and compare

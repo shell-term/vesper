@@ -102,8 +102,10 @@ provenance-bound outputs before claiming benchmark quality. Existing short
 independent inputs remain supplementary checks; their timings do not replace
 this subset. The [improvement worklist](pc-improvement-plan.md) separates measured
 bottlenecks from unproven mechanisms. Input readiness exposes request, attention,
-decode and dynamic-asset/backend limits. The attempt controller implements
-question persistence/restart, but actual native subset scores remain pending.
+decode and asset-coverage limits. The native backend now connects question
+persistence/restart to actual model execution. Its first attempt completes four
+input calls before a budget interruption; no native subset answer/score exists.
+The selected next improvement is context/operator reuse in that same path.
 
 ## Remaining quality and optional mechanisms
 

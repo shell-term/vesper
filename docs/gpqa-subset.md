@@ -52,12 +52,12 @@ The [CPU preflight record](../results/pc-heterogeneous/2026-10-21-gpqa-subset/pr
 retains the source identities and explicit not-ready reasons, without
 redistributing question text or claiming model execution.
 
-The current native serial request is capped at 512 model calls, including both
-input and generation. Its attention state has 1,152 positions and tokenizer
-decoding admits 4,096 IDs. It cannot admit the declared benchmark allowance.
-A dynamic benchmark asset provider and native inference adapter are also still
-required. Request admission alone cannot extend attention state, prepare future
-expert routes or qualify long-context execution. No constants were increased.
+The historical serial request is capped at 512 model calls, including both input
+and generation. Attention state has 1,152 positions and tokenizer decoding admits
+4,096 IDs. These historical constants were not increased. The separate native
+benchmark backend below preserves the complete declared allowance and explicitly
+reports partial-capacity attempts; full-allowance execution remains unqualified.
+Request admission alone cannot extend attention state or qualify long context.
 
 `python -m vesper.gpqa_readiness --record NEW-RECORD-NAME` rechecks the immutable
 prepared plan and pinned source selection. It computes prompt embedding/Engram
@@ -110,9 +110,37 @@ Synthetic backend regression tests establish lifecycle behavior only. Actual
 execution receipts, answers and timing must be reported separately. The backend
 does not inherit the older task's exact qualification or establish broad quality.
 
-The next selected implementation work is an executable, bounded native path
-for these same inputs and time accounting, including honest interruption and
-question/trial persistence. Compare released precision and each candidate on
-the fixed benchmark subset. Existing independent raw-text/component checks are
-supplementary implementation checks, not substitutes for benchmark quality.
+## First actual native attempt
+
+The [actual execution record](../results/pc-heterogeneous/2026-10-21-gpqa-native/summary.json)
+at clean source `2220715` runs the selected first question through the native
+engine with zero payload fetches. It completes **4 of 286 input calls** and
+interrupts the fifth during layer work at the 180-second cooperative deadline.
+Observed elapsed time is 181.93 seconds including cleanup; setup takes 56.30
+seconds and the four committed input calls total 102.15 seconds. There are no
+generated IDs, EOS, answer, decode-rate measurement or scored questions. All
+three questions remain pending. This is an execution-path result, not GPQA quality.
+
+It reuses 104,320 verified input bytes, inventories 7,251 existing original
+experts and imports zero new experts. Thirteen compiled images match the
+previously qualified primary-GPU set. The first BOS logit hash matches the
+previous coding original's same first BOS call; that single shared input does
+not establish full GPQA parity. Original tensor precision/router logic are
+retained; temperature/top-p 1.0 follows this GPQA protocol and must not be
+confused with older tasks' sampling settings.
+
+Sampled resident RAM peaks at 7.79 GiB, private commit at 19.63 GiB, and sampled
+available RAM stays at least 124.98 GiB. All charged resources/leases/reclaimers
+and in-flight operations reach zero after close; the monitor stops without an
+error. These observations are not OS quotas. Execution records also count
+1,464 driver/context initializations and 1,468 module loads. Repeated per-layer
+setup is a concrete next optimization target; this one interrupted prefix does
+not establish a general prefill rate or a generation-speed prediction.
+
+The next selected implementation work is bounded context/operator reuse in
+this same native benchmark path, with unchanged full inputs and explicit
+resource/time limits. Avoid launching a long evaluation of the current slow
+path. Complete actual answers and compare the released-precision path and each
+candidate on the fixed subset before claiming benchmark quality. Existing
+independent raw-text/component checks remain supplementary implementation checks.
 Full evaluation remains subject to the [user's execution decision](quality-speed.md#benchmark-coverage-during-development-and-final-testing).
