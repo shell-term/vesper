@@ -94,6 +94,19 @@ compute path must pass its numerical gate; an approximate path needs a separatel
 declared quality/speed evaluation. Its historical failed candidate remains
 unqualified, and the current helper continues to store/audit bytes.
 
+Image input is an accepted product requirement tracked separately in
+[#26](https://github.com/shell-term/vesper/issues/26), currently planned/deferred
+without a milestone assignment. It needs actual preprocessing, vision-encoder
+execution and vision-to-text integration, with named visual task outputs and
+separate image-prefill/TTFT/decode measurements. The current message adapter
+rejects images; text-format or text-only speed results do not qualify vision.
+This future feature does not add image runs to the four-process M2 cycle.
+
+The [completed M2 placement measurement](m2-placement.md) adopts an opt-in host
+storage profile for its short input: 0.07331 to 0.10972 pooled decode tokens/s
+with matching outputs/state. It does not achieve the 20 tps target or complete
+M3/image coverage. GitHub Issues/Milestones remain the source of closure state.
+
 ## Updating work
 
 1. State the outcome, platform, numerical profile, acceptance and resource limits.

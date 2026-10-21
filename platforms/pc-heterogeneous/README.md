@@ -10,10 +10,11 @@ explicit reviewed branch rule before using a different PC development branch.
 
 [PC issues](https://github.com/shell-term/vesper/issues?q=is%3Aissue+label%3Aplatform%3Apc-heterogeneous)
 and M0..M3 (milestones 1..4) own progress. Setup originally preserved Issues
-1..12 and added the PC label. Current accepted policy revisions may update
+1..12 and added the PC label. The 2026-10-21 reviewed extension registers image
+input issue #26 for this PC track. Current accepted policy revisions may update
 planning/acceptance through the guarded workflow; preserve historical evidence
 and do not mark deferred checks passed.
-Deferred issue 12 explicitly has no milestone. Read allowed IDs through the
+Deferred issues 12 and 26 explicitly have no milestone. Read allowed IDs through the
 helper; Spark S0..S3 are separate. No shared issue reads are currently allowlisted.
 
 The current order is M2's bounded optimization cycle (#11, alongside the completed

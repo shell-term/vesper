@@ -43,6 +43,7 @@ practical production throughput are still under development.
 | Released-precision components and integration | Exact scoped expert, MoE, Attention/KV/HC, Engram and memory checks; [evidence index](docs/reference-evidence.md) |
 | Actual generation and recovery | Five-call raw-text continuation and a complete 34-call Python-expression task; [generation](docs/text-generation-validation.md), [task/state evidence](docs/trajectory-validation.md) |
 | First session-lifetime measurement | 0.0472 to 0.0762 decode tokens/s; output/final state match on the short input. One trial each, different admission ceilings, more resident memory; [full measurement and limitations](docs/session-lifetime.md) |
+| Bounded M2 placement cycle | Two alternating pairs with matched admission ceilings: 0.07331 to 0.10972 pooled decode tokens/s (1.4967x), exact short outputs/state; [full result and limits](docs/m2-placement.md) |
 
 The session experiment observes 15.80 GiB peak resident RAM and 117.74 GiB
 minimum available RAM on the retained path. It is not practical production speed
@@ -58,6 +59,11 @@ own task state; the [roadmap](docs/roadmap.md) explains milestone scope.
 - [M2 / #11: one bounded quality/speed optimization cycle](https://github.com/shell-term/vesper/issues/11)
 - [M3 / #10: remaining representative task-quality evaluation](https://github.com/shell-term/vesper/issues/10)
 - [#12: optional 3080 Ti compute investigation](https://github.com/shell-term/vesper/issues/12)
+- [#26: planned real image-input support](https://github.com/shell-term/vesper/issues/26)
+
+The PC stretch target is 20 accepted decode tokens/s for one conversation;
+it remains unachieved. Image input is a planned requirement: the current native
+message adapter rejects images and the vision path is not implemented or qualified.
 
 Run the short optimization cycle before the remaining long reasoning/tool cases.
 The [bounded plan](docs/roadmap.md#next-execution-order-and-time-limits) specifies

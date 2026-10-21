@@ -1,0 +1,494 @@
+{
+  "actual_total_engine_wall_seconds": 504.0957105000016,
+  "additional_quantization": false,
+  "decision": "adopt_opt_in_host_retained_for_measured_short_profile",
+  "files": {
+    "pair1-preparation.json": {
+      "bytes": 25055,
+      "sha256": "0da65998e0613f18a5bb64f3c0a8488d641474a57b8b5d4aaf0d5cadbb2d0cee"
+    },
+    "pair2-preparation.json": {
+      "bytes": 25055,
+      "sha256": "f6f8d9bb4b6a88afa8ac390e25ab49b6006d43e32d95d68f793c65d3bbe3abbc"
+    },
+    "r1-retained.json": {
+      "bytes": 465865,
+      "sha256": "e808e3f84134284394fe20ed17d0359e16f41545acc4ef8c67a00ccf00c4395b"
+    },
+    "r2-host-retained.json": {
+      "bytes": 442706,
+      "sha256": "87ca29e9b1f98a8c9d0ee8eff51bbbef5cbda0d2977d81575bd7f9c6e6d56c7e"
+    },
+    "r3-host-retained.json": {
+      "bytes": 442745,
+      "sha256": "af03593a8aff6124d65cb2a2829a353c8af5738c5319a8488074f99073a3b2d9"
+    },
+    "r4-retained.json": {
+      "bytes": 465800,
+      "sha256": "dcf1d6c1b090c1c0a9c01d88192c0703683b9e2aadfd76a80310993109e99ae2"
+    }
+  },
+  "general_or_production_throughput_claim": false,
+  "limitations": [
+    "Only one short raw-text input; no task-quality scores, arbitrary prompts or image qualification.",
+    "Two post-prefill decode calls per trial; pooled throughput uses four accepted decode tokens per variant.",
+    "Fresh processes; OS/driver caches not reset; alternating order does not eliminate cache/workload effects.",
+    "Other workloads not stopped; diagnostic tensor materialization and all existing source/upload integrity checks remain timed.",
+    "Python import and reference validation excluded; setup/cleanup can overrun cooperative checkpoints.",
+    "Moving two helper slots per layer to RAM intentionally changes allocation by tier despite equal total expert capacity."
+  ],
+  "matched_model_request_and_admission_ceilings": true,
+  "new_model_execution_run_in_summary_writer": false,
+  "numerical_profile": "released-fp4",
+  "observations": {
+    "r1-retained": {
+      "charged_host_peak_bytes": 74260186496,
+      "device_peaks": {
+        "0": 13948602720,
+        "1": 1509926400
+      },
+      "direct_read_bytes": 15848939520,
+      "direct_read_calls": 843,
+      "expert_stage_timings": {
+        "compute.kernels": {
+          "calls": 7200,
+          "total_ms": 2293.5160999999994
+        },
+        "host.ram_allocate": {
+          "calls": 1023,
+          "total_ms": 27.587800000000005
+        },
+        "host.ram_copy": {
+          "calls": 1363,
+          "total_ms": 3943.8265
+        },
+        "host.store_staging_copy": {
+          "calls": 843,
+          "total_ms": 1135.6634999999999
+        },
+        "integrity.cpu_sha256": {
+          "calls": 843,
+          "total_ms": 14282.465600000001
+        },
+        "integrity.gpu0_digest_d2h": {
+          "calls": 1200,
+          "total_ms": 76.6652
+        },
+        "integrity.gpu0_sha256": {
+          "calls": 1200,
+          "total_ms": 4552.308400000001
+        },
+        "integrity.gpu1_digest_d2h": {
+          "calls": 1120,
+          "total_ms": 134.73019999999997
+        },
+        "integrity.gpu1_sha256": {
+          "calls": 1120,
+          "total_ms": 2385.7469999999994
+        },
+        "integrity.prepare_cpu_chunks": {
+          "calls": 786,
+          "total_ms": 10488.149500000001
+        },
+        "storage.direct_read": {
+          "calls": 843,
+          "total_ms": 3501.9510999999993
+        },
+        "transfer.diagnostics_d2h": {
+          "calls": 1200,
+          "total_ms": 277.7133
+        },
+        "transfer.helper_d2h": {
+          "calls": 1040,
+          "total_ms": 8505.9419
+        },
+        "transfer.helper_h2d": {
+          "calls": 1120,
+          "total_ms": 9616.230399999999
+        },
+        "transfer.input_h2d": {
+          "calls": 1200,
+          "total_ms": 49.9951
+        },
+        "transfer.primary_d2h": {
+          "calls": 1120,
+          "total_ms": 1707.1705000000006
+        },
+        "transfer.primary_h2d": {
+          "calls": 1200,
+          "total_ms": 1893.3288
+        }
+      },
+      "minimum_available_bytes": 94441529344,
+      "mode": "retained",
+      "pair": 1,
+      "pinned_peak_bytes": 1509926400,
+      "process_peaks": {
+        "private_commit_bytes": 35430273024,
+        "resident_bytes": 16972439552
+      },
+      "source_tiers": {
+        "helper_gpu": 17,
+        "ram": 340,
+        "store": 843
+      },
+      "timing": {
+        "completed_model_calls": 5,
+        "decode_forward_seconds": 27.388670399999683,
+        "decode_tokens_after_first": 2,
+        "decode_tokens_per_second": 0.0730228948974472,
+        "engine_TTFT_seconds": 109.28049889999966,
+        "forward_seconds": 74.77149389999977,
+        "prefill_forward_seconds": 47.382823500000086,
+        "prompt_complete": true,
+        "prompt_tokens": 3,
+        "request_TTFT_seconds": 47.384788899998966,
+        "setup_seconds": 61.89571000000069,
+        "total_engine_wall_seconds_including_checks_and_cleanup": 139.15983720000077
+      }
+    },
+    "r2-host-retained": {
+      "charged_host_peak_bytes": 75764237696,
+      "device_peaks": {
+        "0": 13948602720
+      },
+      "direct_read_bytes": 15848939520,
+      "direct_read_calls": 843,
+      "expert_stage_timings": {
+        "compute.kernels": {
+          "calls": 7200,
+          "total_ms": 1667.5609000000002
+        },
+        "host.ram_allocate": {
+          "calls": 1120,
+          "total_ms": 25.767500000000005
+        },
+        "host.ram_copy": {
+          "calls": 1477,
+          "total_ms": 4259.097899999999
+        },
+        "host.store_staging_copy": {
+          "calls": 843,
+          "total_ms": 1123.6827999999998
+        },
+        "integrity.cpu_sha256": {
+          "calls": 843,
+          "total_ms": 14247.072999999999
+        },
+        "integrity.gpu0_digest_d2h": {
+          "calls": 1200,
+          "total_ms": 68.6891
+        },
+        "integrity.gpu0_sha256": {
+          "calls": 1200,
+          "total_ms": 3460.030599999999
+        },
+        "integrity.prepare_cpu_chunks": {
+          "calls": 786,
+          "total_ms": 10408.089399999999
+        },
+        "storage.direct_read": {
+          "calls": 843,
+          "total_ms": 3498.3992000000003
+        },
+        "transfer.diagnostics_d2h": {
+          "calls": 1200,
+          "total_ms": 257.78589999999997
+        },
+        "transfer.input_h2d": {
+          "calls": 1200,
+          "total_ms": 47.5653
+        },
+        "transfer.primary_d2h": {
+          "calls": 1120,
+          "total_ms": 1703.1792000000005
+        },
+        "transfer.primary_h2d": {
+          "calls": 1200,
+          "total_ms": 1926.8992
+        }
+      },
+      "minimum_available_bytes": 93002547200,
+      "mode": "host-retained",
+      "pair": 1,
+      "pinned_peak_bytes": 1509926400,
+      "process_peaks": {
+        "private_commit_bytes": 35084648448,
+        "resident_bytes": 18370351104
+      },
+      "source_tiers": {
+        "ram": 357,
+        "store": 843
+      },
+      "timing": {
+        "completed_model_calls": 5,
+        "decode_forward_seconds": 18.293834899999638,
+        "decode_tokens_after_first": 2,
+        "decode_tokens_per_second": 0.10932644855125699,
+        "engine_TTFT_seconds": 92.39997399999993,
+        "forward_seconds": 51.395705000002636,
+        "prefill_forward_seconds": 33.101870100003,
+        "prompt_complete": true,
+        "prompt_tokens": 3,
+        "request_TTFT_seconds": 33.103251000000455,
+        "setup_seconds": 59.296722999999474,
+        "total_engine_wall_seconds_including_checks_and_cleanup": 113.0459778000004
+      }
+    },
+    "r3-host-retained": {
+      "charged_host_peak_bytes": 75764237696,
+      "device_peaks": {
+        "0": 13948602720
+      },
+      "direct_read_bytes": 15848939520,
+      "direct_read_calls": 843,
+      "expert_stage_timings": {
+        "compute.kernels": {
+          "calls": 7200,
+          "total_ms": 1685.3718000000003
+        },
+        "host.ram_allocate": {
+          "calls": 1120,
+          "total_ms": 25.960400000000003
+        },
+        "host.ram_copy": {
+          "calls": 1477,
+          "total_ms": 4251.1189
+        },
+        "host.store_staging_copy": {
+          "calls": 843,
+          "total_ms": 1115.2727
+        },
+        "integrity.cpu_sha256": {
+          "calls": 843,
+          "total_ms": 14170.4399
+        },
+        "integrity.gpu0_digest_d2h": {
+          "calls": 1200,
+          "total_ms": 65.26249999999999
+        },
+        "integrity.gpu0_sha256": {
+          "calls": 1200,
+          "total_ms": 3515.4268000000006
+        },
+        "integrity.prepare_cpu_chunks": {
+          "calls": 786,
+          "total_ms": 10363.4892
+        },
+        "storage.direct_read": {
+          "calls": 843,
+          "total_ms": 3497.5678000000007
+        },
+        "transfer.diagnostics_d2h": {
+          "calls": 1200,
+          "total_ms": 250.54049999999998
+        },
+        "transfer.input_h2d": {
+          "calls": 1200,
+          "total_ms": 48.528800000000004
+        },
+        "transfer.primary_d2h": {
+          "calls": 1120,
+          "total_ms": 1703.3755999999992
+        },
+        "transfer.primary_h2d": {
+          "calls": 1200,
+          "total_ms": 1921.7250000000001
+        }
+      },
+      "minimum_available_bytes": 93196222464,
+      "mode": "host-retained",
+      "pair": 2,
+      "pinned_peak_bytes": 1509926400,
+      "process_peaks": {
+        "private_commit_bytes": 35026616320,
+        "resident_bytes": 18377785344
+      },
+      "source_tiers": {
+        "ram": 357,
+        "store": 843
+      },
+      "timing": {
+        "completed_model_calls": 5,
+        "decode_forward_seconds": 18.163126300005388,
+        "decode_tokens_after_first": 2,
+        "decode_tokens_per_second": 0.11011320226295,
+        "engine_TTFT_seconds": 92.47370950000186,
+        "forward_seconds": 51.21248010001,
+        "prefill_forward_seconds": 33.04935380000461,
+        "prompt_complete": true,
+        "prompt_tokens": 3,
+        "request_TTFT_seconds": 33.050804000002245,
+        "setup_seconds": 59.422905499999615,
+        "total_engine_wall_seconds_including_checks_and_cleanup": 113.07030730000042
+      }
+    },
+    "r4-retained": {
+      "charged_host_peak_bytes": 74260186496,
+      "device_peaks": {
+        "0": 13948602720,
+        "1": 1509926400
+      },
+      "direct_read_bytes": 15848939520,
+      "direct_read_calls": 843,
+      "expert_stage_timings": {
+        "compute.kernels": {
+          "calls": 7200,
+          "total_ms": 2258.5502
+        },
+        "host.ram_allocate": {
+          "calls": 1023,
+          "total_ms": 27.827
+        },
+        "host.ram_copy": {
+          "calls": 1363,
+          "total_ms": 3930.5525000000007
+        },
+        "host.store_staging_copy": {
+          "calls": 843,
+          "total_ms": 1116.5167
+        },
+        "integrity.cpu_sha256": {
+          "calls": 843,
+          "total_ms": 14237.078700000002
+        },
+        "integrity.gpu0_digest_d2h": {
+          "calls": 1200,
+          "total_ms": 72.9607
+        },
+        "integrity.gpu0_sha256": {
+          "calls": 1200,
+          "total_ms": 4519.6416
+        },
+        "integrity.gpu1_digest_d2h": {
+          "calls": 1120,
+          "total_ms": 132.1943
+        },
+        "integrity.gpu1_sha256": {
+          "calls": 1120,
+          "total_ms": 2307.6523999999995
+        },
+        "integrity.prepare_cpu_chunks": {
+          "calls": 786,
+          "total_ms": 10439.373
+        },
+        "storage.direct_read": {
+          "calls": 843,
+          "total_ms": 3487.8268000000003
+        },
+        "transfer.diagnostics_d2h": {
+          "calls": 1200,
+          "total_ms": 271.1815000000001
+        },
+        "transfer.helper_d2h": {
+          "calls": 1040,
+          "total_ms": 8464.1038
+        },
+        "transfer.helper_h2d": {
+          "calls": 1120,
+          "total_ms": 9569.875399999997
+        },
+        "transfer.input_h2d": {
+          "calls": 1200,
+          "total_ms": 49.10630000000001
+        },
+        "transfer.primary_d2h": {
+          "calls": 1120,
+          "total_ms": 1705.4153
+        },
+        "transfer.primary_h2d": {
+          "calls": 1200,
+          "total_ms": 1890.5483000000002
+        }
+      },
+      "minimum_available_bytes": 94735339520,
+      "mode": "retained",
+      "pair": 2,
+      "pinned_peak_bytes": 1509926400,
+      "process_peaks": {
+        "private_commit_bytes": 35386568704,
+        "resident_bytes": 16977956864
+      },
+      "source_tiers": {
+        "helper_gpu": 17,
+        "ram": 340,
+        "store": 843
+      },
+      "timing": {
+        "completed_model_calls": 5,
+        "decode_forward_seconds": 27.176369099997828,
+        "decode_tokens_after_first": 2,
+        "decode_tokens_per_second": 0.07359334842122672,
+        "engine_TTFT_seconds": 109.19841199999792,
+        "forward_seconds": 74.23533899999893,
+        "prefill_forward_seconds": 47.0589699000011,
+        "prompt_complete": true,
+        "prompt_tokens": 3,
+        "request_TTFT_seconds": 47.060991499998636,
+        "setup_seconds": 62.13742049999928,
+        "total_engine_wall_seconds_including_checks_and_cleanup": 138.8195882
+      }
+    }
+  },
+  "paired_ratios": [
+    {
+      "baseline": "r1-retained",
+      "candidate": "r2-host-retained",
+      "decode_rate_candidate_over_baseline": 1.4971530326864502,
+      "forward_wall_baseline_over_candidate": 1.454819890105524,
+      "request_TTFT_baseline_over_candidate": 1.4314240284133517
+    },
+    {
+      "baseline": "r4-retained",
+      "candidate": "r3-host-retained",
+      "decode_rate_candidate_over_baseline": 1.4962385137403227,
+      "forward_wall_baseline_over_candidate": 1.4495556328267811,
+      "request_TTFT_baseline_over_candidate": 1.4238985381413245
+    }
+  ],
+  "per_trial_cooperative_budget_seconds": 300,
+  "planned_model_budget_seconds": 1200,
+  "pooled_decode": {
+    "host-retained": {
+      "decode_seconds": 36.456961200005026,
+      "decode_tokens": 4,
+      "decode_tokens_per_second": 0.10971841503892125
+    },
+    "retained": {
+      "decode_seconds": 54.56503949999751,
+      "decode_tokens": 4,
+      "decode_tokens_per_second": 0.07330701190091107
+    }
+  },
+  "pooled_decode_speedup": 1.4966974126189647,
+  "probe": "pc_bounded_m2_helper_placement_publication",
+  "required_checks_completed": true,
+  "same_total_resident_expert_payload_capacity": true,
+  "scope": "two alternating pairs of the qualified five-call raw-text request; two decode calls per trial",
+  "status": "pass",
+  "task_quality_scored": false,
+  "trial_count": 4,
+  "trial_order": [
+    "r1-retained",
+    "r2-host-retained",
+    "r3-host-retained",
+    "r4-retained"
+  ],
+  "twenty_tps_achieved_on_this_short_input": false,
+  "twenty_tps_stretch_target": 20,
+  "vision_input_run": false,
+  "workspace_context": {
+    "binding_id": "d8ba9a395cbd47b69ba549fa5d13ed14",
+    "created_at": "2026-10-21T03:53:54.750785+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "78a9cc00348ddde16afe9998c8dde2a490e85770",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "pc-heterogeneous",
+    "profile": "native",
+    "registry_sha256": "62c940bcbae1587ad43f67a2080aa08597abb92071de8844a6eea1810215427e",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "pc-m2-placement-publication-20261021",
+    "schema_version": 1
+  }
+}
