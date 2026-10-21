@@ -318,6 +318,7 @@ class SparkBackboneCandidate(NativeBackbone):
                 "engram_operators": {str(layer):op.stats() for layer,op in self.engrams.items()},
                 "head_operator": self.head.stats(), "sampler_operator": self.transaction.sampler.stats(),
                 "compiled_kernel_cache": (self.compilation_cache.stats() if hasattr(getattr(self,"compilation_cache",None),"stats") else None),
+                "preparation_backends": (self.preparation_backends.stats() if getattr(self,"preparation_backends",None) is not None else None),
                 "network_in_forward": False, "trajectory_replay": False}
 
     def __exit__(self, *error):
@@ -335,7 +336,8 @@ def spark_memory_policy():
                         device_caps={0:SPARK_DEVICE_CAP}, unified_device_memory=True)
 
 
-def open_spark_backbone(stack, assets, attention_bundle, *, temperature=.7, seed=2026, progress=None):
+def open_spark_backbone(stack, assets, attention_bundle, *, temperature=.7, seed=2026, progress=None,
+                        reuse_profile="baseline"):
     """Compose a bounded candidate in a caller-owned ExitStack.
 
     Assets must already be open and locally verified. This function performs no
@@ -344,6 +346,8 @@ def open_spark_backbone(stack, assets, attention_bundle, *, temperature=.7, seed
     request and retain EOS/quality as separate S1/S2 acceptance gates.
     """
     assets.workspace.check()
+    if reuse_profile not in ("baseline", "s2"):
+        raise ValueError("Expected an explicit baseline or s2 preparation profile")
     context = assets.workspace.context()
     if tuple(context[k] for k in ("platform", "profile", "model", "revision")) != (
             "dgx-spark", "native", MODEL, REVISION):
@@ -355,7 +359,11 @@ def open_spark_backbone(stack, assets, attention_bundle, *, temperature=.7, seed
     elif not policy.config.unified_device_memory:
         raise ValueError("Spark operators require one shared physical host/device memory ceiling")
     compilation = stack.enter_context(spark_kernel_cache())
-    pool = stack.enter_context(LayerOperatorPool(assets, progress=progress))
+    backends = None
+    if reuse_profile == "s2":
+        from .spark_operator_backends import SparkOperatorBackends
+        backends = stack.enter_context(SparkOperatorBackends(assets.workspace))
+    pool = stack.enter_context(LayerOperatorPool(assets, progress=progress, backend_pool=backends))
     hc = {layer: pool.proxy("hc", layer) for layer in LAYERS}
     projections = {layer: pool.proxy("projection", layer) for layer in LAYERS}
     moe = {layer: pool.proxy("moe", layer) for layer in LAYERS}
@@ -381,4 +389,5 @@ def open_spark_backbone(stack, assets, attention_bundle, *, temperature=.7, seed
     engine.tokenizer_identity = tokenizer_identity
     engine.memory_policy = policy
     engine.compilation_cache = compilation
+    engine.preparation_backends = backends
     return engine

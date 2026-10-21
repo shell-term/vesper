@@ -285,6 +285,53 @@ class TextProbeTests(unittest.TestCase):
         self.assertTrue(report["owned_resources_closed"])
         self.assertTrue(report["memory_runtime_closed"])
         self.assertLess(len(json.dumps(report)), probe.REPORT_LIMIT)
+        marks = report["timing_marks_seconds_from_start"]
+        self.assertLessEqual(marks["generation_start"], marks["first_selected_output"])
+        self.assertLessEqual(marks["first_selected_output"], marks["generation_complete"])
+        self.assertLessEqual(marks["owned_cleanup_start"], marks["owned_cleanup_complete"])
+        self.assertLessEqual(marks["owned_cleanup_complete"], marks["runtime_cleanup_complete"])
+
+    def test_s2_catalog_is_owned_before_assets_and_closes_after_engine_and_assets(self):
+        from vesper import spark_artifacts
+        catalogs=[]
+        class Catalog:
+            def __init__(self, metadata, originals, integrity, budget, *, workspace):
+                self.budget, self.opened = budget, False
+                catalogs.append(self)
+            def __enter__(self):
+                self.budget.acquire(self.budget.cap, category="metadata")
+                self.opened = True; Assets.events.append("catalog_open")
+                return self
+            def stats(self): return {"opened":self.opened}
+            def __exit__(self, *_):
+                self.opened = False; Assets.events.append("catalog_close")
+                self.budget.release(self.budget.cap, category="metadata")
+        class ReusedAssets(Assets):
+            def __init__(self, *args, catalog, **kwargs):
+                if not catalog.opened: raise AssertionError("Catalog must precede assets")
+                self.catalog = catalog
+                super().__init__(*args, **kwargs)
+            def __exit__(self, *error):
+                if not self.catalog.opened: raise AssertionError("Catalog must outlive assets")
+                return super().__exit__(*error)
+        def open_reused(stack, assets, bundle, *, temperature, seed, progress=None, reuse_profile):
+            self.assertEqual(reuse_profile,"s2")
+            self.assertIs(assets.catalog,catalogs[0])
+            return stack.enter_context(Engine(assets,bundle,temperature,seed))
+        with patch.object(spark_artifacts,"AuthenticatedModelCatalog",Catalog), \
+                patch.object(probe,"SparkModelAssets",ReusedAssets), \
+                patch.object(probe,"open_spark_backbone",side_effect=open_reused):
+            report=self.generate(reuse_profile="s2")
+        self.assertTrue(report["functional_acceptance"])
+        self.assertEqual(report["preparation_reuse_profile"],"s2")
+        self.assertEqual(Assets.events,["catalog_open","assets_open","engine_open","engine_close","assets_close","catalog_close"])
+        self.assertEqual(report["memory_after_runtime_close"]["charged_host_bytes"],0)
+        self.assertFalse(catalogs[0].opened)
+
+    def test_unknown_preparation_profile_refuses_before_hardware_and_model(self):
+        with self.assertRaises(ValueError):self.generate(reuse_profile="unknown")
+        self.inventory.assert_not_called()
+        probe.open_spark_backbone.assert_not_called()
 
     def test_short_call_budget_records_partial_progress_and_never_claims_a_response(self):
         events=[]
@@ -297,6 +344,7 @@ class TextProbeTests(unittest.TestCase):
         self.assertEqual(events[-1]["completed_model_calls"],1)
         self.assertEqual(events[-1]["generated_tokens"],0)
         self.assertEqual(set(report["steps"][0]["engrams"]),{"1","14"})
+        self.assertNotIn("first_selected_output",report["timing_marks_seconds_from_start"])
 
     def test_atomic_live_progress_retains_counters_and_refuses_a_prior_run(self):
         live=probe.ProgressFile(self.ws,"live-r01")

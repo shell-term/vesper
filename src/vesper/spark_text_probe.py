@@ -198,6 +198,8 @@ class RouteObserver:
             row["source_io"] = {k: stats[k] for k in ("logical_expert_reads", "logical_expert_bytes",
                 "physical_data_bytes_read", "integrity_index_bytes_read", "network_payload_bytes_in_forward")
                 if k in stats and type(stats[k]) is int and stats[k] >= 0}
+            row["source_setup_timings"] = stats.get("source_setup_timings", {})
+        row["opening_phase_seconds"] = dict(getattr(owner, "opening_phase_seconds", {}))
         self.current.append(row)
 
     def __exit__(self, *_):
@@ -305,10 +307,13 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
             integrity="s1/original-integrity", bundle="s1/attention-candidate", fixtures="s1/moe-original",
             attention_reference_result="s1/attention/reference-r02.json",
             attention_receipt_result="s1/attention/native-validation-r01.json",
-            prompt=DEFAULT_PROMPT, max_new_tokens=64, temperature=0., seed=2026, progress=None, max_model_calls=MAX_CALLS):
+            prompt=DEFAULT_PROMPT, max_new_tokens=64, temperature=0., seed=2026, progress=None, max_model_calls=MAX_CALLS,
+            reuse_profile="baseline"):
     """Return an unstamped report after resource cleanup; the CLI writes it."""
     initial = _guard(workspace, run_id)
     _validate(mode, prompt, max_new_tokens, temperature, seed)
+    if reuse_profile not in ("baseline", "s2"):
+        raise ValueError("Expected baseline or s2 native preparation reuse")
     if type(max_model_calls) is not int or not 1 <= max_model_calls <= MAX_CALLS:
         raise ValueError("Expected a bounded model-call budget up to 512")
     if mode == "generate" and any(not isinstance(value, str) or not value for value in
@@ -336,9 +341,13 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
             "report_limit_bytes": REPORT_LIMIT, "reservation_is_RSS_or_OS_limit": False},
         "memory_observations": [], "steps": [], "owned_resources_closed": False, "memory_runtime_closed": False,
         "attention_qualification": None}
+    report["preparation_reuse_profile"] = reuse_profile
+    report["timing_marks_seconds_from_start"] = {}
     memory, admission = None, None
     engine = assets = tokenizer = session = result = None
     stage, started = "platform", time.perf_counter()
+    def mark(name):
+        report["timing_marks_seconds_from_start"][name] = time.perf_counter() - started
     def update(event=None):
         if progress is not None:
             value = {"status":report["status"], "stage":stage,
@@ -382,9 +391,18 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
             try:
                 with ExitStack() as stack:
                     stage = "assets"
+                    mark("assets_open_start")
+                    catalog = None
+                    if mode == "generate" and reuse_profile == "s2":
+                        from .spark_artifacts import AuthenticatedModelCatalog, CATALOG_REUSE_BYTES
+                        catalog = stack.enter_context(AuthenticatedModelCatalog(paths["metadata"], paths["originals"],
+                            paths["integrity"], MemoryBudget(cap=CATALOG_REUSE_BYTES, owner="spark_text_catalog"),
+                            workspace=workspace))
+                    reuse = {} if catalog is None else {"catalog": catalog}
                     assets = stack.enter_context(SparkModelAssets(paths["metadata"], paths["originals"], paths["integrity"],
                         workspace=workspace, fixtures=paths["fixtures"],
-                        budget=MemoryBudget(cap=SPARK_ASSET_CAP, owner="spark_model_assets")))
+                        budget=MemoryBudget(cap=SPARK_ASSET_CAP, owner="spark_model_assets"), **reuse))
+                    mark("assets_open_complete")
                     if mode == "prepare":
                         stage = "moe_preparation"
                         report["preparation"] = assets.prepare_moe_fixtures()
@@ -417,14 +435,18 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                         report["request"]["eos_id"] = eos[0]
                         report["tokenizer"] = {"version": TOKENIZERS_VERSION, "vocabulary": len(tokenizer)}
                         stage = "model_open"
+                        mark("model_open_start")
                         update({"phase":"model_open"})
+                        reuse = {} if reuse_profile == "baseline" else {"reuse_profile": reuse_profile}
                         engine = open_spark_backbone(stack, assets, paths["bundle"], temperature=float(temperature), seed=seed,
-                            progress=update if progress is not None else None)
+                            progress=update if progress is not None else None, **reuse)
+                        mark("model_open_complete")
                         stage = "model_attention_qualification"
                         _check_engine_receipt(engine, proof)
                         session = TextGeneration(tokenizer, engine.step, request)
                         report["tokenizer"]["compressed_identity"] = engine.tokenizer_identity
                         stage = "generation"
+                        mark("generation_start")
                         report["status"] = "running"
                         with RouteObserver(engine) as observer:
                             while not session.done:
@@ -439,6 +461,8 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                                 update({"phase":"model_call_start"})
                                 try:
                                     meta, result = session.advance()
+                                    if meta.get("selected_id") is not None and "first_selected_output" not in report["timing_marks_seconds_from_start"]:
+                                        mark("first_selected_output")
                                     report["steps"].append(_step_summary(meta, result, observer.current,
                                         time.perf_counter() - step_start))
                                     update({"phase":"model_call_complete", "last_model_call_seconds":time.perf_counter()-step_start})
@@ -452,11 +476,15 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                                     admission.release(STEP_DIAGNOSTIC_ADMISSION, category="diagnostics")
                                 check()
                         stage = "completion_parse"
+                        mark("generation_complete")
                         _finish_completion(report, session, tokenizer)
                         report["engine_before_close"] = engine.stats()
                         report["status"] = ("functional_response_complete" if report["eos_response_complete"] else
                             "partial_model_call_budget" if not session.done else "partial_max_new_tokens")
                     report["assets_before_close"] = assets.stats()
+                    if catalog is not None:
+                        report["catalog_before_close"] = catalog.stats()
+                    mark("owned_cleanup_start")
             except (Exception, KeyboardInterrupt) as error:
                 if session is not None and tokenizer is not None:
                     try:
@@ -469,6 +497,7 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
                 # shared governor checks its remaining resource leases.
                 result = session = tokenizer = engine = assets = None
                 gc.collect()
+                mark("owned_cleanup_complete")
                 if admission.reserved:
                     admission.release(admission.reserved, category="diagnostics")
                 report["memory_after_owned_close"] = memory.snapshot()
@@ -484,6 +513,7 @@ def collect(mode, workspace, *, run_id, metadata="s1/import-source", originals="
         if memory is not None:
             report["memory_after_runtime_close"] = memory.snapshot()
         report["wall_seconds_total"] = time.perf_counter() - started
+        mark("runtime_cleanup_complete")
         report["process_after_cleanup"] = process_memory()
         try:
             check()
@@ -523,6 +553,7 @@ def main(argv=None):
     parser.add_argument("--temperature", type=float, default=0.)
     parser.add_argument("--seed", type=int, default=2026)
     parser.add_argument("--max-model-calls", type=int, default=MAX_CALLS)
+    parser.add_argument("--reuse-profile", choices=("baseline", "s2"), default="baseline")
     args = parser.parse_args(argv)
     from .workspace import Workspace
     workspace = Workspace.open(args.workspace)
@@ -534,7 +565,8 @@ def main(argv=None):
         integrity=args.integrity, bundle=args.bundle, fixtures=args.fixtures,
         attention_reference_result=args.attention_reference_result, attention_receipt_result=args.attention_receipt_result, prompt=args.prompt,
         max_new_tokens=args.max_new_tokens, temperature=args.temperature, seed=args.seed,
-        progress=ProgressFile(workspace,args.run_id), max_model_calls=args.max_model_calls)
+        progress=ProgressFile(workspace,args.run_id), max_model_calls=args.max_model_calls,
+        reuse_profile=args.reuse_profile)
     path = workspace.write_result(relative, report, run_id=args.run_id, initial_context=initial)
     print(json.dumps({"mode": args.mode, "status": report["status"], "functional_acceptance": report["functional_acceptance"],
                       "result": path.relative_to(workspace.root).as_posix()}))

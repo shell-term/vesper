@@ -210,6 +210,31 @@ class StreamedPoolTests(unittest.TestCase):
             source.assert_called_once_with(Path("metadata"), Path("originals"), Path("integrity"), budget,
                                            layer=14, workspace=self.assets.workspace)
 
+    def test_reuse_is_opt_in_and_does_not_change_custom_factory_contract(self):
+        backend = object()
+        self.pool.backend_pool = backend
+        with self.pool:
+            self.pool.proxy("hc",0).pre("x","p")
+        self.assertNotIn("backend_pool", self.factories["hc"].call_args.kwargs)
+        def native(arrays, ordinal, **kwargs):
+            self.assertIs(kwargs.pop("backend_pool"),backend)
+            return Operator(self.events,"hc",kwargs["layer"],ordinal)
+        with patch.object(runtime,"NativeHC",side_effect=native) as factory:
+            with runtime.LayerOperatorPool(self.assets,backend_pool=backend) as pool:
+                pool.proxy("hc",1).pre("x","p")
+        factory.assert_called_once()
+
+    def test_explicit_catalog_reaches_original_source_without_changing_routes(self):
+        catalog=object()
+        self.assets.catalog=catalog
+        self.assets.moe_paths=Mock(return_value=(Path("gate"),Path("router"),Path("shared")))
+        self.assets.metadata,self.assets.originals,self.assets.integrity=map(Path,("metadata","originals","integrity"))
+        with patch.object(runtime,"ConnectedMoE") as ctor, patch.object(runtime,"OriginalShardExpertStore") as source:
+            self.pool._moe(39)
+            budget=object();ctor.call_args.kwargs["source_factory"](Path("unused"),budget)
+            self.assertIs(source.call_args.kwargs["catalog"],catalog)
+            self.assertEqual(source.call_args.kwargs["layer"],39)
+
 
 class EmbeddingTests(unittest.TestCase):
     def test_domain_is_lazy_and_actual_row_is_validated_at_each_lookup(self):
