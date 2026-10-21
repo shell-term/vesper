@@ -1,5 +1,11 @@
 # Consecutive complete blocks 2 and 3
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 The complete original layer-2 block now feeds its actual BF16 hidden state and
 returned FP32 pre coefficients directly into the complete original layer-3
 block. Layer 3 reuses layer 2's compressed KV and selected indices, while keeping

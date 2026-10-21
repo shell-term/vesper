@@ -1,5 +1,11 @@
 # Complete blocks 20 through 25 with actual index refresh
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 This gate executes six consecutive original blocks without skipping layers:
 20 -> 21 -> 22 -> 23 -> 24 -> 25. Each block receives the preceding complete
 block's actual BF16 hidden state and returned FP32 HC pre coefficients.

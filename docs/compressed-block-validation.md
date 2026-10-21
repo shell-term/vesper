@@ -1,5 +1,11 @@
 # Complete compressed Transformer block
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 This gate connects **original layer 2** through HC, RMS, compressed Attention,
 the original gate, offloaded FP4 experts, the resident FP8 shared expert, ordered
 MoE accumulation and the final residual. It extends the

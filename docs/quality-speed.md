@@ -7,6 +7,11 @@ worthwhile. Exact intermediate equality is a reference tool rather than the
 acceptance rule for every candidate. This direction does not change Spark's
 qualification gates or retrospectively broaden existing results.
 
+This is the canonical PC numerical policy. [Roadmap](roadmap.md) defines the
+milestones, [validation](validation.md) chooses checks, and GitHub PC Issues own
+live acceptance/state. Historical exact reports are comparator evidence, not
+universal restrictions on new candidates. See the [policy alignment record](policy-review-2026-10-21.md).
+
 ## Comparator and candidate identity
 
 Keep original tensor bytes immutable and retain a released-precision comparator.
@@ -32,6 +37,7 @@ compression may affect outputs. Both require measurements.
 | Situation | Check |
 | --- | --- |
 | Local edit | Relevant CPU/resource/lifecycle tests |
+| Documentation/progress edit | Links, platform scope and preservation of recorded facts; no model replay solely for prose |
 | Exact execution optimization | A short qualified reference with final logits, selected IDs, routing/RNG and final state; investigate mismatches |
 | Approximate numerical candidate | Named task outputs/scores against the comparator, numerical differences and failures; exact equality is not required |
 | Timing run | Bounded real generation, explicit startup/prefill/TTFT/decode timing, memory and actual I/O; omit routine full intermediate fingerprinting |
@@ -44,20 +50,28 @@ The earlier full coding comparison remains a comparator. The interrupted
 67-call reasoning reference is partial, unscored and has no completed reference
 execution receipt; its preparation and private records are retained.
 
+Reuse recorded comparator outputs when their provenance, input/settings and
+coverage support the intended comparison. A new full original capture is not
+required by default. Keep task completion/scoring distinct from independent
+bit-fidelity qualification. Optional speculation, extra quantization and helper
+compute become deliverables only if selected for a concrete experiment.
+
 ## Measurement and selection
 
 First measure the execution path rather than infer token speed from cache-hit
-ratios or synthetic transfers. The current diagnostic path recreates each
-layer's MoE execution/cache context on every call. Retaining bounded contexts
-across calls is the first precision-preserving candidate; it must be measured,
-not assumed faster. Weight integrity, cleanup and the host/device reserve
-checks remain active.
+ratios or synthetic transfers. The historical default provider recreates each
+layer's MoE execution/cache context every call. The opt-in retained provider now
+has a [first bounded measurement](session-lifetime.md); its single comparison
+does not establish a general speedup. Choose the next mechanism from the measured
+bottleneck. Weight integrity, cleanup and host/device reserve checks remain active.
 
 Report setup separately from request TTFT and decode. State whether Python
 startup, reference checks, diagnostic tensor materialization and output
-fingerprinting are included. Use identical requests, sampling, budgets and
-hardware for comparisons. Report cache state and order; one short A/B pair is
-exploratory rather than a repeated performance conclusion.
+fingerprinting are included. Control requests/settings, budgets and hardware
+where possible. Declare intentional numerical/sampling/resource-policy changes
+and compare their quality/speed/memory tradeoff. Report cache state and order;
+one short pair or a comparison with different admission ceilings is exploratory,
+rather than a repeated controlled performance conclusion.
 
 Compare output quality, TTFT, decode throughput, memory and storage/transfer
 traffic together. Retain the useful alternatives rather than selecting solely
@@ -65,7 +79,7 @@ on byte reduction. Introduce lossy transformations only as named experiments
 with their actual changes and measured effects. Small task scores do not
 establish broad reasoning/coding/tool quality.
 
-Track the comparator's open evaluations in [#10](https://github.com/shell-term/vesper/issues/10)
+Track generation/recovery and open task evaluations in [#10](https://github.com/shell-term/vesper/issues/10)
 and measured candidates in [#11](https://github.com/shell-term/vesper/issues/11).
 Scoped performance work can use already qualified short inputs while broader
 #10 evaluations remain open; this does not close #10 or M2.

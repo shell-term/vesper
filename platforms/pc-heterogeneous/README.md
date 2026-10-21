@@ -9,13 +9,19 @@ branch, artifacts or local settings. The registered PC branch is `main`; add an
 explicit reviewed branch rule before using a different PC development branch.
 
 [PC issues](https://github.com/shell-term/vesper/issues?q=is%3Aissue+label%3Aplatform%3Apc-heterogeneous)
-and M0..M3 (milestones 1..4) own progress. Issues 1..12 keep their original bodies,
-states, acceptance and milestones; only the PC label was added during setup.
+and M0..M3 (milestones 1..4) own progress. Setup originally preserved Issues
+1..12 and added the PC label. Current accepted policy revisions may update
+planning/acceptance through the guarded workflow; preserve historical evidence
+and do not mark deferred checks passed.
 Deferred issue 12 explicitly has no milestone. Read allowed IDs through the
 helper; Spark S0..S3 are separate. No shared issue reads are currently allowlisted.
 
-[Architecture](../../docs/architecture.md), [validation](../../docs/validation.md)
-and the [historical PC roadmap](../../docs/roadmap.md) remain reference entries.
+The [quality/speed policy](../../docs/quality-speed.md),
+[validation workflow](../../docs/validation.md) and [PC roadmap](../../docs/roadmap.md)
+define current planning. [Architecture](../../docs/architecture.md) contains
+mechanism hypotheses; the [evidence index](../../docs/reference-evidence.md)
+records scoped historical results. Quality variation is permitted for useful
+measured gains; exact comparator gates do not apply to every numerical candidate.
 Preserve historical result paths; new bound runs use `results/pc-heterogeneous/`.
 
 For a bounded working set that outgrows the system SSD, use

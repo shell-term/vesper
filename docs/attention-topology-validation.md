@@ -1,5 +1,11 @@
 # Original KV and index sharing across Attention profiles
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 All four configured KV sources and all eight configured index sources now have
 original-weight comparisons, together with eight selected consumers that reuse
 an earlier layer's selected indices. Across **four independent sharing groups,

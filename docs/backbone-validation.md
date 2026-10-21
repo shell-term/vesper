@@ -1,5 +1,11 @@
 # Forty-layer original text-backbone validation
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 The all-layer probe connects original embedding rows through **every block
 0..39**, applies Engram before blocks **1 and 14**, and uses the original final
 norm, full-vocabulary FP32 output head and temperature-0.7 sampler. It preserves

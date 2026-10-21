@@ -1,5 +1,11 @@
 # Connected original compressed Attention
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 Original Attention profiles **2, 20 and 24** now connect query/KV/output
 projections, learned normalization, compressed/YaRN rotation, the sliding window,
 original compressors, indexers and sparse Attention. Layer 24 consumes layer 20's

@@ -1,133 +1,71 @@
-# Roadmap and progress tracking
+# PC roadmap and progress tracking
 
-This M0..M3 roadmap is the **PC track**. Spark uses separate S0..S3 milestones
-and its [own entry](../platforms/dgx-spark/README.md). Select the target through
-[workspace rules](../platforms/README.md) before reading/updating progress.
-Shared code does not transfer platform qualification.
+This M0..M3 roadmap belongs to the consumer-PC track. Select the target through
+[workspace rules](../platforms/README.md). Spark has its own entry and gates;
+shared code does not transfer qualification.
 
-[Issues](https://github.com/shell-term/vesper/issues) are the source of task state.
-[Milestones](https://github.com/shell-term/vesper/milestones) group acceptance
-gates. This document explains their scope and workflow; it does not duplicate a
-mutable task-status list or estimate whole-model completion from issue counts.
+[PC Issues](https://github.com/shell-term/vesper/issues?q=is%3Aissue+label%3Aplatform%3Apc-heterogeneous)
+are the source of task state. This page defines responsibilities and acceptance,
+not a second mutable status log or a completion estimate from issue counts.
+The [quality/speed policy](quality-speed.md) is authoritative for current PC
+numerical experiments. The [2026-10-21 policy review](policy-review-2026-10-21.md)
+records why this plan changed.
 
-| Milestone | Required outcome | Work |
+| Milestone | Outcome and scope | Issues |
 | --- | --- | --- |
-| [M0: Verified component baseline](https://github.com/shell-term/vesper/milestone/1) | Scoped native 4090 expert parity, bounded tiered cache and integrity evidence | [Expert](https://github.com/shell-term/vesper/issues/1), [cache/audits](https://github.com/shell-term/vesper/issues/2) |
-| [M1: Exact routed MoE sublayer](https://github.com/shell-term/vesper/milestone/2) | Gate scores/projection, selected IDs/weights, routed accumulation, shared expert and bounded integration | [Routing](https://github.com/shell-term/vesper/issues/3), [projection](https://github.com/shell-term/vesper/issues/4), [aggregation](https://github.com/shell-term/vesper/issues/5), [connected MoE](https://github.com/shell-term/vesper/issues/6) |
-| [M2: Single-token model and bounded memory](https://github.com/shell-term/vesper/milestone/3) | Attention/indexing/KV, Hyper-Connections, original artifacts/Engram, runtime memory policy and reference logits/sampling | [Block operations](https://github.com/shell-term/vesper/issues/7), [artifacts](https://github.com/shell-term/vesper/issues/8), [memory](https://github.com/shell-term/vesper/issues/9), [decode](https://github.com/shell-term/vesper/issues/10) |
-| [M3: Measured end-to-end performance](https://github.com/shell-term/vesper/milestone/4) | Actual routing/I/O, prefill, TTFT, decode, memory and qualified optimizations | [Real-workload performance](https://github.com/shell-term/vesper/issues/11) |
+| [M0: Verified component baseline](https://github.com/shell-term/vesper/milestone/1) | Historical released-precision expert, bounded byte cache and integrity baseline. Original exact gates remain scoped evidence. | [#1](https://github.com/shell-term/vesper/issues/1), [#2](https://github.com/shell-term/vesper/issues/2) |
+| [M1: Exact routed MoE sublayer](https://github.com/shell-term/vesper/milestone/2) | Historical original gate/routing/accumulation/shared-expert baseline. A MoE sublayer is not a whole Transformer model. | [#3](https://github.com/shell-term/vesper/issues/3)..[#6](https://github.com/shell-term/vesper/issues/6) |
+| [M2: Bounded generation and task quality](https://github.com/shell-term/vesper/milestone/3) | Integrated model/assets/memory, state recovery and actual representative task outputs/scores. Reuse valid comparator evidence; full intermediate tracing is optional diagnosis. | [#7](https://github.com/shell-term/vesper/issues/7)..[#10](https://github.com/shell-term/vesper/issues/10) |
+| [M3: Measured quality/speed optimization](https://github.com/shell-term/vesper/milestone/4) | Compare selected candidates on actual quality, startup/prefill/TTFT/decode, memory and I/O. Quality changes are permitted when declared and measured. | [#11](https://github.com/shell-term/vesper/issues/11) |
 
-M1 concerns the feed-forward MoE sublayer, not a complete Transformer block.
-M0 closes scoped component checks only. A failed optional candidate does not
-become qualified because another path passes. The
-[Ampere model-compute investigation](https://github.com/shell-term/vesper/issues/12)
-remains deferred; the helper GPU can store/hash bytes without running experts.
+M0/M1's completed exact-comparison scopes remain unchanged. They do not require
+every new candidate to preserve original precision or routing. M2 and M3 can
+progress in parallel: a qualified short input can support bounded timing while
+broader task quality is still open. No performance claim is inferred from an
+unrelated component or synthetic cache result.
 
-Issue #7's original five checks qualify block operations within their explicit
-component and connected-chain scopes; see the
-[sealed acceptance audit](block-ops-qualification.md). They do not require or
-prove a complete forty-layer model. Issue #8 owns tokenizer/original-artifact
-and Engram import, #9 owns the whole-runtime memory policy, and #10 integrates
-those dependencies with all-layer numerical/logit/sampling comparisons.
-Completing #7 leaves M2 open. Longer complete-chain histories and broader
-execution shapes remain integration requirements, even when their component
-Attention operations already pass.
+[#10](https://github.com/shell-term/vesper/issues/10) separates already measured
+generation/recovery and the coding case from unfinished reasoning/tool scoring.
+Complete each named task with its declared prompt/budget; a shortened smoke case
+cannot close it. Interrupted captures remain unscored. Do not restart the long
+104-call reference capture automatically, or require its exhaustive per-boundary
+replay before every optimization. Reuse recorded comparator outputs only when
+their input/settings, provenance and scope support the intended comparison.
 
-Issue #8's five original checks are audited separately in
-[the artifacts/Engram report](engram-artifacts-validation.md): complete original
-tokenizer mapping, 42 original CPU/CUDA addressing cases, 110 Engram session
-steps, framework-free replay, bounded direct reads and actual full-import
-capacity. Full-shard registration is implemented but not executed on the entire
-checkpoint; small probes remain separate. Its component caps and combined Engram
-GPU ledger are inputs to #9, not the whole-runtime governor. Completing #8 also
-leaves M2 open for #9 and #10.
+[#11](https://github.com/shell-term/vesper/issues/11) owns the next measured
+optimization. Select mechanisms from actual bottlenecks rather than making
+prefetch, overlap, speculation or extra compression mandatory deliverables.
+Repeated controlled trials are needed before a general speed conclusion.
+The [first session measurement](session-lifetime.md) is a short exploratory
+baseline with different admission ceilings, not completion of M3.
 
-Issue #9's six original checks are audited in the
-[memory-policy report](memory-policy-validation.md). The shared 96 GiB / 32 GiB
-policy covers component admissions, typed resources and state publication.
-All 15,360 original expert allocation identities are traversed with touched
-synthetic bytes under an 8 GiB probe cap; original Engram and complete 20..25
-numerical replays also pass under the governor. Separate process/reference
-measurements and complete cleanup are recorded. This is a resource-scale gate;
-all-forty-layer numerical/logit/sampling integration remains Issue #10 and M2
-stays open until that required work passes.
+[#12](https://github.com/shell-term/vesper/issues/12) remains a deferred optional
+3080 Ti compute investigation, without a milestone dependency. A reference-exact
+compute path must pass its numerical gate; an approximate path needs a separately
+declared quality/speed evaluation. Its historical failed candidate remains
+unqualified, and the current helper continues to store/audit bytes.
 
-Issue #10 now has qualified output/sampling components and a concrete local
-streamed-reference design; see the [complete report](output-sampling-validation.md).
-The full original FP32 head matches 4,654,080 logits; stochastic sampling matches
-all probability/noise/score/token/RNG boundaries in 90 conditions, with independent
-native replay and failure/state tests. This satisfies the reference-design
-requirement, while all-layer integration, whole-model comparisons, decoding and
-scoped evaluations remain open. Component passes do not close #10 or M2.
-The [connected original 0..3 prefix](token-prefix-validation.md) now includes
-embedding/Engram placement, actual hidden/HC handoffs, both window rings and
-source-2 KV/index reuse. Complete original/native boundaries and nine failed-token
-rollbacks pass under the governor, including diagnostic full-head/RNG state.
-The attached prefix head follows only four blocks. Its historical cancellation
-label was corrected with a fresh complete replay requiring actual runtime
-cancellation. The subsequent [all-forty-layer gate](backbone-validation.md)
-connects both Engrams and the real head/sampler: two fixed BOS/PAD calls match
-10,504 typed boundaries, all 80 router decisions and 258,560 logits. Four late
-failures restore whole-model state, including actual cancellation, and healthy
-retry reproduces every second-token boundary. These are scoped numerical/state
-results. The subsequent [bounded raw-text continuation](text-generation-validation.md)
-executes the original upstream generation loop and a separate native driver:
-five serial calls / three generated tokens match all 26,250 typed boundaries,
-138,434,360 elements, 646,400 logits and 200 router decisions, including full
-sampling/RNG and model state. Both replays are offline. Native sampled resident
-RAM peaks at 8.00 GiB with 122.35 GiB minimum sampled available RAM. This is one
-raw-text corpus with a serialized prompt adapter. Broader histories, chat/chunk
-prefill and reasoning/coding/tool-use evaluations remain under #10. Its original
-checks and M2 stay open until the remaining acceptance requirements pass.
+## Updating work
 
-The [V4.1 message format gate](message-format-validation.md) now qualifies
-30 encodings, 11 parses, 13 rejection cases and 2,336 token IDs against the
-unchanged original CPU encoder/tokenizer. Three complete quality tasks are
-prepared with deterministic scorers. Their prompts contain 63/30/293 tokens;
-their maximum requested single-query trajectories are 190/61/388 calls, beyond
-the historical eight-call fixture. Those evaluations did not run at the format
-gate. The subsequent coding trajectory is described below; formatting/scorer
-tests do not close the remaining model-quality requirements.
+1. State the outcome, platform, numerical profile, acceptance and resource limits.
+2. Distinguish required work from optional mechanisms and historical evidence.
+3. Use relevant local checks; choose exact short checks or task-quality measures
+   according to the candidate. Use detailed tracing for a concrete uncertainty.
+4. Publish sanitized source/hardware/settings, outputs, scores, timing, memory,
+   failures and comparison limits. Preserve original raw receipts and assets.
+5. Update through the guarded workspace workflow. Mark implemented work with an
+   open required check `status:needs-validation`; use `status:in-progress` for
+   selected active work and `status:deferred` for optional parked investigations.
+6. Close only the explicitly stated acceptance scope. Deferring or removing an
+   unnecessary old procedure is not passing its former test. A numerical mismatch
+   cannot become an exact pass by renaming it or relaxing a tolerance.
 
-The [longer-input/storage follow-up](sequence-storage-validation.md) now admits
-512 calls explicitly and indexes existing expert payloads without copying them.
-Indexed all-forty-layer replay preserves all 26,250 short-generation boundaries.
-A separate 63-position original/native Engram comparison passes 3,906 boundaries
-on synthetic hidden inputs, with 248 MiB peak original-address physical row
-backing. Those synthetic-hidden results do not establish whole-model task
-quality; the subsequent actual coding trajectory is described below.
+`priority:P0` covers runtime/resource correctness and required quality evidence;
+exact fidelity is mandatory when that profile claims it. `priority:P1` covers
+measured quality/speed optimization and need not wait for every broader M2 task.
+`priority:P2` covers optional investigation. Do not invent deadlines, universal
+quality tolerances or whole-engine completion percentages.
 
-The [trajectory runner](trajectory-validation.md) implements bounded immutable
-expert-object imports, original-address input-embedding paging and per-call
-evidence files. Compilation reuse passes the existing complete short generation
-and a separate fourteen-image exact-binary recheck; this is no throughput claim.
-The complete declared Python-expression task now passes 34 successful original/native
-calls with all 178,423 typed boundaries, 962,450,386 storage elements, 4,395,520
-FP32 logits and 1,360 ordered routes exact. Both executions produce `xs[-1]`
-and EOS; the three declared expression cases pass. An actual late failed token
-restores complete state/RNG and retries exactly. Native sampled resident RAM
-peaks at 7.98 GiB with 87.46 GiB minimum sampled system-available RAM. This is
-one expression task; reasoning/tool-use tasks, broader coding, chunk prefill
-and end-to-end performance remain open. Neither #10 nor M2 is complete.
-
-## Working on an issue
-
-1. State the concrete outcome, acceptance checks, resource limits and dependencies.
-2. Mark active work `status:in-progress`. Reference its issue in commits.
-3. Use `status:needs-validation` when code exists but required evidence is missing
-   or a relevant exact-output gate still fails. A partial pass does not close it.
-4. Link complete sanitized results, source revision, hardware/toolchain, scope,
-   exclusions and known failures. Keep original model bytes and private paths out.
-5. Add `verified` and close only when every acceptance condition for that issue's
-   stated scope passes. A milestone closes only after its required issues do.
-
-`priority:P0` covers fidelity/correctness/resource requirements. `priority:P1`
-covers performance after the relevant correctness gate. `priority:P2` is optional
-investigation. `status:deferred` preserves noncritical work without implying it
-blocks the qualified path. Area labels aid filtering; they are not milestones.
-
-Do not invent deadlines, whole-model completion percentages or throughput from
-synthetic cache tests. Separate implementation, specification, official-reference
-parity, model quality and end-to-end speed, as in [the validation gates](validation.md).
-If new evidence changes scope, update the issue and its acceptance criteria with
-the reason before claiming completion. Keep current task state on GitHub.
+Use the [current validation workflow](validation.md) and [historical evidence
+index](reference-evidence.md), rather than interpreting an old report's next
+steps as today's queue.

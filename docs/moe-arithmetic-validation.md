@@ -1,5 +1,11 @@
 # Shared expert and MoE accumulation validation — 2026-10-18
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 [Issue #5](https://github.com/shell-term/vesper/issues/5) now has passing
 exact-bit evidence for the original FP8 shared expert, ordered accumulation,
 and six original FP4 experts combined with that shared expert. The input routes

@@ -1,5 +1,11 @@
 # Complete ratio-1 blocks 20 and 21
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 This gate extends the complete-block handoff to the original ratio-1 KV source
 at layer 20 and its selected-index consumer at layer 21. Layer 20 creates
 compressed KV, index keys, selected IDs and candidate blocks on every token.

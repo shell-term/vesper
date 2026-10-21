@@ -1,5 +1,11 @@
 # Tiered expert cache validation — 2026-10-18
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 Three different original experts now execute on the RTX 4090 after movement
 between SSD, RAM, RTX 3080 Ti storage and RTX 4090 compute. All **232 successful
 calls** match the unchanged official expert in all thirteen checked stages,

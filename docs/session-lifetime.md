@@ -1,5 +1,11 @@
 # PC session-lifetime experiment
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 On 2026-10-21, retaining bounded MoE contexts across calls completed the same
 five-call raw-text continuation as the ephemeral comparator. Observed decode
 rate rose from **0.0472 to 0.0762 tokens/s (1.615x)**. This is one exploratory

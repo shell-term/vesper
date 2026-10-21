@@ -1,5 +1,11 @@
 # Original artifacts, tokenizer and Engram
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 [Issue #8](https://github.com/shell-term/vesper/issues/8) preserves the original
 five acceptance conditions. Its complete evidence is in
 [the manifest](../results/2026-10-19-engram/manifest.json) and

@@ -1,5 +1,11 @@
 # Original V4.1 text-message format and evaluation admission
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 The independent CPU comparison passes **30 message encodings, 11 response
 parses and 13 malformed-input rejections**. Original AutoTokenizer and native
 PinnedTokenizer agree on **2,336 input token IDs**, including three complete

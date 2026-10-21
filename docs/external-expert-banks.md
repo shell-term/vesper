@@ -1,5 +1,11 @@
 # Bounded PC expert banks on a separate SSD
 
+The storage procedures below retain explicit ownership, capacity and integrity
+checks. Recorded preparation/reference attempts are historical evidence, not
+the active execution queue. Current quality evaluation follows the
+[PC policy](quality-speed.md) and [validation workflow](validation.md); no long
+reference capture resumes automatically.
+
 The declared reasoning preparation reached the system SSD's **64 GiB free-space
 reserve** after 69 complete single-query model calls: the unchanged 63-token
 prompt and seven sampled continuation IDs. No EOS, completed preparation plan,
@@ -81,8 +87,9 @@ and **63,467,411,542 total file bytes**, with all **6,750 original source files
 retained** and **zero source bytes deleted or weight bytes converted**. Its
 execution context records source `461ba64`; the summary is explicitly metadata
 publication. The earlier failed GPU preparation has no completed execution
-receipt and is not retrospectively stamped as a successful run. Reasoning
-quality remains open until a fresh complete original/native comparison passes.
+receipt and is not retrospectively stamped as a successful run. That attempt
+establishes no reasoning quality result. Current task evaluation does not require
+a fresh exhaustive original/native intermediate trace before every candidate.
 
 The [later retirement evidence](../results/pc-heterogeneous/2026-10-20-expert-bank-retirement/summary.json)
 records a separately authorized cleanup at source `cd0407c`. It rechecks the
@@ -92,7 +99,8 @@ original source files left, zero new copies and zero weight bytes converted.
 The mounted v1/v2 census remains **3,375 / 552 objects**, and logical root/index
 identities are unchanged. The earlier retained-copy receipt remains intact at
 its original execution context. This cleanup is CPU file evidence; the
-interrupted first-token reference attempt remains unscored and must restart.
+interrupted first-token reference attempt remains unscored. If deliberately
+resumed it needs fresh runtime state; a restart is not automatic.
 
 ## Reproduction
 

@@ -1,5 +1,11 @@
 # Official Attention arithmetic with a qualified memory adapter
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 The **64-head × 512-dimensional** register-query candidate now matches a
 separately constructed reference that retains the official generated **PTX
 floating-point instructions, their registers, loops, branches and barriers**.

@@ -1,5 +1,11 @@
 # Native indexers and atomic index sharing
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 The original-weight indexers for layers 2, 20 and 24 now pass their bounded
 component and sharing-frame reference gates on the RTX 4090. All **261 component
 cases and 99 successful frames** match at **11,189 boundaries / 105,972,523 storage

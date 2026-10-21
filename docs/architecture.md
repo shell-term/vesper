@@ -1,5 +1,10 @@
 # Architecture under investigation
 
+This page describes the PC design and hypotheses under the
+[current quality/speed policy](quality-speed.md). It does not change another
+platform's qualification gates. Existing exact prototype behavior below is a
+comparator implementation, not a ban on declared approximate alternatives.
+
 ## Requirements
 
 1. Preserve as much useful output quality as possible while improving generation speed. The PC operator permits measured quality changes for speed/memory gains; retain the released-precision path as a comparator and declare approximate numerical profiles separately.
@@ -11,7 +16,8 @@ remain hypotheses until measurements justify them.
 
 ## Memory tiers
 
-Store original packed weights and scales on disk. Keep selected expert blocks in
+Keep original packed weights and scales immutable on disk; any transformed
+candidate assets have a separate profile and provenance. Keep selected expert blocks in
 a bounded RAM cache and GPU caches. Engram is a separate, huge table whose rows
 are addressed by token IDs. Avoid a model-wide mmap cache silently consuming the
 RAM intended for other applications.
@@ -33,8 +39,9 @@ hypothesis, not a tested full-model allocation or required fixed partition.
 Typed resources and conservative existing component envelopes share the 96 GiB
 ceiling; process residency/private commit and driver/compiler/reference effects
 are observed separately. Retained KV/history are never pressure-evicted.
-Representative touched resource geometry and original numerical regression
-gates pass; forty-layer model integration remains Issue #10.
+Representative resource geometry and scoped forty-layer numerical runs are
+recorded. Broader task-quality evaluation remains #10; a charge counter does
+not establish the actual memory cost of retaining every context.
 
 ## Implemented cache prototype
 
@@ -78,24 +85,33 @@ on an asymmetric consumer pair depends on cache hits, the helper GPU's compute,
 host staging and latency. The initial 4090/3080 Ti pair reports no direct peer
 access, so an explicit portable pinned-host path is measured.
 
-Keep expert contributions separate and aggregate in the required order. Arbitrary
-GPU-local partial sums could change rounding and violate the reference check.
-Ampere also needs a verified arithmetic path for the reference's FP8 operations.
-The current Ampere candidate failed that check, so the implemented helper moves
-original bytes through pinned host memory and performs no model arithmetic.
+For the released-precision comparator, keep the required accumulation order;
+GPU-local partial sums can change rounding. Exact Ampere compute needs a verified
+path for the reference's FP8 operations. A deliberately approximate compute or
+aggregation profile instead needs its own quality/speed evaluation. The recorded
+Ampere candidate failed its exact gate and remains unqualified; the implemented
+helper stores/audits bytes and performs no model arithmetic. See deferred #12.
+
+The [session-lifetime experiment](session-lifetime.md) retains forty bounded MoE
+owners rather than recreating them every call. Its short comparison is promising
+but not a production speed result. Measured integrity/chunk preparation and
+helper transfers motivate testing a shared serial staging pool, integrity work
+placement and helper use. Extra compression, prefetch and overlap are candidates
+to select from evidence, rather than mandatory steps in that order.
 
 ## Schedule by useful work per byte
 
 Speculative verification loads the union of experts selected by all its tokens.
 A larger draft can therefore increase disk traffic without enough accepted
 tokens to pay for it. Measure span lengths and disable speculation where it loses.
-Change scheduling and draft extent, never the target's router or distribution.
+For exact speculation, preserve the configured target profile's distribution
+and rollback semantics. Intentionally changing that target is a separate
+approximate model experiment, not exact acceleration of the released comparator.
 
-[SpecFit](https://arxiv.org/abs/2610.15417) is a relevant reference, measured on a
-different model with host-memory offload. Transfer to this SSD-bound model is
-unproven. Existing DeepSeek experiments also report neutral or negative gains
-from generic DSpark use; [JigSawPT's report](https://github.com/JigSawPT/deepseek-v41-flash-on-5090)
-is useful for its negative measurements, not an automatic fidelity certificate.
+Previously collected reading leads include [SpecFit](https://arxiv.org/abs/2610.15417)
+and [JigSawPT's report](https://github.com/JigSawPT/deepseek-v41-flash-on-5090).
+Their existence is not qualification of any Vesper profile; measure the selected
+mechanism on the actual workload/hardware before adopting it.
 
 ## Ideas currently deprioritized
 

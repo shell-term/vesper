@@ -1,5 +1,11 @@
 # Connected MoE with real prefix activations
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 The remaining **Issue #6 real-activation gate passes**. Four actual layer-0
 prefix activations and both text/image gate-bias settings give eight conditions.
 **30 successful calls match all 108 boundaries each: 3,240 comparisons and

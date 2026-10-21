@@ -1,5 +1,11 @@
 # One complete expert — 2026-10-18
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 The RTX 4090 native pipeline matched the pinned official implementation in all
 128 tested conditions, including checked FP32 intermediates and all 655,360
 final BF16 output values. The experimental RTX 3080 Ti BF16 replacement remains

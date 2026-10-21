@@ -1,5 +1,11 @@
 # Longer whole-model trajectory validation
 
+> **Recorded PC evidence.** Results, requirements and next-step wording below
+> describe this report's experiment/profile. They do not set the current
+> development queue or require exact equality from every new candidate. See
+> [current policy](quality-speed.md), [validation](validation.md) and
+> [PC roadmap](roadmap.md). Raw evidence and original scope are unchanged.
+
 The complete, previously declared Python-expression task passes independent
 original/native execution and actual completion scoring. Its unchanged
 chat-format prompt has **30 tokens** and requests at most 32 new tokens.
