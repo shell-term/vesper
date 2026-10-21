@@ -1,0 +1,138 @@
+{
+  "GPU_execution_run": false,
+  "existing_source_payload_integrity_rechecked": false,
+  "full_evaluation_run": false,
+  "model_execution_run": false,
+  "payload_bytes_fetched_or_copied": 0,
+  "prepared_plan_sha256": "e534203ac5f0c0f690addc6ac91c596f27e75fed112fbbfc55547939ef852ea9",
+  "probe": "gpqa_native_readiness",
+  "prompt_input_requirements": [
+    {
+      "complete_generation_asset_coverage": "not_established",
+      "distinct_prompt_Engram_rows": {
+        "1": 6768,
+        "14": 6768
+      },
+      "distinct_prompt_embedding_rows": 192,
+      "expert_route_coverage": "unknown_without_model_execution",
+      "id": "gpqa-c331ed46271018a3303e",
+      "prompt_Engram_payload_bytes": 3573504,
+      "prompt_embedding_payload_bytes": 1966080,
+      "prompt_tokens": 286,
+      "rows_already_in_legacy_fixed_embedding_fixture": 1
+    },
+    {
+      "complete_generation_asset_coverage": "not_established",
+      "distinct_prompt_Engram_rows": {
+        "1": 2720,
+        "14": 2720
+      },
+      "distinct_prompt_embedding_rows": 72,
+      "expert_route_coverage": "unknown_without_model_execution",
+      "id": "gpqa-799cf20c9b3070a286b6",
+      "prompt_Engram_payload_bytes": 1436160,
+      "prompt_embedding_payload_bytes": 737280,
+      "prompt_tokens": 123,
+      "rows_already_in_legacy_fixed_embedding_fixture": 1
+    },
+    {
+      "complete_generation_asset_coverage": "not_established",
+      "distinct_prompt_Engram_rows": {
+        "1": 4712,
+        "14": 4712
+      },
+      "distinct_prompt_embedding_rows": 125,
+      "expert_route_coverage": "unknown_without_model_execution",
+      "id": "gpqa-930c4322261232e476ce",
+      "prompt_Engram_payload_bytes": 2487936,
+      "prompt_embedding_payload_bytes": 1280000,
+      "prompt_tokens": 256,
+      "rows_already_in_legacy_fixed_embedding_fixture": 1
+    }
+  ],
+  "quality_scored": false,
+  "readiness": {
+    "benchmark_attempt_controller_implemented": true,
+    "cases": [
+      {
+        "case_sha256": "498c31b811c0cf653f7d62babdff48d27032537cb592f917fe1b031a186452ed",
+        "id": "gpqa-c331ed46271018a3303e",
+        "max_new_tokens": 262144,
+        "maximum_model_calls": 262429,
+        "prompt_tokens": 286,
+        "ready_for_native_inference": false,
+        "reasons": [
+          "prompt_and_generation_budget_exceed_native_512_call_scope",
+          "prompt_and_generation_budget_exceed_native_attention_capacity",
+          "completion_budget_exceeds_native_tokenizer_decode_capacity",
+          "native_dynamic_benchmark_asset_provider_not_implemented",
+          "native_benchmark_inference_adapter_not_implemented"
+        ],
+        "source_record_id": "recIOlKBsOeEcgkA1"
+      },
+      {
+        "case_sha256": "4e66814dfffc281087b9e2ca3245fd41e0186097d33a8fba54ba34286b102274",
+        "id": "gpqa-799cf20c9b3070a286b6",
+        "max_new_tokens": 262144,
+        "maximum_model_calls": 262266,
+        "prompt_tokens": 123,
+        "ready_for_native_inference": false,
+        "reasons": [
+          "prompt_and_generation_budget_exceed_native_512_call_scope",
+          "prompt_and_generation_budget_exceed_native_attention_capacity",
+          "completion_budget_exceeds_native_tokenizer_decode_capacity",
+          "native_dynamic_benchmark_asset_provider_not_implemented",
+          "native_benchmark_inference_adapter_not_implemented"
+        ],
+        "source_record_id": "recNFJjE5PPTqVJGv"
+      },
+      {
+        "case_sha256": "41ddf5fb1849a51ff6b9ee0700b0404748e8e718e2ea177af7655b7f65f10e8e",
+        "id": "gpqa-930c4322261232e476ce",
+        "max_new_tokens": 262144,
+        "maximum_model_calls": 262399,
+        "prompt_tokens": 256,
+        "ready_for_native_inference": false,
+        "reasons": [
+          "prompt_and_generation_budget_exceed_native_512_call_scope",
+          "prompt_and_generation_budget_exceed_native_attention_capacity",
+          "completion_budget_exceeds_native_tokenizer_decode_capacity",
+          "native_dynamic_benchmark_asset_provider_not_implemented",
+          "native_benchmark_inference_adapter_not_implemented"
+        ],
+        "source_record_id": "rec9GugrngvsQR99A"
+      }
+    ],
+    "full_evaluation_run": false,
+    "model_execution_run": false,
+    "native_attention_position_capacity": 1152,
+    "native_dynamic_asset_resolution_implemented": false,
+    "native_maximum_decode_ids": 4096,
+    "native_maximum_model_calls": 512,
+    "official_score_reproduction": false,
+    "quality_scored": false,
+    "status": "not_ready"
+  },
+  "tokenizer": {
+    "compressed_map_sha256": "26b9be2936d236a124ba318a998c417bc7032e3e92a3107fe98deee49f1dc496",
+    "compressed_vocab_size": 99092,
+    "host_allowance_bytes": 134217728,
+    "original_vocab_size": 129280,
+    "reservation_is_RSS_limit": false,
+    "tokenizers_version": "0.23.3"
+  },
+  "workspace_context": {
+    "binding_id": "09377310c85644f1b3ab2eb3178c6653",
+    "created_at": "2026-10-21T06:54:48.519917+00:00",
+    "dirty_diff_sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+    "git_head": "1a3c98a70f690975d67bc7782321513b4f7b3a8d",
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    "platform": "pc-heterogeneous",
+    "profile": "native",
+    "registry_sha256": "7d1f9125c3b3b8234b465fb9ca914a3dd131e6682621247da8800b2b119bbfd4",
+    "repository": "shell-term/vesper",
+    "revision": "1bae0e1088993b9b82de08f59de5be5a34e42170",
+    "run_id": "pc-native-readiness-clean-source",
+    "schema_version": 1
+  }
+}

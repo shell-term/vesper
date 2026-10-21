@@ -67,6 +67,8 @@ rows and 6,768/2,720/4,712 Engram rows **per Engram layer**, respectively. Combi
 logical prompt embedding/Engram bytes are about 5.28/2.07/3.59 MiB. These are
 not physical reads, future expert requirements, generation requirements or proof
 that all needed assets are cached. Other historical input caches are not audited.
+The [new CPU readiness record](../results/pc-heterogeneous/2026-10-21-gpqa-readiness/native-readiness.json)
+preserves its clean execution source and unchanged prepared-plan identity.
 
 `benchmark_attempt.run_subset` now implements cooperative elapsed budgets,
 exclusive attempt writing, successful-call journals, completed-question reuse
