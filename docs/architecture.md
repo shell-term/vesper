@@ -2,7 +2,7 @@
 
 ## Requirements
 
-1. Preserve the released model's precision and semantics.
+1. Preserve as much useful output quality as possible while improving generation speed. The PC operator permits measured quality changes for speed/memory gains; retain the released-precision path as a comparator and declare approximate numerical profiles separately.
 2. Leave host memory available for other work.
 3. Maximize throughput within those constraints.
 
@@ -15,6 +15,12 @@ Store original packed weights and scales on disk. Keep selected expert blocks in
 a bounded RAM cache and GPU caches. Engram is a separate, huge table whose rows
 are addressed by token IDs. Avoid a model-wide mmap cache silently consuming the
 RAM intended for other applications.
+
+The current expert source is already packed FP4 with E8M0 scales. FP8 execution
+does not mean these experts are stored as uncompressed eight-bit weights.
+Further precision reduction needs actual quality and latency measurements;
+smaller files alone do not establish a faster or acceptable model. See the
+[quality/speed workflow](quality-speed.md) for candidate and validation rules.
 
 The provisional full-engine host cap is 96 GiB, initially up to 80 GiB for expert
 cache and 16 GiB for other owned state. A 32 GiB available-memory floor applies

@@ -4,12 +4,17 @@
 [DGX Spark](platforms/dgx-spark/README.md). The historical status below describes
 PC research, not Spark qualification. Start with [workspace rules](platforms/README.md).
 
-**Big models. Original weights. Your hardware.**
+**Big models. Your hardware.**
 
-Vesper is building a native-precision Mixture-of-Experts inference engine across
+Vesper is building a Mixture-of-Experts inference engine across
 GPU memory, system RAM and SSD. The first target is
 [DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
 on heterogeneous consumer NVIDIA GPUs.
+
+The PC direction is measured quality/speed/memory tradeoffs, with the released
+precision retained as a comparator. Approximate candidates are separate opt-in
+experiments; existing exact results do not qualify them. Routine development
+uses short checks before expensive tracing. See the [quality/speed workflow](docs/quality-speed.md).
 
 [日本語](README.ja.md) · [Artifacts and Engram](docs/engram-artifacts-validation.md) · [Block-operation acceptance](docs/block-ops-qualification.md) · [Six consecutive blocks](docs/refreshed-block-chain-validation.md) · [Validation](docs/validation.md) · [Architecture](docs/architecture.md)
 
@@ -294,10 +299,11 @@ Vesper uses the released weights; its design does not require retraining.
 Model-wide output and quality verification remain required before that engine
 is ready for use.
 
-The goal is to preserve the released model's precision and semantics. Native FP4
-expert weights are already part of the official checkpoint; using those bytes is
-different from applying another lossy quantization. Vesper prohibits extra
-cache-dependent router bias, expert pruning and lossy requantization.
+The released-precision comparator preserves the checkpoint's precision and
+semantics, including its native FP4 expert weights. PC experiments may evaluate
+additional quantization, expert pruning or changed routing as separately named,
+opt-in candidates. Compare their actual output quality, speed and memory before
+selecting a tradeoff; see the [quality and speed workflow](docs/quality-speed.md).
 
 ## Start
 
