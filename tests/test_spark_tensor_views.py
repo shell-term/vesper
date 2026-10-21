@@ -145,6 +145,26 @@ class TensorViewTests(unittest.TestCase):
             self.assertEqual(a.reader.reads, [])
         self.assertEqual(self.budget.reserved, 0)
 
+    def test_explicit_authenticated_catalog_avoids_second_unscoped_loader(self):
+        catalog = SimpleNamespace(select=Mock(return_value={"tensors": self.catalog, "identity": self.identity}))
+        received = []
+        def reader(*args, catalog=None, **kwargs):
+            received.append(catalog)
+            return FakeVerifiedReader(*args, **kwargs)
+        with patch.object(views, "load_catalog", side_effect=AssertionError("Use the explicit catalog owner")), \
+                patch.object(views, "OriginalTensorReader", side_effect=reader):
+            with views.SparkModelAssets(self.metadata, self.originals, self.integrity,
+                    workspace=self.workspace, budget=self.budget, catalog=catalog) as assets:
+                self.assertIs(assets.catalog, catalog)
+                self.assertEqual(assets.reader.reads, [])
+        self.assertEqual(received, [catalog])
+        self.assertEqual(catalog.select.call_count, 1)
+        predicate = catalog.select.call_args.args[0]
+        self.assertTrue(predicate("head.weight"))
+        self.assertFalse(predicate("layers.0.ffn.experts.0.w1.weight"))
+        self.assertFalse(predicate("layers.1.engram.embed.weight"))
+        self.assertEqual(self.budget.reserved, 0)
+
     def test_large_control_splits_source_reads_without_a_resident_cache(self):
         with self.assets() as a:
             first = a.arrays_for_layer(0)["layers.0.large.weight"]

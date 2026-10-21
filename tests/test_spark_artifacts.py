@@ -409,6 +409,144 @@ class OriginalReadTests(unittest.TestCase):
             path.write_bytes(original)
         self.assertEqual(self.budget.reserved, 0)
 
+    def reusable_catalog(self, budget=None):
+        budget = budget or MemoryBudget(cap=assets.CATALOG_REUSE_BYTES, owner="test_authenticated_catalog")
+        return assets.AuthenticatedModelCatalog(self.metadata, self.originals, self.integrity,
+                                               budget, workspace=self.ws)
+
+    def select_catalog(self, catalog, names=("head.weight",)):
+        return catalog.select(names, metadata=self.metadata, originals=self.originals,
+                              integrity=self.integrity, workspace=self.ws)
+
+    def test_explicit_catalog_reuses_one_qualification_and_returns_detached_records(self):
+        catalog = self.reusable_catalog()
+        with patch.object(assets, "load_catalog", wraps=assets.load_catalog) as loader:
+            with catalog:
+                first = self.select_catalog(catalog)
+                original_shape = list(first["tensors"]["head.weight"]["shape"])
+                first["tensors"]["head.weight"]["shape"].append(999)
+                first["identity"]["catalog_sha256"] = "changed caller copy"
+                again = self.select_catalog(catalog, lambda name: name == "head.weight")
+                self.assertEqual(again["tensors"]["head.weight"]["shape"], original_shape)
+                self.assertEqual(again["identity"]["catalog_sha256"], assets.CATALOG_SHA256)
+                with assets.OriginalTensorReader(self.metadata, self.originals, self.integrity,
+                        self.budget, tensor_names=("embed.weight",), workspace=self.ws, catalog=catalog) as reader:
+                    target = bytearray(8); reader.read_into("embed.weight", 0, target)
+                    self.assertEqual(target, b"small sy")
+                    self.assertTrue(reader.stats()["catalog_reuse_enabled"])
+                for _ in range(2):
+                    with assets.OriginalShardExpertStore(self.metadata, self.originals, self.integrity,
+                            self.budget, layer=39, workspace=self.ws, catalog=catalog) as store:
+                        self.assertEqual(len(store.entries), 384)
+                        self.assertTrue(store.stats()["catalog_reuse_enabled"])
+                self.assertEqual(loader.call_count, 1)
+                state = catalog.stats()
+                self.assertEqual(state["catalog_load_calls"], 1)
+                self.assertEqual(state["registration_load_calls"], 1)
+                self.assertEqual(state["cache_hits"], 5)
+                self.assertEqual(state["metadata_hash_passes"], 7)
+                self.assertEqual(state["retained_admission_bytes"], assets.CATALOG_REUSE_BYTES)
+                self.assertGreater(state["metadata_bytes_hashed"], 0)
+                self.assertGreater(state["timings"]["catalog_load"]["total_ms"], 0)
+        self.assertEqual(catalog.budget.reserved, 0)
+        self.assertEqual(self.budget.reserved, 0)
+        self.assertEqual(catalog.stats()["retained_admission_bytes"], 0)
+        with self.assertRaisesRegex(RuntimeError, "closed"):
+            self.select_catalog(catalog)
+        with self.assertRaisesRegex(RuntimeError, "fresh"):
+            catalog.__enter__()
+
+    def test_catalog_rehash_rejects_same_size_change_even_with_restored_mtime(self):
+        paths = (self.metadata / "headers/model-00001-of-00048.safetensors.json",
+                 self.integrity / "manifest.json")
+        for path in paths:
+            original, before = path.read_bytes(), path.stat()
+            catalog = self.reusable_catalog()
+            try:
+                with catalog:
+                    changed = b"[]" if path.parent.name == "headers" else original[:-1] + b" "
+                    self.assertEqual(len(changed), len(original))
+                    path.write_bytes(changed)
+                    os.utime(path, ns=(before.st_atime_ns, before.st_mtime_ns))
+                    with self.assertRaisesRegex(ValueError, "changed after qualification"):
+                        self.select_catalog(catalog)
+                    self.assertEqual(catalog.budget.reserved, 0)
+                    self.assertTrue(catalog.stats()["invalidated"])
+                    failure = catalog.stats()["first_failure"]
+                    with self.assertRaises(RuntimeError):
+                        self.select_catalog(catalog)
+                    self.assertEqual(catalog.stats()["first_failure"], failure)
+            finally:
+                path.write_bytes(original)
+            with self.reusable_catalog() as retry:
+                self.assertIn("head.weight", self.select_catalog(retry)["tensors"])
+
+    def test_catalog_short_metadata_read_invalidates_and_releases_admission(self):
+        path = self.metadata / "headers/model-00001-of-00048.safetensors.json"
+        real_open = Path.open
+
+        class ShortRead:
+            def __init__(self, stream): self.stream = stream
+            def __enter__(self): return self
+            def __exit__(self, *_): self.stream.close()
+            def fileno(self): return self.stream.fileno()
+            def read(self, count): return self.stream.read(count - 1 if count > 1 else count)
+
+        def opened(candidate, *args, **kwargs):
+            stream = real_open(candidate, *args, **kwargs)
+            return ShortRead(stream) if candidate == path and args and args[0] == "rb" else stream
+
+        catalog = self.reusable_catalog()
+        with catalog:
+            with patch.object(Path, "open", opened):
+                with self.assertRaisesRegex(OSError, "Short original"):
+                    self.select_catalog(catalog)
+            self.assertEqual(catalog.budget.reserved, 0)
+            self.assertEqual(catalog.stats()["first_failure"]["stage"], "reuse_metadata_hash")
+        with self.reusable_catalog() as retry:
+            self.select_catalog(retry)
+
+    def test_catalog_failed_initial_qualification_and_cap_refusal_leave_no_charge(self):
+        catalog = self.reusable_catalog()
+        with patch.object(assets, "load_catalog", side_effect=ValueError("synthetic qualification failure")):
+            with self.assertRaisesRegex(ValueError, "qualification failure"):
+                catalog.__enter__()
+        self.assertEqual(catalog.budget.reserved, 0)
+        self.assertEqual(catalog.stats()["first_failure"]["stage"], "catalog_qualification")
+        small = self.reusable_catalog(MemoryBudget(cap=assets.CATALOG_REUSE_BYTES - 1))
+        with patch.object(Path, "open", side_effect=AssertionError("cap must refuse before I/O")):
+            with self.assertRaises(MemoryError):
+                small.__enter__()
+        self.assertEqual(small.budget.reserved, 0)
+        with self.reusable_catalog() as retry:
+            self.select_catalog(retry)
+
+    def test_reused_catalog_does_not_bypass_original_payload_integrity(self):
+        path = self.originals / self.inventory[2]["file"]
+        with self.reusable_catalog() as catalog:
+            with path.open("r+b", buffering=0) as stream:
+                stream.write(b"X"); stream.flush()
+            try:
+                with assets.OriginalShardExpertStore(self.metadata, self.originals, self.integrity,
+                        self.budget, layer=39, workspace=self.ws, catalog=catalog) as store:
+                    with self.assertRaisesRegex(ValueError, "block SHA"):
+                        store.read_into("39:0", np.empty(assets.EXPERT_BYTES, np.uint8))
+                    self.assertIsNone(store.entries["39:0"]["sha256"])
+                    self.assertEqual(store.read_calls, 0)
+            finally:
+                with path.open("r+b", buffering=0) as stream:
+                    stream.write(b"\x11"); stream.flush()
+        self.assertEqual(self.budget.reserved, 0)
+
+    def test_default_readers_keep_uncached_catalog_path(self):
+        with patch.object(assets, "load_catalog", wraps=assets.load_catalog) as loader:
+            for _ in range(2):
+                with assets.OriginalTensorReader(self.metadata, self.originals, self.integrity,
+                        self.budget, tensor_names=("embed.weight",), workspace=self.ws) as reader:
+                    self.assertFalse(reader.stats()["catalog_reuse_enabled"])
+            self.assertEqual(loader.call_count, 2)
+        self.assertEqual(self.budget.reserved, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

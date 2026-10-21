@@ -87,9 +87,12 @@ class LayerProxy:
 
 class LayerOperatorPool:
     """Serialize layer switches; close old ownership before creating new work."""
-    def __init__(self, assets, ordinal=0, *, hc_factory=None, projection_factory=None, moe_factory=None, progress=None):
+    def __init__(self, assets, ordinal=0, *, hc_factory=None, projection_factory=None, moe_factory=None, progress=None,
+                 backend_pool=None):
         self.assets, self.ordinal = assets, ordinal
         self.factories = {"hc": hc_factory or NativeHC, "projection": projection_factory or NativeProjections}
+        self.backend_pool = backend_pool
+        self.native_factories = {"hc": hc_factory is None, "projection": projection_factory is None}
         self.moe_factory = moe_factory or self._moe
         self.lock, self.opened, self.poisoned = threading.RLock(), False, False
         self.initialized, self.active = False, {}
@@ -143,8 +146,10 @@ class LayerOperatorPool:
         self._notify(kind, layer, "operator_open")
         try:
             with self.assets.upload_arrays(layer) as arrays:
+                reuse = ({"backend_pool": self.backend_pool}
+                    if self.backend_pool is not None and self.native_factories[kind] else {})
                 operator = owner.enter_context(self.factories[kind](arrays, self.ordinal, layer=layer,
-                    profile="backbone_probe", execution_target=TARGET))
+                    profile="backbone_probe", execution_target=TARGET, **reuse))
             if not operator.opened or operator.layer != layer or operator.ordinal != self.ordinal:
                 raise ValueError("Streamed operator identity differs")
         except BaseException:
@@ -166,8 +171,10 @@ class LayerOperatorPool:
         # max_store_experts applies only to the legacy repacked NativeStore.
         # The explicit source factory validates all 384 original experts instead.
         def source_factory(_, budget):
+            catalog = getattr(self.assets, "catalog", None)
+            reuse = {} if catalog is None else {"catalog": catalog}
             return OriginalShardExpertStore(self.assets.metadata, self.assets.originals,
-                self.assets.integrity, budget, layer=layer, workspace=self.assets.workspace)
+                self.assets.integrity, budget, layer=layer, workspace=self.assets.workspace, **reuse)
         return ConnectedMoE(self.assets.originals, gate, router, shared,
             ConnectedConfig(cache=cache), layer=layer, profile="backbone_probe", source_factory=source_factory)
 

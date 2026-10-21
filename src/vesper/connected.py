@@ -75,6 +75,7 @@ class ConnectedMoE:
         self.lock = threading.RLock()
         self.stats = {"calls_started": 0, "calls_completed": 0, "calls_failed": 0}
         self.last_attempt = None
+        self.opening_phase_seconds = {}
 
     def __enter__(self):
         if self.stack is not None:
@@ -82,21 +83,36 @@ class ConnectedMoE:
         self.stack = ExitStack()
         c = self.config
         self.budget = MemoryBudget(c.host_cap_bytes, c.cache.available_floor)
+        phase_started = time.perf_counter()
+        def phase(name):
+            nonlocal phase_started
+            now = time.perf_counter()
+            self.opening_phase_seconds[name] = now - phase_started
+            phase_started = now
         try:
             allowance = c.cache.host_cap_bytes + 100 * MiB  # own 96 + accumulator 4
             self.budget.acquire(allowance)
             self.stack.callback(self.budget.release, allowance)
+            phase("admission")
             weight, self.gate_manifest = load_gate_fixture(self.gate_fixture)
+            phase("gate_fixture_authentication")
             biases, self.router_manifest = load_router_fixture(self.router_fixture)
+            phase("router_fixture_authentication")
             shared, self.shared_manifest = load_shared_fixture(self.shared_fixture)
+            phase("shared_fixture_authentication")
             if any(m["layer"] != self.layer for m in (self.gate_manifest, self.router_manifest, self.shared_manifest)):
                 raise ValueError("Connected gate, router and shared artifacts must match the selected layer")
             ordinal = c.cache.primary_device
             self.gate = self.stack.enter_context(GateProjection(weight, ordinal, self.cublas_library, host_budget=self.budget))
+            phase("gate_backend_upload")
             self.router = self.stack.enter_context(RouterProbe(biases, ordinal))
+            phase("router_backend_upload")
             self.shared = self.stack.enter_context(ResidentSharedExpert(shared, ordinal))
+            phase("shared_backend_upload")
             self.accumulator = self.stack.enter_context(MoEAccumulator(ordinal, max_tokens=1))
+            phase("accumulator_backend")
             self.experts = self.stack.enter_context(TieredExpertRuntime(self.store_path, c.cache, source_factory=self.source_factory))
+            phase("expert_runtime_including_catalog")
             if any(entry["provenance"]["layer"] != self.layer for entry in self.experts.store.entries.values()):
                 raise ValueError("Connected store contains artifacts from another layer")
             self.devices = {"gate": self.gate.device, "router": self.router.device,
@@ -105,6 +121,7 @@ class ConnectedMoE:
             self.helper_device = self.experts.helper_device_object
             self.minimum_available = physical_memory()["available"]
             self._headroom()
+            phase("post_open_checks")
             return self
         except BaseException:
             self.stack.close()

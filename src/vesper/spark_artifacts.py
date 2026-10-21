@@ -9,6 +9,7 @@ it does not download, requantize, or create a second model-wide expert pack.
 from __future__ import annotations
 
 from contextlib import contextmanager, nullcontext
+from copy import deepcopy
 from collections import OrderedDict
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 import hashlib
@@ -18,6 +19,7 @@ from pathlib import Path
 import re
 import shutil
 import stat
+import sys
 import threading
 import urllib.request
 
@@ -25,7 +27,7 @@ import numpy as np
 
 from .artifact_repository import BLOCK, VerifiedBlob, register_existing
 from .bandwidth import EXPERT_BYTES
-from .checkpoint import MODEL, REVISION, BASE, EXPERT_LAYOUT, validate_expert_identity
+from .checkpoint import MODEL, REVISION, BASE, EXPERT_LAYOUT, LIMIT, validate_expert_identity
 from .integrity import digest_shape, hash_chunks
 from .model_artifacts import CATALOG_SHA256, SHARD_INVENTORY_SHA256, DTYPE_BYTES, FILES, load_catalog, shard_inventory, digest
 from .resources import MemoryBudget, MiB, GiB
@@ -37,6 +39,8 @@ MIN_CHUNK_BYTES = 2 * MiB
 MAX_JOURNAL_BYTES = 8 * MiB
 DOWNLOAD_METADATA_ALLOWANCE = 64 * MiB
 EXPERT_METADATA_BYTES = 16 * MiB
+CATALOG_REUSE_BYTES = 512 * MiB
+CATALOG_HASH_CHUNK_BYTES = MiB
 
 
 class AcquisitionCancelled(RuntimeError):
@@ -530,6 +534,202 @@ def _metadata_paths(metadata):
         _regular_below(root, root / "headers" / f"model-{ordinal:05d}-of-00048.safetensors.json")
 
 
+class AuthenticatedModelCatalog:
+    """Explicit runtime-only metadata reuse; never caches tensor payloads.
+
+    The retained 512 MiB conservative admission includes Python metadata and
+    bounded hashing scratch. Initial load_catalog additionally retains its
+    existing transient 512 MiB admission. Every selection content-hashes the
+    fixed metadata/header/registration set; stat/mtime alone never grants a hit.
+    Returned selections are detached and covered by their consumer's admission.
+    """
+
+    def __init__(self, metadata, originals, integrity, budget, *, workspace=None):
+        if budget.available_floor < 32 * GiB:
+            raise ValueError("Reusable original metadata requires the 32 GiB physical reserve")
+        self.workspace = _scope(workspace, metadata, originals, integrity)
+        self._scope_keys = ("platform", "profile", "repository", "model", "revision", "binding_id", "git_head",
+                            "registry_sha256", "dirty_diff_sha256")
+        context = self.workspace.context()
+        self._scope_identity = tuple(context.get(k) for k in self._scope_keys)
+        self.metadata, self.originals, self.integrity = map(Path, (metadata, originals, integrity))
+        self.budget, self.lock = budget, threading.RLock()
+        self.timings = Timings(enabled=True)
+        self._records, self._identity, self._inventory, self._receipts = {}, {}, {}, {}
+        self._snapshot = None
+        self._charged = 0
+        self._opened = self._closed = self._invalidated = False
+        self._stage, self.first_failure = "not_open", None
+        self.catalog_load_calls = self.registration_load_calls = self.selection_calls = self.cache_hits = 0
+        self.metadata_hash_passes = self.metadata_files_hashed = self.metadata_bytes_hashed = 0
+        self.invalidation_count = self.estimated_metadata_bytes = 0
+        self.registration_sha256 = None
+
+    @staticmethod
+    def _version(info):
+        # Windows path stat and descriptor stat can disagree on legacy ctime
+        # (creation time); content is always hashed, including with restored mtime.
+        return (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns,
+                info.st_ctime_ns if os.name != "nt" else None)
+
+    def _sources(self):
+        names = [*(value[0] for value in FILES.values()), "tree.json"]
+        names += [f"headers/model-{i:05d}-of-00048.safetensors.json" for i in range(1, 49)]
+        return [(self.metadata, self.metadata / name, LIMIT) for name in names] + [
+            (self.integrity, self.integrity / "manifest.json", 65536)]
+
+    def _fingerprint(self):
+        result = []
+        with self.timings.section("metadata_content_hash"):
+            for root, path, limit in self._sources():
+                _regular_below(root, path)
+                before = path.stat()
+                if not 0 < before.st_size <= limit:
+                    raise ValueError("Original catalog metadata size differs")
+                identity = hashlib.sha256()
+                with path.open("rb", buffering=0) as stream:
+                    if self._version(os.fstat(stream.fileno())) != self._version(before):
+                        raise ValueError("Original catalog metadata changed while opening")
+                    remaining = before.st_size
+                    while remaining:
+                        self.budget.acquire(0)
+                        count = min(CATALOG_HASH_CHUNK_BYTES, remaining)
+                        raw = stream.read(count)
+                        self.metadata_bytes_hashed += len(raw)
+                        if len(raw) != count:
+                            raise OSError("Short original catalog metadata read")
+                        identity.update(raw); remaining -= count
+                    if stream.read(1) or self._version(os.fstat(stream.fileno())) != self._version(before):
+                        raise ValueError("Original catalog metadata changed while reading")
+                _regular_below(root, path)
+                if self._version(path.stat()) != self._version(before):
+                    raise ValueError("Original catalog metadata changed after reading")
+                result.append((before.st_size, identity.hexdigest()))
+                self.metadata_files_hashed += 1
+        self.metadata_hash_passes += 1
+        return tuple(result)
+
+    @staticmethod
+    def _size(value, seen):
+        if id(value) in seen:
+            return 0
+        seen.add(id(value)); size = sys.getsizeof(value)
+        if isinstance(value, dict):
+            size += sum(AuthenticatedModelCatalog._size(k, seen) + AuthenticatedModelCatalog._size(v, seen)
+                        for k, v in value.items())
+        elif isinstance(value, (tuple, list)):
+            size += sum(AuthenticatedModelCatalog._size(v, seen) for v in value)
+        return size
+
+    def _drop(self):
+        self._records = {}; self._identity = {}; self._inventory = {}; self._receipts = {}
+        self._snapshot = None; self._opened = False; self._closed = True
+        if self._charged:
+            self.budget.release(self._charged, category="metadata"); self._charged = 0
+
+    def _invalidate(self, error):
+        if self.first_failure is None:
+            self.first_failure = {"failure_type": type(error).__name__[:80], "stage": self._stage}
+        self._invalidated = True; self.invalidation_count += 1
+        self._drop()
+
+    def __enter__(self):
+        with self.lock, self.timings.section("open_including_qualification"):
+            if self._opened or self._closed:
+                raise RuntimeError("Use a fresh authenticated catalog runtime context")
+            try:
+                self._stage = "retained_admission"
+                self.budget.acquire(CATALOG_REUSE_BYTES, category="metadata"); self._charged = CATALOG_REUSE_BYTES
+                self.workspace.check()
+                self._stage = "initial_metadata_hash"
+                before = self._fingerprint()
+                self._stage = "registration"
+                with self.timings.section("registration_load"):
+                    self.registration_load_calls += 1
+                    self._inventory, self._receipts, self.registration_sha256 = _registration(self.metadata, self.integrity)
+                self._stage = "catalog_qualification"
+                with self.timings.section("catalog_load"):
+                    self.catalog_load_calls += 1
+                    self._records, self._identity = load_catalog(self.metadata)
+                if self._identity.get("catalog_sha256") != CATALOG_SHA256:
+                    raise ValueError("Unqualified reusable original catalog")
+                self._stage = "qualification_stability"
+                after = self._fingerprint()
+                if before != after:
+                    raise ValueError("Original catalog sources changed during qualification")
+                self.estimated_metadata_bytes = self._size(
+                    (self._records, self._identity, self._inventory, self._receipts, after), set())
+                if self.estimated_metadata_bytes + CATALOG_HASH_CHUNK_BYTES > CATALOG_REUSE_BYTES:
+                    raise MemoryError("Original catalog retained metadata exceeds its admission")
+                self._snapshot = after; self._opened = True; self._stage = "open"
+                return self
+            except BaseException as error:
+                self._invalidate(error); raise
+
+    def select(self, names, *, metadata, originals, integrity, workspace=None):
+        """Return at most 4096 detached records and small registration identity.
+
+        names is a unique list/tuple or a predicate accepting only a tensor
+        name. The full mutable authenticated catalog is never exposed.
+        """
+        with self.lock, self.timings.section("select_including_validation"):
+            if not self._opened:
+                raise RuntimeError("Authenticated catalog is closed or invalidated")
+            self.selection_calls += 1
+            try:
+                self._stage = "reuse_scope"
+                current = _scope(workspace, metadata, originals, integrity)
+                paths = tuple(Path(p).absolute() for p in (metadata, originals, integrity))
+                expected = tuple(p.absolute() for p in (self.metadata, self.originals, self.integrity))
+                context = current.context()
+                if paths != expected or tuple(context.get(k) for k in self._scope_keys) != self._scope_identity:
+                    raise ValueError("Authenticated catalog source scope differs")
+                self._stage = "reuse_metadata_hash"
+                if self._fingerprint() != self._snapshot:
+                    raise ValueError("Authenticated catalog metadata changed after qualification")
+            except BaseException as error:
+                self._invalidate(error); raise
+            self._stage = "selection"
+            if callable(names):
+                chosen = []
+                for name in self._records:
+                    if names(name):
+                        chosen.append(name)
+                        if len(chosen) > 4096:
+                            raise ValueError("Select at most 4096 authenticated original tensors")
+            else:
+                if (not isinstance(names, (list, tuple)) or not 1 <= len(names) <= 4096
+                        or any(not isinstance(n, str) or not n for n in names) or len(set(names)) != len(names)):
+                    raise ValueError("Select one to 4096 unique authenticated original tensors")
+                chosen = names
+            if not chosen:
+                raise ValueError("Select at least one authenticated original tensor")
+            with self.timings.section("selected_metadata_copy"):
+                result = {"tensors": {name: deepcopy(self._records[name]) for name in chosen},
+                          "identity": deepcopy(self._identity), "inventory": deepcopy(self._inventory),
+                          "receipts": deepcopy(self._receipts), "registration_sha256": self.registration_sha256}
+            self.cache_hits += 1; self._stage = "open"
+            return result
+
+    def stats(self):
+        with self.lock:
+            return {"kind": "spark_authenticated_model_catalog", "opened": self._opened, "closed": self._closed,
+                    "invalidated": self._invalidated, "retained_admission_bytes": self._charged,
+                    "retained_admission_capacity_bytes": CATALOG_REUSE_BYTES,
+                    "estimated_python_metadata_bytes": self.estimated_metadata_bytes,
+                    "catalog_load_calls": self.catalog_load_calls, "registration_load_calls": self.registration_load_calls,
+                    "selection_calls": self.selection_calls, "cache_hits": self.cache_hits,
+                    "metadata_hash_passes": self.metadata_hash_passes, "metadata_files_hashed": self.metadata_files_hashed,
+                    "metadata_bytes_hashed": self.metadata_bytes_hashed, "invalidation_count": self.invalidation_count,
+                    "first_failure": deepcopy(self.first_failure), "timings": self.timings.snapshot(),
+                    "timings_include_nested_stages": True, "tensor_payload_cached": False,
+                    "persistent_cache": False, "reservation_is_RSS_limit": False}
+
+    def __exit__(self, *_):
+        with self.lock, self.timings.section("close"):
+            self._drop()
+
+
 class OriginalTensorReader:
     """Bounded, network-free original tensor spans for dense/head/embedding use.
 
@@ -539,7 +739,7 @@ class OriginalTensorReader:
     """
 
     def __init__(self, metadata, originals, integrity, budget, *,
-                 tensor_names=("head.weight", "embed.weight"), workspace=None):
+                 tensor_names=("head.weight", "embed.weight"), workspace=None, catalog=None):
         if (not isinstance(tensor_names, (list, tuple)) or not 1 <= len(tensor_names) <= 4096
                 or any(not isinstance(name, str) or not name for name in tensor_names)
                 or len(set(tensor_names)) != len(tensor_names)):
@@ -547,6 +747,9 @@ class OriginalTensorReader:
         self.workspace = _scope(workspace, metadata, originals, integrity)
         self.metadata, self.originals, self.integrity = map(Path, (metadata, originals, integrity))
         self.budget, self.names = budget, tuple(tensor_names)
+        if catalog is not None and not isinstance(catalog, AuthenticatedModelCatalog):
+            raise TypeError("Expected an explicit authenticated catalog context")
+        self.catalog, self.setup_timings = catalog, Timings(enabled=True)
         self.tensors, self.blobs = {}, OrderedDict()
         self._opened = False
         self.retired_data_bytes = self.retired_index_bytes = self.logical_bytes = self.read_calls = 0
@@ -557,11 +760,20 @@ class OriginalTensorReader:
         self.budget.acquire(EXPERT_METADATA_BYTES, category="metadata"); self._opened = True
         try:
             self.workspace.check()
-            _metadata_paths(self.metadata)
-            _regular_below(self.integrity, self.integrity / "manifest.json")
-            self.inventory, self.receipts, self.registration_sha256 = _registration(self.metadata, self.integrity)
-            catalog, _ = load_catalog(self.metadata)
-            self.tensors = {name: catalog[name] for name in self.names}
+            with self.setup_timings.section("authenticated_metadata"):
+                if self.catalog is None:
+                    _metadata_paths(self.metadata)
+                    _regular_below(self.integrity, self.integrity / "manifest.json")
+                    with self.setup_timings.section("registration_load"):
+                        self.inventory, self.receipts, self.registration_sha256 = _registration(self.metadata, self.integrity)
+                    with self.setup_timings.section("catalog_load"):
+                        catalog, _ = load_catalog(self.metadata)
+                    self.tensors = {name: catalog[name] for name in self.names}
+                else:
+                    view = self.catalog.select(self.names, metadata=self.metadata, originals=self.originals,
+                                               integrity=self.integrity, workspace=self.workspace)
+                    self.inventory, self.receipts = view["inventory"], view["receipts"]
+                    self.registration_sha256, self.tensors = view["registration_sha256"], view["tensors"]
             for t in self.tensors.values():
                 if (t["dtype"] not in DTYPE_BYTES or t["shard"] not in self.inventory
                         or type(t["shard_byte_offset"]) is not int or t["shard_byte_offset"] < 0
@@ -614,7 +826,8 @@ class OriginalTensorReader:
                 "integrity_index_bytes_read": self.retired_index_bytes + sum(b.index.aligned_bytes_requested for b in self.blobs.values()),
                 "maximum_span_request_bytes": CHUNK_BYTES, "maximum_verified_block_slice_bytes": CHUNK_BYTES,
                 "verification_block_bytes": BLOCK, "maximum_direct_read_bytes": CHUNK_BYTES,
-                "model_wide_mapping": False, "network_bytes_in_forward": 0}
+                "model_wide_mapping": False, "network_bytes_in_forward": 0,
+                "catalog_reuse_enabled": self.catalog is not None, "source_setup_timings": self.setup_timings.snapshot()}
 
     def __exit__(self, *_):
         first_error = None
@@ -640,11 +853,14 @@ class OriginalShardExpertStore:
     copy, and at most two cached blocks. Every source block remains verified.
     """
 
-    def __init__(self, metadata, originals, integrity, budget, *, layer, workspace=None):
+    def __init__(self, metadata, originals, integrity, budget, *, layer, workspace=None, catalog=None):
         validate_expert_identity(layer, 0)
         self.workspace = _scope(workspace, metadata, originals, integrity)
         self.metadata, self.originals, self.integrity = map(Path, (metadata, originals, integrity))
         self.budget, self.layer, self.size = budget, layer, EXPERT_BYTES
+        if catalog is not None and not isinstance(catalog, AuthenticatedModelCatalog):
+            raise TypeError("Expected an explicit authenticated catalog context")
+        self.catalog, self.setup_timings = catalog, Timings(enabled=True)
         self.timings, self.gpu_integrity, self.expected_chunks = Timings(), False, {}
         self.entries, self.blobs, self.manifest = {}, OrderedDict(), None
         self.read_calls = self.bytes_read = self.file_switches = 0
@@ -657,10 +873,21 @@ class OriginalShardExpertStore:
         self.budget.acquire(EXPERT_METADATA_BYTES, category="metadata"); self._opened = True
         try:
             self.workspace.check()
-            _metadata_paths(self.metadata)
-            _regular_below(self.integrity, self.integrity / "manifest.json")
-            self.inventory, self.receipts, registration_sha = _registration(self.metadata, self.integrity)
-            catalog, identity = load_catalog(self.metadata)
+            with self.setup_timings.section("authenticated_metadata"):
+                if self.catalog is None:
+                    _metadata_paths(self.metadata)
+                    _regular_below(self.integrity, self.integrity / "manifest.json")
+                    with self.setup_timings.section("registration_load"):
+                        self.inventory, self.receipts, registration_sha = _registration(self.metadata, self.integrity)
+                    with self.setup_timings.section("catalog_load"):
+                        catalog, identity = load_catalog(self.metadata)
+                else:
+                    names = tuple(f"layers.{self.layer}.ffn.experts.{expert}.{short.split('_')[0]}.{short.split('_')[1]}"
+                                  for expert in range(384) for short in EXPERT_LAYOUT)
+                    view = self.catalog.select(names, metadata=self.metadata, originals=self.originals,
+                                               integrity=self.integrity, workspace=self.workspace)
+                    catalog, identity = view["tensors"], view["identity"]
+                    self.inventory, self.receipts, registration_sha = view["inventory"], view["receipts"], view["registration_sha256"]
             layout = tensor_layout()
             for expert in range(384):
                 tensors = []
@@ -761,7 +988,8 @@ class OriginalShardExpertStore:
                 "integrity_index_bytes_read": self.retired_index_bytes + sum(b.index.aligned_bytes_requested for b in self.blobs.values()),
                 "payload_bytes_repacked": 0, "network_payload_bytes_in_forward": 0,
                 "maximum_verified_span_read_bytes": CHUNK_BYTES,
-                "verification_block_bytes": BLOCK, "maximum_direct_read_bytes": CHUNK_BYTES}
+                "verification_block_bytes": BLOCK, "maximum_direct_read_bytes": CHUNK_BYTES,
+                "catalog_reuse_enabled": self.catalog is not None, "source_setup_timings": self.setup_timings.snapshot()}
 
     def __exit__(self, *_):
         first_error = None

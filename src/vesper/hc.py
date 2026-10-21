@@ -35,13 +35,14 @@ def coefficients(value, shape):
 
 
 class NativeHC:
-    def __init__(self, arrays, ordinal=0, *, layer=0, profile="qualified", execution_target=None):
+    def __init__(self, arrays, ordinal=0, *, layer=0, profile="qualified", execution_target=None, backend_pool=None):
         self.execution_target = resolve_execution_target(execution_target)
         self.execution_provenance = self.execution_target.describe()
         from .prefix_profile import validate_layer
         validate_layer(layer, (0, 2, 3, 20, 21, 22, 23, 24, 25), profile)
         self.layer = layer
         self.arrays, self.ordinal, self.opened = arrays, ordinal, False
+        self.backend_pool = backend_pool
         self.stack, self.lock, self.budget = ExitStack(), threading.Lock(), MemoryBudget(cap=128 * MiB)
         for part in ("attn", "ffn"):
             for suffix, shape in (("fn", (24, 20480)), ("scale", (3,)), ("base", (24,))):
@@ -64,23 +65,31 @@ class NativeHC:
             if os.environ.get("CUBLAS_WORKSPACE_CONFIG") is not None:
                 raise ValueError("HC qualification requires the default cuBLAS workspace policy")
             try:
-                self.budget.acquire(128 * MiB)
-                self.stack.callback(self.budget.release, 128 * MiB)
-                self.driver = Driver()
-                inventory = self.driver.inventory()
-                self.info = next(d for d in inventory["devices"] if d["ordinal"] == self.ordinal)
-                self.execution_provenance["device"] = self.execution_target.validate_device(self.info, inventory)
-                self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=64 * MiB, free_floor=2 * GiB))
-                self.compiler = {}
-                binary, provenance = compile_execution_kernel(compile_probe, self.execution_target,
-                    hc=True, compiler_info=self.compiler, pc_cubin_sha256=HC_CUBIN_SHA256)
-                self.execution_provenance.update(provenance)
-                self.cubin_sha256 = provenance["cubin_sha256"]
-                self.module = self.device.load(binary)
-                self.blas = Cublas()
-                self.stack.callback(self.blas.close)
-                self.execution_provenance["cublas"] = self.execution_target.validate_blas(self.blas.version, self.blas.math_mode)
-                self.blas.workspace(self._allocate(self.stack, GATE_BLAS_WORKSPACE), GATE_BLAS_WORKSPACE)
+                if self.backend_pool is None:
+                    self.budget.acquire(128 * MiB)
+                    self.stack.callback(self.budget.release, 128 * MiB)
+                    self.driver = Driver()
+                    inventory = self.driver.inventory()
+                    self.info = next(d for d in inventory["devices"] if d["ordinal"] == self.ordinal)
+                    self.execution_provenance["device"] = self.execution_target.validate_device(self.info, inventory)
+                    self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=64 * MiB, free_floor=2 * GiB))
+                    self.compiler = {}
+                    binary, provenance = compile_execution_kernel(compile_probe, self.execution_target,
+                        hc=True, compiler_info=self.compiler, pc_cubin_sha256=HC_CUBIN_SHA256)
+                    self.execution_provenance.update(provenance)
+                    self.cubin_sha256 = provenance["cubin_sha256"]
+                    self.module = self.device.load(binary)
+                    self.blas = Cublas()
+                    self.stack.callback(self.blas.close)
+                    self.execution_provenance["cublas"] = self.execution_target.validate_blas(self.blas.version, self.blas.math_mode)
+                    self.blas.workspace(self._allocate(self.stack, GATE_BLAS_WORKSPACE), GATE_BLAS_WORKSPACE)
+                else:
+                    backend = self.stack.enter_context(self.backend_pool.acquire("hc", self.ordinal, self.execution_target))
+                    self.driver, self.device, self.blas, self.module = backend.driver, backend.device, backend.blas, backend.module
+                    self.info, self.budget = backend.info, backend.budget
+                    self.compiler = deepcopy(backend.compiler)
+                    self.execution_provenance.update(deepcopy(backend.provenance))
+                    self.cubin_sha256 = backend.provenance["cubin_sha256"]
                 self.weights = {p + "_" + s: self._upload(self.stack, self.arrays[f"layers.{self.layer}.hc_{p}_{s}"])
                                 for p in ("attn", "ffn") for s in ("fn", "scale", "base")}
                 self.resident_bytes = sum(self.device.allocations.values())

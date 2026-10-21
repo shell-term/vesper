@@ -69,12 +69,13 @@ class GroupedBF16(Cublas):
 class NativeProjections:
     """Resident original matrices, serialized calls, scoped temporary allocations."""
 
-    def __init__(self, arrays, ordinal=0, library=None, *, layer=0, profile="qualified", execution_target=None):
+    def __init__(self, arrays, ordinal=0, library=None, *, layer=0, profile="qualified", execution_target=None, backend_pool=None):
         self.execution_target = resolve_execution_target(execution_target)
         self.execution_provenance = self.execution_target.describe()
         validate_projection_weights(arrays, layer, profile=profile)
         self.layer = layer
         self.arrays, self.ordinal, self.library = arrays, ordinal, library
+        self.backend_pool = backend_pool
         self.stack, self.lock, self.opened = ExitStack(), threading.Lock(), False
         self.budget = MemoryBudget(cap=512 * MiB)
 
@@ -94,24 +95,33 @@ class NativeProjections:
             if self.opened:
                 raise RuntimeError("Projection runtime is already open")
             try:
-                self.budget.acquire(512 * MiB)
-                self.stack.callback(self.budget.release, 512 * MiB)
-                self.driver = Driver()
-                inventory = self.driver.inventory()
-                self.device_info = next(d for d in inventory["devices"] if d["ordinal"] == self.ordinal)
-                self.execution_provenance["device"] = self.execution_target.validate_device(self.device_info, inventory)
-                self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=256 * MiB, free_floor=2 * GiB))
-                self.compiler = {}
-                binary, provenance = compile_execution_kernel(compile_probe, self.execution_target,
-                    projections=True, compiler_info=self.compiler, pc_cubin_sha256=PROJECTION_CUBIN_SHA256)
-                self.execution_provenance.update(provenance)
-                self.cubin_sha256 = provenance["cubin_sha256"]
-                self.module = self.device.load(binary)
-                self.blas = GroupedBF16(self.library)
-                self.stack.callback(self.blas.close)
-                self.execution_provenance["cublas"] = self.execution_target.validate_blas(self.blas.version, self.blas.math_mode)
-                workspace = self._allocate(self.stack, GATE_BLAS_WORKSPACE)
-                self.blas.workspace(workspace, GATE_BLAS_WORKSPACE)
+                if self.backend_pool is None:
+                    self.budget.acquire(512 * MiB)
+                    self.stack.callback(self.budget.release, 512 * MiB)
+                    self.driver = Driver()
+                    inventory = self.driver.inventory()
+                    self.device_info = next(d for d in inventory["devices"] if d["ordinal"] == self.ordinal)
+                    self.execution_provenance["device"] = self.execution_target.validate_device(self.device_info, inventory)
+                    self.device = self.stack.enter_context(Device(self.driver, self.ordinal, cap=256 * MiB, free_floor=2 * GiB))
+                    self.compiler = {}
+                    binary, provenance = compile_execution_kernel(compile_probe, self.execution_target,
+                        projections=True, compiler_info=self.compiler, pc_cubin_sha256=PROJECTION_CUBIN_SHA256)
+                    self.execution_provenance.update(provenance)
+                    self.cubin_sha256 = provenance["cubin_sha256"]
+                    self.module = self.device.load(binary)
+                    self.blas = GroupedBF16(self.library)
+                    self.stack.callback(self.blas.close)
+                    self.execution_provenance["cublas"] = self.execution_target.validate_blas(self.blas.version, self.blas.math_mode)
+                    workspace = self._allocate(self.stack, GATE_BLAS_WORKSPACE)
+                    self.blas.workspace(workspace, GATE_BLAS_WORKSPACE)
+                else:
+                    backend = self.stack.enter_context(self.backend_pool.acquire("projection", self.ordinal,
+                        self.execution_target, self.library))
+                    self.driver, self.device, self.blas, self.module = backend.driver, backend.device, backend.blas, backend.module
+                    self.device_info, self.budget = backend.info, backend.budget
+                    self.compiler = deepcopy(backend.compiler)
+                    self.execution_provenance.update(deepcopy(backend.provenance))
+                    self.cubin_sha256 = backend.provenance["cubin_sha256"]
                 self.weights = {f"{n}.{s}": self._upload(self.stack, self.arrays[f"layers.{layer}.attn.{n}.{s}"])
                                 for n in FP8_LAYOUT for s in ("weight", "scale")}
                 self.wo_a = self._allocate(self.stack, 8192 * 4096 * 2)

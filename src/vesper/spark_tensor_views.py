@@ -162,10 +162,11 @@ class SparkModelAssets:
     budget is shared with the caller; the default 8 GiB cap is an admission
     ledger, not an RSS or unified-memory hardware limit.
     """
-    def __init__(self, metadata, originals, integrity, *, workspace=None, budget=None, fixtures=None):
+    def __init__(self, metadata, originals, integrity, *, workspace=None, budget=None, fixtures=None, catalog=None):
         self.workspace = _scope(workspace, metadata, originals, integrity)
         self.workspace.check_runtime_module(__file__, "src/vesper/spark_tensor_views.py")
         self.metadata, self.originals, self.integrity = map(Path, (metadata, originals, integrity))
+        self.catalog = catalog
         self.fixtures = Path(fixtures) if fixtures is not None else self.workspace.artifact_path("s1/moe-original")
         _scope(self.workspace, self.fixtures)
         self.budget = budget if budget is not None else MemoryBudget(cap=8 * GiB, owner="spark_model_assets")
@@ -186,7 +187,16 @@ class SparkModelAssets:
                 raise RuntimeError("Spark model assets are already open")
             self.workspace.check()
             _metadata_paths(self.metadata)
-            catalog, identity = load_catalog(self.metadata)
+            if self.catalog is None:
+                catalog, identity = load_catalog(self.metadata)
+            else:
+                # Keep the original control census/layout checks. The optional
+                # owner authenticates and bounds detached selected records.
+                view = self.catalog.select(lambda name: name in ("embed.weight", "head.weight", "norm.weight")
+                    or name.startswith("layers.") and ".ffn.experts." not in name
+                    and ".engram.embed." not in name, metadata=self.metadata,
+                    originals=self.originals, integrity=self.integrity, workspace=self.workspace)
+                catalog, identity = view["tensors"], view["identity"]
             selected = controls(catalog)
             if len(selected) != CONTROL_COUNT or sum(t["bytes"] for t in selected.values()) != CONTROL_BYTES:
                 raise ValueError("The complete original forty-layer control census differs")
@@ -198,7 +208,8 @@ class SparkModelAssets:
             self.shards = {s["shard"]: {k: s[k] for k in ("header_bytes", "header_sha256")} for s in identity["shards"]}
             del selected, catalog
             reader = OriginalTensorReader(self.metadata, self.originals, self.integrity, self.budget,
-                                          tensor_names=names, workspace=self.workspace)
+                tensor_names=names, workspace=self.workspace,
+                **({"catalog": self.catalog} if self.catalog is not None else {}))
             try:
                 self.reader = reader.__enter__()
                 self.arrays = _TensorMapping(self, {n: n for n in names if n not in ("embed.weight", "head.weight")})
